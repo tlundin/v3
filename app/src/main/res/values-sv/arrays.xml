@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="deviceTypesA">
+        <item>Master (RÖD)</item>
+        <item>Klient (BLÅ)</item>
+        <item>Solo (GUL)</item>
+    </string-array>
+    <string-array name="deviceTypes_values">
+        <item>Master</item>
+        <item>Client</item>
+        <item>Solo</item>
+    </string-array>
+    <string-array name="log_levels">
+        <item>Av</item>
+        <item>Normal</item>
+        <item>Kristiska</item>
+    </string-array>
+    <string-array name="log_level_values">
+        <item>off</item>
+        <item>normal</item>
+        <item>critical</item>
+    </string-array>
+    <string-array name="menu">
+        <item>Beskrivning</item>
+        <item>På nätet</item>
+        <item>Ta bort</item>
+    </string-array>
+    <string-array name="versionArray">
+        <item>Uppdatera filer bara när Appens version ändras (default)</item>
+        <item>Kontrollera version för enskilda filer varje uppstart</item>
+        <item>Strunta i versioner. Ladda alltid allt (långsamt)</item>
+    </string-array>
+    <string-array name="versionValues">
+        <item>Major</item>
+        <item>Detailed</item>
+        <item>No control</item>
+    </string-array>
+    <string-array name="syncMethodArray">
+        <item>Synk med blåtand mellan två enheter (default)</item>
+        <item>Synk över internet i en grupp</item>
+        <item>Ingen synk</item>
+    </string-array>
+    <string-array name="syncMethodValues">
+        <item>Bluetooth</item>
+        <item>Internet</item>
+        <item>NONE</item>
+    </string-array>
+
+</resources>

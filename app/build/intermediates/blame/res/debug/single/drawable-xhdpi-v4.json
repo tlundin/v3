@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_launcher_o.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-xhdpi\\ic_launcher_o.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\drawer_shadow.9.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-xhdpi\\drawer_shadow.9.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4\\ic_drawer.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-xhdpi\\ic_drawer.png"
+    }
+]

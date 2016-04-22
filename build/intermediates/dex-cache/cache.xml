@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Terje\Projects\Vortex\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="ad0c80aba5904b35b0e35f714d45a7c91625202f">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_edb2976c35c3839bda33acc0de66811aae98d324\classes.dex" />
+    </item>
+    <item
+        jar="D:\Apps\adt\sdk\extras\android\m2repository\com\android\support\support-v4\18.0.0\support-v4-18.0.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-v4-18.0.0_0b66537d2ae0179582b83415770870b14543c4dc\classes.dex" />
+    </item>
+    <item
+        jar="D:\Terje\Projects\Vortex\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="67f93dbe49ca1df8959925d537837a70af5b555c">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_2656ac99f2e73c235abf59f6e487690ae08d22e1\classes.dex" />
+    </item>
+    <item
+        jar="D:\Terje\Projects\Vortex\app\libs\achartengine-1.1.0.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\transforms\dex\debug\folders\1000\2\achartengine-1.1.0_1ba89730930aef46facdf3ac14ef18fad66fc349\classes.dex" />
+    </item>
+
+</items>

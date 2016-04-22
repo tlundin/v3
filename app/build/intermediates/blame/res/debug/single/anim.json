@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\push_up_in.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\push_up_in.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\rotate.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\rotate.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\push_up_out.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\push_up_out.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_show.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\popup_show.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_hide.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\popup_hide.xml"
+    }
+]

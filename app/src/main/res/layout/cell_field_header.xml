@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/whatever"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/header_cell_shape"
+    android:orientation="vertical"
+    android:padding="3dp" >
+    
+     <TextView
+         android:id="@+id/headerT"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:gravity="center_vertical|center_horizontal"
+         android:text="Medium Text"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textStyle="bold" />
+
+</FrameLayout>

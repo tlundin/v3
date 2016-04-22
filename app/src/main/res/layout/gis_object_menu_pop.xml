@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/object_menu_pop_bg"
+    >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="3dp"
+        android:background="@color/black"
+        android:gravity="center_horizontal"
+        android:text="Select object to add"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white"
+        android:layout_alignParentTop="true"
+        android:textStyle="bold" />
+
+    <com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObjectsMenu
+        android:id="@+id/gisObjectsMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1" />
+
+    <Button
+        android:id="@+id/cancelB"
+        style="@style/WhiteStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Cancel" />
+
+</RelativeLayout>

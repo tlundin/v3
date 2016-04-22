@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/logScroll"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:background="@drawable/stroke_bg"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/logger"
+                style="@style/ConsoleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dip" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/stroke_bg"
+        android:layout_weight="2" >
+        <Button
+            android:id="@+id/log_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            android:layout_weight="1"
+            android:textColor="@color/white" />
+ 
+       <Button
+            android:id="@+id/scrollDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scroll down"
+            android:layout_weight="1"
+            android:textColor="@color/white" />
+       <Button
+            android:id="@+id/printdb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Print database"
+            android:layout_weight="1"
+            android:textColor="@color/white" />
+       
+       <Button
+            android:id="@+id/log_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Close"
+            android:layout_weight="1"
+            android:textColor="@color/white" />
+       
+
+    </LinearLayout>
+
+</LinearLayout>

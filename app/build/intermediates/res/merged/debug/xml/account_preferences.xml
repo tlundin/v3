@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="General Settings" />
+
+   <EditTextPreference 
+    android:dialogTitle="User name" 
+    android:title="User name" 
+    android:dialogMessage="Write your name here!" 
+    android:negativeButtonText="Cancel" 
+    android:positiveButtonText="Ok" 
+    android:inputType="textCapSentences"  
+    android:key="user_id" 
+    /> 
+</PreferenceScreen>

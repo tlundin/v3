@@ -61,10 +61,23 @@ public class VariableCache {
 			public void run() {
 
 				if (!dbQueue.isEmpty())
-					GlobalState.getInstance().getDb().persistQueue(dbQueue);
+					flushQueue();
 			}
 		}, 0, 5, TimeUnit.SECONDS);
 
+	}
+
+	boolean busy=false;
+
+	public void flushQueue() {
+		Log.d("vortex","Flushing..");
+		if (!busy) {
+			busy=true;
+			GlobalState.getInstance().getDb().persistQueue(dbQueue);
+			busy=false;
+		}
+		else
+			Log.e("vortex","busy, discarded call");
 	}
 
 
@@ -257,12 +270,12 @@ public class VariableCache {
 			hash = tryThis;
 			
 			if (variable == null) {
-				for (String s:cache.keySet())
-					Log.d("vortex","In cache: "+s);
-				Log.d("nils","Creating new CacheList entry for "+varId);
+				//for (String s:cache.keySet())
+				//	Log.d("vortex","In cache: "+s);
+				//Log.d("nils","Creating new CacheList entry for "+varId);
 				String header = gs.getVariableConfiguration().getVarLabel(row);
 				DataType type = gs.getVariableConfiguration().getnumType(row);
-				Log.d("vortex","T1:"+(System.currentTimeMillis()-t0));
+				//Log.d("vortex","T1:"+(System.currentTimeMillis()-t0));
 				//TODO: ABRAKA CHANGE TO FALSE BELOW
 				if (type == DataType.array)
 					variable= new ArrayVariable(varId,header,row,hash,gs,vCol,defaultValue,true,"*NULL*");
@@ -273,7 +286,7 @@ public class VariableCache {
 				Log.d("vortex","Found "+variable.getId()+" in global cache with value "+variable.getValue()+" varhash:"+tryThis);
 
 		} else {
-			Log.d("vortex","Found "+variable.getId()+" in cache with value "+variable.getValue()+" varobj: "+variable.toString());
+			//Log.d("vortex","Found "+variable.getId()+" in cache with value "+variable.getValue()+" varobj: "+variable.toString());
 			if (variable.getValue()==null && defaultValue!=null && !defaultValue.equals(Constants.NO_DEFAULT_VALUE)) {
 				Log.d("vortex","defTrigger on "+defaultValue);
 				variable.setDefaultValue(defaultValue);

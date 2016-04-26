@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
+import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
@@ -62,11 +65,15 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 	//update variable.
 	@Override
 	public void onEvent(Event e) {
+		String strRes;
 		Log.d("vortex","In onEvent for create_display_value_field. Caller: "+e.getProvider());
 		if (myContext.myEndIsNear()) {
-			Log.e("vortex","END IS NEAAARRR");
+			Log.e("vortex","Aborting since redraw in progress");
 			return;
 		}
+
+
+
 		String result = Expressor.analyze(formulaE);
 		//Do not evaluate if the expression is evaluated to be a literal or defined as literal.
 		if (result==null) {
@@ -75,8 +82,10 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 				((TextView)this.getWidget().findViewById(R.id.outputValueField)).setText("");
 				((TextView)this.getWidget().findViewById(R.id.outputUnitField)).setText("");
 				return;
-		} 
-		String strRes=result;
+		}
+
+
+		strRes=result;
 		if (format!=null && format.equalsIgnoreCase("B")) {
 			if (result.equals("true"))
 					strRes = GlobalState.getInstance().getContext().getString(R.string.yes);

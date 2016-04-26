@@ -129,7 +129,7 @@ public  class ButtonBlock extends Block {
 		this.exportFormat = exportFormat;
 		this.buttonContextE=Expressor.preCompileExpression(buttonContextS);
 		this.syncRequired = requestSync;
-		Log.d("vortex","syncRequired is "+syncRequired);
+		//Log.d("vortex","syncRequired is "+syncRequired);
 	}
 
 
@@ -288,9 +288,9 @@ public  class ButtonBlock extends Block {
 										public void onClick(View v) {
 											if (statusVariable!=null) {
 												statusVariable.setValue(validationResult?"3":"2");
-												Log.e("nils","SETTING STATUSVAR: "+statusVariable.getId()+" key: "+statusVariable.getKeyChain()+ "Value: "+statusVariable.getValue());
+												Log.e("vortex","SETTING STATUSVAR: "+statusVariable.getId()+" key: "+statusVariable.getKeyChain()+ "Value: "+statusVariable.getValue());
 												//Save value of all variables to database in current flow.
-
+												gs.getVariableCache().flushQueue();
 											}
 
 
@@ -298,9 +298,9 @@ public  class ButtonBlock extends Block {
 												Log.d("nils","Found no status variable");
 
 											Set<Variable> variablesToSave = myContext.getTemplate().getVariables();
-											Log.d("nils", "Variables To save contains "+(variablesToSave==null?"null":variablesToSave.size()+" objects."));
+											Log.d("vortex", "Variables To save contains "+(variablesToSave==null?"null":variablesToSave.size()+" objects."));
 											for (Variable var:variablesToSave) {
-												Log.d("nils","Saving "+var.getLabel());
+												Log.d("vortex","Saving "+var.getLabel());
 												boolean resultOfSave = var.setValue(var.getValue());
 												if (resultOfSave) {
 													for (int i=0;i<100;i++)

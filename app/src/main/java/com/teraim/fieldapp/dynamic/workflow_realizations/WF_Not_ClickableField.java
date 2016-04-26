@@ -164,7 +164,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 						outS=myContext.getContext().getString(R.string.no);
 					else if (value.equals("true"))
 						outS=myContext.getContext().getString(R.string.yes);
-					Log.e("vortex","VARIABELVÄRDE: "+value);
+//					Log.e("vortex","VARIABELVÄRDE: "+value);
 				}
 			}
 			o.setText(outS);	

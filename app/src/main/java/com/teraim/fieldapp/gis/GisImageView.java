@@ -561,7 +561,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			for (GisLayer layerO:myMap.getLayers()) {
 				String layerId = layerO.getId();
-				Log.d("vortex","drawing layer "+layerId);
+				//Log.d("vortex","drawing layer "+layerId);
 				//get all objects that should be drawn on this layer.
 				if (!layerO.isVisible()) {
 					//Log.d("vortex","layer not visible...skipping "+layerId+" Obj: "+layerO.toString());
@@ -584,7 +584,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						Set<GisFilter> filters = filterMap!=null?filterMap.get(key):null;
 						Set<GisObject> bagOfObjects = bags.get(key);
 						Iterator<GisObject> iterator = bagOfObjects.iterator();
-						Log.d("vortex","CAPROX Bag "+ " has "+bagOfObjects.size()+" members");
+						//Log.d("vortex","CAPROX Bag "+ " has "+bagOfObjects.size()+" members");
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
 							//If not inside map, or if touched, skip.

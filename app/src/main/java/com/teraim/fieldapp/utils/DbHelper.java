@@ -1957,7 +1957,7 @@ public class DbHelper extends SQLiteOpenHelper {
             selArgs[i++] = keyChain.get(key);
         }
 
-        Log.d("nils", "Query: " + query);
+        Log.d("vortex", "Query: " + query);
         //Return cursor.
         return db.rawQuery(query, selArgs);
 

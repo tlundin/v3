@@ -238,11 +238,15 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			//end row
 			reader.endObject();
 			String uuid = attributes.remove(GisConstants.GlobalID);
+			Log.d("vortex","UUID: "+uuid);
 			String rutaId = attributes.remove(GisConstants.RutaID);
 
 
-			if (uuid!=null)
-				keyChain.put("uid",uuid);
+			if (uuid!=null) {
+				uuid = uuid.replace("{","").replace("}","");
+				Log.d("vortex","UUID: "+uuid);
+				keyChain.put("uid", uuid);
+			}
 			else
 				keyChain.put("uid",UUID.randomUUID().toString());
 			keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);

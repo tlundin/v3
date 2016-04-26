@@ -327,7 +327,7 @@ public class Variable implements Serializable {
 		myValue = null;
 		
 		if (historicalValue!=null) {
-			
+			//Log.e("vortex","Historicalvaluefor "+this.getId()+" is "+historicalValue+" varObj: "+this.toString());
 			historyChecked=true;
 			myHistory = historicalValue;
 			
@@ -377,8 +377,11 @@ public class Variable implements Serializable {
 	}
 
 	private void setDefault(String defaultValue) {
-		if (defaultValue == null)
+		Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
+		if (defaultValue == null) {
+
 			myDefaultValue = null;
+		}
 		else if (defaultValue.equals(Constants.HISTORICAL_TOKEN_IN_XML)) {
 			
 			myDefaultValue = this.getHistoricalValue();

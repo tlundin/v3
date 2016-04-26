@@ -378,8 +378,8 @@ EventGenerator {
 
 
 		// Set an EditText view to get user input
-		if (displayOut && super.getKey() == null) {
-			Log.d("nils", "Setting key variable to " + varId);
+		if (super.getKey() == null) {
+			Log.d("vortex", "Setting key variable to " + varId);
 			super.setKey(var);
 
 		}

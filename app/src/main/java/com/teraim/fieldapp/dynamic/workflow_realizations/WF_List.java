@@ -116,7 +116,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 						l.refresh();						
 						//Everything is WF_Widgets, so this is safe!					
 						myW.addView(((WF_Widget)l).getWidget());
-						Log.d("vortex","Drawing: "+l.getLabel());
+						//Log.d("vortex","Drawing: "+l.getLabel());
 					} 
 					//Log.d("nils","Settingdrawactive to false");
 					drawActive = false;

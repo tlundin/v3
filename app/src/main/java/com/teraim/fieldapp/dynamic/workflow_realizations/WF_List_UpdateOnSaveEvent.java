@@ -67,7 +67,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			ef.cfs = entryF;
 		}		
 		ef.varIDs.add(al.getVarName(r));
-		Log.d("vortex","added "+al.getVarName(r)+" to varIDs");
+		//Log.d("vortex","added "+al.getVarName(r)+" to varIDs");
 	}
 
 
@@ -115,7 +115,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		if (!mapmap.isEmpty())
 			createAsync(mapmap,displayOut,format,isVisible,showHistorical,initialValue);
 
-		return retVar;
+		return null;
 	}
 
 
@@ -148,7 +148,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			//Historical value will be set if the variable does not exist already. If it exists, the current value is used, even if it is null.
 
 			if (v!=null) {
-				//Log.d("nils","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
+				Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
 				mapmap.get(vs).cfs.addVariable(v, displayOut,format,isVisible,showHistorical);		
 			} else {
 				o.addRow("");

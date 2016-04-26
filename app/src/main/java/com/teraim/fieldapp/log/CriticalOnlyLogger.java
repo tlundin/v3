@@ -12,6 +12,7 @@ import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.ui.MenuActivity;
 
@@ -40,6 +41,10 @@ public class CriticalOnlyLogger implements LoggerI {
 	public void addRedText(String text) {
 		if (!hasRed) {
 			hasRed=true;
+			//Add a Last Executed Block marker.
+			//if (GlobalState.getInstance().getCurrentWorkflowContext()!=null) {
+			//	GlobalState.getInstance().getCurrentWorkflowContext().getTemplate().
+			//}
 			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}
 		s = new SpannableString("\n"+text);

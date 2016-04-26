@@ -106,8 +106,8 @@ public class DB_Context implements Serializable {
 								} 
 								
 								for (char c:val.toCharArray()) {
-									if(!Character.isLetterOrDigit(c)) {
-										err = "The literal "+val+"contains non alfabetic-nonnumeric characters. Did you forget braces? [ ] ";
+									if(!Character.isLetterOrDigit(c) && c!='-') {
+										err = "The literal "+val+" contains non alfabetic-nonnumeric characters. Did you forget braces? [ ] Full context is: "+cContext;
 										break;	
 									}
 								}
@@ -125,7 +125,7 @@ public class DB_Context implements Serializable {
 				o.addRedText(err);
 				return new DB_Context(err);
 			} else {
-				Log.d("vortex","CONTEXT CHANGE: "+keyHash);
+				Log.d("vortex","DB_CONTEXT evaluate returns: "+keyHash);
 				return new DB_Context(cContext,keyHash);
 			}
 		}

@@ -4,26 +4,26 @@
     api-level="21"
     density="xhdpi"
     format="7"
-    timestamp="4022370275924" >
+    timestamp="133596540328528" >
 
     <task
         name="javac"
-        duration="4912" />
+        duration="0" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="3769" />
+        duration="0" />
     <task
         name="verifier"
-        duration="1041" />
+        duration="0" />
 
     <artifact
         location="D:\Terje\Projects\Vortex\app\build\outputs\apk\app-debug.apk"
         type="MAIN" />
 
-    <build timestamp="4022370275924" >
+    <build timestamp="133596540328528" >
         <artifact
             location="D:\Terje\Projects\Vortex\app\build\outputs\apk\app-debug.apk"
             type="MAIN" />

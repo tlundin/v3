@@ -17,14 +17,15 @@ public class WF_OnlyWithValue_Filter extends WF_Filter implements Filter {
 
 	@Override
 	public List<? extends Listable> filter(List<? extends Listable> list) {
-		Log.d("nils","In only_with_value filter with "+list.size()+" elements");
+		Log.d("vortex","In only_with_value filter with "+list.size()+" elements");
 		Iterator<? extends Listable> it = list.iterator();
 		while(it.hasNext()) {
 			Listable l = it.next();
-			if(!l.hasValue()) 
+			if(!l.hasValue()) {
 				it.remove();
-				//Log.d("nils","filter removes element "+l.getKey()+" because its value is null");
-			
+				Log.d("vortex", "filter removes element " + l.getKey() + " because its value is null");
+			} else
+				Log.d("vortex", "Element " + l.getKey() + " has value ");
 		}
 		Log.d("nils","Exit only_with_value filter with "+list.size()+" elements");
 		return list;

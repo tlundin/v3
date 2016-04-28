@@ -463,7 +463,7 @@ public class Tools {
 			if (columnSelector[0].equalsIgnoreCase("@col")) {
 				Log.d("nils","found column selector");
 				//Column to select.
-				String dbColName = gs.getDb().getColumnName(columnSelector[1]);
+				String dbColName = gs.getDb().getDatabaseColumnName(columnSelector[1]);
 				if (dbColName!=null) {
 					Log.d("nils","Real Column name for "+columnSelector[1]+" is "+dbColName);
 					column = new String[1];

@@ -5,7 +5,7 @@ public class GisConstants {
 	public static final String MULTI_POINT = "Multipoint";
 	public static final String LINE_STRING = "Linestring";
 	public static final String POLYGON = "Polygon";
-	public static final String GlobalID = "globalid";
+	public static final String FixedGid = "FIXEDGID";
 	public static final String SKYDDSVART = "skyddsvärt";
 	public static final String TYPE_COLUMN = "gistyp";
 	public static final String Geo_Type = "geotype";

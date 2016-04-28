@@ -168,12 +168,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\icon_man.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frontpic.jpg",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\frontpic.jpg"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\header_cell_shape.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\header_cell_shape.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frontpic.jpg",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\frontpic.jpg"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\teraim_small.png",

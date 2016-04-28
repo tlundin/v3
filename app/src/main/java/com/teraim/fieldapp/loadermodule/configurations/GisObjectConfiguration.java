@@ -237,14 +237,14 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			reader.endObject();
 			//end row
 			reader.endObject();
-			String uuid = attributes.remove(GisConstants.GlobalID);
-			Log.d("vortex","UUID: "+uuid);
+			String uuid = attributes.remove(GisConstants.FixedGid);
+			Log.d("vortex","FixedGid: "+uuid);
 			String rutaId = attributes.remove(GisConstants.RutaID);
 
 
 			if (uuid!=null) {
 				uuid = uuid.replace("{","").replace("}","");
-				Log.d("vortex","UUID: "+uuid);
+				Log.d("vortex","FixedGid: "+uuid);
 				keyChain.put("uid", uuid);
 			}
 			else

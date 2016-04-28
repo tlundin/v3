@@ -89,10 +89,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		bundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = "Vortex";
-		appTxt.setText("Running application "+bundleName);
 		ph	 = new PersistenceHelper(mActivity.getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-		//appTxt.setText("Running application "+bundleName+" ["+oldV+"]");
+		appTxt.setText(bundleName+" "+oldV+"");
 		String logoUrl = server()+bundleName+"/logo.png";
 		Log.d("vortex",  logoUrl);
 		new DownloadImageTask((ImageView) view.findViewById(R.id.logo))
@@ -432,12 +431,12 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					gs.sendEvent(MenuActivity.INITDONE);
 					float newV = ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 					if (newV==-1)
-						appTxt.setText("Running "+bundleName+" [no version]"); 
+						appTxt.setText(bundleName+" [no version]");
 					else {
 						if (newV>oldV)
-							appTxt.setText("Running "+bundleName+" --New Version! ["+newV+"]");
+							appTxt.setText(bundleName+" --New Version! ["+newV+"]");
 						else
-							appTxt.setText("Running "+bundleName+" "+newV);
+							appTxt.setText(bundleName+" "+newV);
 					}
 					Start.singleton.changePage(wf,null);
 					Log.d("vortex","executing workflow main!");

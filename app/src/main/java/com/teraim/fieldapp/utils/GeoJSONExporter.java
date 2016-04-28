@@ -71,6 +71,7 @@ public class GeoJSONExporter extends Exporter {
 						continue;
 					}
 					uid = currentHash.get("uid");
+
 					/*
 					if (varC>0) {
 						if (!Tools.sameKeys(previousHash,currentHash)) {
@@ -102,8 +103,10 @@ public class GeoJSONExporter extends Exporter {
 						if (cp.getVariable()!=null) {
 							String name = cp.getVariable().name;
 							author  = cp.getVariable().creator;
+
 							if (name!=null) {
 								gisObjM.put(name, cp.getVariable().value);
+								gisObjM.put(name+"_ts",cp.getVariable().timeStamp);
 								varC++;
 							}
 							else {
@@ -181,8 +184,9 @@ public class GeoJSONExporter extends Exporter {
 						writer.name("properties");
 						writer.beginObject();	
 						//Add the UUID
-						write("GlobalID",key);
+						write(GisConstants.FixedGid,key);
 						write("author",author);
+						write("timestamp",cp.getVariable().timeStamp);
 						//write("author",cp.getKeyColumnValues().get("author"));
 						for (String mKey:gisObjM.keySet()) {
 							write(mKey,gisObjM.get(mKey));

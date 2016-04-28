@@ -337,7 +337,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 									if (startSp.getSelectedItemPosition()==startIHar&&myL==null) {									
 										new AlertDialog.Builder(LinjePortalTemplate.this.getActivity())
 										.setTitle("Din position är okänd!")
-										.setMessage("Eftersom GPSen ännu inte lyckats pricka in din position, s� kan du inte anv�nda det h�r alternativet")
+										.setMessage("Eftersom GPSen ännu inte hittat din position, så kan du inte använda det här alternativet")
 										.setPositiveButton("Jag förstår!", new DialogInterface.OnClickListener() {
 											public void onClick(DialogInterface dialog, int which) { 
 												// continue with delete
@@ -646,6 +646,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			meterEnEd.setText(end+"");
 		meterEnEd.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "200")});		
 		openInterVallPopup(Linjetyp.INTERVALL,"Avgränsning",intervallL);
+
 	}
 
 	Dialog complexD=null;
@@ -771,6 +772,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 						Log.d("nils","meter is now: "+meter);
 						jumpToWorkFlow(meter, metA!=null?metA.toString():null,linjeObjLabel,typ);
 					}
+
 				}
 
 			});
@@ -836,6 +838,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 				}
 			}
 		}
+
 	}
 
 

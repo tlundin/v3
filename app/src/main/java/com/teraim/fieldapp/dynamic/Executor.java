@@ -162,12 +162,13 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			brr = new BroadcastReceiver() {
 				@Override
 				public void onReceive(Context ctx, Intent intent) {
-					Log.d("nils","GETS HERE::::::");
+					Log.d("vortex","GETS HERE:::::: "+this.toString()+"  P: "+Executor.this.toString());
 					if (intent.getAction().equals(REDRAW_PAGE)) {
-
+						Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
 						myContext.registerEvent(new WF_Event_OnSave(Constants.SYNC_ID));
-						Log.d("nils","Redraw page received in Executor. Sending onSave event.");
-						gs.sendEvent(MenuActivity.REDRAW);
+
+						//Executor.this.restart();
+
 					} 
 					/*
 				else if (intent.getAction().equals(BluetoothConnectionService.BLUETOOTH_MESSAGE_RECEIVED)) {
@@ -198,7 +199,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 	@Override
 	public void onResume() {
-		Log.d("vortex","in Executor onResume");
+		Log.d("vortex","in Executor onResume "+this.toString());
 
 		gs = GlobalState.getInstance();
 		if (gs!=null) {
@@ -214,7 +215,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	@Override
 	public void onPause()
 	{
-		Log.d("Vortex", "onPause() for executor");
+		Log.d("Vortex", "onPause() for executor "+this.toString());
 		//Stop listening for bluetooth events.
 		if (brr!=null && gs!=null)
 			gs.getContext().unregisterReceiver(brr);
@@ -282,7 +283,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		Log.d("vortex","in Executor run()");
 		
 		myContext.resetState();
-		
+		varCache.flushQueue();
 		DB_Context wfHash = DB_Context.evaluate(wf.getContext());
 		//TODO: Erase below if.
 		if (!wfHash.equals(gs.getVariableCache().getContext())) {

@@ -168,6 +168,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 
 	private void refreshList() {
 		Log.d("nils","In refereshlist..");
+		GlobalState.getInstance().getVariableCache().flushQueue();
 		list.clear();
 		linjeV.removeAllMarkers();
 		List<String[]> rows = gs.getDb().getValues(columnNames,s);

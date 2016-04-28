@@ -1,37 +1,25 @@
 package com.teraim.fieldapp;
 
-import java.lang.reflect.Field;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
 
-import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.templates.LinjePortalTemplate;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Workflow;
@@ -43,17 +31,12 @@ import com.teraim.fieldapp.log.CriticalOnlyLogger;
 import com.teraim.fieldapp.log.DummyLogger;
 import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.synchronization.SyncEntry;
-import com.teraim.fieldapp.synchronization.SyncStatus;
-import com.teraim.fieldapp.synchronization.SyncStatusListener;
-import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
-import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
-import com.teraim.fieldapp.utils.Tools;
+
+import java.lang.reflect.Field;
 
 
 
@@ -64,7 +47,7 @@ import com.teraim.fieldapp.utils.Tools;
 public class Start extends MenuActivity {
 
 	public static boolean alive = false;
-	
+
 	//	private Map<String,List<String>> menuStructure;
 
 	//	private ArrayList<String> rutItems;
@@ -91,34 +74,34 @@ public class Start extends MenuActivity {
 
 	private ContentResolver mResolver;
 
-	
-	
+
+
 
 	/**
 	 * Program entry point
-	 * 
+	 *
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		Log.d("nils","in START onCreate");
 		singleton = this;
 		//This is the frame for all pages, defining the Action bar and Navigation menu.
 		setContentView(R.layout.naviframe);
 		//This combats an issue on the target panasonic platform having to do with http reading.
-		System.setProperty("http.keepAlive", "false"); 
+		System.setProperty("http.keepAlive", "false");
 		mDrawerMenu = new DrawerMenu(this);
 		mDrawerToggle = mDrawerMenu.getDrawerToggle();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		
+
 		  // Create a Sync account
        // mAccount = CreateSyncAccount(this);
-	  	
+
 		//Determine if program should start or first reload its configuration.
 		if (!loading)
 			checkStatics();
-		
+
 		 try {
 		        ViewConfiguration config = ViewConfiguration.get(this);
 		        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
@@ -138,10 +121,10 @@ public class Start extends MenuActivity {
 		//Check if program is already up.
 		if (!loading)
 			checkStatics();
-		else 
+		else
 			loading = false;
-		 
-		
+
+
 		super.onResume();
 
 	}
@@ -151,34 +134,34 @@ public class Start extends MenuActivity {
 		Log.d("nils","In START onStart");
 		if(GlobalState.getInstance()!=null)
 			GlobalState.getInstance().onStart();
-		super.onStart();	
+		super.onStart();
 	}
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 */
 	private void checkStatics() {
 		if (GlobalState.getInstance()==null) {
 			loading = true;
 			Log.d("vortex","Globalstate null...need to reload");
 			//Create a global logger.
-			
-			
+
+
 			//Start the login fragment.
 			android.app.FragmentManager fm = getFragmentManager();
-			for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {    
+			for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
 			    fm.popBackStack();
 			}
 			loginFragment = new LoginConsoleFragment();
-			
+
 			fm.beginTransaction()
 				.replace(R.id.content_frame, loginFragment)
 				.commit();
-			
+
 		} else {
 			Log.d("vortex","Globalstate is not null!");
-			
+
 		}
 	}
 
@@ -200,7 +183,7 @@ public class Start extends MenuActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Pass event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
-		if (mDrawerToggle.onOptionsItemSelected(item)) 
+		if (mDrawerToggle.onOptionsItemSelected(item))
 			return true;
 
 		// Handle other action bar items
@@ -221,6 +204,9 @@ public class Start extends MenuActivity {
 		getActionBar().setTitle(title);
 	}
 
+
+	Fragment emptyFragmentToExecute = null ;
+
 	//execute workflow.
 	public void changePage(Workflow wf, String statusVar) {
 		if (wf==null) {
@@ -231,16 +217,16 @@ public class Start extends MenuActivity {
 		GlobalState gs = GlobalState.getInstance();
 		String label = wf.getLabel();
 		String template = wf.getTemplate();
-		
+
 		//Set context.
 		Log.d("vortex","CHANGING PAGE TO: xxxxxxxx ["+wf.getName()+"]");
 		DB_Context cHash = DB_Context.evaluate(wf.getContext());
-		
+
 		//if Ok err is null.
 		if (cHash.isOk()) {
-			
+
 			gs.setDBContext(cHash);
-			
+
 			debugLogger.addRow("Context now [");
 			debugLogger.addGreenText(cHash.toString());
 			debugLogger.addText("]");
@@ -253,47 +239,53 @@ public class Start extends MenuActivity {
 			Bundle args = new Bundle();
 			args.putString("workflow_name", wf.getName());
 			args.putString("status_variable", statusVar);
-			
+
 			if (template==null) {
-				fragmentToExecute = wf.createFragment("EmptyTemplate");
-				fragmentToExecute.setArguments(args);
+				emptyFragmentToExecute = wf.createFragment("EmptyTemplate");
+				emptyFragmentToExecute.setArguments(args);
 				FragmentTransaction ft = getFragmentManager()
 						.beginTransaction();
 				//Log.i("vortex", "Adding fragment");
 				//ft.add(R.id.lowerContainer, fragment, "AddedFragment");
 
-				ft.add(fragmentToExecute,"EmptyTemplate");
+				ft.add(emptyFragmentToExecute,"EmptyTemplate");
 				Log.i("vortex", "Committing Empty transaction");
 				ft.commitAllowingStateLoss();
 				Log.i("vortex", "Committed transaction");
-			} else {				
+			} else {
 				fragmentToExecute = wf.createFragment(template);
 				fragmentToExecute.setArguments(args);
 				changePage(fragmentToExecute,label);
 			}
 			//show error message.
-		} else 
+		} else
 			showErrorMsg(cHash);
 	}
 	public void changePage(Fragment newPage, String label) {
 		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
+		FragmentTransaction ft = fragmentManager.beginTransaction();
+
+		ft
 		.replace(R.id.content_frame, newPage)
 		.addToBackStack(null)
 		.commit();
 		setTitle(label);
-
+		//If previous was an empty fragment, clean it
+	if (emptyFragmentToExecute!=null) {
+		Log.d("vortex","removing empty fragment");
+		ft.remove(emptyFragmentToExecute);
+		emptyFragmentToExecute=null;
+	}
 		//mDrawerLayout.closeDrawer(mDrawerList);
 
 	}
-
 
 	/******************************
 	 * Network?
 	 */
 
 	public boolean isNetworkAvailable() {
-		ConnectivityManager connectivityManager 
+		ConnectivityManager connectivityManager
 		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
@@ -324,9 +316,9 @@ public class Start extends MenuActivity {
 			histT.cancel(true);
 		}
 		if (GlobalState.getInstance()!=null) {
-			
+
 			GlobalState.getInstance().getDb().closeDatabaseBeforeExit();
-			
+
 			GlobalState.destroy();
 		}
 
@@ -362,12 +354,12 @@ public class Start extends MenuActivity {
 								GlobalState.getInstance().setCurrentWorkflowContext(null);
 							}})
 							.setNegativeButton(R.string.cancel,new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) { 
+								public void onClick(DialogInterface dialog, int which) {
 
 								}})
 								.setCancelable(false)
 								.setIcon(android.R.drawable.ic_dialog_alert)
-								.show();					
+								.show();
 					} else {
 						if (map)
 							wfCtx.mapLayer--;
@@ -375,7 +367,7 @@ public class Start extends MenuActivity {
 					}
 				}
 			}
-			
+
 			if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof LinjePortalTemplate) {
 				final LinjePortalTemplate lp = (LinjePortalTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
 				if (lp.isRunning()) {
@@ -386,12 +378,12 @@ public class Start extends MenuActivity {
 							getFragmentManager().popBackStackImmediate();
 						}})
 						.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) { 
+							public void onClick(DialogInterface dialog, int which) {
 
 							}})
 							.setCancelable(false)
 							.setIcon(android.R.drawable.ic_dialog_alert)
-							.show();								
+							.show();
 				}
 			}
 			setTitle("");
@@ -406,18 +398,18 @@ public class Start extends MenuActivity {
 			String dialogText = "Faulty or incomplete context\nError: "+context.toString();
 			new AlertDialog.Builder(this)
 			.setTitle("Context problem")
-			.setMessage(dialogText) 
+			.setMessage(dialogText)
 			.setIcon(android.R.drawable.ic_dialog_alert)
 			.setCancelable(false)
-			.setNeutralButton("Ok",new Dialog.OnClickListener() {				
+			.setNeutralButton("Ok",new Dialog.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					
+
 
 				}
 			} )
 			.show();
-		
+
 	}
 
 
@@ -442,7 +434,7 @@ public class Start extends MenuActivity {
 				debugLogger = new CriticalOnlyLogger(this);
 				Log.d("vortex","critical only");
 			}
-			
+
 		}
 		return debugLogger;
 	}
@@ -467,8 +459,8 @@ public class Start extends MenuActivity {
         }
     }
     */
-    
-  
+
+
 
 
 }

@@ -270,6 +270,8 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 								GlobalState.getInstance().getPreferences().put(PersistenceHelper.PARTNER_NAME, sp.getPartner());	
 								nameErr=false;
 							}
+							//Set the name in Global State.
+							GlobalState.getInstance().setMyPartner(sp.getPartner());
 							startDataTransfer();
 						}});
 					

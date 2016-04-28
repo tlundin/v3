@@ -301,7 +301,7 @@ public class Variable implements Serializable {
 
 
 	public Variable(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted, String historicalValue) {
-		Log.d("nils","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nthis obj: "+this);
+		//Log.d("nils","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nthis obj: "+this);
 		this.gs=gs;
 		al=gs.getVariableConfiguration();
 		this.name = name;
@@ -322,7 +322,7 @@ public class Variable implements Serializable {
 		mySelection = myDb.createSelection(keyChain,name);
 		myLabel = label;
 		realValueColumnName = valueColumn;
-		myValueColumn[0]=myDb.getColumnName(valueColumn);
+		myValueColumn[0]=myDb.getDatabaseColumnName(valueColumn);
 		//Log.d("nils","myValueColumn: "+myValueColumn[0]);
 		myValue = null;
 		
@@ -355,11 +355,11 @@ public class Variable implements Serializable {
 		} 
 			
 		if (keyChain!=null && keyChain.containsKey(valueColumn)) {
-			Log.e("nils","Variable value column in keyset for valcol "+valueColumn+" varid "+name);
+			Log.e("vortex","Variable value column in keyset for valcol "+valueColumn+" varid "+name);
 			isKeyVariable=true;
 		}
 		
-		
+		Log.d("vortex","unknown? "+unknown);
 	}
 
 	
@@ -376,21 +376,7 @@ public class Variable implements Serializable {
 		return ret;
 	}
 
-	private void setDefault(String defaultValue) {
-		Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
-		if (defaultValue == null) {
 
-			myDefaultValue = null;
-		}
-		else if (defaultValue.equals(Constants.HISTORICAL_TOKEN_IN_XML)) {
-			
-			myDefaultValue = this.getHistoricalValue();
-			Log.d("vortex","Setting default from historical: "+myDefaultValue+" for "+this.getId());
-		}
-		else {
-			myDefaultValue = defaultValue.equals(Constants.NO_DEFAULT_VALUE)?null:defaultValue;
-		}
-	}
 	
 	public void deleteValue() {
 		myDb.deleteVariable(name,mySelection,isSynchronized);
@@ -595,7 +581,21 @@ public class Variable implements Serializable {
 	}
 
 
+	private void setDefault(String defaultValue) {
+		Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
+		if (defaultValue == null) {
 
+			myDefaultValue = null;
+		}
+		else if (defaultValue.equals(Constants.HISTORICAL_TOKEN_IN_XML)) {
+
+			myDefaultValue = this.getHistoricalValue();
+			Log.d("vortex","Setting default from historical: "+myDefaultValue+" for "+this.getId());
+		}
+		else {
+			myDefaultValue = defaultValue.equals(Constants.NO_DEFAULT_VALUE)?null:defaultValue;
+		}
+	}
 	
 
 	

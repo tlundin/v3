@@ -1,18 +1,5 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -21,6 +8,19 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.DbHelper.TmpVal;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 
@@ -49,6 +49,17 @@ public class VariableCache {
 
 	public void reset() {
 
+		//newcache.clear();
+		int i=0;
+		Collection<Map<String, Variable>> allEntries = newcache.values();
+		for (Map<String, Variable> entry:allEntries) {
+			Collection<Variable> variables = entry.values();
+			for (Variable v:variables) {
+				v.invalidate();
+				i++;
+			}
+		}
+		Log.d("vortex","RESET: INVALIDATED "+i+" variables");
 		newcache.clear();
 		globalCache = this.createOrGetCache(null);
 		currentCache = globalCache;
@@ -64,6 +75,9 @@ public class VariableCache {
 					flushQueue();
 			}
 		}, 0, 5, TimeUnit.SECONDS);
+
+		if (!dbQueue.isEmpty())
+			flushQueue();
 
 	}
 
@@ -246,7 +260,7 @@ public class VariableCache {
 	public Variable getVariable(Map<String,String> hash, Map <String,Variable> cache, String varId,String defaultValue, Boolean hasValueInDB) {
 		Log.d("nils","in CACHE GetVariable for "+varId);
 		long t0=System.currentTimeMillis();
-
+	Log.d("vortex","cache is "+cache);
 		Variable variable = cache.get(varId.toLowerCase());
 		if (variable==null) {
 			//check if variable has subset of keypairs
@@ -412,6 +426,48 @@ public class VariableCache {
 		Log.d("vortex","No cache exists for"+keyChain);
 		return null;
 
+	}
+
+	public void insert(String name, Map<String, String> keyHash, String newValue) {
+		Log.d("vortex","In insert with "+keyHash.toString());
+		Map<String, Variable> vars = newcache.get(keyHash);
+		if (vars!=null) {
+			Log.d("vortex","finding "+name);
+			Variable var = vars.get(name.toLowerCase());
+			if (var!=null) {
+				Log.d("vortex","replacing value "+var.getValue()+"with "+newValue);
+				var.setValue(newValue);
+			} else {
+				Log.e("vortex","did not find variable "+name+" in cache");
+				getCheckedVariable(keyHash,name, newValue, true);
+				Log.d("vortex","varids contained: ");
+				for(Variable v: vars.values()) {
+					Log.d("vortex",v.getId());
+				}
+				Log.d("vortex","keys contained: ");
+				for (String k:vars.keySet()) {
+					Log.d("vortex",k);
+				}
+			}
+		} else
+			Log.d("vortex","not found!");
+
+	}
+
+	public void delete(String name, Map<String, String> keyHash) {
+		Log.d("vortex","In delete with "+keyHash.toString());
+		Map<String, Variable> vars = newcache.get(keyHash);
+		if (vars!=null) {
+			Log.d("vortex","finding "+name);
+			Variable var = vars.get(name.toLowerCase());
+			if (var!=null) {
+				Log.d("vortex","removing variable "+name);
+				vars.remove(var);
+			} else {
+				Log.d("vortex","did not find variable "+name+" in cache");
+			}
+		} else
+			Log.d("vortex","not found!");
 	}
 
 	private class KeyException extends java.lang.Exception {

@@ -28,9 +28,10 @@ public class WF_ClickableField_Selection_OnSave extends WF_ClickableField_Select
 			Log.d("nils","Discarded...from me");
 	}
 
-
-	
-
+	@Override
+	public String getName() {
+		return "CLICKABLE "+this.getId();
+	}
 
 
 }

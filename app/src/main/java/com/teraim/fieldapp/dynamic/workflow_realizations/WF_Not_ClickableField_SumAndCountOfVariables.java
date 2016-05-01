@@ -17,7 +17,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
-public class WF_Not_ClickableField_SumAndCountOfVariables extends
+	public class WF_Not_ClickableField_SumAndCountOfVariables extends
 WF_Not_ClickableField implements EventListener {
 
 	private WF_Static_List targetList;
@@ -95,7 +95,12 @@ WF_Not_ClickableField implements EventListener {
 
 	}
 
-	public void matchAndRecalculateMe() {
+		@Override
+		public String getName() {
+			return "SUM_AND_COUNT "+this.getId();
+		}
+
+		public void matchAndRecalculateMe() {
 		String variablesWithNoValue = "[";
 		Long sum=Long.valueOf(0);
 		if (targetList==null) 

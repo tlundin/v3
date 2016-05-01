@@ -493,28 +493,28 @@ public class DbHelper extends SQLiteOpenHelper {
             String selA = "";
             for (String ss : s.selectionArgs)
                 selA += ss + ",";
-            Log.d("vortex", "SelectionArgs: " + selA);
+            //Log.d("vortex", "SelectionArgs: " + selA);
             String zel[] = selection.split("=");
             for (int ii = 0; ii < s.selectionArgs.length; ii++) {
                 String z = zel[ii];
-                Log.d("vortex", "z is now " + z);
+                //Log.d("vortex", "z is now " + z);
                 int iz = z.indexOf("L");
                 if (iz == -1) {
                     if (!z.isEmpty()) {
                         int li = z.lastIndexOf(" ");
                         String last = z.substring(li + 1, z.length());
-                        if (li != -1)
-                            Log.e("vortex", "var is " + last);
+                    //    if (li != -1)
+                    //        Log.e("vortex", "var is " + last);
                         realColNames[ii] = last;
 
                     }
-                    Log.d("vortex", "Found column: " + z);
-                    Log.d("vortex", "real name: " + z);
+                    //Log.d("vortex", "Found column: " + z);
+                    //Log.d("vortex", "real name: " + z);
 
                 } else {
                     String col = z.substring(iz, z.length());
-                    Log.d("vortex", "Found column: " + col);
-                    Log.d("vortex", "real name: " + dbColumnNameToReal.get(col));
+//                    Log.d("vortex", "Found column: " + col);
+//                    Log.d("vortex", "real name: " + dbColumnNameToReal.get(col));
                     realColNames[ii] = dbColumnNameToReal.get(col);
 
                 }
@@ -529,12 +529,12 @@ public class DbHelper extends SQLiteOpenHelper {
         if (dd != null) {
             storeAuditEntry("D", dd, varName);
         }
-        Log.e("nils", "INSERT Delete audit entry. Args:  " + dd);
+        Log.d("vortex", "INSERT Delete audit entry. Args:  " + dd);
     }
 
     public void insertEraseAuditEntry(String keyPairs, String pattern) {
         storeAuditEntry("M", keyPairs, pattern);
-        Log.d("nils", "inserted Erase Many with: " + keyPairs + " and pattern " + pattern);
+        Log.d("vortex", "inserted Erase Many with: " + keyPairs + " and pattern " + pattern);
 
     }
 
@@ -1108,6 +1108,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Log.d("sync","LOCK!");
         db.beginTransaction();
         String name = null;
+        boolean resetCache=false;
 
         synC = 0;
         if (ses.length == 0) {
@@ -1355,11 +1356,12 @@ public class DbHelper extends SQLiteOpenHelper {
                     if (keyPairs != null) {
                         Log.d("sync", "Got Erase Many sync message with keyPairs: " + keyPairs);
                         int affectedRows = this.erase(keyPairs, pattern);
+                        resetCache=true;
                         //Invalidate Cache...purposeless to invalidate only part.
                         o.addRow("");
                         o.addGreenText("DB_ERASE message executed in sync");
                         changes.deletes += affectedRows;
-                        vc.reset();
+
                     } else {
                         o.addRow("");
                         o.addRedText("DB_ERASE Failed. Message corrupt");
@@ -1391,6 +1393,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
             o.addRedText("Please check in one of your devices and correct. Then, resynchronise!");
         }
+        if (resetCache)
+            vc.reset();
         return changes;
     }
 
@@ -1469,7 +1473,7 @@ public class DbHelper extends SQLiteOpenHelper {
             return 0;
         }
 
-        Log.d("vortex", "In erase with keyPairs: " + keyPairs);
+        Log.d("vortex", "In erase with keyPairs: " + keyPairs+" and pattern "+pattern);
 
         //map keypairs. Create delete statement.
         StringBuilder delStmt = new StringBuilder("");
@@ -1510,7 +1514,6 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d("vortex", "Delete statement is now " + delStmt);
         Log.d("vortex", "VALUES:");
         Log.d("vortex", print(valuesA));
-
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         Log.d("vortex", "Deleted rows count: " + affected);
         //Invalidate affected cache variables
@@ -1839,15 +1842,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (tmp.values() != null)
             Log.d("vortex", "Tmpval has " + tmp.values().size() + " members");
-	/*
-			if (histC>0) {
+
+
 					for (String v:tmp.keySet()) {
 						TmpVal tv = tmp.get(v);
-						Log.e("vortex","VAR: "+v+" NORM: "+tv.norm+" HIST: "+tv.hist);
+						Log.e("vortex","VAR: "+v+" NORM: "+tv.norm);
 					}
-				}
-			}
-	*/
+
+
+
 
         return tmp;
 

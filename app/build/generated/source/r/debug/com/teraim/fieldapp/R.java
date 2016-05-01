@@ -427,21 +427,22 @@ public final class R {
         public static final int ok=0x7f090021;
         public static final int reference=0x7f090022;
         public static final int resetSyncButton=0x7f090023;
-        public static final int restart=0x7f090024;
-        public static final int restartMessage=0x7f090025;
-        public static final int s_summary=0x7f090026;
-        public static final int save=0x7f090027;
-        public static final int settings=0x7f090028;
-        public static final int show_author_s=0x7f090029;
-        public static final int show_author_t=0x7f09002a;
-        public static final int title_activity_nils=0x7f09002b;
-        public static final int title_find_area=0x7f09002c;
-        public static final int title_select_ruta=0x7f09002d;
-        public static final int title_select_yta=0x7f09002e;
-        public static final int title_take_picture=0x7f09002f;
-        public static final int u1=0x7f090030;
-        public static final int u2=0x7f090031;
-        public static final int yes=0x7f090032;
+        public static final int reset_sync_d=0x7f090024;
+        public static final int restart=0x7f090025;
+        public static final int restartMessage=0x7f090026;
+        public static final int s_summary=0x7f090027;
+        public static final int save=0x7f090028;
+        public static final int settings=0x7f090029;
+        public static final int show_author_s=0x7f09002a;
+        public static final int show_author_t=0x7f09002b;
+        public static final int title_activity_nils=0x7f09002c;
+        public static final int title_find_area=0x7f09002d;
+        public static final int title_select_ruta=0x7f09002e;
+        public static final int title_select_yta=0x7f09002f;
+        public static final int title_take_picture=0x7f090030;
+        public static final int u1=0x7f090031;
+        public static final int u2=0x7f090032;
+        public static final int yes=0x7f090033;
     }
     public static final class style {
         public static final int AppTheme=0x7f0a0000;

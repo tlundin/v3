@@ -240,7 +240,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			if (statusVariable !=null) {
 				myContext.setStatusVariable(b.getString("status_variable"));
 				//Add onSaveListener for the statusvariable. Change to "1" when first value saved.
-				//Log.e("vortex","Added onsave listener for "+b.getString("status_variable"));
+				Log.e("vortex","Added onsave listener for "+b.getString("status_variable"));
 				myContext.addEventListener(new EventListener() {
 					@Override
 					public void onEvent(Event e) {
@@ -255,6 +255,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						} else
 							Log.e("vortex","TURKEY");
 						myContext.removeEventListener(this);
+					}
+
+					@Override
+					public String getName() {
+						return "TURKEY";
 					}
 				}, EventType.onSave);
 			}
@@ -291,7 +296,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			gs.setDBContext(wfHash);	
 		}
 
-		myContext.setHash(wfHash);		
+		myContext.setHash(wfHash);
+		getFlow();
+		myContext.setWorkflow(wf);
 		//Need to write down all variables in wf context keyhash.
 		List<String> contextVars=null;
 		if (wf.getContext()!=null) {
@@ -558,6 +565,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 								} else
 									o.addRow("Discarded onSave Event from myself in SetValueBlock "+bl.getBlockId());
 							}
+
+							@Override
+							public String getName() {
+								return "SETVALUE BLOCK "+bl.getBlockId();
+							}
 						};
 						Log.d("nils","Adding eventlistener for the setvalue block");
 						myContext.addEventListener(tiva, EventType.onSave);	
@@ -645,6 +657,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 								}
 
+							}
+
+							@Override
+							public String getName() {
+								return "ConditionalContinuation BLOCK "+bl.getBlockId();
 							}
 						};		
 						Log.d("nils","Adding eventlistener for the conditional block");

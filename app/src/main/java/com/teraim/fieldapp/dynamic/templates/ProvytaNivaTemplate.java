@@ -329,7 +329,8 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 			map.put("delyta", id+"");
 			gs.setDBContext(new DB_Context(null,map));
 			delyteKnappar[id].create(myContext);	
-			dys.add(id);			
+			if(dys.add(id))
+				Log.e("vortex","KALLABALLA");
 		}
 		smayteKnapp.create(myContext);
 		
@@ -373,6 +374,10 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PROVYTANIVA ";
+	}
 
 
 	@Override

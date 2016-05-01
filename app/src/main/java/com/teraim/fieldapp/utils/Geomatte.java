@@ -250,7 +250,7 @@ public class Geomatte {
 		y = Math.round(y * 1000.0) / 1000.0;
 		x = Math.round(x * 1000.0) / 1000.0;
 
-		Log.d("NILS"," lat long (x,y): "+x+" "+y);
+		//Log.d("NILS"," lat long (x,y): "+x+" "+y);
 		return new SweLocation(x,y);
 	}
 

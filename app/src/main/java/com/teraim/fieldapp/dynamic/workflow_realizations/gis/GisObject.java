@@ -89,7 +89,7 @@ public class GisObject {
 	public String getLabel() {
 		if (label!=null)
 			return label;
-		Log.d("vortex","In getLabel gisobject..analyzing: "+label);
+		//Log.d("vortex","In getLabel gisobject..analyzing: "+label);
 		label = Expressor.analyze(foc.getLabelExpression(),keyChain);
 		//@notation for id
 		if (label!=null && label.startsWith("@")) {

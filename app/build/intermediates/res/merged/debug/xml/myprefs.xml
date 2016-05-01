@@ -81,12 +81,15 @@
             android:entryValues="@array/log_level_values"
             android:key="log_levels"
             android:title="@string/LogLevels" />
-          <CheckBoxPreference
+        <CheckBoxPreference
             android:defaultValue="false"
             android:key="show_author"
             android:summary="@string/show_author_s"
             android:title="@string/show_author_t" />
-        
+        <Preference
+            android:title="@string/resetSyncButton"
+            android:key="reset_sync"
+            android:summary="@string/reset_sync_d"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

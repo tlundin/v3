@@ -212,13 +212,10 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 	}
 
-
-
-
-
-
-
-
+	@Override
+	public String getName() {
+		return "LIST UPDATEONSAVE "+this.getId();
+	}
 
 
 }

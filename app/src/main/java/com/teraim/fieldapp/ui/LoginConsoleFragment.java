@@ -91,7 +91,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			bundleName = "Vortex";
 		ph	 = new PersistenceHelper(mActivity.getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-		appTxt.setText(bundleName+" "+oldV+"");
+		if (oldV==-1)
+		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));
 		String logoUrl = server()+bundleName+"/logo.png";
 		Log.d("vortex",  logoUrl);
 		new DownloadImageTask((ImageView) view.findViewById(R.id.logo))

@@ -75,7 +75,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 				Variable v = eset.getKey();
 				String oldValue = eset.getValue();
 				String[] sel = v.getSelection().selectionArgs;
-				Log.d("nils","Variable has selector Args"+sel.toString());
+				Log.d("nils","Variable has selector Args "+sel);
 				for (int i=0;i<sel.length;i++)
 					Log.d("nils",sel[i]);
 				Log.d("nils","VALUE: "+v.getValue());
@@ -97,6 +97,9 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 						Log.d("nils","Name is"+name);
 						v.getKeyChain().remove("value");
 
+						//Try to delete this key from cache.
+						varCache.deleteCacheEntry(v.getKeyChain());
+
 						Set<Entry<String, String>> xx = v.getKeyChain().entrySet();
 						for (Entry<String, String> ee:xx) 
 							Log.d("nils","key, value: "+ee.getKey()+","+ee.getValue());
@@ -114,13 +117,13 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 								Log.d("nils","reinserting variables with new key.");
 								v.getKeyChain().put("meter", v.getValue());
 								Log.d("nils","meter set to "+v.getValue());
-								//gs.setKeyHash(v.getKeyChain());
+
 								//Delete any existing values on same meter.
-								deleteAllDependants(rows);
+								//deleteAllDependants(rows);
 								Set<Entry<String, String>> es = deletedVariables.entrySet();
 								Variable var;
 								for (Entry<String, String> en:es) {
-									var = varCache.getVariable(en.getKey());
+									var = varCache.getVariable(v.getKeyChain(),en.getKey());
 									if (var!=null) {
 										if (var.getValue()!=null) 
 											Log.e("nils","This variable already has a value...should not happen!");
@@ -142,6 +145,10 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 		myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 	}
 
+	@Override
+	public String getName() {
+		return "LINJE METER LIST "+this.getId();
+	}
 
 
 	private Map<String, String> deleteAllDependants(List<List<String>> rows) {

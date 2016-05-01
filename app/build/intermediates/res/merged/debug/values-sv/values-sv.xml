@@ -81,6 +81,7 @@
     <string name="ok">OK</string>
     <string name="reference">Referens</string>
     <string name="resetSyncButton">Nollställ synk</string>
+    <string name="reset_sync_d">Nollställer synk eller raderar synkdata </string>
     <string name="restart">Omstart</string>
     <string name="restartMessage">Du måste starta om för att ändringen ska gälla. Starta om?</string>
     <string name="s_summary">Enheten laddar sin konfiguration härifrån</string>

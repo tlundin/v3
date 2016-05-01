@@ -188,7 +188,7 @@ public class Variable implements Serializable {
 			return false;
 		}
 			
-		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode());	
+		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext());
 		value = Tools.removeStartingZeroes(value);
 		myValue = value;
 		//Remove any .xx if numeric or list
@@ -243,8 +243,8 @@ public class Variable implements Serializable {
 		long mil = System.currentTimeMillis();
 		//Insert into database at some point in time.
 		this.isSynchronizedNext= isSynchronized;
-		gs.getVariableCache().save(this);
-		
+		//gs.getVariableCache().save(this);
+		myDb.insertVariable(Variable.this,value,isSynchronized);
 		timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 
 		/*threadPool.execute( new Thread(new Runnable() {
@@ -364,20 +364,7 @@ public class Variable implements Serializable {
 
 	
 
-	private String printKeyChain(Map<String, String> kc) {
-		if (kc==null)
-			return "empty";
-		String ret="";
-		for (String key:kc.keySet()) {
-			if (key!=null) 
-				ret+="{"+key+" = "+kc.get(key)+"}\n";
-			
-		}
-		return ret;
-	}
 
-
-	
 	public void deleteValue() {
 		myDb.deleteVariable(name,mySelection,isSynchronized);
 		myValue=null;
@@ -406,19 +393,7 @@ public class Variable implements Serializable {
 		//Log.d("vortex","My keychain is: "+this.getKeyChain().toString());
 
 	}
-/*
-	public void invalidateKey() {
-		if (keyChain==null)
-			return;
-		keyChain = gs.getCurrentKeyHash();
-		mySelection = myDb.createSelection(keyChain, name);
-		//Log.d("nils","calling invalidate keyhash on "+this.getId());
-		if(this.getType()!=DataType.auto_increment) 
-			unknown=true;
-		
 
-	}
-*/
 	public boolean isKeyVariable() {
 		return isKeyVariable;
 	}

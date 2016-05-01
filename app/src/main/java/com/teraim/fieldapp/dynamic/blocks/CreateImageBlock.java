@@ -31,7 +31,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
  * @author Terje
  *
  */
-public class CreateImageBlock extends Block implements EventListener {
+	public class CreateImageBlock extends Block implements EventListener {
 
 	/**
 	 * 
@@ -158,5 +158,10 @@ public class CreateImageBlock extends Block implements EventListener {
 	public void onEvent(Event e) {
 		Log.d("vortex","Img was taken");
 		setImageFromFile(myContext);
+	}
+
+	@Override
+	public String getName() {
+		return "CREATE IMAGE BLOCK ";
 	}
 }

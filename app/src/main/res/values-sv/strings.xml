@@ -54,4 +54,5 @@
 	<string name="Automatic_backup_s">Slå på eller av säkerthetskopiering</string>
 	<string name="show_author_s">Visa vem som gjort en inmatning</string>
 	<string name="show_author_t">Visa inmatare</string>
+	<string name="reset_sync_d">Nollställer synk eller raderar synkdata </string>
 </resources>

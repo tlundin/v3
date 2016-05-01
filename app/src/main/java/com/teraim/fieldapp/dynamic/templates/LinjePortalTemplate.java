@@ -42,6 +42,7 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
@@ -427,7 +428,12 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 				if (stratum !=null && linjeObjLabel.equals(NamedVariables.RENSTIG)&&
 						!stratum.equals("10"))
 					continue;
+
+				/*TODO: Add lamps to buttons.*/
+
 				b = new Button(this.getActivity());
+				//new ButtonBlock("_"+linjeObjLabel,linjeObjLabel,"Start_Workflow",linjeObjLabel,"Field_List_panel_1",NamedVariables.WF_FOTO,"action", NamedVariables.STATUS_FOTO,true,null,null,true,xContext,false);
+
 				LayoutParams params = new LayoutParams();
 				params.width = LayoutParams.MATCH_PARENT;
 				params.height = LayoutParams.WRAP_CONTENT;
@@ -686,7 +692,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 					});
 					buttonArray.add(b);
 				}
-				//Skapa en knapp f�r fallet nytt objekt.
+				//Skapa en knapp för fallet nytt objekt.
 				Button b = new Button(this.getActivity());
 				b.setText("Skapa nytt objekt på annat metertal");
 				b.setOnClickListener(new OnClickListener() {					
@@ -783,7 +789,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			});	
 		}
 		complexD = alert.setView(myView).create();
-		complexD.setCancelable(false);
+		complexD.setCancelable(true);
 		complexD.show();
 
 	}
@@ -809,7 +815,8 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 				v.setValue(avgrValueA[avgrSp.getSelectedItemPosition()]);
 			}
 
-			Variable v = varCache.getVariable(key, NamedVariables.LINJEOBJEKT);
+//		xx	Variable v = varCache.getVariable(key, NamedVariables.LINJEOBJEKT);
+			Variable v = new Variable(NamedVariables.LINJEOBJEKT,"Linjeobjekt",al.getCompleteVariableDefinition(NamedVariables.LINJEOBJEKT),key,gs,"value",null,null,null);
 			//Variable v = al.getVariableInstance();
 
 			if (v.setValue(linjeObjLabel)) {
@@ -871,6 +878,11 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 			}
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "LINJEPORTAL";
 	}
 
 	public boolean isRunning() {

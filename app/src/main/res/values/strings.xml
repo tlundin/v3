@@ -54,7 +54,7 @@
 	<string name="Automatic_backup_s">Automatically backup database at regular intervals</string>	
 	<string name="show_author_s">Show in entryfields who made last update</string>
 	<string name="show_author_t">Show Author</string>
-	
-	
-	
+	<string name="reset_sync_d">Resets sync or erases sync data </string>
+
+
 </resources>

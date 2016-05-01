@@ -183,6 +183,10 @@ public class RoundChartBlock extends Block implements EventListener {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "ROUND CHART ";
+	}
 
 
 }

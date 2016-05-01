@@ -16,7 +16,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
-public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
+	public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
 
 	//Create variables for each instance of variables in <rows> that matches key with variable column <variatorColumn>
 
@@ -328,13 +328,10 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 		myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 	}
 
+		@Override
+		public String getName() {
+			return "INSTANCE_LIST "+this.getId();
+		}
 
 
-
-
-
-
-
-
-
-}
+	}

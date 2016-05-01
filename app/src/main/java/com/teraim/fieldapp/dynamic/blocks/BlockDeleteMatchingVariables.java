@@ -31,6 +31,7 @@ public class BlockDeleteMatchingVariables extends Block {
 		if (context !=null)
 			contextE = preCompileExpression(context);
 		System.err.println("Bananas: "+((contextE == null)?"null":contextE.toString()));
+		//Log.d("vortex","BLOCKDELETEEXIT");
 	}
 
 	
@@ -55,8 +56,18 @@ public class BlockDeleteMatchingVariables extends Block {
 
 				i++;
 			}
-			GlobalState.getInstance().getDb().erase(keyBuilder.toString(),pattern);
-			o.addRow("Deleted all entries under context "+hash);
+			int rowsAffected = GlobalState.getInstance().getDb().erase(keyBuilder.toString(),pattern);
+			if (rowsAffected>0) {
+				Log.d("vortex",("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + hash + "] and pattern [" + keyBuilder.toString() + "]"));
+				o.addRow("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + hash + "] and pattern [" + keyBuilder.toString() + "]");
+			}
+			else {
+				Log.d("vortex","Deleteblock "+this.getBlockId()+" erased no entries for ["+hash+"] and pattern ["+keyBuilder.toString()+"]");
+				o.addRow("");
+				o.addYellowText("Deleteblock "+this.getBlockId()+" erased no entries for ["+hash+"] and pattern ["+keyBuilder.toString()+"]");
+
+			}
+
 			//Create sync entry.
 			Log.d("vortex","Creating Erase sync entry for "+keyBuilder.toString());			
 			GlobalState.getInstance().getDb().insertEraseAuditEntry(keyBuilder.toString(),pattern);

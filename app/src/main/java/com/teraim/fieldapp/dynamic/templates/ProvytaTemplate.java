@@ -523,6 +523,11 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		refreshStatus();
 	}
 
+	@Override
+	public String getName() {
+		return "PROVYTA ";
+	}
+
 
 	@Override
 	public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {

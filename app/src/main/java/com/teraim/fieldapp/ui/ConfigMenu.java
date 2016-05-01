@@ -37,7 +37,9 @@ public class ConfigMenu extends PreferenceActivity {
 		getFragmentManager().beginTransaction()
 		.replace(android.R.id.content, new SettingsFragment())
 		.commit();
-		setTitle("Change Configuration");
+		setTitle(R.string.settings);
+
+
 	}
 
 
@@ -118,7 +120,17 @@ public class ConfigMenu extends PreferenceActivity {
 			
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
-			
+
+
+			Preference button = (Preference)findPreference("reset_sync");
+			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Log.d("vortex","BOOM MF!!");
+				return true;
+				};
+			});
+
 			/*
 			final Preference button = (Preference)findPreference(getString(R.string.resetSyncButton));
 			String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);

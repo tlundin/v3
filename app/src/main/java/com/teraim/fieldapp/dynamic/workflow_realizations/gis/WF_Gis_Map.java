@@ -594,6 +594,11 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "WF_GIS_MAP";
+	}
+
 	//Relay event to myContext without exposing context to caller.
 	public void registerEvent(Event event) {
 		myContext.registerEvent(event);

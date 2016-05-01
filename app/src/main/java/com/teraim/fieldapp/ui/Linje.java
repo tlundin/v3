@@ -80,7 +80,7 @@ public class Linje extends View {
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Log.d("vortex","I linje ondraw!");
+
 		super.onDraw(canvas);	
 		h = this.getHeight();
 		float lineLength = (h-2*(r+w/4));

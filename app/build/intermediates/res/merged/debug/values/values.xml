@@ -115,6 +115,7 @@
     <string name="ok">OK</string>
     <string name="reference">Reference</string>
     <string name="resetSyncButton">Reset_sync</string>
+    <string name="reset_sync_d">Resets sync or erases sync data </string>
     <string name="restart">Restart</string>
     <string name="restartMessage">You need to restart for this change to take effect. Restart now?</string>
     <string name="s_summary">Location of all configuration files</string>

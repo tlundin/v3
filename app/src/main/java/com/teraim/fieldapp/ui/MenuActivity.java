@@ -541,6 +541,7 @@ public class MenuActivity extends Activity   {
 				@Override
 				public void onClick(View v) {
 					log.clear();
+					gs.getVariableCache().printCache();
 				}
 			});
 			Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);

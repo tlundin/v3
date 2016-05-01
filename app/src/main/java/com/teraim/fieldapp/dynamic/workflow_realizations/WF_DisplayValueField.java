@@ -21,7 +21,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
-public class WF_DisplayValueField extends WF_Widget implements EventListener {
+	public class WF_DisplayValueField extends WF_Widget implements EventListener {
 
 	private String formula,label;
 	protected GlobalState gs;
@@ -103,7 +103,12 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 		((TextView)this.getWidget().findViewById(R.id.outputUnitField)).setText(Tools.getPrintedUnit(unit));
 	}
 
-}
+		@Override
+		public String getName() {
+			return "DISPLAY_VALUE "+this.getId();
+		}
+
+	}
 
 
 

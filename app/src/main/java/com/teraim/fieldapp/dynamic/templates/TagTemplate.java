@@ -828,6 +828,11 @@ private void drawTrains() {
 
 	}
 
+	@Override
+	public String getName() {
+		return "TAGTEMPLATE ";
+	}
+
 	private boolean save() {
 		if (!dym.save()) {
 			new AlertDialog.Builder(TagTemplate.this.getActivity())

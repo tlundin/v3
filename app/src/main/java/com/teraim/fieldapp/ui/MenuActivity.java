@@ -468,6 +468,7 @@ public class MenuActivity extends Activity   {
 							animationRunning = false;
 						}
 					});
+					animationRunning=true;
 				}
 				return;
 			} else 

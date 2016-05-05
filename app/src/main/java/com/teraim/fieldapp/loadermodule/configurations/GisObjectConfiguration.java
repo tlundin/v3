@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.json.JSONException;
@@ -141,7 +142,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			reader.beginArray();
 			double x,y,z;
 			Map<String,String>keyChain = new HashMap<String,String>();
-			Map<String,String> attributes = new HashMap<String,String>();
+			Map<String,String> attributes = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 			String mType = type.trim();
 			if (mType.equals(GisConstants.POINT)) {
 				//Log.d("vortex","parsing point object.");

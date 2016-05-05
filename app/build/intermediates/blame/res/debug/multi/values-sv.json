@@ -556,8 +556,8 @@
                     "startLine": 83,
                     "startColumn": 4,
                     "startOffset": 3708,
-                    "endColumn": 81,
-                    "endOffset": 3785
+                    "endColumn": 63,
+                    "endOffset": 3767
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
@@ -565,8 +565,8 @@
                         "startLine": 56,
                         "startColumn": 1,
                         "startOffset": 2869,
-                        "endColumn": 78,
-                        "endOffset": 2946
+                        "endColumn": 60,
+                        "endOffset": 2928
                     }
                 }
             },
@@ -574,9 +574,9 @@
                 "to": {
                     "startLine": 84,
                     "startColumn": 4,
-                    "startOffset": 3790,
+                    "startOffset": 3772,
                     "endColumn": 43,
-                    "endOffset": 3829
+                    "endOffset": 3811
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -586,9 +586,9 @@
                 "to": {
                     "startLine": 85,
                     "startColumn": 4,
-                    "startOffset": 3834,
+                    "startOffset": 3816,
                     "endColumn": 101,
-                    "endOffset": 3931
+                    "endOffset": 3913
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -598,9 +598,9 @@
                 "to": {
                     "startLine": 86,
                     "startColumn": 4,
-                    "startOffset": 3936,
+                    "startOffset": 3918,
                     "endColumn": 79,
-                    "endOffset": 4011
+                    "endOffset": 3993
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -610,9 +610,9 @@
                 "to": {
                     "startLine": 87,
                     "startColumn": 4,
-                    "startOffset": 4016,
+                    "startOffset": 3998,
                     "endColumn": 38,
-                    "endOffset": 4050
+                    "endOffset": 4032
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -622,9 +622,9 @@
                 "to": {
                     "startLine": 88,
                     "startColumn": 4,
-                    "startOffset": 4055,
+                    "startOffset": 4037,
                     "endColumn": 50,
-                    "endOffset": 4101
+                    "endOffset": 4083
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -634,9 +634,9 @@
                 "to": {
                     "startLine": 89,
                     "startColumn": 4,
-                    "startOffset": 4106,
+                    "startOffset": 4088,
                     "endColumn": 73,
-                    "endOffset": 4175
+                    "endOffset": 4157
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -646,9 +646,9 @@
                 "to": {
                     "startLine": 90,
                     "startColumn": 4,
-                    "startOffset": 4180,
+                    "startOffset": 4162,
                     "endColumn": 55,
-                    "endOffset": 4231
+                    "endOffset": 4213
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -658,9 +658,9 @@
                 "to": {
                     "startLine": 91,
                     "startColumn": 4,
-                    "startOffset": 4236,
+                    "startOffset": 4218,
                     "endColumn": 54,
-                    "endOffset": 4286
+                    "endOffset": 4268
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -670,9 +670,9 @@
                 "to": {
                     "startLine": 92,
                     "startColumn": 4,
-                    "startOffset": 4291,
+                    "startOffset": 4273,
                     "endColumn": 57,
-                    "endOffset": 4344
+                    "endOffset": 4326
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -682,9 +682,9 @@
                 "to": {
                     "startLine": 93,
                     "startColumn": 4,
-                    "startOffset": 4349,
+                    "startOffset": 4331,
                     "endColumn": 55,
-                    "endOffset": 4400
+                    "endOffset": 4382
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -694,9 +694,9 @@
                 "to": {
                     "startLine": 94,
                     "startColumn": 4,
-                    "startOffset": 4405,
+                    "startOffset": 4387,
                     "endColumn": 53,
-                    "endOffset": 4454
+                    "endOffset": 4436
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -706,9 +706,9 @@
                 "to": {
                     "startLine": 95,
                     "startColumn": 4,
-                    "startOffset": 4459,
+                    "startOffset": 4441,
                     "endColumn": 54,
-                    "endOffset": 4509
+                    "endOffset": 4491
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -718,9 +718,9 @@
                 "to": {
                     "startLine": 96,
                     "startColumn": 4,
-                    "startOffset": 4514,
+                    "startOffset": 4496,
                     "endColumn": 33,
-                    "endOffset": 4543
+                    "endOffset": 4525
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -730,9 +730,9 @@
                 "to": {
                     "startLine": 97,
                     "startColumn": 4,
-                    "startOffset": 4548,
+                    "startOffset": 4530,
                     "endColumn": 33,
-                    "endOffset": 4577
+                    "endOffset": 4559
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -742,9 +742,9 @@
                 "to": {
                     "startLine": 98,
                     "startColumn": 4,
-                    "startOffset": 4582,
+                    "startOffset": 4564,
                     "endColumn": 34,
-                    "endOffset": 4612
+                    "endOffset": 4594
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"

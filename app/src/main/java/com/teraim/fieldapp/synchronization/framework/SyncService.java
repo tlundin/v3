@@ -59,6 +59,7 @@ public class SyncService extends Service {
                    	sSyncAdapter.setClient(mClient);
                     break;
                 case MSG_DATABASE_LOCK_GRANTED:
+					Log.d("vortex","Datalock granted. Inserting");
                    	sSyncAdapter.insertIntoDatabase();
                 	break;
                 //When data is safely inserted in database, update current time for last update.

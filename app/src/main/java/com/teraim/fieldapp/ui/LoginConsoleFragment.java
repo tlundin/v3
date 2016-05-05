@@ -115,7 +115,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				this.initialize();
 				debugConsole.addRow("First time use...creating folders");
 				debugConsole.addRow("");
-				debugConsole.addYellowText("To change defaults, go to the config (wrench) menu");
+				debugConsole.addYellowText("To change defaults, go to the settings menu");
 			}
 		}
 		//First time this application runs? Then create config folder.

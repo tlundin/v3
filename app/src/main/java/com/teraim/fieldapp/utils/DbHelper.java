@@ -63,6 +63,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
     Context ctx;
 
+    public void eraseSyncObjects() {
+        db.delete(TABLE_SYNC,null,null);
+
+
+    }
+
 
     //Helper class that wraps the Cursor.
     public class DBColumnPicker {
@@ -1121,10 +1127,10 @@ public class DbHelper extends SQLiteOpenHelper {
         Map<String, String> keySet = new HashMap<String, String>();
         Map<String, String> keyHash = new HashMap<String, String>();
         for (SyncEntry s : ses) {
-            Log.d("vortex", "SYNC:");
-            Log.d("vortex", "s.target :" + s.getTarget());
-            Log.d("vortex", "s.changes :" + s.getChange());
-            Log.d("vortex", "s.timestamp :" + s.getTimeStamp());
+            //Log.d("vortex", "SYNC:");
+            //Log.d("vortex", "s.target :" + s.getTarget());
+            //Log.d("vortex", "s.changes :" + s.getChange());
+            //Log.d("vortex", "s.timestamp :" + s.getTimeStamp());
             synC++;
             if (synC % 10 == 0) {
                 String syncStatus = synC + "/" + size;
@@ -1154,7 +1160,7 @@ public class DbHelper extends SQLiteOpenHelper {
                             pair[0] = k;
                             pair[1] = "";
                         }
-                        Log.d("vortex", "wtf is this? Key:" + pair[0] + " Value: " + pair[1]);
+                        //Log.d("vortex", "wtf is this? Key:" + pair[0] + " Value: " + pair[1]);
 
                         if (pair[0].equals("var")) {
                             name = pair[1];
@@ -1189,17 +1195,17 @@ public class DbHelper extends SQLiteOpenHelper {
                 //if (keySet == null)
                 //	Log.d("nils","Keyset was null");
                 //Log.d("sync","SYNC WITH PARAMETER NAMED "+name);
-                Log.d("vortex", "Keyset:  " + keySet.toString());
+                //Log.d("vortex", "Keyset:  " + keySet.toString());
 
                 Selection sel = this.createSelection(keySet, name);
-                Log.d("vortex", "Selection:  " + sel.selection);
+                //Log.d("vortex", "Selection:  " + sel.selection);
                 if (sel.selectionArgs != null) {
                     StringBuilder xor = new StringBuilder("");
                     for (String sz : sel.selectionArgs) {
                         xor.append(sz);
                         xor.append(",");
                     }
-                    Log.d("sync", "Selection ARGS: " + xor);
+                    //Log.d("sync", "Selection ARGS: " + xor);
                 }
 
                 Cursor c = getExistingVariableCursor(name, sel);
@@ -1227,7 +1233,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     String author = c.getString(4);
 
                     //Is the existing entry done by me?
-                    Log.d("vortex", "Author is " + author);
+                    //Log.d("vortex", "Author is " + author);
                     if (isMe(author)) {
                         if (varName.startsWith("STATUS:")) {
                             Log.d("vortex", "This is a status variable");

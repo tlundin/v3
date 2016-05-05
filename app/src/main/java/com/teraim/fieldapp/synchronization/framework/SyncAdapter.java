@@ -7,6 +7,7 @@ import java.io.StreamCorruptedException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
+	private static final String LONG_TIME_AGO = "1900-05-03 12:32:01";
 	// Global variables
 	// Define a variable to contain a content resolver instance
 	ContentResolver mContentResolver;
@@ -55,7 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private SharedPreferences ph;
 	/**
 	 * Set up the sync adapter
-	 * @param globalState 
+	 *
 	 */
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
@@ -146,6 +148,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			err=SyncService.ERR_SETTINGS;
 			}
 		}
+		//If error, send it to UI thread.
 		Message msg;
 		if (err!=-1) {
 			msg= Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
@@ -159,12 +162,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 			return;
 		}
-		//We are running!!
+		//We are now running!!
 		busy=true;
 		Log.e("vortex","BUSY NOW TRUE");
 
 		//Get data entries to sync if any.
-
 		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, MaxSyncableRows+"");
 		SyncEntry[] sa =null;
 		StringBuilder targets=new StringBuilder("");
@@ -325,7 +327,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("vortex","writing app..."+app);
 			objOut.writeObject(app);
 			//The last timestamp.
-			String trId=gh.getString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,"0");
+			String trId=gh.getString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,LONG_TIME_AGO);
 			Log.d("vortex","LAST_SYNC_FROM_TEAM_TO_ME WAS "+trId);
 			objOut.writeObject(trId);
 			if (sa!=null && sa.length>0) {

@@ -87,7 +87,7 @@ public class GeoJSONExporter extends Exporter {
 					if (uid==null) {
 
 						Log.e("vortex","missing uid!!!");
-						//Log.e("vortex","keyhash: "+currentHash.toString());
+						Log.e("vortex","keyhash: "+currentHash);
 					}
 					else {
 						if (gisObjects==null)
@@ -106,7 +106,7 @@ public class GeoJSONExporter extends Exporter {
 
 							if (name!=null) {
 								gisObjM.put(name, cp.getVariable().value);
-								gisObjM.put(name+"_ts",cp.getVariable().timeStamp);
+								gisObjM.put("ts_"+name,cp.getVariable().timeStamp);
 								varC++;
 							}
 							else {
@@ -144,40 +144,35 @@ public class GeoJSONExporter extends Exporter {
 						writer.name("coordinates");
 
 						String[] polygons=null;
-						boolean p = false;
+						boolean isPoly = false;
 						if (!geoType.equals("Polygon")) {
 							Log.d("vortex","POINT!!!");
 							Log.d("geotype",geoType);
 							polygons = new String[] {coordinates};
 						}
 						else {
-							p=true;
+							isPoly=true;
 							Log.d("vortex","POLYGON!!!");
 							polygons = coordinates.split("\\|");
 							writer.beginArray();
 						}
 						for (String polygon:polygons) {
-							if (p)
-								writer.beginArray();
+
 							String[] coords = polygon.split(",");
-							writer.beginArray();
-							for (int i =0;i<coords.length;i++) {
-								Log.d("vortex","cord length: "+coords.length);
+
+								writer.beginArray();
+							Log.d("vortex","cord length: "+coords.length);
+							for (int i =0;i<coords.length;i+=2) {
 								Log.d("vortex","coord ["+i+"] :"+coords[i]);
-								if (coords[i]==null || "null".equalsIgnoreCase(coords[i])) {
-									Log.e("vortex","coordinate was null in db. ");
-									writer.nullValue();
-								} else {
-									try {
-									writer.value(Float.parseFloat(coords[i]));
-									} catch (NumberFormatException e) { writer.nullValue();};
-								}
+								writer.beginArray();
+								printCoord(writer, coords[i]);
+								printCoord(writer, coords[i+1]);
+								writer.endArray();
 							}
-							writer.endArray();
-							if (p)
+
 								writer.endArray();
 						}
-						if (p)
+						if (isPoly)
 							writer.endArray();
 						//End geometry.
 						writer.endObject();
@@ -186,7 +181,7 @@ public class GeoJSONExporter extends Exporter {
 						//Add the UUID
 						write(GisConstants.FixedGid,key);
 						write("author",author);
-						write("timestamp",cp.getVariable().timeStamp);
+						//write("timestamp",cp.getVariable().timeStamp);
 						//write("author",cp.getKeyColumnValues().get("author"));
 						for (String mKey:gisObjM.keySet()) {
 							write(mKey,gisObjM.get(mKey));
@@ -223,6 +218,27 @@ public class GeoJSONExporter extends Exporter {
 		}
 
 		return null;	}
+
+	private void printCoord(JsonWriter writer, String coord) {
+		try {
+			if (coord == null || "null".equalsIgnoreCase(coord)) {
+				Log.e("vortex", "coordinate was null in db. ");
+
+				writer.nullValue();
+
+			} else {
+				try {
+					writer.value(Float.parseFloat(coord));
+				} catch (NumberFormatException e) {
+					writer.nullValue();
+				}
+				;
+			}
+		}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 
 	@Override
 	public String getType() {

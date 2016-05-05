@@ -126,7 +126,39 @@ public class ConfigMenu extends PreferenceActivity {
 			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Log.d("vortex","BOOM MF!!");
+				new AlertDialog.Builder(getActivity())
+						.setTitle("Reset Sync")
+						.setMessage("Pressing ok will erase all sync data. This is only required if this device is using a backup image.")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setCancelable(false)
+						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
+								String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
+								Log.d("vortex","syncPValue is "+syncPValue);
+								if (bName!=null && syncPValue!=null) {
+									getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).edit().remove(PersistenceHelper.TIME_OF_LAST_SYNC).commit();
+
+									if (GlobalState.getInstance()!=null)
+										GlobalState.getInstance().getDb().eraseSyncObjects();
+
+									Intent intent = new Intent();
+									intent.setAction(MenuActivity.REDRAW);
+									getActivity().sendBroadcast(intent);
+
+								}
+
+
+							}
+						} )
+						.setNegativeButton(R.string.cancel, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+
+							}
+						})
+						.show();
 				return true;
 				};
 			});

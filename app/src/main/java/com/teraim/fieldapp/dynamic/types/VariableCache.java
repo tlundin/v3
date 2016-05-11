@@ -313,7 +313,7 @@ public class VariableCache {
             //Log.d("vortex","default value: "+defaultValue);
         }
         //Log.d("vortex","Te:"+(System.currentTimeMillis()-t0));
-        Log.d("vortex", "success for " + varId);
+        Log.d("vortex", "variable found with value " + variable.getValue());
         return variable;
     }
 
@@ -440,22 +440,21 @@ public class VariableCache {
             Log.d("vortex", "finding " + name);
             Variable var = vars.get(name.toLowerCase());
             if (var != null) {
-                Log.d("vortex", "replacing value " + var.getValue() + "with " + newValue);
-                var.setValue(newValue);
+                Log.d("vortex", "replacing value " + var.getValue() + " with " + newValue);
+                var.setOnlyCached(newValue);
             } else {
                 Log.e("vortex", "did not find variable " + name + " in cache");
                 getCheckedVariable(keyHash, name, newValue, true);
-                Log.d("vortex", "varids contained: ");
-                for (Variable v : vars.values()) {
-                    Log.d("vortex", v.getId());
-                }
-                Log.d("vortex", "keys contained: ");
-                for (String k : vars.keySet()) {
-                    Log.d("vortex", k);
-                }
+                //Log.d("vortex", "varids contained: ");
+                //for (Variable v : vars.values()) {
+                //    Log.d("vortex", v.getId());
+                //}
+                //Log.d("vortex", "keys contained: ");
+                //for (String k : vars.keySet()) {
+                //    Log.d("vortex", k);
+                //}
             }
-        } else
-            Log.d("vortex", "not found!");
+        }
 
     }
 
@@ -467,7 +466,15 @@ public class VariableCache {
             Variable var = vars.get(name.toLowerCase());
             if (var != null) {
                 Log.d("vortex", "removing variable " + name);
-                vars.remove(var);
+                //Variable removedVar = vars.remove(name.toLowerCase());
+                //if (removedVar!=null) {
+                //    Log.d("vortex","REMOVED!");
+                //    removedVar.invalidate();
+                //} else
+                //    Log.e("vortex","REMOVE FAILED ");
+                //if (vars.get(name.toLowerCase())!=null)
+                //    Log.d("vortex","still able to find "+name);
+                var.setOnlyCached(null);
             } else {
                 Log.d("vortex", "did not find variable " + name + " in cache");
             }
@@ -484,9 +491,9 @@ public class VariableCache {
                 for (String vKey : varMap.keySet()) {
                     Variable v = varMap.get(vKey);
                     if (v.getKeyChain().equals(key))
-                        Log.d("vortex", "        " + v.getId() + " H: " + v.getKeyChain());
+                        Log.d("vortex", "        " + v.getId() + " värde: " + v.getValue()+" invalid: "+v.isInvalidated()+" isusingdef: "+v.isUsingDefault());
                     else
-                        Log.e("vortex", "       " + v.getId() + " H: " + v.getKeyChain());
+                        Log.e("vortex", "       " + v.getId() + " Nyckel: " + v.getKeyChain()+" värde: "+v.getValue());
                 }
 
             } else

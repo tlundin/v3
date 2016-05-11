@@ -227,7 +227,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	 *  
 	 * @param wf_Gis_Map 	The map object
 	 * @param pm			The geo coordinates for the image corners
-	 * @param zoom			If extreme zoom is enabled
+	 * @param allowZoom			If extreme zoom is enabled
 	 * @return 
 	 */
 	public void initialize(WF_Gis_Map wf_Gis_Map, PhotoMeta pm,boolean allowZoom) {
@@ -319,10 +319,13 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	/**
 	 * 
-	 * @param layers
 	 * @return copy only the gis objects in the layers that are visible in this view.
 	 */
 	public void initializeAndSiftGisObjects() {
+		if (myMap==null) {
+			Log.e("vortex","myMap null in initializeAndSiftGisObjects");
+			return;
+		}
 		for (GisLayer layer :myMap.getLayers()) {
 
 			layer.filterLayer(this);
@@ -524,6 +527,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		if (newGisObj instanceof GisPolygonObject) 
 			((GisPathObject)newGisObj).getPath().close();
 		if (currentCreateBag!=null) {
+			Log.d("vortex","inserting new GIS object.");
 			GlobalState.getInstance().getDb().insertGisObject(newGisObj);
 
 			gisTypeToCreate=null;
@@ -531,7 +535,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			currentCreateBag=null;
 			touchedGop = newGisObj;
 			newGisObj=null;
-			Log.d("vortex","Here touched is TG TB"+touchedGop.toString()+","+touchedBag.toString());
+			//Log.d("vortex","Here touched is TG TB"+touchedGop.toString()+","+touchedBag.toString());
 			myMap.setVisibleAvstRikt(true,touchedGop);
 
 			this.redraw();
@@ -728,8 +732,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					translateMapToRealCoordinates(new SweLocation(mX,mY),riktLinjeStart);
 					translateMapToRealCoordinates(touchedGop.getLocation(),riktLinjeEnd);
 				}
-				if (touchedLayer == null)
-					Log.d("vortex","TOUCHEDLAYER WAS NULL. TouchedBag was: "+touchedBag);
+				//if (touchedLayer == null)
+				//	Log.d("vortex","TOUCHEDLAYER WAS NULL. TouchedBag was: "+touchedBag);
 
 				drawGop(canvas,touchedLayer,touchedGop,true);
 			} 
@@ -988,7 +992,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Runnable runnable = new Runnable(){
 				public void run() {
 					displayDistanceAndDirectionL();
-					Log.d("vortex","displaydistcalled from disp timer");
+					//Log.d("vortex","displaydistcalled from disp timer");
 					if (handler!=null)
 						handler.postDelayed(this, interval);
 				}
@@ -1042,9 +1046,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		
 		boolean old = timeDiff>TimeOut; 
 		if (old) {
-			Log.d("vortex","Time of insert: "+mostRecentGPSValueTimeStamp);
-			Log.d("vortex","Current time: "+ct);
-			Log.d("vortex","TimeDiff: "+timeDiff);
+			//Log.d("vortex","Time of insert: "+mostRecentGPSValueTimeStamp);
+			//Log.d("vortex","Current time: "+ct);
+			//Log.d("vortex","TimeDiff: "+timeDiff);
 			myMap.setAvstTxt("Lost signal");
 			myMap.setRiktTxt(timeDiff+" s");
 			

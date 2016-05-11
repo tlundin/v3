@@ -44,7 +44,7 @@ public class WF_Column_RegExp_Filter extends WF_Filter {
 
 			if (!key.matches(regularExpression)) {
 				it.remove();
-				Log.d("nils","filter removes element "+key+" because it doesn't match "+regularExpression);
+				//Log.d("nils","filter removes element "+key+" because it doesn't match "+regularExpression);
 			} else
 				noMatchAtAll=false;
 			

@@ -150,6 +150,11 @@ public class WF_Context {
 	}
 	//TODO: If required introduce nonfilterable lists and tables. For now it is assumed that all implements filterable. 
 	public void addList(WF_Static_List l) {
+		Log.d("zorg","Added list "+l.getId());
+		Log.d("zorg","existing:");
+		for (WF_Static_List lo:lists) {
+			Log.d("zorg",lo.getId());
+		}
 		lists.add(l);
 		filterables.add(l);
 	}

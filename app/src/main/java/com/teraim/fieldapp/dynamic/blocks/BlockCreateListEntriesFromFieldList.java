@@ -73,7 +73,7 @@ public class BlockCreateListEntriesFromFieldList extends Block {
 						myList = new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible);
 						myList.addSorter(new WF_Alphanumeric_Sorter());
 					} 
-					if (type.equals("instance_list")) {
+					else if (type.equals("instance_list")) {
 						o.addRow("instance selection list. Time sorter.");
 						myList = new WF_Instance_List(id,myContext,rows,variatorColumn,isVisible);
 						myList.addSorter(new WF_IndexOrder_Sorter());	

@@ -46,7 +46,7 @@ public class DefaultNoScrollTemplate extends Executor {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("nils","I'm in the onCreateView method");
+		Log.d("nils","I'm in the onCreateView method for defaultNoScroll");
 		if (view == null) {
 		view = inflater.inflate(R.layout.template_wf_default_no_scroll, container, false);	
 		

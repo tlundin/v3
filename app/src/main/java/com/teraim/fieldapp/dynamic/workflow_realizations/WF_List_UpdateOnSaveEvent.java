@@ -208,8 +208,9 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		else {
 			Log.d("nils","GOT EVENT!!");
 			draw();
+			myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 		}
-		myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
+
 	}
 
 	@Override

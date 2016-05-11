@@ -9,7 +9,7 @@ public class GisConstants {
 	public static final String SKYDDSVART = "skyddsvärt";
 	public static final String TYPE_COLUMN = "gistyp";
 	public static final String Geo_Type = "geotype";
-	public static final String Location = "gpscoord";
+	//public static final String Location = "gpscoord";
 	public static final String SWEREF = "sweref";
 	public static final String LATLONG= "latlong";
 	public static final String RutaID = "ruta";

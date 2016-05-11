@@ -526,9 +526,10 @@ public class Tools {
 							opt[i++]=it.next();
 						}
 					}
-				} else
-					opt=new String[]{"Config Error...please check your list definitions for variable "+variable.getLabel()};
-
+				} else {
+					Log.e("vortex","CONFIG ERROR");
+					opt = new String[]{"Config Error...please check your list definitions for variable " + variable.getLabel()};
+				}
 
 			} else
 				Log.e("nils","List "+variable.getId()+" has too few parameters: "+listValues.toString());

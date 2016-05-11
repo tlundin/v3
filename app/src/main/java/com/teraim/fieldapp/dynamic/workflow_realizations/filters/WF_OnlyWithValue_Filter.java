@@ -23,9 +23,9 @@ public class WF_OnlyWithValue_Filter extends WF_Filter implements Filter {
 			Listable l = it.next();
 			if(!l.hasValue()) {
 				it.remove();
-				Log.d("vortex", "filter removes element " + l.getKey() + " because its value is null");
-			} else
-				Log.d("vortex", "Element " + l.getKey() + " has value ");
+				//Log.d("vortex", "filter removes element " + l.getKey() + " because its value is null");
+			} //else
+			//	Log.d("vortex", "Element " + l.getKey() + " has value ");
 		}
 		Log.d("nils","Exit only_with_value filter with "+list.size()+" elements");
 		return list;

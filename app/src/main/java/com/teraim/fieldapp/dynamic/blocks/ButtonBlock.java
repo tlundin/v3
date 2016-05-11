@@ -2,6 +2,7 @@ package com.teraim.fieldapp.dynamic.blocks;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import android.accounts.Account;
@@ -413,39 +414,42 @@ public  class ButtonBlock extends Block {
 								}
 
 							} else if (onClick.equals("export")) {
-								Log.d("vortex","Export button clicked!");
-								DB_Context r = DB_Context.evaluate(exportContextE);
-								//Context ok?
-								String msg;
-								if (r.isOk()) {
-									/*
-									exportFileName = gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME)+"_";
-									if (target!=null)
-										exportFileName += getTarget()+"_";
-									exportFileName+=Constants.getTimeStamp();
-									 */
+								Map<String, String> exportContext = null;
+								String msg = null;
+								if (exportContextE != null) {
+									Log.d("vortex", "Export button clicked!");
+									DB_Context r = DB_Context.evaluate(exportContextE);
+									//Context ok?
+									if (!r.isOk()) {
+										msg = "Export failed. Reason: " + r;
+									} else
+										exportContext=r.getContext();
+								}
+								//msg is  null if no errors.
+								if (msg == null) {
+
 									exportFileName = getTarget();
-									if (exportFormat  == null) 
+									if (exportFormat == null)
 										exportFormat = "csv";
 									exportFormat = exportFormat.toLowerCase();
-									Report jRep = gs.getDb().export(r.getContext(), Exporter.getInstance(ctx, exportFormat), exportFileName);
+									Report jRep = gs.getDb().export(exportContext, Exporter.getInstance(ctx, exportFormat), exportFileName);
 									if (jRep.er == ExportReport.OK) {
-										msg = jRep.noOfVars+" variables exported to file: "+exportFileName+"."+exportFormat+"\n";
-										msg+= "You can find this file under "+Constants.EXPORT_FILES_DIR+" on your device";
+										msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exportFormat + "\n";
+										msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
 
 									} else {
-										if (jRep.er==ExportReport.NO_DATA)
+										if (jRep.er == ExportReport.NO_DATA)
 											msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
 										else
-											msg = "Export failed. Reason: "+jRep.er.name();
-										
+											msg = "Export failed. Reason: " + jRep.er.name();
+
 
 									}
 									//Context was broken
-								}  else {
-									msg = "Export failed. Reason: "+r;
+
 
 								}
+
 								new AlertDialog.Builder(ctx)
 								.setTitle("Export done")
 								.setMessage(msg)

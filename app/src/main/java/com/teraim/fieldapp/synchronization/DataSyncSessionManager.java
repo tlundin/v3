@@ -209,14 +209,15 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 
 					Log.d("vortex","myBundleV "+myAppVersion+" msgVer "+sp.getAppVersion()+" swVer: "+mySoftwareVersion+" msgVer: "+sp.getSoftwareVersion());
 					StringBuilder versionText = new StringBuilder();
-					versionText.append("My vortex version: "+mySoftwareVersion+
+
+					String debugTxt="My vortex version: "+mySoftwareVersion+
 							"\nOthers vortex version: "+sp.getSoftwareVersion()+
 							"\nMy App version: "+myAppVersion+
 							"\nOthers App version: "+sp.getAppVersion()+
 							"\nMy Time: "+Constants.getSweDate()+
 							"\nOthers Time: "+sp.getTime()+
-							"\nPerson: "+sp.getPartner());
-							
+							"\nPerson: "+sp.getPartner();
+
 					
 					String mYear = Constants.getYear();
 					String pYear = sp.getTime().substring(0,4);
@@ -230,12 +231,14 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 					if (myAppVersion!=sp.getAppVersion() ||
 							mySoftwareVersion!=sp.getSoftwareVersion()) {
 						err=true;
+						versionText.append(debugTxt);
 						versionText.insert(0,"*WARNING*: Version mismatch:\n");
 						o.addRow("");
 						o.addRedText("[BT MESSAGE -->PING. VERSION MISMATCH!");
 						o.addRow(versionText.toString());
 
 					} else if(!mYear.equals(pYear)) {
+						versionText.append(debugTxt);
 						versionText.insert(0,"*WARNING*: Year mismatch:\n");
 						o.addRow("");
 						o.addRedText("[BT MESSAGE -->PING. TIME MISMATCH!");
@@ -245,6 +248,7 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 					} else if (!mPartner.equals(sp.getPartner())) {
 						err=true;
 						nameErr=true;
+						versionText.append(debugTxt);
 						versionText.insert(0,"*WARNING*: Partner name mismatch.\nExisting: "+mPartner+". New: "+sp.getPartner());
 						o.addRow("");
 						o.addRedText("[BT MESSAGE -->PING. NAME MISMATCH!");
@@ -252,7 +256,10 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 					}
 					
 					if (!err){
-						versionText.append("\n\nAll Ok!\nConfirm to start sync");				
+						boolean isDeveloper = gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
+						if (isDeveloper)
+							versionText.append(debugTxt);
+						versionText.append("\n\nPartner ("+sp.getPartner()+") found.\nConfirm to start sync");
 						o.addRow("");
 						o.addGreenText("[BT MESSAGE -->PING. VERSIONS OK");
 
@@ -280,9 +287,10 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 		}
 		if (pSyncDone && mSyncDone) {
 			if (syncReport!=null) {
-				ui.alert("Synchronization succesful. Report: ");
-				 
-				ui.setInfo(
+				ui.alert("Synchronization succesful.");
+				boolean isDeveloper = gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
+				if (isDeveloper)
+					ui.setInfo(
 						"Deletes    : "+syncReport.deletes+
 						"\nFaults     : "+syncReport.faults+
 						"\nInserts    : "+syncReport.inserts+
@@ -296,6 +304,8 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 							"\nNo changes in partner device")
 						
 						);
+				else
+					ui.setInfo("");
 			}
 			else 
 					ui.alert("Synchronization done. No changes.");

@@ -38,6 +38,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private DbHelper myDb;
 	private List<GisObject> myGisObjects = new ArrayList<GisObject>();
 	private String myType;
+	private boolean generatedUID = false;
 
 	public GisObjectConfiguration(PersistenceHelper globalPh,PersistenceHelper ph,Source source,String fileLocation, String fileName,LoggerI debugConsole,DbHelper myDb) {
 		super(globalPh,ph, source,fileLocation, fileName, fixedLength(fileName));
@@ -233,23 +234,25 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			while(reader.hasNext()) {
 				attributes.put(reader.nextName().toLowerCase(),this.getAttribute(reader));
 			}
-			Log.d("vortex",attributes.toString());
+			//Log.d("vortex",attributes.toString());
 			//end attributes
 			reader.endObject();
 			//end row
 			reader.endObject();
 			String uuid = attributes.remove(GisConstants.FixedGid);
-			Log.d("vortex","FixedGid: "+uuid);
+			//Log.d("vortex","FixedGid: "+uuid);
 			String rutaId = attributes.remove(GisConstants.RutaID);
 
 
 			if (uuid!=null) {
 				uuid = uuid.replace("{","").replace("}","");
-				Log.d("vortex","FixedGid: "+uuid);
+				//Log.d("vortex","FixedGid: "+uuid);
 				keyChain.put("uid", uuid);
 			}
-			else
-				keyChain.put("uid",UUID.randomUUID().toString());
+			else {
+				generatedUID=true;
+				keyChain.put("uid", UUID.randomUUID().toString());
+			}
 			keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
 
 			//Tarfala hack. TODO: Remove.
@@ -292,6 +295,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	@Override
 	public boolean freeze(int counter) throws IOException {
 		if (firstCall) {
+			if (generatedUID) {
+				o.addRow("");
+				o.addRedText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");
+			}
+
 			myDb.beginTransaction();
 			Log.d("vortex","Transaction begins");
 			firstCall = false;
@@ -301,9 +309,9 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		//Insert GIS variables into database
 		GisObject go = myGisObjects.get(counter);
 		if (!myDb.fastHistoricalInsert(go.getKeyHash(),
-				GisConstants.Location,go.coordsToString())) {
+				GisConstants.GPS_Coord_Var_Name,go.coordsToString())) {
 			o.addRow("");
-			o.addRedText("Row: "+counter+". Insert failed for "+GisConstants.Location+". Hash: "+go.getKeyHash().toString());
+			o.addRedText("Row: "+counter+". Insert failed for "+GisConstants.GPS_Coord_Var_Name+". Hash: "+go.getKeyHash().toString());
 		}
 		Map<String, String> attr = go.getAttributes();
 

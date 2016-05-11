@@ -88,6 +88,10 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bgpic.jpg"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bgpic.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bgpic.png"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\insync.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\insync.png"
     },
@@ -142,6 +146,10 @@
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\warning.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\warning.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frontpic.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\frontpic.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\car.png",

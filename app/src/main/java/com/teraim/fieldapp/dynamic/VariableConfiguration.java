@@ -133,21 +133,15 @@ public class VariableConfiguration implements Serializable {
 	
 	//If the variable shall be exported via JSON to server.
 	public boolean isLocal(List<String> row) {
-		String s= row.get(fromNameToColumn.get(requiredColumns.get(SCOPE)));
-		//Log.d("nils","getvarislocal uses string "+s);
-		return (s!=null && s.startsWith("local"));
-
-		/*
-		else if (s.equals(Scope.local_sync))
-			return Scope.local_sync;
-		else if (s.equals(Scope.global_nosync))
-			return Scope.global_nosync;
-		else {
-			gs.getLogger().addRow("");
-			gs.getLogger().addRedText("Unknown Scope parameter: "+s+" Will assume it is global_sync");
-			return Scope.global_sync;
+		if (row!=null) {
+			String s = row.get(fromNameToColumn.get(requiredColumns.get(SCOPE)));
+			//Log.d("nils","getvarislocal uses string "+s);
+			return (s != null && s.startsWith("local"));
 		}
-		*/
+		Log.e("vortex","row was null...cannot determine if local or global. Will default to global");
+		return false;
+
+
 	}
 	
 	public String getLimitDescription(List<String> row) {

@@ -94,9 +94,12 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (oldV==-1)
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));
 		String logoUrl = server()+bundleName+"/logo.png";
+		String bgUrl = server()+bundleName+"/bg_image.jpg";
 		Log.d("vortex",  logoUrl);
-		new DownloadImageTask((ImageView) view.findViewById(R.id.logo))
+		new DownloadImageTask(logo)
 		.execute(logoUrl.toLowerCase());
+		new DownloadImageTask((ImageView) view.findViewById(R.id.bgImg))
+				.execute(bgUrl.toLowerCase());
 
 
 
@@ -210,42 +213,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	}
 
 
-
-
-
-	private void writeVortexLog() {
-
-		debugConsole.addYellowText("["+Constants.VORTEX_VERSION+"]");
-		debugConsole.addRow("");
-		//debugConsole.addRedText("");
-		if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED)||
-				globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED)) {
-			debugConsole.addYellowText("LagID och/eller Namn fattas.");				
-		}
-		debugConsole.addRow("");
-		debugConsole.addText("Changes:\n"					
-				+ "* Dynamic menus.\n"
-				+ "* Colored log.\n"
-				+ "* Colored menus.\n"
-				+ "* New time functions: getyear(), gethour(), getsecond() etc"
-				+ "* Improved startup cycle.\n"
-				+ "* Sync feature can be hidden from menu\n"
-				+ "* Wfs with no PagedefineBlock has no UI\n"
-				+ "* new generic Envelope for bluetooth messaging\n"
-				+ "* Stricter handling of context for workflows\n"
-				+ "* Automatic restart of App when bundle is changed\n"
-				+ "* First GIS prototype\n"
-				+ "* Chart Engine proto\n"
-				+ "* Backup support\n"
-				+ "* TEXT concatenation for integers and texts\n"
-				+ "* Safe object removed (Nils specific)\n"
-				+ "* Export to CSV or JSON based on context\n"
-				+ "* Export Button block\n"
-				+ "* Separate Persistence for different Bundles\n"
-				+ "* New more Efficient Rule Executor with Tokenizer\n"
-				);
-	}
-
 	/******************************
 	 * First time? If so, create subfolders.
 	 */
@@ -292,8 +259,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			globalPh.put(PersistenceHelper.SYNC_METHOD, "Bluetooth");
 		if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.USER_ID_KEY, getRandomName());		
-		if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.LAG_ID_KEY, "Anonymous");	
+		//if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
+		//	globalPh.put(PersistenceHelper.LAG_ID_KEY, "Anonymous");
 		if (globalPh.get(PersistenceHelper.LOG_LEVEL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.LOG_LEVEL, "critical");	
 	

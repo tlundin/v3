@@ -60,7 +60,7 @@ public class GeoJSONExporter extends Exporter {
 				//gisobjects: A map between UID and variable key-value pairs.
 				Map<String,Map<String,String>> gisObjects=null;
 				
-				String uid;
+				String uid=null;
 				Map<String, String> gisObjM;
 				do {
 					currentHash = cp.getKeyColumnValues();
@@ -85,7 +85,6 @@ public class GeoJSONExporter extends Exporter {
 					}
 					 */
 					if (uid==null) {
-
 						Log.e("vortex","missing uid!!!");
 						Log.e("vortex","keyhash: "+currentHash);
 					}
@@ -102,12 +101,21 @@ public class GeoJSONExporter extends Exporter {
 						//Hack for multiple SPY1 variables.
 						if (cp.getVariable()!=null) {
 							String name = cp.getVariable().name;
+
 							author  = cp.getVariable().creator;
 
 							if (name!=null) {
-								gisObjM.put(name, cp.getVariable().value);
-								gisObjM.put("ts_"+name,cp.getVariable().timeStamp);
-								varC++;
+								//Check if this variable is supposed to be exported.
+								boolean isLocal = gs.getVariableConfiguration().isLocal(gs.getVariableConfiguration().getCompleteVariableDefinition(name));
+								if (isLocal) {
+									Log.d("vortex","skipping "+name+" since it is marked local");
+									o.addRow("skipping "+name+" since it is marked local");
+
+								} else {
+									gisObjM.put(name, cp.getVariable().value);
+									gisObjM.put("ts_" + name, cp.getVariable().timeStamp);
+									varC++;
+								}
 							}
 							else {
 								o.addRow("");
@@ -129,9 +137,18 @@ public class GeoJSONExporter extends Exporter {
 						String geoType = gisObjM.remove(GisConstants.Geo_Type);
 						if (geoType==null)
 							geoType = "point";
-						String coordinates = gisObjM.remove(GisConstants.GPS_Coord_Var_Name);
+						String coordinates = getCoordinates(key,gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
+
 						if (coordinates==null) {
+							//Try to find the object from historical. If not possible, sound alert.
+
 							Log.e("vortex","Object "+key+" is missing GPS Coordinates!!!");
+							o.addRow("");
+							o.addRedText("No GPS coordinates found for "+key);
+							for (String mKey:gisObjM.keySet()) {
+								o.addRow("");
+								o.addRedText("variable: "+mKey+", value: "+gisObjM.get(mKey));
+							}
 							coordinates = "0,0";
 						}
 
@@ -218,6 +235,15 @@ public class GeoJSONExporter extends Exporter {
 		}
 
 		return null;	}
+
+	private String getCoordinates(String uid, String thisYear) {
+		//If there is a coord for this year, return it.
+		if (thisYear!=null)
+			return thisYear;
+		//otherwise, search historical for uid.
+		return
+				GlobalState.getInstance().getDb().findCoordinatesInHistorical(uid);
+	}
 
 	private void printCoord(JsonWriter writer, String coord) {
 		try {

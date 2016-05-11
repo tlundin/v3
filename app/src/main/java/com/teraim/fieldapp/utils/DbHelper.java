@@ -69,6 +69,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
+    public String findCoordinatesInHistorical(String uid) {
+        String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + GisConstants.GPS_Coord_Var_Name + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
+        Log.d("vortex","findCoordinatesInHistorical: \n"+query);
+
+        Cursor resultSet = db.rawQuery(query, null);
+        if (resultSet.moveToNext())
+            return resultSet.getString(0);
+        return null;
+    }
+
 
     //Helper class that wraps the Cursor.
     public class DBColumnPicker {
@@ -293,12 +303,18 @@ public class DbHelper extends SQLiteOpenHelper {
         if (exporter == null)
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
         Log.d("nils", "Started export");
-        Log.d("vortex", "filename: " + exportFileName);
+        Log.d("vortex", "filename: " + exportFileName+ " context: "+context);
         String selection = null;
+
+        if (exporter instanceof GeoJSONExporter) {
+            Log.d("vortex","geojsonexport");
+            selection = (getDatabaseColumnName("uid")+" NOT NULL "+(context!=null?"AND ":""));
+        }
+
         List<String> selArgs = null;
         if (context != null) {
             Log.d("vortex", "context: " + context.toString());
-            selection = "";
+            //selection = "";
             String col;
             //Build query
             Iterator<String> it = context.keySet().iterator();
@@ -458,13 +474,13 @@ public class DbHelper extends SQLiteOpenHelper {
         //SQLiteDatabase db = this.getWritableDatabase();
 
 
-        //int aff =
+        int aff =
         db.delete(TABLE_VARIABLES, //table name
                 s.selection,  // selections
                 s.selectionArgs); //selections args
 
-        //if(aff==0)
-        //	Log.e("nils","Couldn't delete "+name+" from database. Not found. Sel: "+s.selection+" Args: "+print(s.selectionArgs));
+        if(aff==0)
+        	Log.e("nils","Couldn't delete "+name+" from database. Not found. Sel: "+s.selection+" Args: "+print(s.selectionArgs));
         //else
         //	Log.d("nils","DELETED: "+ name);
 
@@ -587,7 +603,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private void storeAuditEntry(String action, String changes, String varName) {
-        if (action == null || changes == null || varName == null) {
+        if (action == null || changes == null ) {
             Log.e("vortex", "STOREADUIT ERROR: Action: " + action + " changes: " + changes + " varName: " + varName);
             return;
         }
@@ -600,7 +616,13 @@ public class DbHelper extends SQLiteOpenHelper {
         db.insert(TABLE_AUDIT, null, values);
     }
 
-
+    public Cursor getExistingVariableCursor(String name, Selection s) {
+        //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
+        Cursor c = db.query(TABLE_VARIABLES, new String[]{"id", "timestamp", "value", "var", "author"},
+                s.selection, s.selectionArgs, null, null, null, null);
+        return c;
+    }
+    /*
     public StoredVariableData getVariable(String name, Selection s) {
 
         Cursor c = db.query(TABLE_VARIABLES, new String[]{"value", "timestamp", "lag", "author"},
@@ -617,7 +639,7 @@ public class DbHelper extends SQLiteOpenHelper {
             c.close();
         return null;
     }
-
+*/
 
     public class StoredVariableData {
         public StoredVariableData(String name, String value, String timestamp,
@@ -640,7 +662,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public List<String[]> getValues(String[] columns, Selection s) {
 
-        //Log.d("nils","In getvalues with columns "+dd+", selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
+        //Log.d("nils","In getvalues with columns "+print(columns)+", selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         //Substitute if possible.
         String[] substCols = new String[columns.length];
 
@@ -669,18 +691,20 @@ public class DbHelper extends SQLiteOpenHelper {
                     //Log.d("nils","GetValues found row. First elem: "+c.getString(0));
                     //only add row if one of the values is not null.
                     ret.add(row);
-                }
+                } //else
+                    //Log.e("vortex","Null row! "+print(row));
             } while (c.moveToNext());
-            //if (ret.size()==0)
-            //	Log.d("nils","Found no values in GetValues");
+            if (ret.size()==0)
+            	Log.d("nils","Found no values in GetValues");
             c.close();
             return ret;
         }
-        //String su = "[";
-        //for (String ss : columns)
-        //    su += ss + ",";
-        //su += "]";
-        //Log.d("nils","Did NOT find value in db for columns "+su);
+       /* String su = "[";
+        for (String ss : columns)
+            su += ss + ",";
+        su += "]";
+        Log.d("nils","Did NOT find value in db for columns "+su);
+        */
         if (c!=null)
             c.close();
         return null;
@@ -840,7 +864,7 @@ public class DbHelper extends SQLiteOpenHelper {
         if (rId == -1) {
             Log.e("nils", "Could not insert variable " + var.getId());
         } else {
-            //Log.d("nils","Inserted "+var.getId()+" into database. Values: "+values.toString());//==null?"null":(var.getKeyChain().values()==null?"null":var.getKeyChain().values().toString()));
+            Log.d("zorg","Inserted "+var.getId()+" into database. Values: "+values.toString());//==null?"null":(var.getKeyChain().values()==null?"null":var.getKeyChain().values().toString()));
 
             //If this variable is not local, store the action for synchronization.
             if (syncMePlease) {
@@ -1127,6 +1151,9 @@ public class DbHelper extends SQLiteOpenHelper {
         Map<String, String> keySet = new HashMap<String, String>();
         Map<String, String> keyHash = new HashMap<String, String>();
         for (SyncEntry s : ses) {
+            Log.d("nils","Audit entry (s): "+s.getChange());
+        }
+        for (SyncEntry s : ses) {
             //Log.d("vortex", "SYNC:");
             //Log.d("vortex", "s.target :" + s.getTarget());
             //Log.d("vortex", "s.changes :" + s.getChange());
@@ -1216,6 +1243,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 if (!hasValueAlready || s.isInsertArray()) {// || gs.getVariableConfiguration().getnumType(row).equals(DataType.array)) {
                     Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
+                    Log.d("sync", "cv: "+cv);
                     //now there should be ContentValues that can be inserted.
                     rId = db.insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
@@ -1227,7 +1255,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     changes.inserts++;
                 } else {
                     long id = c.getLong(0);
-                    String time = c.getString(1);
+                    String timestamp = c.getString(1);
                     String value = c.getString(2);
                     String varName = c.getString(3);
                     String author = c.getString(4);
@@ -1262,8 +1290,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
                     //If this is a status variable, and the value is different than existing value, add a conflict.
 
-                    boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(time, s.getTimeStamp()));
-                    if (time != null && s.getTimeStamp() != null) {
+                    boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp()));
+                    if (timestamp != null && s.getTimeStamp() != null) {
                         if (!existingTimestampIsMoreRecent) {
                             Log.d("sync", "REPLACING " + name);
                             cv.put("id", id);
@@ -1279,8 +1307,8 @@ public class DbHelper extends SQLiteOpenHelper {
                         } else {
                             changes.refused++;
                             o.addRow("");
-                            o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + time);
-                            Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + time);
+                            o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                            Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
                         }
                     } else
                         Log.e("sync", "A timestamp was null!!");
@@ -1328,30 +1356,33 @@ public class DbHelper extends SQLiteOpenHelper {
                         Log.d("nils", "Selection ARGS: " + xor);
                         //Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
                         //Check timestamp. If timestamp is older, delete. Otherwise skip.
-                        s.getTimeStamp();
-                        StoredVariableData sv = this.getVariable(s.getTarget(), sel);
-                        boolean keep = true;
-                        if (sv != null)
-                            keep = Tools.existingTimestampIsMoreRecent(sv.timeStamp, s.getTimeStamp());
+
+                        //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
+                        Cursor c = getExistingVariableCursor(s.getTarget(), sel);
+                        boolean hasValueAlready = c.moveToNext();
+                        boolean existingTimestampIsMoreRecent = true;
+                        String timestamp ="";
+                        if (hasValueAlready) {
+                            timestamp = c.getString(1);
+                            existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
+                        }
                         else
                             Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
-                        if (!keep) {
+                        if (!existingTimestampIsMoreRecent) {
                             Log.d("sync", "Deleting " + name);
                             this.deleteVariable(s.getTarget(), sel, false);
-                            gs.getVariableCache().delete(name,keyHash);
+                            vc.insert(name,keyHash,null);
                             changes.deletes++;
                         } else {
                             changes.refused++;
                             Log.d("sync", "Did not delete...a newer entry exists in database.");
                             o.addRow("");
                             o.addYellowText("DB_DELETE REFUSED: " + name);
-                            if (sv != null)
-                                o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + sv.timeStamp);
+                            if (hasValueAlready)
+                                o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp);
                             else
                                 o.addYellowText(", since this variable has no value in my database");
                         }
-                        //Invalidate variables with this id in the cache..
-                        vc.invalidateOnName(s.getTarget());
 
                     } else
                         Log.e("sync", "SelectionArgs null in Delete Sync. S: " + s.getTarget() + " K: " + s.getKeys());
@@ -1389,7 +1420,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Add instructions in log if conflicts.
         if (changes.conflicts > 0) {
             o.addRow("");
-            o.addRedText("You have sync conflicts in the following workflows: ");
+            o.addRedText("You *may* have sync conflicts in the following workflow(s): ");
             int i = 1;
             for (String flow : conflictFlows) {
                 o.addRow("");
@@ -1397,7 +1428,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 i++;
             }
 
-            o.addRedText("Please check in one of your devices and correct. Then, resynchronise!");
+            o.addRedText("Verify that the values are correct. If not, make corrections and resynchronise!");
         }
         if (resetCache)
             vc.reset();
@@ -1412,12 +1443,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getExistingVariableCursor(String name, Selection s) {
-        //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
-        Cursor c = db.query(TABLE_VARIABLES, new String[]{"id", "timestamp", "value", "var", "author"},
-                s.selection, s.selectionArgs, null, null, null, null);
-        return c;
-    }
+
 
     public void syncDone(long timeStamp) {
         Log.d("vortex", "in syncdone with timestamp " + timeStamp);
@@ -1686,19 +1712,19 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public void insertGisObject(GisObject go) {
-        Variable gpsCoord = GlobalState.getInstance().getVariableCache().getVariable(go.getKeyHash(), GisConstants.Location);
+        Variable gpsCoord = GlobalState.getInstance().getVariableCache().getVariable(go.getKeyHash(), GisConstants.GPS_Coord_Var_Name);
         Variable geoType = GlobalState.getInstance().getVariableCache().getVariable(go.getKeyHash(), GisConstants.Geo_Type);
         if (gpsCoord == null || geoType == null) {
             LoggerI o = GlobalState.getInstance().getLogger();
             o.addRow("");
-            o.addRedText("Insert failed for GisObject " + go.getLabel() + " since one or both of the required variables " + GisConstants.Location + " and " + GisConstants.Geo_Type + " is missing from Variables.csv. Please add these and check spelling");
-            Log.e("vortex", "Insert failed for GisObject " + go.getLabel() + " since one or both of the required variables " + GisConstants.Location + " and " + GisConstants.Geo_Type + " is missing from Variables.csv. Please add these and check spelling");
+            o.addRedText("Insert failed for GisObject " + go.getLabel() + " since one or both of the required variables " + GisConstants.GPS_Coord_Var_Name + " and " + GisConstants.Geo_Type + " is missing from Variables.csv. Please add these and check spelling");
+            Log.e("vortex", "Insert failed for GisObject " + go.getLabel() + " since one or both of the required variables " + GisConstants.GPS_Coord_Var_Name + " and " + GisConstants.Geo_Type + " is missing from Variables.csv. Please add these and check spelling");
             return;
         }
         insertVariable(gpsCoord, go.coordsToString(), true);
         insertVariable(geoType, go.getGisPolyType().name(), true);
         if (gpsCoord == null || geoType == null) {
-            Log.e("vortex", "Insert failed for " + GisConstants.Location + ". Hash: " + go.getKeyHash().toString());
+            Log.e("vortex", "Insert failed for " + GisConstants.GPS_Coord_Var_Name + ". Hash: " + go.getKeyHash().toString());
         } else
             Log.d("vortex", "succesfully inserted new gisobject");
     }

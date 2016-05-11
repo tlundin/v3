@@ -404,8 +404,6 @@ public class Delyta {
 		String splitToken = " | ";
 		if (rawData == null||rawData.size()==0) {
 			Log.e("nils","Something is wrong...rawData empty");
-			GlobalState.getInstance().getLogger().addRow("");
-			GlobalState.getInstance().getLogger().addRedText("Rawdata empty in Delyta, getTagPretyPrint");
 			return "";
 		}
 		for (Coord c:rawData) 

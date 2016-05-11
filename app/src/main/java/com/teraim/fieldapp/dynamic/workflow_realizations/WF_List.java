@@ -82,12 +82,12 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	int intC=0;
 	boolean drawActive = false;
 	public void draw() {
-		Log.d("draw","DRAW CALLED "+ (++intC)+" times in list"+this.getId());
+		//Log.d("draw","DRAW CALLED "+ (++intC)+" times in list"+this.getId());
 		//Log.d("nils","DrawActive "+drawActive);
 		if (!drawActive) {
 			//Log.d("nils","Settingdrawactive to true from list"+this.getId());
 			drawActive = true;
-			final ProgressDialog progress = new ProgressDialog(myContext.getContext());
+			//final ProgressDialog progress = new ProgressDialog(myContext.getContext());
 
 			new Handler().postDelayed(new Runnable() {
 				public void run() {
@@ -108,7 +108,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 					}
 					//Log.d("nils","After sorter: "+System.currentTimeMillis());
 
-					//Log.d("nils","in redraw...");
+					Log.d("zorgo","in redraw..."+(intC++)+" for list "+getId()+" wf_list: "+WF_List.this+" handler: "+this);
 					prepareDraw();
 					
 					for (Listable l:filteredList) {
@@ -134,6 +134,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	}
 	
 	protected void prepareDraw() {
+		Log.d("zorg","DISCARDED ALL");
 		myW.removeAllViews();
 	}
 

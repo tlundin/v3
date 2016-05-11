@@ -134,19 +134,20 @@ public class GisObject {
 			return null;
 		}
 		String[] coords = value.split(",");
-		boolean x=true;
-		String gX=null;
+		boolean isXCoordinate=true;
+		String coordX=null;
 		List<Location> ret = new ArrayList<Location>();
+
 		for (String coord:coords) {
-			if (x) {
-				x=false;
-				gX=coord;
+			if (isXCoordinate) {
+				isXCoordinate=false;
+				coordX=coord;
 			} else {
-				x=true;
+				isXCoordinate=true;
 				if(coordType.equals(GisConstants.SWEREF))
-					ret.add(new SweLocation(gX,coord));
+					ret.add(new SweLocation(coordX,coord));
 				else
-					ret.add(new LatLong(gX,coord));
+					ret.add(new LatLong(coordX,coord));
 			}
 		}
 		//Log.d("vortex","createlistlocations returning: "+ret.toString());

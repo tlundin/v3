@@ -444,7 +444,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		//Add type to layer. Add even if empty.
 		if (target!=null) {//&&target.length()>0 && myGisObjects!=null && !myGisObjects.isEmpty()) {
 			//Add bag to layer.
-			myLayer=myContext.getCurrentGis().getLayer(target);
+			myLayer=myContext.getCurrentGis().getLayerFromId(target);
 			if (myLayer!=null) {
 				myLayer.addObjectBag(nName,myGisObjects,dynamic,myContext.getCurrentGis().getGis());
 

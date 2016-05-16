@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import android.util.MalformedJsonException;
 
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
+import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisPolygonObject;
@@ -39,8 +41,9 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private List<GisObject> myGisObjects = new ArrayList<GisObject>();
 	private String myType;
 	private boolean generatedUID = false;
+	private Table varTable;
 
-	public GisObjectConfiguration(PersistenceHelper globalPh,PersistenceHelper ph,Source source,String fileLocation, String fileName,LoggerI debugConsole,DbHelper myDb) {
+	public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
 		super(globalPh,ph, source,fileLocation, fileName, fixedLength(fileName));
 		this.o = debugConsole;
 		this.myDb = myDb;
@@ -53,7 +56,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			myType =( myType.substring(0,1).toUpperCase() + myType.substring(1));
 			Log.e("vortex","MYTYPE: "+myType);
 		}
-		
+		varTable = t;
 	}
 
 	private static String fixedLength(String fileName) {
@@ -87,13 +90,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	protected LoadResult prepare(JsonReader reader) throws IOException, JSONException {
 		//first should be an array.
 		if (!myDb.deleteHistoryEntries(GisConstants.TYPE_COLUMN,myType))
-			return new LoadResult(this,ErrorCode.Aborted,"Database is missing column 'år', cannot continue");
+			return new LoadResult(this,ErrorCode.Aborted,"Database is missing column 'ÅR', cannot continue");
 		reader.beginObject();
 		while (reader.hasNext()) {
 			String name = reader.nextName();
-			Log.d("vortex","found "+name);
+
 			if (name.equals("features")) {
-				Log.d("vortex","Found beginning of data");
 				reader.beginArray();
 				return null;
 			} else
@@ -109,6 +111,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	public LoadResult parse(JsonReader reader) throws JSONException,IOException {
 		Location myLocation;
 		try {
+
 		JsonToken tag = reader.peek();
 		if (tag.equals(JsonToken.END_ARRAY)) {
 			//end array means we are done.
@@ -223,9 +226,16 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				Log.e("vortex","type not supported! "+type);
 				return new LoadResult(this,ErrorCode.ParseError);
 			}
+			int skipped=0;
 			while(reader.hasNext()) {
-				Log.d("vortex","skipping: "+this.getAttribute(reader));
+				this.getAttribute(reader);
+				skipped++;
 			}
+			if (skipped>0) {
+				o.addRow("");
+				o.addYellowText("Skipped "+skipped+" attributes in file "+getFileName());
+			}
+
 			reader.endArray();
 			reader.endObject();
 			//Properties
@@ -253,7 +263,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				generatedUID=true;
 				keyChain.put("uid", UUID.randomUUID().toString());
 			}
-			keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
+			//keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
 
 			//Tarfala hack. TODO: Remove.
 			if (rutaId==null)
@@ -273,6 +283,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		} else {
 			o.addRow("");
 			o.addRedText("Parse error when parsing file "+fileName+". Expected Object type at line ");
+			Log.e("vortex","Parse error when parsing file "+fileName+". Expected Object type at line ");
 			return new LoadResult(this,ErrorCode.ParseError);
 		}
 		} catch (MalformedJsonException je) {
@@ -294,10 +305,14 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	boolean firstCall = true;
 	@Override
 	public boolean freeze(int counter) throws IOException {
+		Set<String> missingVariables=null;
+		boolean debug =false;
 		if (firstCall) {
+			missingVariables=new HashSet<String>();
+			debug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
 			if (generatedUID) {
 				o.addRow("");
-				o.addRedText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");
+				o.addYellowText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");
 			}
 
 			myDb.beginTransaction();
@@ -321,11 +336,26 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				o.addRow("");
 				o.addRedText("Row: "+counter+". Insert failed for "+key+". Hash: "+go.getKeyHash().toString());;
 			}
+			if (debug) {
+				if (varTable.getRowFromKey(key)==null) {
+					missingVariables.add(key);
+					Log.d("vortex","key missing: "+key);
+				}
+			}
 		}
 
 		if (this.freezeSteps==(counter+1)) {
 			Log.d("vortex","Transaction ends");
 			myDb.endTransactionSuccess();
+			if (debug && !missingVariables.isEmpty()) {
+				o.addRow("");
+				o.addRedText("VARIABLES MISSING IN VARIABLES CONFIGURATION FOR " + this.fileName + ":");
+
+				for (String m : missingVariables) {
+					o.addRow("");
+					o.addRedText(m);
+				}
+			}
 		}
 
 		return true;

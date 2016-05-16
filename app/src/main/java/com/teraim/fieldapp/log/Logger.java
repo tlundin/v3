@@ -41,15 +41,16 @@ public class Logger implements LoggerI {
 	}
 	public void addRedText(String text) {
 		if (!hasRed) {
-			Log.e("vortex","GETS TO SEND");
-			hasRed=true;
+			Log.e("vortex", "GETS TO SEND");
+			hasRed = true;
 			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		myTxt.append(s);	 
+		myTxt.append(text);
 		if (log!=null) log.setText(myTxt);
-		Log.d("vortex","hasRed true for "+this.toString());
+		//Log.d("vortex","hasRed true for "+this.toString());
+		//Log.d("vortex",""+this.toString());
 	}	 
 	public void addGreenText(String text) {
 		s = new SpannableString(text);

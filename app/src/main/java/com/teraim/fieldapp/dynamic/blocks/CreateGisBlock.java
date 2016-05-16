@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -20,10 +21,12 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.AsyncResumeExecutorI;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
+import com.teraim.fieldapp.dynamic.types.MapGisLayer;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
@@ -46,6 +49,7 @@ public class CreateGisBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = 2013870148670474254L;
+	private static final int MAX_NUMBER_OF_PICS = 100;
 	private final String name,source,containerId,N,E,S,W;
 	Unit unit;
 	GlobalState gs;
@@ -59,7 +63,9 @@ public class CreateGisBlock extends Block {
 	private boolean hasSatNav;
 	private WF_Gis_Map gis=null;
 	private List<EvalExpr> sourceE;
-
+	private int loadCount=0;
+	private boolean aborted=false;
+	private List<MapGisLayer> mapLayers;
 	public boolean hasCarNavigation() {
 		return hasSatNav;
 	}
@@ -100,8 +106,9 @@ public class CreateGisBlock extends Block {
 	 */
 
 	public boolean create(WF_Context myContext,final AsyncResumeExecutorI cb) {
-
-
+		mapLayers  = new ArrayList<MapGisLayer>();
+		aborted = false;
+		Log.d("vortex","in create for createGisBlock!");
 		Context ctx = myContext.getContext();
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
@@ -122,40 +129,73 @@ public class CreateGisBlock extends Block {
 			return true;
 		}
 
-		final String picName = Expressor.analyze(sourceE);
-		Log.d("vortex","ParseString result: "+picName);
+		final String pics = Expressor.analyze(sourceE);
+		Log.d("vortex","ParseString result: "+pics);
 		//Load asynchronously. Put up a loadbar.
+		//Need one async load per image.
+		String[] picNames=null;
+		if (pics!=null && pics.contains(",")) {
+			picNames = pics.split(",");
+			Log.d("vortex","found "+picNames.length+" pics");
 
+		} else {
+			picNames = new String[1];
+			picNames[0]=pics;
+		}
+//		boolean allLoaded=false;
+		final String masterPicName = picNames[0];
 
-		Tools.onLoadCacheImage(serverFileRootDir, picName, cacheFolder, new WebLoaderCb() {
-
-			@Override
-			public void progress(int bytesRead) {
-				Log.d("vortex","progress: "+bytesRead);
-			}
-
-			@Override
-			public void loaded(Boolean result) {
-				if (result)
-					loadImageMetaData(picName,serverFileRootDir,cacheFolder);
-				else {
-					Log.e("vortex","Pic url null! GisImageView will not load");
-					o.addRow("");
-					o.addRedText("GisImageView failed to load. File not found: "+serverFileRootDir+picName);
-					cb.abortExecution("GisImageView failed to load. File not found: "+serverFileRootDir+picName);
+		for (int i=0;i<picNames.length;i++) {
+			final boolean isLast = (i == picNames.length-1);
+			final int I = i;
+			final String picName = picNames[i];
+			Tools.onLoadCacheImage(serverFileRootDir, picName, cacheFolder, new WebLoaderCb() {
+				@Override
+				public void progress(int bytesRead) {
 
 				}
-			}
-		});
+				@Override
+				public void loaded(Boolean result) {
+					if (!aborted) {
+						if (result) {
+							Log.d("vortex", "picture " + picName + " now in cache.");
+							MapGisLayer mapLayer;
+							if (picName.equals(masterPicName)) {
+								mapLayer = new MapGisLayer(gis, GisConstants.DefaultTag, picName);
 
+							} else
+								mapLayer = new MapGisLayer(gis, "bg" + (I), picName);
+							Log.d("vortex", "Added layer: " + mapLayer.getLabel());
+							mapLayers.add(mapLayer);
+						} else {
+							Log.e("vortex", "Picture not found. "+serverFileRootDir+picName);
+							o.addRow("");
+							o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+							if (picName.equals(masterPicName)) {
+								aborted = true;
+								cb.abortExecution("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+							}
+
+						}
+
+						if (isLast)
+							loadImageMetaData(masterPicName, serverFileRootDir, cacheFolder);
+
+					}
+
+				}
+			});
+		}
 		return false;
 	}
 
 	Rect r = null;
 	PhotoMeta photoMetaData;
+	String cachedImgFilePath="";
 	
-	public void createAfterLoad(PhotoMeta photoMeta, final String cachedImgFilePath) {
+	public void createAfterLoad(PhotoMeta photoMeta, final String cacheFolder, final String fileName) {
 		this.photoMetaData=photoMeta;
+		cachedImgFilePath = cacheFolder+fileName;
 		final Container myContainer = myContext.getContainer(containerId);
 
 		if (myContainer!=null && photoMetaData!=null) {
@@ -167,6 +207,25 @@ public class CreateGisBlock extends Block {
 			r=null;
 
 			if (cutOut==null) {
+				boolean found = false;
+				GisLayer masterLayer = null;
+				for (MapGisLayer layer:mapLayers) {
+					if (layer.isVisible()) {
+						cachedImgFilePath = cacheFolder + layer.getImageName();
+						found = true;
+						Log.d("gurk","layer with name "+layer.getLabel()+" now visible" );
+						break;
+					}
+					if (layer.getLabel().equals(GisConstants.DefaultTag)) {
+						Log.d("gurk","masterlayer found.");
+						masterLayer = layer;
+					}
+				}
+				if (!found) {
+					masterLayer.setVisible(true);
+					Log.d("gurk","masterlayer is now visible.");
+				}
+
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inJustDecodeBounds = true;
 				BitmapFactory.decodeFile(cachedImgFilePath, options);
@@ -183,14 +242,17 @@ public class CreateGisBlock extends Block {
 				Location botC = cutOut.geoR.get(1);
 				photoMetaData = new PhotoMeta(topC.getY(),botC.getX(),botC.getY(),topC.getX());
 				cutOut=null;
+				mapLayers.clear();
 			}
 			
 			new Handler().postDelayed(new Runnable() {
 				public void run() {
+
 					Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,r);
 					if (bmp!=null) {
 
 						gis = new WF_Gis_Map(CreateGisBlock.this,r,blockId, mapView, isVisible, bmp,myContext,photoMetaData,avstRL,createMenuL,myLayers,imageWidth,imageHeight);
+
 						//need to throw away the reference to myLayers.
 						myLayers=null;
 						myContainer.add(gis);
@@ -198,22 +260,33 @@ public class CreateGisBlock extends Block {
 						myContext.addEventListener(gis, EventType.onSave);
 						myContext.addEventListener(gis, EventType.onFlowExecuted);
 						myContext.addDrawable(name,gis);
-						final View menuL = mapView.findViewById(R.id.menuL);
+						final View menuL = mapView.findViewById(R.id.mmenuL);
 
 						menuL.setVisibility(View.INVISIBLE);
 						avstRL.setVisibility(View.INVISIBLE);
 						final ImageButton menuB = (ImageButton)mapView.findViewById(R.id.menuB);
 
+							for (GisLayer gl:mapLayers) {
+								gis.addLayer(gl);
+							}
+
+
 						menuB.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
+
 								int menuState = menuL.getVisibility();
-								if (menuState == View.VISIBLE) 
+								if (menuState == View.VISIBLE) {
 									menuL.setVisibility(View.INVISIBLE);
+									Log.d("vortex","setclickabletotrue");
+									gis.getGis().setClickable(true);
+								}
 								else {
 									gis.initializeLayersMenu(gis.getLayers());
 									menuL.setVisibility(View.VISIBLE);
+									Log.d("vortex","setclickabletofalse");
+									gis.getGis().setClickable(false);
 								}
 							}
 						});
@@ -251,7 +324,7 @@ public class CreateGisBlock extends Block {
 		}
 		else {
 			Log.e("vortex","Found tags for photo meta");
-			createAfterLoad(new PhotoMeta(N,E,S,W),cacheFolder+picName);
+			createAfterLoad(new PhotoMeta(N,E,S,W),cacheFolder,picName);
 		}
 	}
 
@@ -277,7 +350,7 @@ public class CreateGisBlock extends Block {
 						if (res.errCode==ErrorCode.frozen) {
 							PhotoMeta pm = (PhotoMeta)meta.getEssence();
 							Log.d("vortex","img N, W, S, E "+pm.N+","+pm.W+","+pm.S+","+pm.E);
-							createAfterLoad(pm,cacheFolder+fileName);
+							createAfterLoad(pm,cacheFolder,fileName);
 						}
 						else {
 							o.addRow("");
@@ -298,7 +371,7 @@ public class CreateGisBlock extends Block {
 				Log.d("vortex","Found frozen metadata. Will use it");
 				PhotoMeta pm = (PhotoMeta)meta.getEssence();
 				Log.d("vortex","img N, W, S, E "+pm.N+","+pm.W+","+pm.S+","+pm.E);
-				createAfterLoad(pm,cacheFolder+fileName);
+				createAfterLoad(pm,cacheFolder,fileName);
 			}
 		}
 	}

@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.teraim.fieldapp.utils.Tools.*;
+
 
 public class VariableCache {
 
@@ -115,7 +117,7 @@ public class VariableCache {
             else
                 Log.d("vortex", "Creating Cache for keyhash null");
 
-            Map<String, String> copy = myKeyHash == null ? null : Tools.copyKeyHash(myKeyHash);
+            Map<String, String> copy = myKeyHash == null ? null : copyKeyHash(myKeyHash);
             ret = createAllVariablesForKey(copy);
             if (ret == null) {
                 //Log.e("vortex","No variables found in db for "+myKeyHash+". Creating empty hash");
@@ -163,12 +165,16 @@ public class VariableCache {
                 ret = new HashMap<String, Variable>();
                 for (String varName : map.keySet()) {
 
-                    TmpVal vals = map.get(varName);
+                    TmpVal variableValues = map.get(varName);
                     List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varName);
                     if (row == null) {
                         Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
-                        gs.getDb().deleteVariable(varName, gs.getDb().createSelection(myKeyHash, varName), true);
+                        Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);
+                        //Entry is either historical or normal. Delete independently
+                        deleteHash.remove("ÅR");
+                        gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), true);
                         Log.e("vortex", "Deleted " + varName);
+
                     } else {
                         String header = gs.getVariableConfiguration().getVarLabel(row);
                         DataType type = gs.getVariableConfiguration().getnumType(row);
@@ -187,9 +193,9 @@ public class VariableCache {
                             //Log.e("vortex","Deleted "+varName);
                         }
                         if (type == DataType.array)
-                            v = new ArrayVariable(varName, header, row, myKeyHash, gs, vCol, vals.norm, true, vals.hist);
+                            v = new ArrayVariable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);
                         else
-                            v = new Variable(varName, header, row, myKeyHash, gs, vCol, vals.norm, true, vals.hist);
+                            v = new Variable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);
                         ret.put(varName.toLowerCase(), v);
 						Log.d("vorto","Added "+varName+" to cache");
                     }
@@ -279,7 +285,7 @@ public class VariableCache {
             }
 
             String mColumns = gs.getVariableConfiguration().getKeyChain(row);
-            Map<String, String> tryThis = Tools.cutKeyMap(mColumns, hash);
+            Map<String, String> tryThis = cutKeyMap(mColumns, hash);
             if (tryThis != null && tryThis.isEmpty()) {
                 Log.e("vortex", "KEY FAILLLLL!!!");
                 return null;

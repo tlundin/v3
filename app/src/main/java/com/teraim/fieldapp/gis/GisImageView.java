@@ -27,6 +27,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -38,6 +39,7 @@ import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
+import com.teraim.fieldapp.dynamic.types.MapGisLayer;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -136,6 +138,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private void init(Context ctx) {
 
+		this.setClickable(true);
 
 		locationManager = (LocationManager) ctx
 				.getSystemService(Context.LOCATION_SERVICE);
@@ -254,8 +257,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("vortex","Gets short!");
-				if (clickXY!=null)
+				Log.d("vortex","Gets short! Clickable is "+GisImageView.this.isClickable());
+				if (clickXY!=null || !GisImageView.this.isClickable())
 					return;
 
 				calculateMapLocationForClick(polyVertexX,polyVertexY);
@@ -299,8 +302,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			@Override
 			public boolean onLongClick(View v) {
-				Log.d("vortex","Gets long!");
-				if (clickXY!=null)
+				Log.d("vortex","Gets long! clickable is "+GisImageView.this.isClickable());
+				if (clickXY!=null || !GisImageView.this.isClickable())
 					return false;
 				calculateMapLocationForClick(polyVertexX,polyVertexY);
 				clickWasShort = false;
@@ -543,7 +546,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Log.e("vortex","cannot create...createbag null");
 	}
 
-
+	Drawable d1;
 
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
@@ -552,7 +555,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//scale and adjust.
 		try {
 			float adjustedScale = scale * scaleAdjust;
-			if (allowZoom && adjustedScale>2.0f)
+			if (allowZoom && adjustedScale>2.0f && this.getDrawable()!=null)
 				myMap.setZoomButtonVisible(true);
 			else
 				myMap.setZoomButtonVisible(false);
@@ -564,9 +567,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			candidates.clear();
 
 			for (GisLayer layerO:myMap.getLayers()) {
-				String layerId = layerO.getId();
+				//String layerId = layerO.getId();
 				//Log.d("vortex","drawing layer "+layerId);
 				//get all objects that should be drawn on this layer.
+				//Treat maplayers
 				if (!layerO.isVisible()) {
 					//Log.d("vortex","layer not visible...skipping "+layerId+" Obj: "+layerO.toString());
 					continue;

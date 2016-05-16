@@ -3,11 +3,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:layout_marginLeft="5dp"
+    android:layout_gravity="left"
     android:layout_marginRight="10dp" >
 
     <TextView
         android:id="@+id/filterName"
-        android:layout_width="175dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="Hallmarksstorängar"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -21,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
          android:layout_marginRight="10dp"
-        android:text="Show" />
+        android:text="S" />
 
     <CheckBox
         android:id="@+id/cbLabels"
@@ -31,6 +34,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
          android:layout_marginRight="10dp"
-        android:text="Labels" />
+        android:text="L" />
 
 </LinearLayout>

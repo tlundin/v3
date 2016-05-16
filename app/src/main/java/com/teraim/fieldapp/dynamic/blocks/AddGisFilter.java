@@ -96,11 +96,11 @@ public class AddGisFilter extends Block implements GisFilter {
 		myGis = myContext.getCurrentGis();
 		if (myGis!=null) {
 
-			final GisLayer gisLayer = myGis.getLayer(targetLayer);
+			final GisLayer gisLayer = myGis.getLayerFromLabel(targetLayer);
 			if (gisLayer!=null) {
 				if (hasWidget) {
 					Log.d("vortex","Filter "+nName+" has a widget");
-					LinearLayout layersL = (LinearLayout)myGis.getWidget().findViewById(R.id.FiltersL);
+					//LinearLayout layersL = (LinearLayout)myGis.getWidget().findViewById(R.id.FiltersL);
 					LayoutInflater li = LayoutInflater.from(myContext.getContext());
 					View filtersRow = li.inflate(R.layout.filters_row, null);
 					TextView filterNameT = (TextView)filtersRow.findViewById(R.id.filterName);
@@ -119,8 +119,8 @@ public class AddGisFilter extends Block implements GisFilter {
 					});
 
 					gisLayer.addObjectFilter(targetObjectType, this);
-					layersL.addView(filtersRow);
-					layersL.setVisibility(View.VISIBLE);
+					//layersL.addView(filtersRow);
+					//layersL.setVisibility(View.VISIBLE);
 				}
 			} else {
 				o.addRow("");

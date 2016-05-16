@@ -67,7 +67,7 @@ public class GisLayer {
 		Set<GisObject> existingBag = myObjects.get(key);
 		//If no objects found we add an empty set provided none exist.
 		if (myGisObjects == null && existingBag == null) {
-			Log.d("vortex","Added empty set to layer: "+name+" of type "+key);
+			Log.d("vortex","Added empty set to layer: "+getId()+" of type "+key);
 			myObjects.put(key, new HashSet<GisObject>());
 		} else {
 			//If bag already exists, we merge. If not, we create new.
@@ -95,13 +95,13 @@ public class GisLayer {
 				Log.d("Vortex","Adding a new bag of type "+key);
 				myObjects.put(key, myGisObjects);
 			}
-			Log.d("vortex","added "+myGisObjects.size()+" objects to layer: "+name+" of type "+key);
+			Log.d("vortex","added "+myGisObjects.size()+" objects to layer: "+getId()+" of type "+key);
 		}
 		if (dynamic)
 			this.hasDynamic = true;
 		Set<GisObject> l = myObjects.get(key);
 		if (merge)
-			Log.d("vortex","CAPRIX Bag "+name+" now has "+l.size()+" members"+" bag obj: "+((Object)l.toString()));
+			Log.d("vortex","CAPRIX Bag "+getId()+" now has "+l.size()+" members"+" bag obj: "+((Object)l.toString()));
 	}
 
 	public void addObjectFilter(String key, GisFilter f) {
@@ -110,7 +110,7 @@ public class GisLayer {
 			setOfFilters = new HashSet<GisFilter>();
 
 		setOfFilters.add(f);
-		Log.d("vortex","added filter "+name+" of type "+key);
+		Log.d("vortex","added filter "+getId()+" of type "+key);
 		myFilters.put(key, setOfFilters);
 
 	}
@@ -132,7 +132,7 @@ public class GisLayer {
 	public void setVisible(boolean isVisible) {
 
 		Log.d("vortex","SetVisible called with "+isVisible+" on "+this.getId()+" Obj: "+this.toString());
-		GlobalState.getInstance().getPreferences().put(PersistenceHelper.LAYER_VISIBILITY+name, isVisible?1:0);
+		GlobalState.getInstance().getPreferences().put(PersistenceHelper.LAYER_VISIBILITY+getId(), isVisible?1:0);
 
 	}
 
@@ -162,8 +162,8 @@ public class GisLayer {
 	}
 
 	public boolean isVisible() {
-		int v = GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+name);
-		//Log.d("vortex","Layer "+name+" has visibility set to "+v+" default is "+defaultVisible);
+		int v = GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId());
+		//Log.d("vortex","Layer "+getId()+" has visibility set to "+v+" default is "+defaultVisible);
 		if (v==-1)
 			return defaultVisible;
 		else

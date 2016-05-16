@@ -41,7 +41,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 3.78f;
+	public final static float VORTEX_VERSION = 3.83f;
 	//String constants
 	//The root folder for the SD card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -269,7 +269,7 @@ public class Constants {
 			public void loaded(List<String> fileNames) {
 				if (fileNames!=null)
 					Log.d("vortex","loadresult is "+fileNames.toString());
-				getAllConfigurationFileNamesFromWebOrFile(fileNames, serverFolder,fileFolder,asyncLoadDoneCb,globalPh,ph,debugConsole,db,ret);				
+				getAllConfigurationFileNamesFromWebOrFile(fileNames, serverFolder,fileFolder,asyncLoadDoneCb,globalPh,ph,debugConsole,db,ret,t);
 			}
 		})
 		.execute(serverFolder+Constants.GPS_LIST_FILE_NAME);	
@@ -278,7 +278,7 @@ public class Constants {
 	}
 
 	private static void getAllConfigurationFileNamesFromWebOrFile(List<String> fileNames,
-			String serverFolder, String fileFolder, AsyncLoadDoneCb asyncLoadDoneCb, PersistenceHelper globalPh,PersistenceHelper ph, LoggerI debugConsole,DbHelper db, List<ConfigurationModule> modules) {
+			String serverFolder, String fileFolder, AsyncLoadDoneCb asyncLoadDoneCb, PersistenceHelper globalPh,PersistenceHelper ph, LoggerI debugConsole,DbHelper db, List<ConfigurationModule> modules, Table t) {
 
 		boolean loadFromWeb=false;
 		//look for contents.txt file on net.
@@ -290,9 +290,9 @@ public class Constants {
 		if (fileNames!=null && !fileNames.isEmpty()) {
 			for (String file:fileNames) {
 				if (!loadFromWeb)
-					modules.add(new GisObjectConfiguration(globalPh,ph,Source.file,fileFolder,file,debugConsole,db));
+					modules.add(new GisObjectConfiguration(globalPh,ph,Source.file,fileFolder,file,debugConsole,db,t));
 				else
-					modules.add(new GisObjectConfiguration(globalPh,ph,Source.internet,serverFolder,file,debugConsole,db));
+					modules.add(new GisObjectConfiguration(globalPh,ph,Source.internet,serverFolder,file,debugConsole,db,t));
 			}
 		} else 
 			Log.d("vortex","found no GIS configuration files.");

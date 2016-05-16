@@ -333,8 +333,8 @@ public class GestureImageView extends ImageView  {
 
 				drawable.draw(canvas);
 				canvas.restore();
-			} else
-				Log.d("vortex", "nodraw......................");
+			} //else
+			//	Log.d("vortex", "nodraw since drawable is null");
 
 			if(drawLock.availablePermits() <= 0) {
 				drawLock.release();
@@ -345,7 +345,7 @@ public class GestureImageView extends ImageView  {
 
 	/**
 	 * Waits for a draw
-	 * @param max time to wait for draw (ms)
+	 * @param timeout time to wait for draw (ms)
 	 * @throws InterruptedException
 	 */
 	public boolean waitForDraw(long timeout) throws InterruptedException {
@@ -413,7 +413,13 @@ public class GestureImageView extends ImageView  {
 			this.recycle();
 			Log.d("vortex","REcycle!");
 		}
-		this.drawable = new BitmapDrawable(getResources(), image);		
+		this.drawable = new BitmapDrawable(getResources(), image);
+		if (drawable!=null) {
+			Log.d("vortex", "Drawable not null!");
+			layout=false;
+		}
+		else
+			Log.d("vortex","Drawable null!");
 		initImage();
 	}
 

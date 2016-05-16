@@ -157,9 +157,11 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 			@Override
 			public boolean onDoubleTap(MotionEvent e) {
 				Log.d("vortex","double tap!");
-				if (currentScale!=8.0f)
-					startZoom(e);
-				doubleTapped=true;
+				if (image==null || image.isClickable()) {
+					if (currentScale != 8.0f)
+						startZoom(e);
+					doubleTapped = true;
+				}
 				return true;
 			}
 

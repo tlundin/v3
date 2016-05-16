@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -37,6 +39,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +53,7 @@ import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
+import com.teraim.fieldapp.dynamic.types.MapGisLayer;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
@@ -60,26 +66,24 @@ import com.teraim.fieldapp.gis.GisImageView;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.Geomatte;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 /**
- * 
+ *
  * @author Terje
  * Copyright Teraim 2015
  * Do not redistribute or change without prior agreement with copyright owners.
- * 
- * 
+ *
+ *
  * Implements A GIS Map widget. Based on  
  */
 public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, AnimationListener {
 
-	private boolean click=false;
-	private PersistenceHelper globalPh,ph;
-	private String gisDir;
+	private final FrameLayout mapView;
+	private PersistenceHelper globalPh;
 	private GisImageView gisImageView;
-	private LinearLayout filtersC,layersC;
 	private final WF_Context myContext;
 	private View avstRL,createMenuL;
-	private TextView avstT,riktT;
 	private TextSwitcher avstTS;
 	private TextSwitcher riktTS;
 	private Button unlockB,startB;
@@ -98,7 +102,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	private List<GisLayer> myLayers = new ArrayList<GisLayer>();
 
 	private boolean isZoomLevel;
-
+	private final int  realW,realH;
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -128,15 +132,15 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
 			switch (item.getItemId()) {
 
-			case R.id.menu_delete:
-				gisImageView.deleteSelectedGop();
-				mode.finish(); // Action picked, so close the CAB
-				return true;
-			case R.id.menu_info:
-				gisImageView.describeSelectedGop();
-				return false;
-			default:
-				return false;
+				case R.id.menu_delete:
+					gisImageView.deleteSelectedGop();
+					mode.finish(); // Action picked, so close the CAB
+					return true;
+				case R.id.menu_info:
+					gisImageView.describeSelectedGop();
+					return false;
+				default:
+					return false;
 			}
 		}
 
@@ -159,27 +163,27 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 	public WF_Gis_Map(CreateGisBlock createGisBlock,Rect rect, String id, final FrameLayout mapView, boolean isVisible, Bitmap bmp,
-			final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, View createMenuL,  List<GisLayer> daddyLayers, final int realW, final int realH) {
+					  final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, View createMenuL,  List<GisLayer> daddyLayers, final int realW, final int realH) {
 		super(id, mapView, isVisible, myContext);
-		
+
 		GlobalState gs = GlobalState.getInstance();
 
 		this.myContext=myContext;
 		this.myDaddy=createGisBlock;
 		//This is a zoom level if layers are imported.
 		isZoomLevel = daddyLayers!=null;
-		gisImageView = (GisImageView)mapView.findViewById(R.id.GisV);		
+		gisImageView = (GisImageView)mapView.findViewById(R.id.GisV);
 		gisImageView.setImageBitmap(bmp);
-		
-		
-		this.photoMeta = photoMeta; 
+
+
+		this.photoMeta = photoMeta;
 		globalPh = gs.getGlobalPreferences();
-		ctx = myContext.getContext();	
-		ph = gs.getPreferences();
+		ctx = myContext.getContext();
+
 		//Bitmap bmp = Tools.getScaledImage(ctx,fullPicFileName);
 
 
-		
+
 
 		//Only allow zoom if this is *not* a zoom level. Only one level of zoom!
 
@@ -197,8 +201,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		gisObjectMenu = (GisObjectsMenu)gisObjectsPopUp.findViewById(R.id.gisObjectsMenu);
 		gisObjectsPopUp.setVisibility(View.GONE);
 		mapView.addView(gisObjectsPopUp);
-		LinearLayout filtersL = (LinearLayout)mapView.findViewById(R.id.FiltersL);
-		filtersL.setVisibility(View.GONE);
+		//LinearLayout filtersL = (LinearLayout)mapView.findViewById(R.id.FiltersL);
+		//filtersL.setVisibility(View.GONE);
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 
 		params.gravity=Gravity.RIGHT;
@@ -246,7 +250,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		carNavB = (ImageButton)mapView.findViewById(R.id.carNavB);
 
-		if (!myContext.hasSatNav()) 
+		if (!myContext.hasSatNav())
 			carNavB.setVisibility(View.GONE);
 		else {
 
@@ -340,13 +344,13 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			public boolean onTouch(View v, MotionEvent event) {
 
 				switch(event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					//startScrollIn();
-					gisImageView.handleScale(Initial);
-					break;
-				case MotionEvent.ACTION_UP:
-					//stopScrollIn();
-					break;
+					case MotionEvent.ACTION_DOWN:
+						//startScrollIn();
+						gisImageView.handleScale(Initial);
+						break;
+					case MotionEvent.ACTION_UP:
+						//stopScrollIn();
+						break;
 				}
 
 				return v.performClick();
@@ -365,18 +369,18 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			public boolean onTouch(View v, MotionEvent event) {
 
 				switch(event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					if (gisImageView.handleScaleOut(Initial)&&isZoomLevel) {
-						//trigger pop on fragment.
-						gisImageView.unSelectGop();
-						myContext.getActivity().getFragmentManager().popBackStackImmediate();
+					case MotionEvent.ACTION_DOWN:
+						if (gisImageView.handleScaleOut(Initial)&&isZoomLevel) {
+							//trigger pop on fragment.
+							gisImageView.unSelectGop();
+							myContext.getActivity().getFragmentManager().popBackStackImmediate();
 
-					};
-					//startScrollOut();
-					break;
-				case MotionEvent.ACTION_UP:
-					//stopScrollOut();
-					break;
+						};
+						//startScrollOut();
+						break;
+					case MotionEvent.ACTION_UP:
+						//stopScrollOut();
+						break;
 				}
 
 				return v.performClick();
@@ -450,13 +454,19 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 
-		
+
 		if (isZoomLevel) {
 			Log.e("vortex","Zoom level!");
 			myLayers = daddyLayers;
 			clearLayerCaches();
-		} else
+		} else {
 			myLayers = new ArrayList<GisLayer>();
+
+		}
+
+		this.realW = realW;
+		this.realH = realH;
+		this.mapView = mapView;
 	}
 
 
@@ -585,7 +595,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			myContext.refreshGisObjects();
 			Log.d("vortex","Issuing redraw of gisimageview!!");
 			gisImageView.redraw();
-			
+
 		}
 		else if (e.getType() == EventType.onFlowExecuted) {
 			Log.d("vortex","flow executed! Initializing gis imageview!");
@@ -643,17 +653,17 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		if (firstTime) {
 			globalPh.put(PersistenceHelper.GIS_CREATE_FIRST_TIME_KEY, "notfirstanymore!");
 			new AlertDialog.Builder(myContext.getContext())
-			.setTitle("Creating GIS objects")
-			.setMessage("You are creating your first GIS object!\nClick on the location on the map where you want to place it or its first point.")
-			.setIcon(android.R.drawable.ic_dialog_info)
-			.setCancelable(false)
-			.setNeutralButton(ctx.getString(R.string.ok),new Dialog.OnClickListener() {				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+					.setTitle("Creating GIS objects")
+					.setMessage("You are creating your first GIS object!\nClick on the location on the map where you want to place it or its first point.")
+					.setIcon(android.R.drawable.ic_dialog_info)
+					.setCancelable(false)
+					.setNeutralButton(ctx.getString(R.string.ok),new Dialog.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-				}
-			} )
-			.show();
+						}
+					} )
+					.show();
 		}
 		//Put Map and GisViewer into create mode.
 
@@ -688,7 +698,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		}
 		gisImageView.unSelectGop();
 	}
-	 */	
+	 */
 	public void addLayer(GisLayer layer) {
 		if(layer!=null) {
 			Log.d("vortex","Succesfully added layer "+layer.getLabel());
@@ -701,59 +711,182 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	/*
 
 	 */
-	public void initializeLayersMenu(List<GisLayer> layers) {
+	int currentlyChecked=-1;
+
+	public void initializeLayersMenu(final List<GisLayer> layers) {
 		LinearLayout layersL = (LinearLayout)getWidget().findViewById(R.id.LayersL);
 		layersL.removeAllViews();
 		LayoutInflater li = LayoutInflater.from(myContext.getContext());
-		View layersHeader = li.inflate(R.layout.layers_header, null);
-		layersL.addView(layersHeader);
-		
+		int bgId=0;
+		View layersRow=null;
+		final RadioGroup radioGroup= (RadioGroup) getWidget().findViewById(R.id.radioL);
+		radioGroup.removeAllViews();
+		radioGroup.setOnCheckedChangeListener(null);
+		radioGroup.clearCheck();
+		RadioButton rb = (RadioButton)li.inflate(R.layout.map_layers_row, null);
+		rb.setText("None");
+		rb.setChecked(true);
+		rb.setId(bgId++);
+		radioGroup.addView(rb);
+
+		//find the longest text. if shorter than max, all strings will have this length.
+		final int MaxLabelLength = 18;
+		int maxLength=-1,length=0;
 		for (final GisLayer layer:layers) {
-
-			if (layer.hasWidget()) {
-				//Log.d("vortex","Layer "+layer.getLabel()+" has a widget");
-				View layersRow = li.inflate(R.layout.layers_row, null);
-				TextView filterNameT = (TextView)layersRow.findViewById(R.id.filterName);
-				CheckBox lShow = (CheckBox)layersRow.findViewById(R.id.cbShow);
-				CheckBox lLabels = (CheckBox)layersRow.findViewById(R.id.cbLabels);
-				filterNameT.setText(layer.getLabel());
-				lShow.setChecked(layer.isVisible());
-				//Log.d("vortex","SETCCHECKED: "+layer.isVisible());
-				lLabels.setChecked(layer.showLabels());
-				
-
-				lShow.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-
-						layer.setVisible(((CheckBox)v).isChecked());
-						gisImageView.invalidate();
-						
-					}});
-
-				lLabels.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {						
-						layer.setShowLabels(isChecked);
-						gisImageView.invalidate();
-					}
-				});
-				layersL.addView(layersRow);
-				
-
-			}
+			length = layer.getLabel().length();
+			if (length> maxLength)
+				maxLength=length;
 		}
-		
+		if (maxLength>MaxLabelLength)
+			maxLength=MaxLabelLength;
+		Log.d("vortex","maxlength now "+maxLength);
+		for (final GisLayer layer:layers) {
+			if (layer instanceof MapGisLayer) {
+				rb = (RadioButton)li.inflate(R.layout.map_layers_row, null);
+				rb.setText(layer.getLabel());
+				rb.setId(bgId);
+				radioGroup.addView(rb);
+				if (layer.isVisible()) {
+					Log.d("vortex","found visible layer "+layer.getLabel()+"...setting rb to on");
+					radioGroup.clearCheck();
+					radioGroup.check(bgId);
+					currentlyChecked = bgId;
+				}
+				bgId++;
+			} else {
+
+				if (layer.hasWidget()) {
+					layersRow = li.inflate(R.layout.layers_row, null);
+					CheckBox lShow = (CheckBox) layersRow.findViewById(R.id.cbShow);
+					CheckBox lLabels = (CheckBox) layersRow.findViewById(R.id.cbLabels);
+					//Log.d("vortex","Layer "+layer.getLabel()+" has a widget");
+					TextView filterNameT = (TextView) layersRow.findViewById(R.id.filterName);
+					String fixedL = Tools.fixedLengthString(layer.getLabel(),maxLength);
+					filterNameT.setText(fixedL);
+					//Log.d("vortex","length for"+fixedL+" is "+fixedL.length());
+					lShow.setChecked(layer.isVisible());
+					//Log.d("vortex","SETCCHECKED: "+layer.isVisible());
+
+
+					lLabels.setChecked(layer.showLabels());
+
+
+					lShow.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+
+							layer.setVisible(((CheckBox) v).isChecked());
+							gisImageView.invalidate();
+
+						}
+					});
+
+					lLabels.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+						@Override
+						public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+							layer.setShowLabels(isChecked);
+							gisImageView.invalidate();
+						}
+					});
+
+
+
+
+				} else
+					layersRow = null;
+				if (layersRow!=null)
+					layersL.addView(layersRow);
+			}
+
+		}
+
+		final String cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
+		int previouslyChecked = -1;
+		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+
+				RadioButton radioB;
+				String text;
+				gisImageView.setImageDrawable(null);
+				MapGisLayer layer=null;
+				//Current layer if visible -> not visible.
+				if (currentlyChecked!=-1) {
+					radioB = (RadioButton) radioGroup.findViewById(currentlyChecked);
+					text = radioB.getText().toString();
+					layer = (MapGisLayer) getLayerFromLabel(text);
+					if (layer != null) {
+						layer.setVisible(false);
+						Log.d("Vortex", "hiding layer " + layer.getLabel());
+					} else
+						Log.e("vortex", "could not find layer " + text);
+				}
+				radioB = (RadioButton) radioGroup.findViewById(checkedId);
+				text = radioB.getText().toString();
+				if (text.equals("None")) {
+					setZoomButtonVisible(false);
+					Log.d("vortex","found none tag");
+				} else {
+					layer = (MapGisLayer) getLayerFromLabel(text);
+					if (layer!=null) {
+						layer.setVisible(true);
+
+						String cachedImgFilePath = cacheFolder + layer.getImageName();
+						Log.d("vortex", "found layer on checked change: "+cachedImgFilePath+" for text "+text);
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inJustDecodeBounds = true;
+						BitmapFactory.decodeFile(cachedImgFilePath, options);
+						int imageHeight = options.outHeight;
+						int imageWidth = options.outWidth;
+						Log.d("vortex","image rect h w is "+imageHeight+","+imageWidth);
+						//Rect r = gisImageView.getCurrentViewSize(realW,realH);
+						Rect r = new Rect(0, 0, imageWidth, imageHeight);
+						Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,r);
+						if (bmp!=null) {
+							Log.d("vortex","Ujuj! ");
+							gisImageView.setImageBitmap(bmp);
+						}
+					}
+					else
+						Log.d("vortex","oh bugger");
+
+
+
+				}
+				gisImageView.redraw();
+			}
+		});
+
+
 	}
 
+	public GisLayer getLayerFromLabel(String label) {
+		if (myLayers==null||myLayers.isEmpty()||label==null)
+			return null;
+		for (GisLayer gl:myLayers) {
+			if (gl.getLabel().equals(label)) {
+				Log.d("vortex","MATCH Label!!");
+				return gl;
+			}
 
-	public GisLayer getLayer(String identifier) {
+		}
+		Log.e("vortex","NO MATCH Label!!");
+		return null;
+
+	}
+
+	public GisLayer getLayerFromId(String identifier) {
 		if (myLayers==null||myLayers.isEmpty()||identifier==null)
 			return null;
 		for (GisLayer gl:myLayers) {
-			if (gl.getId().equals(identifier))
+			Log.d("vortex","ID for layer: "+gl.getId());
+			if (gl.getId().equals(identifier)) {
+				Log.d("vortex","MATCH GL!!");
 				return gl;
+			} else
+				Log.d("vortex","NO MATCH GL!!");
 		}
 		return null;
 	}
@@ -765,7 +898,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 	public void clearLayerCaches() {
-		for (GisLayer gl:myLayers) 
+		for (GisLayer gl:myLayers)
 			gl.clearCaches();
 		Log.d("vortex","Is zoom? "+isZoomLevel);
 	}
@@ -777,33 +910,27 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	}
 
 
+	public boolean wasShowingPopup() {
+		boolean ret=false;
+		final View menuL = mapView.findViewById(R.id.mmenuL);
+		int menuState = menuL.getVisibility();
+		if (menuState == View.VISIBLE) {
+			getGis().setClickable(true);
+			menuL.setVisibility(View.INVISIBLE);
+			ret=true;
+		}
+		menuState = gisObjectsPopUp.getVisibility();
+		if (menuState == View.VISIBLE) {
+			gisObjectsPopUp.setVisibility(View.GONE);
+			gisObjMenuOpen = false;
+			ret=true;
+		}
+		menuState = avstRL.getVisibility();
+		if (menuState == View.VISIBLE) {
+			getGis().unSelectGop();
+			ret=true;
+		}
 
-
-
-	
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		return ret;
+	}
 }

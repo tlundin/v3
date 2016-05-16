@@ -184,8 +184,6 @@ public abstract class ConfigurationModule {
 			return new LoadResult(this,ErrorCode.thawed);
 		try {
 			essence = Tools.readObjectFromFile(this.frozenPath);
-			if (essence==null)
-				Log.e("vortex","nä men va faaan!!");
 		} catch (IOException e) {
 			return new LoadResult(this,ErrorCode.IOError,"Failed to load frozen object");
 		} catch (ClassNotFoundException e) {

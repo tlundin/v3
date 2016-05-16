@@ -338,6 +338,11 @@ public class Start extends MenuActivity {
 			if (wfCtx!=null) {
 				if (wfCtx.getCurrentGis()!=null) {
 					map=true;
+					if (wfCtx.getCurrentGis().wasShowingPopup()) {
+						Log.d("vortex","closed popup, exiting");
+						return true;
+					}
+
 				}
 				Workflow wf = wfCtx.getWorkflow();
 				Log.d("vortex","gets here wf is "+wf);

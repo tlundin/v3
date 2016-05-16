@@ -120,7 +120,6 @@ public class Tools {
 
 	/**
 	 * 
-	 * @param context
 	 * @param filename
 	 * @return
 	 * @throws IOException 
@@ -958,6 +957,17 @@ public class Tools {
 		if (o==null)
 			Log.d("vortex","returning null in bytestoobject for "+inB+" with l "+inB.length+" inBS "+inB.toString());
 		return o;
+	}
+
+	public static String fixedLengthString(String string, int length) {
+		if (string==null)
+			return null;
+		if (string.length()>length) {
+			string = string.substring(0, length - 2);
+			string +="..";
+		}
+		return String.format("%1$-" + length + "s", string);
+		//return String.format("%1$"+length+ "s", string);
 	}
 
 }

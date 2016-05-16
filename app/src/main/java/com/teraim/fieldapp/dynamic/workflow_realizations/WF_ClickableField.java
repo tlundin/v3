@@ -458,7 +458,7 @@ EventGenerator {
 						o.addRow("");
 						o.addRedText("Complex Spinner variable "
 								+ var.getId()
-								+ " is not defining any elements in the configuration file");
+								+ " is not defining any elements in the configuration file (Spinners.csv). Correct file version?");
 
 					} else {
 						Log.d("nils", "Spinner variable: " + var.getId());

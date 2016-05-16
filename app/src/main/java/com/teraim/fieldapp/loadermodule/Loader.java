@@ -184,7 +184,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		rowC=0;
 
 		while((lr=m.parse(parser))==null) {
-			if ((rowC++%20)==0) 
+			if ((rowC++%20)==0)
 				this.publishProgress(rowC);				
 
 		}

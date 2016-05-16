@@ -1689,10 +1689,11 @@ public class DbHelper extends SQLiteOpenHelper {
             if (keyVal != null) {
                 if (realColumnNameToDB.get(key) != null)
                     valuez.put(realColumnNameToDB.get(key), keyVal);
-                else
+                else {
+                    Log.e("vortex","Could not find key "+key+" in keychain for "+varId);
                     //Column not found. Do not insert!!
                     return false;
-
+                }
 
             }
         }
@@ -1872,16 +1873,14 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
 
-        if (tmp.values() != null)
-            Log.d("vortex", "Tmpval has " + tmp.values().size() + " members");
+           Log.d("vortex", "Tmpval has " + tmp.values().size() );
+        /*
+			for (String v:tmp.keySet()) {
+					TmpVal tv = tmp.get(v);
+					Log.e("vortex","VAR: "+v+" NORM: "+tv.norm);
+			}
 
-
-					for (String v:tmp.keySet()) {
-						TmpVal tv = tmp.get(v);
-						Log.e("vortex","VAR: "+v+" NORM: "+tv.norm);
-					}
-
-
+        */
 
 
         return tmp;

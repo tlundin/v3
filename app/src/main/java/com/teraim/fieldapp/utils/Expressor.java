@@ -1495,7 +1495,7 @@ public class Expressor {
 					}
 					else {
 						Log.d("vortex","keyhash "+currentKeyChain.toString());
-						Log.d("votex","value for column is "+currentKeyChain.get(evalArgs.get(0)));
+						Log.d("votex","value for column "+evalArgs.get(0)+" is "+currentKeyChain.get(evalArgs.get(0)));
 						return currentKeyChain.get(evalArgs.get(0));
 					}
 				}

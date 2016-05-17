@@ -251,9 +251,7 @@ public class BackupManager {
 				return false;
 				
 			}
-			//Close the database. 
-			GlobalState.getInstance().getDb().closeDatabaseBeforeExit();
-			
+
 			String backupFile = dir+"/"+backupFileName;
 			FileInputStream fis = new FileInputStream(backupFile);			
 			
@@ -267,6 +265,10 @@ public class BackupManager {
 			// Transfer bytes from the inputfile to the outputfile
 			byte[] buffer = new byte[1024];
 			int length;
+
+			//Close the existing database.
+			GlobalState.getInstance().getDb().closeDatabaseBeforeExit();
+
 			while ((length = fis.read(buffer))>0){
 				output.write(buffer, 0, length);
 			}

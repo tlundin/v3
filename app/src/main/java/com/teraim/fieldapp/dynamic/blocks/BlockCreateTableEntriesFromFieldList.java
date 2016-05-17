@@ -19,20 +19,19 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 
 public class BlockCreateTableEntriesFromFieldList extends Block {
 
-	String namn=null, type=null,containerId=null,selectionField=null,selectionPattern=null;
-	String labelField=null,descriptionField=null,typeField=null,uriField=null,variatorColumn=null;
-
+	String type=null,target=null, selectionField=null,selectionPattern=null;
+	String labelField=null,descriptionField=null,uriField=null,variatorColumn=null;
+	String typeField=null,keyField = null;
 	private static Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
 
 
-	public BlockCreateTableEntriesFromFieldList(String id,String namn,String type, String containerId, 
-			String selectionPattern, String selectionField,
-			String variatorColumn,String descriptionField,String uriField,
-			String labelField) {
+	public BlockCreateTableEntriesFromFieldList(String id, String type,String target,
+			String selectionField,String selectionPattern,
+			String keyField,String labelField,String descriptionField,
+			String typeField,String variatorColumn,String uriField
+			) {
 		super();
-		this.namn = namn;
 		this.type = type;
-		this.containerId = containerId;
 		this.selectionField = selectionField;
 		this.selectionPattern = selectionPattern;
 		this.blockId = id;
@@ -40,17 +39,24 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 		this.descriptionField = descriptionField;
 		this.uriField = uriField;
 		this.variatorColumn = variatorColumn;
+		this.target = target;
 	}
 
 	public void create(WF_Context myContext) {
 		o = GlobalState.getInstance().getLogger();
 		WF_Table myTable=null;
+			if (target!=null) {
+				myTable = myContext.getTable(target);
 
-		Container myContainer = myContext.getContainer(containerId);
-		if (myContainer !=null) {
-			Log.d("vortex","in create for createlistentries "+blockId);
+			}
 
-			VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
+		if (myTable==null) {
+			Log.e("vortex","couldnt find table "+target+" in createTableEntriesFromFieldList, block "+blockId);
+			o.addRow("");
+			o.addRedText("couldnt find table "+target+" in createTableEntriesFromFieldList, block "+blockId);
+			return;
+		}
+		VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
 			List<List<String>>rows = cacheMap==null?null:cacheMap.get(selectionField+selectionPattern);
 			if (rows==null)
 				rows  = al.getTable().getRowsContaining(selectionField, selectionPattern);
@@ -60,21 +66,13 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 				o.addRedText("Selectionfield: "+selectionField+" selectionPattern: "+selectionPattern+" returns zero rows! List cannot be created");
 			} else {		
 				cacheMap.put(selectionField+selectionPattern, rows);
-				Log.d("nils","Number of rows in CreateEntrieFromList "+rows.size());
+				Log.d("vortex","Number of rows in CreateEntrieFromList "+rows.size());
 				//prefetch values from db.
-				LayoutInflater inflater = (LayoutInflater)myContext.getContext().getSystemService
-						(Context.LAYOUT_INFLATER_SERVICE);
-				View tableView = inflater.inflate(R.layout.table_view, null);
-				
-				if (type.equals("selective")) {
-					Log.d("vortex","creating table.");
-					myTable = new WF_Table(namn, true, myContext,selectionPattern,variatorColumn,tableView);
-					myTable.addRows(rows);
-				}
+
+				myTable.addRows(rows,variatorColumn,selectionPattern);
 			}
-			myContainer.add(myTable);
-			myContext.addTable(myTable);		
-		}
+
+
 	}
 
 

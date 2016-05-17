@@ -353,8 +353,8 @@ public class Start extends MenuActivity {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 
-								wfCtx.mapLayer--;
-								Log.d("vortex","mapLayer is now "+wfCtx.mapLayer);
+								wfCtx.upOneMapLevel();
+								Log.d("vortex","mapLayer is now "+wfCtx.getMapLayer());
 								getFragmentManager().popBackStackImmediate();
 								GlobalState.getInstance().setCurrentWorkflowContext(null);
 							}})
@@ -367,7 +367,7 @@ public class Start extends MenuActivity {
 								.show();
 					} else {
 						if (map)
-							wfCtx.mapLayer--;
+							wfCtx.upOneMapLevel();
 						Log.d("vortex","back was allowed");
 					}
 				}

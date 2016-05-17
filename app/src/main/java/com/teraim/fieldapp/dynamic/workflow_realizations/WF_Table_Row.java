@@ -140,10 +140,11 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 	//Add a Vortex Cell.
 	public void addCell(String colHeader, String colKey, Map<String,String> columnKeyHash, String type, String width) {
+
 		if (myColumns==null)
 			myColumns = new ArrayList<WF_Cell>();
 			WF_Cell widget;
-			if (type.equals("simple"))
+			if ("simple".equals(type))
 				widget = new WF_Simple_Cell_Widget(columnKeyHash,getLabel(), al.getDescription(myRow),
 						myContext, this.getId()+colKey,true);
 				

@@ -303,9 +303,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
 	boolean firstCall = true;
+	Set<String> missingVariables=null;
 	@Override
 	public boolean freeze(int counter) throws IOException {
-		Set<String> missingVariables=null;
+
 		boolean debug =false;
 		if (firstCall) {
 			missingVariables=new HashSet<String>();
@@ -314,7 +315,6 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				o.addRow("");
 				o.addYellowText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");
 			}
-
 			myDb.beginTransaction();
 			Log.d("vortex","Transaction begins");
 			firstCall = false;
@@ -347,6 +347,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		if (this.freezeSteps==(counter+1)) {
 			Log.d("vortex","Transaction ends");
 			myDb.endTransactionSuccess();
+			debug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
 			if (debug && !missingVariables.isEmpty()) {
 				o.addRow("");
 				o.addRedText("VARIABLES MISSING IN VARIABLES CONFIGURATION FOR " + this.fileName + ":");

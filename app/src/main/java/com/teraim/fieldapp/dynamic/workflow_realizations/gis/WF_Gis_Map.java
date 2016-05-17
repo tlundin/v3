@@ -80,6 +80,7 @@ import com.teraim.fieldapp.utils.Tools;
 public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, AnimationListener {
 
 	private final FrameLayout mapView;
+	private final Rect rect;
 	private PersistenceHelper globalPh;
 	private GisImageView gisImageView;
 	private final WF_Context myContext;
@@ -467,6 +468,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		this.realW = realW;
 		this.realH = realH;
 		this.mapView = mapView;
+		this.rect=rect;
 	}
 
 
@@ -600,7 +602,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		else if (e.getType() == EventType.onFlowExecuted) {
 			Log.d("vortex","flow executed! Initializing gis imageview!");
 			//Must be done here since all layers first needs to be added.
-			gisImageView.initialize(this,photoMeta,!isZoomLevel);
+			//!isZoomLevel
+			gisImageView.initialize(this,photoMeta,true);
 		}
 	}
 
@@ -842,10 +845,9 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						int imageWidth = options.outWidth;
 						Log.d("vortex","image rect h w is "+imageHeight+","+imageWidth);
 						//Rect r = gisImageView.getCurrentViewSize(realW,realH);
-						Rect r = new Rect(0, 0, imageWidth, imageHeight);
-						Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,r);
+						//Rect r = new Rect(0, 0, imageWidth, imageHeight);
+						Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,rect);
 						if (bmp!=null) {
-							Log.d("vortex","Ujuj! ");
 							gisImageView.setImageBitmap(bmp);
 						}
 					}

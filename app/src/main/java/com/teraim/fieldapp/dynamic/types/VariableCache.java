@@ -171,7 +171,7 @@ public class VariableCache {
                         Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
                         Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);
                         //Entry is either historical or normal. Delete independently
-                        deleteHash.remove("ÅR");
+                        deleteHash.remove("år");
                         gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), true);
                         Log.e("vortex", "Deleted " + varName);
 

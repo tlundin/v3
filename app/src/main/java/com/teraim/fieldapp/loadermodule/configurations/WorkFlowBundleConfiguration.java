@@ -15,6 +15,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEntryFieldBlock;
@@ -250,6 +251,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockCreateDisplayField(parser));
 				else if (name.equals("block_create_list_entries_from_field_list"))
 					blocks.add(readBlockCreateListEntriesFromFieldList(parser));
+				else if (name.equals("block_create_table"))
+					blocks.add(readBlockCreateTable(parser));
 				else if (name.equals("block_create_table_entries_from_field_list"))
 					blocks.add(readBlockCreateTableEntriesFromFieldList(parser));
 				else if (name.equals("block_add_variable_to_every_list_entry"))
@@ -332,7 +335,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		o.addGreenText("No duplicate block IDs");
 		return blocks;
 	}
-	
+
+
 	private Block readBlockNoOp(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_no_operation...");
 		String id=null,label=null,target=null,pattern=null;
@@ -1136,10 +1140,34 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				containerId,selectionPattern,selectionField,variatorColumn);
 	}
 
+	private Block readBlockCreateTable(XmlPullParser parser) throws IOException, XmlPullParserException {
+		String tableName=null, type=null,containerId=null,id=null,label=null;
+
+		parser.require(XmlPullParser.START_TAG, null,"block_create_table");
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name = parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID", parser);
+			} else if (name.equals("type")) {
+				type = readText("type", parser);
+			} else if (name.equals("name")) {
+				tableName = readText("name", parser);
+			} else if (name.equals("container_name")) {
+				containerId = readText("container_name", parser);
+			} else if (name.equals("label")) {
+				label = readText("label", parser);
+			}
+		}
+		return new BlockCreateTable(id,type,tableName,containerId,label);
+	}
+
 	private Block readBlockCreateTableEntriesFromFieldList(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_create_list_entries_from_field_list...");
-		String namn=null, type=null,containerId=null,selectionField=null,selectionPattern=null,id=null;
-		String labelField=null,descriptionField=null,typeField=null,uriField=null,variatorColumn=null;
+		String type=null,selectionField=null,selectionPattern=null,id=null,target=null;
+		String keyField = null, labelField=null,descriptionField=null,typeField=null,uriField=null,variatorColumn=null;
 		parser.require(XmlPullParser.START_TAG, null,"block_create_table_entries_from_field_list");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -1151,15 +1179,15 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			}
 			else if (name.equals("type")) {
 				type = readText("type",parser);
-			} else if (name.equals("selection_field")) {
+			} else if (name.equals("target")) {
+				target = readText("target",parser);
+			}else if (name.equals("selection_field")) {
 				selectionField = readText("selection_field",parser);
 			} else if (name.equals("selection_pattern")) {
-				selectionPattern = readText("selection_pattern",parser);
-			}  else if (name.equals("name")) {
-				namn = readText("name",parser);
-			} else if (name.equals("container_name")) {
-				containerId = readText("container_name",parser);
-			}  else if (name.equals("label_field")) {
+				selectionPattern = readText("selection_pattern", parser);
+			} else if (name.equals("key_field")) {
+				keyField = readText("key_field",parser);
+			} else if (name.equals("label_field")) {
 				labelField = readText("label_field",parser);
 			} else if (name.equals("description_field")) {
 				descriptionField = readText("description_field",parser);
@@ -1173,11 +1201,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				skip(name,parser,o);
 
 		}
-		checkForNull("block_ID",id,"selection_field",selectionField,"name",namn,"container_name",
-				containerId,"label_field",labelField,"description_field",descriptionField,"type_field",typeField,
+		checkForNull("block_ID",id,"selection_field",selectionField,"target",
+				target,"label_field",labelField,"description_field",descriptionField,"type_field",typeField,
 				"uri_field",uriField);
-		return new BlockCreateTableEntriesFromFieldList(id,namn, type,
-				containerId,selectionPattern,selectionField,variatorColumn,descriptionField,uriField,labelField);
+		return new BlockCreateTableEntriesFromFieldList(id, type,target,
+				selectionField, selectionPattern,keyField,labelField,descriptionField,typeField,variatorColumn,uriField);
 	}
 
 

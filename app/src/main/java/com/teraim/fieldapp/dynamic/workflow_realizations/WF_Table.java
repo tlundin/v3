@@ -40,19 +40,17 @@ public class WF_Table extends WF_List {
 	private 		int rowNumber=0;
 	private final String ColHeadId = "TableHeader";
 	private WF_Table_Row headerRow;
-	private Map<String, Map<String, String>> allInstances;
-	
+
 	private String varNamePrefix;
 	
 	//How about using the Container's panel?? TODO
-	public WF_Table(String id,boolean isVisible,WF_Context ctx,String namePrefix,String variatorColumn, View tableV) {
+	public WF_Table(String id,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
 		this.tableView = (TableLayout)tableV.findViewById(R.id.table);;
 		myContext = ctx;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		al = gs.getVariableConfiguration();
-		myVariator = variatorColumn;
 		//myTable = new GridView(ctx.getContext());
 		
 		//Create rows.
@@ -64,19 +62,24 @@ public class WF_Table extends WF_List {
 		//Add a first empty cell 
 		headerRow.addEmptyCell(id);
 		tableView.addView(headerRow.getWidget());
-		
-		varNamePrefix = namePrefix;
-		
-		allInstances = gs.getDb().preFetchValues(myContext.getKeyHash(), namePrefix, myVariator);		
-		Log.d("nils","in update entry fields. AllInstances contain "+allInstances.size()+ ": "+allInstances.toString());
+		//
 		tableView.setStretchAllColumns (true);
 		addSorter(new WF_Alphanumeric_Sorter());
 
 	}
-	
+
+
+	private Map<String, Map<String, String>> allInstances;
+
 	Map<String,Set<String>>varIdMap=new HashMap<String,Set<String>>();
 	//Creates new rows and adds dataset to each.
-	public void addRows(List<List<String>> rows) {
+	public void addRows(List<List<String>> rows,String variatorColumn, String selectionPattern) {
+
+		this.myVariator=variatorColumn;
+		this.varNamePrefix=selectionPattern;
+		allInstances = gs.getDb().preFetchValues(myContext.getKeyHash(), varNamePrefix, myVariator);
+		Log.d("nils","in update entry fields. AllInstances contain "+allInstances.size()+ ": "+allInstances.toString());
+
 		//Rows are not containing unique entries. only need one of each.
 		Map<String,List<String>>uRows = new HashMap<String,List<String>>();
 		for (List<String> row:rows) {
@@ -174,13 +177,7 @@ public class WF_Table extends WF_List {
 	public void addVariableToEveryCell(String variableSuffix,
 			boolean displayOut, String format, boolean isVisible,
 			boolean showHistorical, String initialValue) {
-		
-
 		//Map<String, String> colHash = Tools.copyKeyHash(myContext.getKeyHash());
-		
-		
-		
-		
 		//get rows.
 		for (Listable l:list) {
 			WF_Table_Row wft = (WF_Table_Row)l;
@@ -234,15 +231,7 @@ public class WF_Table extends WF_List {
 		
 		}
 	}
-	
 
-	
-
-	
-	
-
-	
-	
 
 
 }

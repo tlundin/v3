@@ -13,16 +13,16 @@
 
     <TextView
         android:id="@+id/logger"
-        style="@style/ConsoleStyle"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="110dp"
+        android:gravity="bottom"
         android:background="#44000000"
-        android:maxLines="18"
-        android:paddingLeft="16dip"
+        android:maxLines="13"
+        android:textColor="@color/white"
         android:scrollbars="vertical"
         android:textSize="24sp" />
 

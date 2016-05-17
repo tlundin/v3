@@ -28,6 +28,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEntryFieldBlock;
@@ -299,6 +300,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		myContext.setHash(wfHash);
 		getFlow();
 		myContext.setWorkflow(wf);
+		if (Start.singleton!=null)
+			Start.singleton.setTitle(wf.getLabel());
 		//Need to write down all variables in wf context keyhash.
 		List<String> contextVars=null;
 		if (wf.getContext()!=null) {
@@ -435,6 +438,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					o.addRow("");
 					o.addYellowText("BlockCreateListEntriesFromFieldList found "+b.getBlockId());
 					BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList)b;
+					bl.create(myContext);
+				}
+				else if (b instanceof BlockCreateTable) {
+					o.addRow("");
+					o.addYellowText("BlockCreateTable found "+b.getBlockId());
+					BlockCreateTable bl = (BlockCreateTable)b;
 					bl.create(myContext);
 				}
 				else if (b instanceof BlockCreateTableEntriesFromFieldList) {

@@ -304,7 +304,7 @@ public class DbHelper extends SQLiteOpenHelper {
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
         Log.d("nils", "Started export");
         Log.d("vortex", "filename: " + exportFileName+ " context: "+context);
-        String selection = null;
+        String selection = "";
 
         if (exporter instanceof GeoJSONExporter) {
             Log.d("vortex","geojsonexport");
@@ -1153,6 +1153,8 @@ public class DbHelper extends SQLiteOpenHelper {
         for (SyncEntry s : ses) {
             Log.d("nils","Audit entry (s): "+s.getChange());
         }
+        Cursor c = null;
+
         for (SyncEntry s : ses) {
             //Log.d("vortex", "SYNC:");
             //Log.d("vortex", "s.target :" + s.getTarget());
@@ -1235,7 +1237,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     //Log.d("sync", "Selection ARGS: " + xor);
                 }
 
-                Cursor c = getExistingVariableCursor(name, sel);
+                c = getExistingVariableCursor(name, sel);
                 long rId = -1;
                 boolean hasValueAlready = c.moveToNext();
 
@@ -1358,7 +1360,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         //Check timestamp. If timestamp is older, delete. Otherwise skip.
 
                         //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
-                        Cursor c = getExistingVariableCursor(s.getTarget(), sel);
+                        c = getExistingVariableCursor(s.getTarget(), sel);
                         boolean hasValueAlready = c.moveToNext();
                         boolean existingTimestampIsMoreRecent = true;
                         String timestamp ="";
@@ -1406,6 +1408,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     }
                 }
             }
+            if (c!=null)
+                c.close();
         }
         //Invalidate all variables touched.
         // for (String varName : touchedVariables)

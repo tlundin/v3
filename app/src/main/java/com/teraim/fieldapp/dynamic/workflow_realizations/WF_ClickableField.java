@@ -231,8 +231,7 @@ EventGenerator {
 	public WF_ClickableField(final String label, final String descriptionT,
 			WF_Context context, String id, View view, boolean isVisible) {
 		super(id, label, descriptionT, context, view, isVisible);
-		// Log.e("nils ","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+
-		// " id: "+id);
+		 Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
 
 		gs = GlobalState.getInstance();
 

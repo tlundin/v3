@@ -55,7 +55,7 @@ public class WF_Context {
 	private DB_Context myHash;
 	private Workflow myWorkflow;
 	private boolean hasSatNav;
-	public int mapLayer=0;
+	private int mapLayer=0;
 	private List<String> contextVariables = null;
 	private boolean myEndIsNear=false;
 
@@ -380,6 +380,11 @@ public class WF_Context {
 	}
 	
 	
-
+	public int getMapLayer() {
+		return mapLayer;
+	}
+	public void upOneMapLevel() {
+		mapLayer--;
+	}
 
 }

@@ -487,7 +487,7 @@ public  class ButtonBlock extends Block {
 								.setMessage("If you go ahead, you current database will be replaced by a backup file.")
 								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) { 
-										boolean success = GlobalState.getInstance().getBackupManager().restoreDatabase(getTarget());
+										boolean success = GlobalState.getInstance().getBackupManager().restoreDatabase();
 										new AlertDialog.Builder(ctx)
 										.setTitle("Restore "+(success?"succesful":"failed"))
 										.setMessage(success?"Your database has been restored from backup. Please restart the app now.":"Failed. Please check that the backup file is in the staging area")

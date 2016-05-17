@@ -43,7 +43,7 @@ public class Constants {
 
 	public final static float VORTEX_VERSION = 3.87f;
 	//String constants
-	//The root folder for the SD card is in the global Environment.
+	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
 	//Remember to always add system root path before any app specific path!
 

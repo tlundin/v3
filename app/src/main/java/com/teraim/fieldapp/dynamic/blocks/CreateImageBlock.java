@@ -80,7 +80,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 			img.setScaleType(scaleT);
 			WF_Widget myWidget= new WF_Widget(blockId,img,isVisible,myContext);	
 			myContainer.add(myWidget);
-			myContext.addEventListener(this, EventType.onActivityResult);
+			myContext.registerEventListener(this, EventType.onActivityResult);
 		} else {
 			if (source==null || sourceE == null) {
 				o.addRow("");

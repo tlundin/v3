@@ -236,7 +236,7 @@ public class CreateGisBlock extends Block {
 				r = new Rect(0,0,imageWidth,imageHeight);
 
 			} else {
-				//This is a cutout. pop the correct slice specification from the stack. 
+				Log.d("vortex","This is a cutout!");
 				r = cutOut.r;
 				Location topC = cutOut.geoR.get(0);
 				Location botC = cutOut.geoR.get(1);
@@ -251,14 +251,14 @@ public class CreateGisBlock extends Block {
 					Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,r);
 					if (bmp!=null) {
 
-						gis = new WF_Gis_Map(CreateGisBlock.this,r,blockId, mapView, isVisible, bmp,myContext,photoMetaData,avstRL,createMenuL,myLayers,imageWidth,imageHeight);
+						gis = new WF_Gis_Map(CreateGisBlock.this,r,blockId, mapView, isVisible, bmp,myContext,photoMetaData,avstRL,createMenuL,myLayers,r.width(),r.height());
 
 						//need to throw away the reference to myLayers.
 						myLayers=null;
 						myContainer.add(gis);
 						myContext.addGis(gis.getId(),gis);
-						myContext.addEventListener(gis, EventType.onSave);
-						myContext.addEventListener(gis, EventType.onFlowExecuted);
+						myContext.registerEventListener(gis, EventType.onSave);
+						myContext.registerEventListener(gis, EventType.onFlowExecuted);
 						myContext.addDrawable(name,gis);
 						final View menuL = mapView.findViewById(R.id.mmenuL);
 

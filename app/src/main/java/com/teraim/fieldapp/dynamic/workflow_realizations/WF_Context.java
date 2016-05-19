@@ -260,8 +260,8 @@ public class WF_Context {
 		return myTemplate;
 	}
 
-	public void addEventListener(EventListener el,
-			EventType et) {
+	public void registerEventListener(EventListener el,
+									  EventType et) {
 
 		eventBroker.registerEventListener(et, el);
 	}

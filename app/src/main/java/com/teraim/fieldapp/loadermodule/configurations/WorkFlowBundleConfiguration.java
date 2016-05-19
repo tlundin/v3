@@ -15,6 +15,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
+import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
@@ -261,7 +262,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockAddVariableToEntryField(parser));
 				else if (name.equals("block_add_column_to_table")||
 						name.equals("block_add_columns_to_table"))
-					blocks.add(readBlockAddColumnsToTable(parser));	
+					blocks.add(readBlockAddColumnsToTable(parser));
+				else if (name.equals("block_add_aggregate_column_to_table"))
+					blocks.add(readBlockAddAggregateColumnToTable(parser));
 				else if (name.equals("block_add_variable_to_table"))
 					blocks.add(readBlockAddVariableToTable(parser));
 				else if (name.equals("block_add_entry_to_field_list")) 
@@ -1060,6 +1063,46 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		checkForNull("block_ID",id,"name",namn,"target",target,"format",format);
 		return new AddVariableToEntryFieldBlock(id,target,namn,isDisplayed,format,isVisible,showHistorical,initialValue);
 	}
+
+
+	private Block readBlockAddAggregateColumnToTable(XmlPullParser parser) throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_add_aggregate_column_to_table...");
+		parser.require(XmlPullParser.START_TAG, null,"block_add_aggregate_column_to_table");
+		String id=null,target=null,expression=null,aggregationFunction=null,format = null,width=null;
+		boolean isDisplayed=true;
+
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name= parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID",parser);
+			} else if (name.equals("target")) {
+				target = readText("target",parser);
+			} else if (name.equalsIgnoreCase("expression")) {
+				expression = readText("expression",parser);
+			} else if (name.equalsIgnoreCase("aggregation_function")) {
+				aggregationFunction = readText("aggregation_function",parser);
+			} else if (name.equalsIgnoreCase("format")) {
+				format = readText("format",parser);
+			} else if (name.equalsIgnoreCase("width")) {
+				width = readText("width",parser);
+			} else if (name.equals("is_displayed")) {
+				isDisplayed = readText("is_displayed",parser).trim().equals("true");
+
+			} else {
+				Log.e("vortex","Skipped "+name);
+				skip(name,parser);
+			}
+		}
+
+		checkForNull("block_ID",id,"target",target);
+		return new BlockAddAggregateColumnToTable(id,target,expression,aggregationFunction,format,width,isDisplayed);
+
+	}
+
+
 
 	private Block readBlockAddColumnsToTable(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_add_column_to_table...");

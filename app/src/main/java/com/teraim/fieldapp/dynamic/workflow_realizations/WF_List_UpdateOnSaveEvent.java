@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.database.Cursor;
-import android.os.Handler;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -42,7 +40,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		String namePrefix = al.getFunctionalGroup(rows.get(0));
 		Log.d("nils","SkarmGrupp: "+namePrefix);
 		varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
-		ctx.addEventListener(this, EventType.onSave);
+		ctx.registerEventListener(this, EventType.onSave);
 		o = GlobalState.getInstance().getLogger();
 
 		for (List<String>r:rows)  {

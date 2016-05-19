@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import android.database.Cursor;
@@ -205,6 +206,7 @@ public class Expressor {
 	static LoggerI o;
 	static GlobalState gs;
 	static Map<String,String> currentKeyChain=null;
+	static Set<Variable> variables=null;
 	//TODO solution for the  string reverse for string a+b..
 	static String tret=null;
 
@@ -294,8 +296,28 @@ public class Expressor {
 		return null;
 	}
 
+
 	public static String analyze(List<EvalExpr> expressions) {
 		return analyze(expressions,GlobalState.getInstance().getVariableCache().getContext().getContext());
+	}
+
+	//analyze within a given variable set as context. This allows for incomplete variable references.
+	//Eg. cars:Vovlo_lot_count can be referred to as "lot_count".
+	public static String analyze(EvalExpr expression, Set<Variable> variablez) {
+
+		if (variablez==null || variablez.isEmpty()) {
+			Log.e("vortex","Empty variable set in analyze:Expressor. Will use current context");
+			currentKeyChain = GlobalState.getInstance().getVariableCache().getContext().getContext();
+			variables = null;
+		} else {
+			variables = variablez;
+			currentKeyChain = variablez.iterator().next().getKeyChain();
+		}
+		Object ob = expression.eval();
+		if (ob!=null)
+			return ob.toString();
+		else
+			return null;
 	}
 
 	public static String analyze(List<EvalExpr> expressions, Map<String,String> evalContext) {
@@ -325,17 +347,38 @@ public class Expressor {
 		}
 
 		//	System.out.println(expressions.toString()+" -->  "+endResult.toString());       
+
 		return endResult.toString();
 	}
+
+
+
 
 	public static Boolean analyzeBooleanExpression(EvalExpr expr) {
 		return analyzeBooleanExpression(expr,GlobalState.getInstance().getVariableCache().getContext().getContext());
 	}
 
+
+	//analyze within a given variable set as context. This allows for incomplete variable references.
+	//Eg. cars:Vovlo_lot_count can be referred to as "lot_count".
+	public static Boolean analyzeBooleanExpression(EvalExpr expression, Set<Variable> variablez) {
+		if (variablez==null || variablez.isEmpty()) {
+			Log.e("vortex","Empty variable set in analyze:Expressor. Will use current context");
+			return analyzeBooleanExpression(expression, GlobalState.getInstance().getVariableCache().getContext().getContext());
+		} else {
+			variables = variablez;
+			return analyzeBooleanExpression(expression, variablez.iterator().next().getKeyChain());
+
+		}
+	}
+
+
 	public static Boolean analyzeBooleanExpression(EvalExpr expr, Map<String,String> evalContext) {
 		tret=null;
-		if (expr==null)
+		if (expr==null) {
+			variables = null;
 			return null;
+		}
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		currentKeyChain = evalContext;		
@@ -343,7 +386,7 @@ public class Expressor {
 		Object eval = expr.eval();
 		Log.d("Vortex","BoolExpr: "+expr.toString()+" evaluated to "+eval);
 		o.addRow("Expression "+expr.toString()+" evaluated to "+eval);
-
+		variables = null;
 		if (eval instanceof String) {
 			Log.e("vortex","String back in analyzeBoolean...likely missing [..]");
 			o.addRow("");
@@ -815,8 +858,24 @@ public class Expressor {
 			String value;
 			switch(getType()) {
 			case variable:
+				Variable v=null;
 
-				Variable v = gs.getVariableCache().getVariable(currentKeyChain, myToken.str);
+				//first check if 'variables' is not null.
+				if (variables!=null) {
+					Log.d("vortex","This variable has a variable context. Will look for it there");
+					for (Variable var:variables) {
+						if (var.getId().endsWith(myToken.str)) {
+							v = var;
+							break;
+						}
+					}
+					if (v==null) {
+						Log.d ("vortex","couldnt find a match for variable pattern "+myToken.str+" Variables contain: "+variables);
+					}
+				}
+				if (v==null)
+					v = gs.getVariableCache().getVariable(currentKeyChain, myToken.str);
+
 				if (v!=null && v.getValue() == null || v==null) {
 					System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
 					return null;

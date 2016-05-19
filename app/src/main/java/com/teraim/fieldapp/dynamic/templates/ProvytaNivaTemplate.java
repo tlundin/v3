@@ -16,7 +16,6 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.blocks.OnclickExtra;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Delyta;
-import com.teraim.fieldapp.dynamic.types.Marker;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
@@ -146,7 +144,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 
 
 
-		myContext.addEventListener(this, EventType.onSave);
+		myContext.registerEventListener(this, EventType.onSave);
 		
 		tagSidaB = new Button(this.getActivity());
 		

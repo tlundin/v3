@@ -49,7 +49,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_DisplayValueField;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.non_generics.DelyteManager;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.non_generics.StatusHandler;
 import com.teraim.fieldapp.non_generics.StatusHandler.Kvot;
@@ -466,7 +465,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		});
 		 */
 
-		myContext.addEventListener(this, EventType.onSave);
+		myContext.registerEventListener(this, EventType.onSave);
 
 
 		return v;

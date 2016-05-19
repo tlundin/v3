@@ -3,6 +3,7 @@ package com.teraim.fieldapp.utils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import android.content.Context;
@@ -93,7 +94,7 @@ public class GeoJSONExporter extends Exporter {
 							gisObjects = new HashMap<String,Map<String,String>>();
 						gisObjM = gisObjects.get(uid);
 						if (gisObjM==null) { 
-							gisObjM = new HashMap<String,String>();
+							gisObjM = new LinkedHashMap<String,String>();
 							gisObjects.put(uid, gisObjM);
 							gisObjM.put("Gistyp", currentHash.get(GisConstants.TYPE_COLUMN));
 							Log.d("vortex","keyhash: "+currentHash.toString());

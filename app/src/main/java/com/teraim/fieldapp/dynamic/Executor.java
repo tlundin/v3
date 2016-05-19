@@ -28,6 +28,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
+import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
@@ -242,7 +243,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				myContext.setStatusVariable(b.getString("status_variable"));
 				//Add onSaveListener for the statusvariable. Change to "1" when first value saved.
 				Log.e("vortex","Added onsave listener for "+b.getString("status_variable"));
-				myContext.addEventListener(new EventListener() {
+				myContext.registerEventListener(new EventListener() {
 					@Override
 					public void onEvent(Event e) {
 						Log.e("vortex","Received onSave in statusvariable change when first save event!");
@@ -283,13 +284,15 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	 * Execute the workflow.
 	 */
 	protected void run() {
+		String wfLabel = wf.getLabel();
 		o.addRow("");
 		o.addRow("");
-		o.addRow("*******EXECUTING: "+wf.getLabel());	
+		o.addRow("*******EXECUTING: "+wfLabel);
+		Start.singleton.setTitle(wfLabel);
 		Log.d("vortex","in Executor run()");
 		
 		myContext.resetState();
-		varCache.flushQueue();
+
 		DB_Context wfHash = DB_Context.evaluate(wf.getContext());
 		//TODO: Erase below if.
 		if (!wfHash.equals(gs.getVariableCache().getContext())) {
@@ -300,8 +303,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		myContext.setHash(wfHash);
 		getFlow();
 		myContext.setWorkflow(wf);
-		if (Start.singleton!=null)
-			Start.singleton.setTitle(wf.getLabel());
+
 		//Need to write down all variables in wf context keyhash.
 		List<String> contextVars=null;
 		if (wf.getContext()!=null) {
@@ -460,6 +462,14 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					bl.create(myContext);
 				}
 
+				else if (b instanceof BlockAddAggregateColumnToTable) {
+					o.addRow("");
+					o.addYellowText("BlockAddAggregateColumnToTable found "+b.getBlockId());
+					BlockAddAggregateColumnToTable bl = (BlockAddAggregateColumnToTable)b;
+					bl.create(myContext);
+				}
+
+
 				else if (b instanceof BlockAddVariableToTable) {
 					o.addRow("");
 					o.addYellowText("BlockAddVariableToTable(s)ToTable found "+b.getBlockId());
@@ -581,7 +591,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 							}
 						};
 						Log.d("nils","Adding eventlistener for the setvalue block");
-						myContext.addEventListener(tiva, EventType.onSave);	
+						myContext.registerEventListener(tiva, EventType.onSave);
 					}
 					//Evaluate
 					Variable v = varCache.getVariable(bl.getMyVariable());
@@ -674,7 +684,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 							}
 						};		
 						Log.d("nils","Adding eventlistener for the conditional block");
-						myContext.addEventListener(tiva, EventType.onSave);	
+						myContext.registerEventListener(tiva, EventType.onSave);
 						//trigger event.
 						bl.evaluate();
 

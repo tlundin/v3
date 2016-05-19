@@ -63,38 +63,10 @@ public class VariableCache {
         newcache.clear();
         globalCache = this.createOrGetCache(null);
         currentCache = globalCache;
-        /*
-		if (scheduleTaskExecutor!=null)
-			scheduleTaskExecutor.shutdown();
-		scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-
-		// This schedule a runnable task every 2 minutes
-		scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-			public void run() {
-
-				if (!dbQueue.isEmpty())
-					flushQueue();
-			}
-		}, 0, 5, TimeUnit.SECONDS);
-
-		if (!dbQueue.isEmpty())
-			flushQueue();
-		*/
     }
 
-    boolean busy = false;
 
-    public void flushQueue() { /*
-		Log.d("vortex","Flushing..");
-		if (!busy) {
-			busy=true;
-			GlobalState.getInstance().getDb().persistQueue(dbQueue);
-			busy=false;
-		}
-		else
-			Log.e("vortex","busy, discarded call");
-			*/
-    }
+
 
 
     public void setCurrentContext(DB_Context context) {
@@ -108,7 +80,19 @@ public class VariableCache {
         return myDbContext;
     }
 
-
+    public Map<String, Variable> createEmptyCacheOrGetCache(Map<String, String> myKeyHash) {
+        Map<String, Variable> ret = newcache.get(myKeyHash);
+        if (ret == null) {
+            if (myKeyHash != null) {
+                Log.d("vortex", "Creating Empty Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
+                Map<String, String> copy = copyKeyHash(myKeyHash);
+                ret = new HashMap<String, Variable>();
+                newcache.put(copy, ret);
+            } else
+                return createOrGetCache(null);
+        }
+        return ret;
+    }
     public Map<String, Variable> createOrGetCache(Map<String, String> myKeyHash) {
         Map<String, Variable> ret = newcache.get(myKeyHash);
         if (ret == null) {
@@ -240,7 +224,7 @@ public class VariableCache {
     }
 
 
-    //A variable that is given a value at start.
+    //A variable that is given a value at start. This call will not generate all possible variables for the given key.
     public Variable getCheckedVariable(Map<String, String> keyChain, String varId, String value, Boolean wasInDatabase) {
         return getVariable(keyChain, createOrGetCache(keyChain), varId, value, wasInDatabase);
     }
@@ -451,14 +435,7 @@ public class VariableCache {
             } else {
                 Log.e("vortex", "did not find variable " + name + " in cache");
                 getCheckedVariable(keyHash, name, newValue, true);
-                //Log.d("vortex", "varids contained: ");
-                //for (Variable v : vars.values()) {
-                //    Log.d("vortex", v.getId());
-                //}
-                //Log.d("vortex", "keys contained: ");
-                //for (String k : vars.keySet()) {
-                //    Log.d("vortex", k);
-                //}
+
             }
         }
 

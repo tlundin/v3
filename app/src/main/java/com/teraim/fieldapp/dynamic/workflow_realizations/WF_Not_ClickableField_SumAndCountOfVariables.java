@@ -64,7 +64,7 @@ WF_Not_ClickableField implements EventListener {
 				}
 			}
 
-			myContext.addEventListener(this,EventType.onRedraw);
+			myContext.registerEventListener(this,EventType.onRedraw);
 			if (allMatchingVariables.isEmpty()) {
 				Log.e("vortex","no variables matching pattern "+myPattern+" in block_add_sum_of_selected_variables_display with target "+myTarget);
 				o.addRow("");

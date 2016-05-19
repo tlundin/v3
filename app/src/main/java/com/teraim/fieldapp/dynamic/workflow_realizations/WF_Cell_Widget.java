@@ -37,6 +37,12 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 		Variable var = GlobalState.getInstance().getVariableCache().getCheckedVariable(myHash, varId, prefetchValue, prefetchValue!=null);
 		super.addVariable(var, displayOut, format, isVisible,showHistorical);
 	}
-	
+
+	@Override
+	public Map<String, String> getKeyHash() {
+
+		return myHash;
+	}
+
 
 }

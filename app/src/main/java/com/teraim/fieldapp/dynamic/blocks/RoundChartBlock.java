@@ -93,7 +93,7 @@ public class RoundChartBlock extends Block implements EventListener {
 			});
 			myContainer.add(new WF_Widget("tst",b,isVisible,myContext));
 			Log.d("nils","Added pie chart "+myWidget.getId()+" to container "+myContainer.getId());
-			myContext.addEventListener(this, EventType.onFlowExecuted);
+			myContext.registerEventListener(this, EventType.onFlowExecuted);
 
 		}  else {
 			o.addRow("");

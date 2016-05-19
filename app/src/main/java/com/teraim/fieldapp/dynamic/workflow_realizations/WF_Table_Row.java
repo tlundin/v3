@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
+import com.teraim.fieldapp.utils.Expressor;
 
 public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Listable> {
 	List<String> myRow;
@@ -80,6 +81,8 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 	}
 
+
+
 	@Override
 	public String getLabel() {
 		return al.getEntryLabel(myRow);
@@ -93,9 +96,12 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			w.refresh();
 	}
 
+	//Return any cells assoicated variables since each cell contain same.
 	@Override
 	public Set<Variable> getAssociatedVariables() {
-		// TODO Auto-generated method stub
+		if (myColumns!=null && !myColumns.isEmpty()) {
+			return myColumns.get(0).getAssociatedVariables();
+		}
 		return null;
 	}
 
@@ -105,7 +111,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		return this.getLabel().compareTo(other.getLabel());
 	}
 
-	public void addEmptyCell(String tableId) {
+	public void addNoClickHeaderCell(String tableId) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.headerT);
 		tv.setText(tableId);
@@ -162,6 +168,16 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			myColumns.add(widget);
 			((TableRow)getWidget()).addView(widget.getWidget());
 	}
+
+	public TextView addAggregateCell() {
+		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_aggregate,null);
+		TextView tv=(TextView)emptyCell.findViewById(R.id.contentT);
+		((TableRow)this.getWidget()).addView(emptyCell);
+//		Log.d("vortex","var for row "+this.getLabel());
+//		Log.d("vortex","v: "+al.getVarName(myRow)+" key: "+al.getKeyChain(myRow));
+		return tv;
+	}
+
 
 	public List<WF_Cell> getCells() {
 		return myColumns;

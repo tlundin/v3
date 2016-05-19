@@ -42,7 +42,6 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
@@ -113,7 +112,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 		}
 		//myContext.resetState();
 		//Listen to LinjeStarted and LinjeDone events.
-		myContext.addEventListener(this, EventType.onBluetoothMessageReceived);
+		myContext.registerEventListener(this, EventType.onBluetoothMessageReceived);
 		View v = inflater.inflate(R.layout.template_linje_portal_wf, container, false);	
 		root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
 		aggregatePanel = (LinearLayout)v.findViewById(R.id.aggregates);

@@ -3,7 +3,9 @@ package com.teraim.fieldapp.dynamic.templates;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +59,10 @@ public class PageWithDelytaTemplate extends Executor {
 		DelyteManager dym = DelyteManager.getInstance();
 
 		//Marker man = new Marker(BitmapFactory.decodeResource(getResources(),R.drawable.icon_man));
-		ProvytaView pyv = new ProvytaView(this.getActivity(), null,Constants.isAbo(dym.getPyID()));		
-		
+
+		ProvytaView pyv = new ProvytaView(this.getActivity(), null,Constants.isAbo(dym.getPyID()));
+
+
 		if (wf!=null) {
 			run();
 		}	

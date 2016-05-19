@@ -163,8 +163,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 
-	public WF_Gis_Map(CreateGisBlock createGisBlock,Rect rect, String id, final FrameLayout mapView, boolean isVisible, Bitmap bmp,
-					  final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, View createMenuL,  List<GisLayer> daddyLayers, final int realW, final int realH) {
+	public WF_Gis_Map(CreateGisBlock createGisBlock,final Rect rect, String id, final FrameLayout mapView, boolean isVisible, Bitmap bmp,
+					  final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, View createMenuL,  List<GisLayer> daddyLayers, final int realWW, final int realHH) {
 		super(id, mapView, isVisible, myContext);
 
 		GlobalState gs = GlobalState.getInstance();
@@ -175,8 +175,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		isZoomLevel = daddyLayers!=null;
 		gisImageView = (GisImageView)mapView.findViewById(R.id.GisV);
 		gisImageView.setImageBitmap(bmp);
-
-
+		Log.d("vortex", "Image width and height is :"+ bmp.getWidth()+","+bmp.getHeight());
+		Log.d("vortex", "realWW and realHH is :"+ realWW+","+realHH);
+		this.realW = realWW; //bmp.getWidth();
+		this.realH = realHH; //bmp.getHeight();
 		this.photoMeta = photoMeta;
 		globalPh = gs.getGlobalPreferences();
 		ctx = myContext.getContext();
@@ -318,8 +320,13 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 				//get cutout
 				Rect r = gisImageView.getCurrentViewSize(realW,realH);
+				r.left=r.left+rect.left;
+				r.right=r.right+rect.left;
+				r.top = r.top+rect.top;
+				r.bottom=r.bottom+rect.top;
+
 				//get geocordinates
-				List<Location> geoR = gisImageView.getRectGeoCoordinates(r);
+				List<Location> geoR = gisImageView.getRectGeoCoordinates();
 
 				//Trigger reexecution of flow.
 				Log.d("vortex","Cutout layers has "+myLayers.size()+" members");
@@ -465,8 +472,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		}
 
-		this.realW = realW;
-		this.realH = realH;
+		//this.realW = realW;
+		//this.realH = realH;
 		this.mapView = mapView;
 		this.rect=rect;
 	}

@@ -523,6 +523,7 @@ public class GestureImageView extends ImageView  {
 	}
 	
 	public float getScale() {
+		Log.d("vortex","getScale returns "+scaleAdjust);
 		return scaleAdjust;
 	}
 
@@ -744,6 +745,7 @@ public class GestureImageView extends ImageView  {
 	}
 	
 	public void setStartingScale(float startingScale) {
+		Log.d("vortex","setting startingscale to "+startingScale);
 		this.startingScale = startingScale;
 	}
 	

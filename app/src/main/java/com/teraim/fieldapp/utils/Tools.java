@@ -35,6 +35,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,8 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.Start;
@@ -189,14 +192,65 @@ public class Tools {
 		}
 	}
 
-	//Scales an image region to a size that can be displayed.
+	private static Map<Rect,Integer> inSampleMemory  = new HashMap<Rect,Integer>();
+
 	public static Bitmap getScaledImageRegion(Context ctx,String fileName, Rect r) {
+		BitmapRegionDecoder decoder = null;
+		int inSampleSize=1;
+
+		try {
+
+
+
+			Integer memorized = inSampleMemory.get(r);
+			final BitmapFactory.Options options = new BitmapFactory.Options();
+			decoder = BitmapRegionDecoder.newInstance(fileName, true);
+
+			if (memorized!=null) {
+				Log.d("vortex","trying memorized insample: "+memorized);
+				inSampleSize=memorized;
+			} else {
+				WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+				Display display = wm.getDefaultDisplay();
+				Point size = new Point();
+				display.getSize(size);
+				inSampleSize = Math.round((float) r.width() / (float) size.x);
+				Log.d("vortex","r width: "+r.width()+" screen width: "+size.x);
+				Log.d("vortex","trying insampleSize "+inSampleSize);
+			}
+
+
+
+			options.inSampleSize = inSampleSize;
+			Bitmap piece = decoder.decodeRegion(r,options);
+			//If i get here, it worked.
+			inSampleMemory.put(r,inSampleSize);
+			return piece;
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return null;
+		} catch (OutOfMemoryError ex) {
+			Log.e("vortex","out of memory! trying smaller image");
+			System.gc();
+			if (decoder!=null)
+				decoder.recycle();
+			inSampleMemory.put(r,inSampleSize+2);
+			Log.d("vortex","trying insampleSize "+(inSampleSize+2));
+			return getScaledImageRegion(ctx,fileName,r);
+		}
+
+	}
+
+	//Scales an image region to a size that can be displayed.
+	public static Bitmap getScaledImageRegionOld(Context ctx,String fileName, Rect r) {
 		BitmapRegionDecoder decoder = null; 
 
 
 		try { 
 
-			decoder = BitmapRegionDecoder.newInstance(fileName, true); 
+			decoder = BitmapRegionDecoder.newInstance(fileName, true);
+			final BitmapFactory.Options options = new BitmapFactory.Options();
+			decoder.decodeRegion(r,options);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return null;

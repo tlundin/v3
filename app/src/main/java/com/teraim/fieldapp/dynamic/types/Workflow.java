@@ -23,7 +23,7 @@ public class Workflow implements Serializable {
 	//TODO: List of blocks needs to be a map.
 
 	private List<Block> blocks;
-	private String name,label,applicationName,applicationVersion;
+	private String name,applicationName,applicationVersion;
 	private DB_Context mContext=null;
 
 
@@ -63,11 +63,11 @@ public class Workflow implements Serializable {
 	}
 
 	public String getLabel() {
-		if (label==null) {
-			if (blocks!=null && blocks.size()>1 && blocks.get(1) instanceof PageDefineBlock)
-				label = ((PageDefineBlock)blocks.get(1)).getPageLabel();
-		}
-		return label;
+
+		if (blocks!=null && blocks.size()>1 && blocks.get(1) instanceof PageDefineBlock)
+				return ((PageDefineBlock)blocks.get(1)).getPageLabel();
+		else
+				return "";
 	}
 
 	public boolean isBackAllowed() {

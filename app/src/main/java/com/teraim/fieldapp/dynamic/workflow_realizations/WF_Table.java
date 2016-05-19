@@ -13,16 +13,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
+import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Tools;
 
-public class WF_Table extends WF_List {
+public class WF_Table extends WF_List  {
 
 	//protected final List<Listable> tableRows = new  ArrayList<Listable>(); //Instantiated in constructor
 	protected final List<Filter> myFilters=new ArrayList<Filter>();
@@ -60,7 +65,7 @@ public class WF_Table extends WF_List {
 		//Add the header.
 		headerRow = new WF_Table_Row(tableView,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
 		//Add a first empty cell 
-		headerRow.addEmptyCell(id);
+		headerRow.addNoClickHeaderCell(id);
 		tableView.addView(headerRow.getWidget());
 		//
 		tableView.setStretchAllColumns (true);
@@ -144,6 +149,7 @@ public class WF_Table extends WF_List {
 	
 	//Keep column keys in memory.
 	private List<String> columnKeys = new ArrayList<String>();
+
 	
 	public void addColumn(String header, String colKey, String type, String width) {
 		//Copy the key and add the variator.
@@ -161,7 +167,170 @@ public class WF_Table extends WF_List {
 		}
 		columnKeys.add(colKey);
 	}
-	
+
+	//Keep track of Aggregate column cells.
+	public enum AggregateFunction {
+		AND, OR, COUNT, SUM, MIN, MAX, AVG
+	};
+
+	private class AggregateColumn implements EventListener {
+
+
+
+		public AggregateColumn(Expressor.EvalExpr expressionE, String format, AggregateFunction aggregationFunction) {
+			myCells=new ArrayList<TextView>();
+			myRows = new ArrayList<WF_Table_Row>();
+			this.expressionE=expressionE;
+			this.format=format;
+			myContext.registerEventListener(this , Event.EventType.onSave);
+			aggF = aggregationFunction;
+		}
+
+		Expressor.EvalExpr expressionE;
+		List<TextView>myCells;
+		List<WF_Table_Row>myRows;
+		String format;
+		AggregateFunction aggF;
+
+		public List<TextView> getMyCells() {
+			return myCells;
+		}
+
+		public void addRow(TextView textView, WF_Table_Row myRow) {
+				myCells.add(textView);
+				myRows.add(myRow);
+		}
+
+		@Override
+		public void onEvent(Event e) {
+			if (e.getType()==Event.EventType.onSave) {
+				Log.d("vortex","caught onSave in aggregate_column!");
+				if (myCells!=null) {
+					//loop over mycells (or over rows...doesnt matter. Equal number)
+					for(int i=0;i<myCells.size();i++) {
+						TextView tv = myCells.get(i);
+						WF_Table_Row row = myRows.get(i);
+						//if (aggregationFunction.equals(AgAND)
+						Set<Variable> vars;
+						boolean isLogical = aggF.equals(AggregateFunction.AND)||aggF.equals(AggregateFunction.OR);
+						boolean completeResB = true;
+						Integer completeRes = 0;
+						if (aggF==AggregateFunction.MIN || aggF==AggregateFunction.MAX)
+							completeRes=null;
+
+						boolean done=false;
+						//Aggregate over all cells in a row.
+						for (WF_Cell cell:row.getCells()) {
+							vars=cell.getAssociatedVariables();
+							//Evaluate expression with given variables as context.
+							Log.d("vortex","Cell has these variables: ");
+
+							for (Variable v:vars)
+								Log.d("vortex",v.getId());
+							if (isLogical) {
+								boolean result = Expressor.analyzeBooleanExpression(expressionE, vars);
+
+								switch (aggF) {
+									case AND:
+										if (!result) {
+											completeResB=false;
+											done=true;
+										}
+										break;
+									case OR:
+										if (result) {
+											completeResB=true;
+											done= true;
+										} else
+											completeResB=false;
+										break;
+								}
+							}
+							else {
+								String result = Expressor.analyze(expressionE, vars);
+								if (result==null || !Tools.isNumeric(result)) {
+									Log.e("vortex", "couldnt use " + result + " for " + aggF + ". Not numeric");
+									continue;
+								}
+								//Numeric result.
+								int res = Integer.parseInt(result);
+								Log.e("vortex", "got numeric "+res);
+								switch (aggF) {
+
+									case SUM:
+									case AVG:
+										completeRes+=res;
+										break;
+									case COUNT:
+										completeRes++;
+										break;
+									case MIN:
+										if (completeRes==null || completeRes>res)
+											completeRes=res;
+										break;
+									case MAX:
+										if (completeRes==null || completeRes<res)
+											completeRes=res;
+										break;
+								}
+							}
+							if (done) {
+								Log.d("vortex","I am done..exiting");
+								break;
+							}
+						}
+						//Here we are done for row.
+						if (isLogical) {
+							tv.setText(completeResB?"X":"O");
+						} else {
+							if (completeRes==null) {
+								Log.e("vortex","no result..completeRes is null");
+								tv.setText("");
+							} else {
+								if (aggF==AggregateFunction.AVG) {
+									int size = row.getCells().size();
+									completeRes=completeRes/size;
+								}
+								tv.setText(completeRes.toString());
+							}
+						}
+					}
+				}
+			}
+		}
+
+		@Override
+		public String getName() {
+			return "Aggregate_column";
+		}
+
+
+	}
+
+
+	public void addAggregateColumn(Expressor.EvalExpr expressionE, String aggregationFunction, String format, String width, boolean isDisplayed) {
+
+		AggregateColumn aggregateCol = new AggregateColumn(expressionE, format,AggregateFunction.valueOf(aggregationFunction));
+		List<TextView> myCells = aggregateCol.getMyCells();
+
+		//Add header
+		headerRow.addNoClickHeaderCell(aggregationFunction);
+
+		//Add elements
+		for (Listable l:list) {
+			WF_Table_Row wft = (WF_Table_Row)l;
+			TextView tv = wft.addAggregateCell();
+
+			aggregateCol.addRow(tv,wft);
+			if(!isDisplayed)
+				tv.setVisibility(View.INVISIBLE);
+		}
+
+		//trigger refresh.
+
+		aggregateCol.onEvent(new WF_Event_OnSave("initial"));
+
+	}
 
 
 
@@ -231,7 +400,6 @@ public class WF_Table extends WF_List {
 		
 		}
 	}
-
 
 
 }

@@ -1,6 +1,8 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -57,8 +59,22 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 	public void refresh() {
 		//This does nothing.
 	}
-	
-	
-	
+
+	@Override
+	public Map<String, String> getKeyHash() {
+		return null;
+	}
+
+	@Override
+	public Set<Variable> getAssociatedVariables() {
+		if (myVariable!=null) {
+			Set<Variable> ret = new HashSet<Variable>();
+			ret.add(myVariable);
+			return ret;
+		}
+		return null;
+
+	}
+
 
 }

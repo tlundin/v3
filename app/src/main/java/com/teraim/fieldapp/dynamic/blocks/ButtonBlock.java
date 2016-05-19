@@ -291,7 +291,7 @@ public  class ButtonBlock extends Block {
 												statusVariable.setValue(validationResult?"3":"2");
 												Log.e("vortex","SETTING STATUSVAR: "+statusVariable.getId()+" key: "+statusVariable.getKeyChain()+ "Value: "+statusVariable.getValue());
 												//Save value of all variables to database in current flow.
-												gs.getVariableCache().flushQueue();
+
 											}
 
 

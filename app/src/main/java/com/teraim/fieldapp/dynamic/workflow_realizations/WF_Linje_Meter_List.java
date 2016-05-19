@@ -8,7 +8,6 @@ import java.util.Set;
 
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
@@ -55,7 +54,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 		this.listElemSelector = keySet;
 		avgrV =avgrValueA;
 		avgrT =avgrTyper;
-		ctx.addEventListener(this, EventType.onSave);
+		ctx.registerEventListener(this, EventType.onSave);
 	}
 
 
@@ -175,7 +174,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 
 	private void refreshList() {
 		Log.d("nils","In refereshlist..");
-		GlobalState.getInstance().getVariableCache().flushQueue();
+
 		list.clear();
 		linjeV.removeAllMarkers();
 		List<String[]> rows = gs.getDb().getValues(columnNames,s);

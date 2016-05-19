@@ -126,7 +126,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 			public void onComplete() {}
 		});
 
-		zoomAnimation.setZoom(2.0f);
+		//zoomAnimation.setZoom(2.0f);
 		zoomAnimation.setZoomAnimationListener(new ZoomAnimationListener() {
 			@Override
 			public void onZoom(float scale, float x, float y) {

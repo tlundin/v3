@@ -57,6 +57,7 @@ public class ProvytaView extends View {
 		pf.setStyle(Style.STROKE);
 		pf.setStrokeWidth(1);
 
+
 		pySelected.setColor(Color.BLACK);
 		pySelected.setStyle(Style.STROKE);
 		pySelected.setStrokeWidth(3);
@@ -73,7 +74,7 @@ public class ProvytaView extends View {
 		pl.setColor(Color.BLACK);
 		pl.setStyle(Style.STROKE);
 		pl.setTypeface(Typeface.DEFAULT_BOLD); 
-		pl.setTextSize(25);
+		pl.setTextSize(15);
 
 		p50.setColor(Color.BLUE);
 		p50.setStrokeWidth(2);
@@ -129,7 +130,7 @@ public class ProvytaView extends View {
 			px.setTextSize(25);		
 		}
 		else {
-			r=h/2;
+			r=h/2-15;
 			px.setTextSize(13);
 		}
 		cx = w/2;
@@ -144,7 +145,7 @@ public class ProvytaView extends View {
 		//28 cm i diameter
 
 		float sr = 2.8f*oScaleF;
-		Coord c;
+		Coord c=null;
 		//6 meter ut på 0,120,240
 		int sDists[] = new int[]{30,50,70};
 		for (int i = 0; i<(abo?3:1);i++) {
@@ -186,9 +187,9 @@ public class ProvytaView extends View {
 */
 		
 		drawDelytor(canvas,cx,cy,(float)oScaleF);
-		canvas.drawText("10",(int)(cx+r)-15, cy, pf);
+		canvas.drawText("10",(int)(cx+r)-15, cy, pl);
 		if (largeSize)
-			canvas.drawText("N",cx,(float)(h*.1), pl);
+			canvas.drawText("N",cx,(cy-r)-25, pl);
 
 
 		//canvas.drawLine(0, 0, w, h, p);
@@ -315,7 +316,7 @@ public class ProvytaView extends View {
 			float ny = cy+(numPos.y*oScaleF);
 			Log.d("nils","Drawing number at: "+nx+","+ny);
 			px.setColor(d.isSelected()?Color.BLACK:isSelected?Color.LTGRAY:d.getColor());
-			c.drawText(d.getId()+"["+Math.round(d.getArea()/100)+"]", nx, ny, px);
+			c.drawText(d.getId()+"["+Math.round(d.getArea()/100)+"]", nx, ny, pl);
 		}	}
 
 	public void showDelytor(List<Delyta> delytor, boolean isSelected) {

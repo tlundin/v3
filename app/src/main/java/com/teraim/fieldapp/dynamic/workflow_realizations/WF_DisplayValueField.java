@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
@@ -45,7 +42,7 @@ import com.teraim.fieldapp.utils.Tools.Unit;
 		o = gs.getLogger();
 		this.formula = formula;
 		Log.d("nils","In WF_DisplayValueField Create");	
-		ctx.addEventListener(this, EventType.onSave);	
+		ctx.registerEventListener(this, EventType.onSave);
 		this.unit=unit;
 		formulaE = Expressor.preCompileExpression(formula);
 		if (formulaE==null)

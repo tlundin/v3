@@ -38,7 +38,7 @@ public class BlockCreateTable extends Block {
         View tableView = inflater.inflate(R.layout.table_view, null);
 
         Log.d("vortex","creating table.");
-        myTable = new WF_Table(name, isVisible, myContext,tableView);
+        myTable = new WF_Table(name, label,isVisible, myContext,tableView);
         Container myContainer;
         if (container!=null) {
             myContainer = myContext.getContainer(container);

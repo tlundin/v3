@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import android.graphics.Color;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout.LayoutParams;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter;
@@ -24,7 +27,7 @@ public class WF_SorterWidget extends WF_Widget {
 
 	private final String[] alfabet = {
 			"*","ABCD","EFGH","IJKL","MNOP","QRST","UVXY","ZÅÄÖ"};
-
+	private final LayoutInflater inflater;
 
 
 	WF_Filter existing;
@@ -37,15 +40,18 @@ public class WF_SorterWidget extends WF_Widget {
 		LayoutParams lp;
 		int orientation =  ((LinearLayout)container).getOrientation();
 		if (orientation==LinearLayout.HORIZONTAL)
-			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.MATCH_PARENT);
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 		else 
-			lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+			lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 
 		buttonPanel = (LinearLayout) getWidget();
-		buttonPanel.setOrientation(orientation);
+
+		//buttonPanel.setBackgroundColor(Color.parseColor("red"));
+		buttonPanel.setOrientation(LinearLayout.VERTICAL);
+		Log.d("vortex","orientation: "+((orientation==LinearLayout.HORIZONTAL)?"Horizontal":"Vertical"));
 		buttonPanel.setLayoutParams(lp);
 
-
+		inflater = LayoutInflater.from(ctx.getContext());
 
 		this.targetList=targetList;
 
@@ -72,7 +78,6 @@ public class WF_SorterWidget extends WF_Widget {
 			Button b;
 			for (String c:alfabet) {
 				b = new Button(ctx.getContext());
-				//b.setLayoutParams(lp);
 				b.setText(c);
 				b.setOnClickListener(cl);
 				buttonPanel.addView(b);
@@ -88,10 +93,13 @@ public class WF_SorterWidget extends WF_Widget {
 					//This shall apply a new Alpha filter on target.
 					//First, remove any existing alpha filter.
 					targetList.removeFilter(existing);
-					existing = new WF_Column_Name_Filter(ch,ch,displayField,FilterType.exact);
-					//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
-					targetList.addFilter(existing);
 
+					//Wildcard? Do not add any filter.
+					if(!ch.equals("*")) {
+						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.exact);
+						//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
+						targetList.addFilter(existing);
+					}
 					//running the filters will trigger redraw.
 					targetList.draw();
 				}
@@ -122,10 +130,14 @@ public class WF_SorterWidget extends WF_Widget {
 							o.addRow("Current row: "+row.toString() );
 						}
 					}
+					//Add a wildcard button.
+					b = new Button(ctx.getContext());
+					b.setText("*");
+					b.setOnClickListener(dl);
+					buttonPanel.addView(b);
 					for (String txt:txts)				
 						if (txt !=null && txt.trim().length()>0) {
 							b = new Button(ctx.getContext());
-							b.setLayoutParams(lp);
 							b.setText(txt);
 							b.setOnClickListener(dl);
 							buttonPanel.addView(b);				

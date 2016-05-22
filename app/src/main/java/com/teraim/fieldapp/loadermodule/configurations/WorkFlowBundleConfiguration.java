@@ -34,7 +34,7 @@ import com.teraim.fieldapp.dynamic.blocks.ContainerDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateImageBlock;
-import com.teraim.fieldapp.dynamic.blocks.CreateListFilter;
+import com.teraim.fieldapp.dynamic.blocks.AddFilter;
 import com.teraim.fieldapp.dynamic.blocks.CreateSortWidgetBlock;
 import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.JumpBlock;
@@ -285,8 +285,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockDefineMenuEntry(parser));			
 				else if (name.equals("block_create_text_field"))
 					blocks.add(readBlockCreateTextField(parser));
-				else if (name.equals("block_create_list_filter"))
-					blocks.add(readBlockCreateListFilter(parser));
+				else if (name.equals("block_add_filter"))
+					blocks.add(readBlockAddFilter(parser));
 				else if (name.equals("block_create_round_chart"))
 					blocks.add(readBlockCreateRoundChart(parser));
 				else if (name.equals("block_create_var_value_source"))
@@ -400,12 +400,12 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 
-	private Block readBlockCreateListFilter(XmlPullParser parser) throws IOException, XmlPullParserException {
-		o.addRow("Parsing block: block_create_list_filter...");
+	private Block readBlockAddFilter(XmlPullParser parser) throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_add_filter...");
 		String id=null,target=null,type=null,selectionField=null,selectionPattern=null;
 		
 
-		parser.require(XmlPullParser.START_TAG, null,"block_create_list_filter");
+		parser.require(XmlPullParser.START_TAG, null,"block_add_filter");
 		Log.d("vortex","In create_list_filter!!");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -431,7 +431,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		}
 
 		checkForNull("block_ID",id,"target",target,"type",type);
-		return new CreateListFilter(id,target,type,selectionField,selectionPattern,o);
+		return new AddFilter(id,target,type,selectionField,selectionPattern,o);
 
 	}
 	private Block readBlockAddGisFilter(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -1068,7 +1068,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private Block readBlockAddAggregateColumnToTable(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_add_aggregate_column_to_table...");
 		parser.require(XmlPullParser.START_TAG, null,"block_add_aggregate_column_to_table");
-		String id=null,target=null,expression=null,aggregationFunction=null,format = null,width=null;
+		String id=null,label = null,target=null,expression=null,aggregationFunction=null,format = null,width=null;
+		String backgroundColor=null,textColor=null;
 		boolean isDisplayed=true;
 
 		while (parser.next() != XmlPullParser.END_TAG) {
@@ -1078,7 +1079,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			String name= parser.getName();
 			if (name.equals("block_ID")) {
 				id = readText("block_ID",parser);
-			} else if (name.equals("target")) {
+			} else if (name.equals("label")) {
+				label = readText("label",parser);
+			}else if (name.equals("target")) {
 				target = readText("target",parser);
 			} else if (name.equalsIgnoreCase("expression")) {
 				expression = readText("expression",parser);
@@ -1088,7 +1091,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				format = readText("format",parser);
 			} else if (name.equalsIgnoreCase("width")) {
 				width = readText("width",parser);
-			} else if (name.equals("is_displayed")) {
+			} else if (name.equalsIgnoreCase("bck_color")) {
+				backgroundColor = readText("bck_color",parser);
+			}else if (name.equalsIgnoreCase("text_color")) {
+				textColor = readText("text_color",parser);
+			}else if (name.equals("is_displayed")) {
 				isDisplayed = readText("is_displayed",parser).trim().equals("true");
 
 			} else {
@@ -1098,7 +1105,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		}
 
 		checkForNull("block_ID",id,"target",target);
-		return new BlockAddAggregateColumnToTable(id,target,expression,aggregationFunction,format,width,isDisplayed);
+		Log.d("mozarella","bck_color set to "+backgroundColor);
+		return new BlockAddAggregateColumnToTable(id,label, target,expression,aggregationFunction,format,width,backgroundColor, textColor,isDisplayed);
 
 	}
 
@@ -1107,6 +1115,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private Block readBlockAddColumnsToTable(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_add_column_to_table...");
 		String id=null,target=null,label=null,type=null,colKey=null,width=null;
+		String backgroundColor=null,textColor=null;
 
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -1126,7 +1135,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				type = readText("type",parser);
 			}else if (name.equalsIgnoreCase("width")) {
 				width = readText("width",parser);
-			} 
+			} else if (name.equalsIgnoreCase("bck_color")) {
+				backgroundColor = readText("bck_color",parser);
+			}else if (name.equalsIgnoreCase("text_color")) {
+				textColor = readText("text_color",parser);
+			}
 			else {
 				Log.e("vortex","Skipped "+name);
 				skip(name,parser);
@@ -1134,7 +1147,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		}
 
 		checkForNull("block_ID",id,"target",target);
-		return new BlockAddColumnsToTable(id,target,label,colKey,type,width);
+		return new BlockAddColumnsToTable(id,target,label,colKey,type,width,backgroundColor,textColor);
 
 	}
 

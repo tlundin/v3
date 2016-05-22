@@ -97,7 +97,7 @@ public class RoundChartBlock extends Block implements EventListener {
 
 		}  else {
 			o.addRow("");
-			o.addRedText("Failed to add round chart block with id "+blockId+" - missing container "+myContainer);
+			o.addRedText("Failed to add round chart block with id "+blockId+" - missing container "+"root");
 		}
 
 	}

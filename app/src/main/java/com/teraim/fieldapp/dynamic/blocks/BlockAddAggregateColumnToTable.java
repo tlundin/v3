@@ -20,11 +20,12 @@ public class BlockAddAggregateColumnToTable extends Block {
 	private static final long serialVersionUID = -3041902713022605254L;
 	private Expressor.EvalExpr expressionE=null;
 
-	String target,  expression, aggregationFunction, aggreagationVariable, format,  width;
+	String target,  expression, aggregationFunction, aggreagationVariable, format,  width, label;
+	String backgroundColor, textColor;
 	boolean isDisplayed;
 
-	public BlockAddAggregateColumnToTable(String id, String target, String expression, String aggregationFunction,
-										   String format, String width, boolean isDisplayed) {
+	public BlockAddAggregateColumnToTable(String id, String label, String target, String expression, String aggregationFunction,
+										   String format, String width, String backgroundColor, String textColor,boolean isDisplayed) {
 		super();
 		this.blockId=id;
 		this.target=target;
@@ -34,12 +35,14 @@ public class BlockAddAggregateColumnToTable extends Block {
 		this.format=format;
 		this.width=width;
 		this.isDisplayed=isDisplayed;
-
+		this.label=label;
 		List<Expressor.EvalExpr> tmp = Expressor.preCompileExpression(expression);
 		if (tmp!=null) {
 			this.expressionE = tmp.get(0);
 			Log.d("vortex", "Bananas rule " + expression);
 		}
+		this.textColor=textColor;
+		this.backgroundColor=backgroundColor;
 	}
 
 
@@ -53,7 +56,7 @@ public class BlockAddAggregateColumnToTable extends Block {
 			return;
 		}
 		
-		myTable.addAggregateColumn(expressionE,aggregationFunction,format,width,isDisplayed);
+		myTable.addAggregateColumn(label,expressionE,aggregationFunction,format,width,isDisplayed,backgroundColor, textColor);
 	}
 
 }

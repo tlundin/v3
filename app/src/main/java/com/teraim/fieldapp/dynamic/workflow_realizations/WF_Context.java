@@ -10,6 +10,7 @@ package com.teraim.fieldapp.dynamic.workflow_realizations;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -175,7 +176,9 @@ public class WF_Context {
 	public Drawable getDrawable(String name) {
 		return drawables.get(name);
 	}
-
+	public Collection<Drawable> getDrawables() {
+		return drawables.values();
+	}
 
 	public Container getContainer(String id) {
 		if (containers == null)

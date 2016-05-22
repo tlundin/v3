@@ -41,7 +41,7 @@ public class TextFieldBlock extends Block {
 			o.addRow("Added new TextField with ID"+blockId);
 		} else {
 			o.addRow("");
-			o.addRedText("Failed to add text field block with id "+blockId+" - missing container "+myContainer);
+			o.addRedText("Failed to add text field block with id "+blockId+" - missing container "+containerId);
 		}
 		
 	}	

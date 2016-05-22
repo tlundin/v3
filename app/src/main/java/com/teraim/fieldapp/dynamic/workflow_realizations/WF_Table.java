@@ -1,6 +1,7 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -45,17 +47,19 @@ public class WF_Table extends WF_List  {
 	private 		int rowNumber=0;
 	private final String ColHeadId = "TableHeader";
 	private WF_Table_Row headerRow;
+	private boolean tableTypeSimple;
 
 	private String varNamePrefix;
 	
 	//How about using the Container's panel?? TODO
-	public WF_Table(String id,boolean isVisible,WF_Context ctx, View tableV) {
+	public WF_Table(String id,String label,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
 		this.tableView = (TableLayout)tableV.findViewById(R.id.table);;
 		myContext = ctx;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		al = gs.getVariableConfiguration();
+		tableTypeSimple=false;
 		//myTable = new GridView(ctx.getContext());
 		
 		//Create rows.
@@ -65,7 +69,7 @@ public class WF_Table extends WF_List  {
 		//Add the header.
 		headerRow = new WF_Table_Row(tableView,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
 		//Add a first empty cell 
-		headerRow.addNoClickHeaderCell(id);
+		headerRow.addNoClickHeaderCell(label, null, null);
 		tableView.addView(headerRow.getWidget());
 		//
 		tableView.setStretchAllColumns (true);
@@ -115,7 +119,7 @@ public class WF_Table extends WF_List  {
 	}
 	
 	public void addColumns(List<String> labels,
-			List<String> columnKeyL, String type, String width) {
+			List<String> columnKeyL, String type, String width,String backgroundColor, String textColor) {
 
 		boolean useColumKeyAsHeader = labels==null;
 		
@@ -138,11 +142,13 @@ public class WF_Table extends WF_List  {
 			k = columnKeyL.get(i);
 			l = (useColumKeyAsHeader?null:labels.get(i));
 			//Add the column
-			addColumn(l,k,type,width);
+			addColumn(l,k,type,width,backgroundColor,textColor);
 			
 		}
-		for (String s:columnKeys)
-			Log.d("vortex","my columns: "+s);
+		//for (String s:columnKeys)
+		//	Log.d("vortex","my columns: "+s);
+		if (type!=null && type.equals("simple"))
+			tableTypeSimple=true;
 		
 	}
 	
@@ -151,13 +157,13 @@ public class WF_Table extends WF_List  {
 	private List<String> columnKeys = new ArrayList<String>();
 
 	
-	public void addColumn(String header, String colKey, String type, String width) {
+	public void addColumn(String header, String colKey, String type, String width,String backgroundColor, String textColor) {
 		//Copy the key and add the variator.
 		Map<String, String> colHash = Tools.copyKeyHash(myContext.getKeyHash());
 		colHash.put(myVariator, colKey);
 		
 		//Add header to the header row? Duh!!
-		headerRow.addHeaderCell(header);
+		headerRow.addHeaderCell(header,backgroundColor,textColor);
 		
 		
 		//Create all row entries.
@@ -170,33 +176,37 @@ public class WF_Table extends WF_List  {
 
 	//Keep track of Aggregate column cells.
 	public enum AggregateFunction {
-		AND, OR, COUNT, SUM, MIN, MAX, AVG
+		AND, OR, COUNT, SUM, MIN, MAX, aggF, AVG
 	};
 
 	private class AggregateColumn implements EventListener {
 
 
 
-		public AggregateColumn(Expressor.EvalExpr expressionE, String format, AggregateFunction aggregationFunction) {
-			myCells=new ArrayList<TextView>();
+		public AggregateColumn(String label, Expressor.EvalExpr expressionE, String format, AggregateFunction aggregationFunction,boolean isLogical) {
+			myCells=new ArrayList<View>();
 			myRows = new ArrayList<WF_Table_Row>();
 			this.expressionE=expressionE;
 			this.format=format;
 			myContext.registerEventListener(this , Event.EventType.onSave);
 			aggF = aggregationFunction;
+			this.label=label;
+			this.isLogical=isLogical;
 		}
 
+		final boolean isLogical;
 		Expressor.EvalExpr expressionE;
-		List<TextView>myCells;
+		List<View>myCells;
 		List<WF_Table_Row>myRows;
 		String format;
 		AggregateFunction aggF;
+		String label;
 
-		public List<TextView> getMyCells() {
+		public List<View> getMyCells() {
 			return myCells;
 		}
 
-		public void addRow(TextView textView, WF_Table_Row myRow) {
+		public void addRow(View textView, WF_Table_Row myRow) {
 				myCells.add(textView);
 				myRows.add(myRow);
 		}
@@ -207,12 +217,16 @@ public class WF_Table extends WF_List  {
 				Log.d("vortex","caught onSave in aggregate_column!");
 				if (myCells!=null) {
 					//loop over mycells (or over rows...doesnt matter. Equal number)
+					TextView tv=null; CheckBox cb = null;
 					for(int i=0;i<myCells.size();i++) {
-						TextView tv = myCells.get(i);
+						if (!isLogical)
+							tv = (TextView)myCells.get(i);
+						else
+							cb = (CheckBox)myCells.get(i);
 						WF_Table_Row row = myRows.get(i);
 						//if (aggregationFunction.equals(AgAND)
 						Set<Variable> vars;
-						boolean isLogical = aggF.equals(AggregateFunction.AND)||aggF.equals(AggregateFunction.OR);
+
 						boolean completeResB = true;
 						Integer completeRes = 0;
 						if (aggF==AggregateFunction.MIN || aggF==AggregateFunction.MAX)
@@ -223,22 +237,22 @@ public class WF_Table extends WF_List  {
 						for (WF_Cell cell:row.getCells()) {
 							vars=cell.getAssociatedVariables();
 							//Evaluate expression with given variables as context.
-							Log.d("vortex","Cell has these variables: ");
+							//Log.d("vortex","Cell has these variables: ");
 
-							for (Variable v:vars)
-								Log.d("vortex",v.getId());
+							//for (Variable v:vars)
+							//	Log.d("vortex",v.getId());
 							if (isLogical) {
-								boolean result = Expressor.analyzeBooleanExpression(expressionE, vars);
+								Boolean result = Expressor.analyzeBooleanExpression(expressionE, vars);
 
 								switch (aggF) {
 									case AND:
-										if (!result) {
+										if (result ==null || !result) {
 											completeResB=false;
 											done=true;
 										}
 										break;
 									case OR:
-										if (result) {
+										if (result!=null && result) {
 											completeResB=true;
 											done= true;
 										} else
@@ -281,7 +295,7 @@ public class WF_Table extends WF_List  {
 						}
 						//Here we are done for row.
 						if (isLogical) {
-							tv.setText(completeResB?"X":"O");
+							cb.setChecked(completeResB);
 						} else {
 							if (completeRes==null) {
 								Log.e("vortex","no result..completeRes is null");
@@ -308,22 +322,45 @@ public class WF_Table extends WF_List  {
 	}
 
 
-	public void addAggregateColumn(Expressor.EvalExpr expressionE, String aggregationFunction, String format, String width, boolean isDisplayed) {
+	public void addAggregateColumn(String label, Expressor.EvalExpr expressionE, String aggregationFunction, String format, String width, boolean isDisplayed, String backgroundColor, String textColor) {
+		AggregateFunction aggF;
+		try {
+			aggF = AggregateFunction.valueOf(aggregationFunction.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			o.addRow("");
+			o.addRedText("The aggregate function "+aggregationFunction+" is not supported. Supported are: "+
+					Arrays.asList(AggregateFunction.values()));
+			return;
+		}
+		boolean isLogical = (aggF==AggregateFunction.AND || aggF == AggregateFunction.OR);
+		AggregateColumn aggregateCol = new AggregateColumn(label, expressionE, format,aggF,isLogical);
 
-		AggregateColumn aggregateCol = new AggregateColumn(expressionE, format,AggregateFunction.valueOf(aggregationFunction));
-		List<TextView> myCells = aggregateCol.getMyCells();
-
+		if (label==null || label.isEmpty())
+			label = aggregationFunction;
 		//Add header
-		headerRow.addNoClickHeaderCell(aggregationFunction);
-
+		headerRow.addNoClickHeaderCell(label,backgroundColor,textColor);
+		int widthI = 50;
+		if (width!=null) try {
+			widthI = Integer.parseInt(width);
+		} catch (NumberFormatException e) {};
 		//Add elements
+		View view;
 		for (Listable l:list) {
 			WF_Table_Row wft = (WF_Table_Row)l;
-			TextView tv = wft.addAggregateCell();
-
-			aggregateCol.addRow(tv,wft);
-			if(!isDisplayed)
-				tv.setVisibility(View.INVISIBLE);
+			if (!isLogical) {
+				TextView tv = wft.addAggregateTextCell(backgroundColor,textColor);
+				view = tv;
+				aggregateCol.addRow(tv, wft);
+				tv.setMinWidth(widthI);
+			} else {
+				CheckBox cb = wft.addAggregateLogicalCell(backgroundColor,textColor);
+				aggregateCol.addRow(cb, wft);
+				view = cb;
+			}
+			if (view!=null) {
+				if (!isDisplayed)
+					view.setVisibility(View.INVISIBLE);
+			}
 		}
 
 		//trigger refresh.
@@ -374,6 +411,18 @@ public class WF_Table extends WF_List  {
 			//Construct variablename. 
 			//String varId = varNamePrefix+Constants.VariableSeparator+varGrId+Constants.VariableSeparator+variableSuffix;
 			Log.d("vortex","Adding variable "+varGrId);
+			if (tableTypeSimple) {
+				List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varGrId);
+				if (row != null) {
+					Variable.DataType type = gs.getVariableConfiguration().getnumType(row);
+					if (type != Variable.DataType.bool) {
+						Log.e("vortex", "use of non boolean type variable in simple column. Forbidden!");
+						o.addRow("");
+						o.addRedText("Variable with suffix [" + variableSuffix+ "] is not type Boolean. Only boolean variables are allowed for checkboxes. Please check your XML.");
+						return;
+					}
+				}
+			}
 			//Get prefetchvalue per variator value. 
 			Map<String, String> valueMap = allInstances.get(varGrId);
 			

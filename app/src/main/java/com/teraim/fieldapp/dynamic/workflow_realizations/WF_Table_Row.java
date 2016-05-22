@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -111,16 +113,22 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		return this.getLabel().compareTo(other.getLabel());
 	}
 
-	public void addNoClickHeaderCell(String tableId) {
+	public void addNoClickHeaderCell(String label, String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.headerT);
-		tv.setText(tableId);
+
+		tv.setText(label);
 		((TableRow)this.getWidget()).addView(emptyCell);
+		Log.d("mozarella","backgroundcolor is "+backgroundColor+" and label "+label);
+		if (backgroundColor!=null)
+			emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
+		if (textColor!=null)
+			tv.setTextColor(Color.parseColor(textColor));
 	}
 
 	int headerIndex=1;
 	//Add a cell of purely graphical nature.
-	public void addHeaderCell(String label) {
+	public void addHeaderCell(String label, String backgroundColor, String textColor) {
 		View headerC = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
 		TextView headerT = (TextView)headerC.findViewById(R.id.headerT);
 		headerT.setText(label);
@@ -141,6 +149,10 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			}
 
 		});
+		if (backgroundColor!=null)
+			headerC.setBackgroundColor(Color.parseColor(backgroundColor));
+		if (textColor!=null)
+			headerT.setTextColor(Color.parseColor(textColor));
 		headerIndex++;
 	}
 
@@ -154,9 +166,15 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 				widget = new WF_Simple_Cell_Widget(columnKeyHash,getLabel(), al.getDescription(myRow),
 						myContext, this.getId()+colKey,true);
 				
-			else 
-				widget  = new WF_Cell_Widget(columnKeyHash,getLabel(), al.getDescription(myRow),
-				myContext, this.getId()+colKey,true);
+			else {
+				widget = new WF_Cell_Widget(columnKeyHash, getLabel(), al.getDescription(myRow),
+						myContext, this.getId() + colKey, true);
+				int widthI = 50;
+				if (width!=null) try {
+					widthI = Integer.parseInt(width);
+				} catch (NumberFormatException e) {};
+				widget.getWidget().setMinimumWidth(widthI);
+			}
 			
 			
 			//TODO:ADD FORMAT! NULL BELOW
@@ -169,13 +187,33 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			((TableRow)getWidget()).addView(widget.getWidget());
 	}
 
-	public TextView addAggregateCell() {
-		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_aggregate,null);
+	public TextView addAggregateTextCell(String backgroundColor, String textColor) {
+		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_text_aggregate,null);
+		View bg = (View)emptyCell.findViewById(R.id.outputContainer);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.contentT);
+
 		((TableRow)this.getWidget()).addView(emptyCell);
+		bg.setBackgroundColor(Color.parseColor(backgroundColor));
+		tv.setTextColor(Color.parseColor(textColor));
 //		Log.d("vortex","var for row "+this.getLabel());
 //		Log.d("vortex","v: "+al.getVarName(myRow)+" key: "+al.getKeyChain(myRow));
 		return tv;
+	}
+
+	public CheckBox addAggregateLogicalCell(String backgroundColor, String textColor) {
+		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_logical_aggregate,null);
+
+		//View bg = (View)emptyCell.findViewById(R.id.outputContainer);
+		CheckBox cb=(CheckBox) emptyCell.findViewById(R.id.contentT);
+
+		((TableRow)this.getWidget()).addView(emptyCell);
+		//((TableRow)this.getWidget()).setBackgroundColor(Color.parseColor(backgroundColor));
+		emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
+		cb.setTextColor(Color.parseColor(textColor));
+
+//		Log.d("vortex","var for row "+this.getLabel());
+//		Log.d("vortex","v: "+al.getVarName(myRow)+" key: "+al.getKeyChain(myRow));
+		return cb;
 	}
 
 

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.ViewConfiguration;
 
 import com.teraim.fieldapp.dynamic.templates.LinjePortalTemplate;
+import com.teraim.fieldapp.dynamic.templates.TableDefaultTemplate;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
@@ -368,6 +369,7 @@ public class Start extends MenuActivity {
 					} else {
 						if (map)
 							wfCtx.upOneMapLevel();
+
 						Log.d("vortex","back was allowed");
 					}
 				}
@@ -390,6 +392,10 @@ public class Start extends MenuActivity {
 							.setIcon(android.R.drawable.ic_dialog_alert)
 							.show();
 				}
+			} else if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof TableDefaultTemplate) {
+				final TableDefaultTemplate lp = (TableDefaultTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
+				lp.closePopIfUp();
+				return true;
 			}
 			setTitle("");
 			}

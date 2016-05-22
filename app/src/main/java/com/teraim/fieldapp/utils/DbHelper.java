@@ -479,8 +479,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 s.selection,  // selections
                 s.selectionArgs); //selections args
 
-        if(aff==0)
-        	Log.e("nils","Couldn't delete "+name+" from database. Not found. Sel: "+s.selection+" Args: "+print(s.selectionArgs));
+        //if(aff==0)
+        //	Log.e("nils","Couldn't delete "+name+" from database. Not found. Sel: "+s.selection+" Args: "+print(s.selectionArgs));
         //else
         //	Log.d("nils","DELETED: "+ name);
 

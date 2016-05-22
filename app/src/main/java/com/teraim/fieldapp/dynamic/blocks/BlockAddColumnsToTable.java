@@ -18,15 +18,19 @@ public class BlockAddColumnsToTable extends Block {
 	 */
 	private static final long serialVersionUID = -3041902713022605254L;
 	private String name=null,target=null,label=null,type=null,colKey=null,width=null;
-	
+	private String textColor=null,backgroundColor=null;
+
 	public BlockAddColumnsToTable(String id, String target, String label,
-			 String colKey, String type, String width) {
+			 String colKey, String type, String width,String backgroundColor, String textColor) {
 		this.blockId=id;
 		this.target=target;
 		this.colKey=colKey;
 		this.type=type;
 		this.width=width;
 		this.label=label;
+		this.backgroundColor=backgroundColor;
+		this.textColor= textColor;
+
 	}
 	
 	
@@ -78,7 +82,7 @@ public class BlockAddColumnsToTable extends Block {
 				Log.d("vortex","Colkey: "+columnKeyL.toString()+" \nLabels: "+labels.toString());
 			}
 		}
-		myTable.addColumns(labels,columnKeyL,type,width);
+		myTable.addColumns(labels,columnKeyL,type,width,backgroundColor,textColor);
 	}
 
 }

@@ -833,6 +833,8 @@ public class Expressor {
 		private static final long serialVersionUID = 1L;
 
 		abstract Object eval();
+
+
 	}
 
 	public static class Atom extends EvalExpr {
@@ -858,23 +860,7 @@ public class Expressor {
 			String value;
 			switch(getType()) {
 			case variable:
-				Variable v=null;
-
-				//first check if 'variables' is not null.
-				if (variables!=null) {
-					Log.d("vortex","This variable has a variable context. Will look for it there");
-					for (Variable var:variables) {
-						if (var.getId().endsWith(myToken.str)) {
-							v = var;
-							break;
-						}
-					}
-					if (v==null) {
-						Log.d ("vortex","couldnt find a match for variable pattern "+myToken.str+" Variables contain: "+variables);
-					}
-				}
-				if (v==null)
-					v = gs.getVariableCache().getVariable(currentKeyChain, myToken.str);
+				Variable v=Expressor.getVariable(myToken.str);
 
 				if (v!=null && v.getValue() == null || v==null) {
 					System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
@@ -1835,10 +1821,12 @@ public class Expressor {
 				}
 				break;
 			case has:
-				Variable var = gs.getVariableCache().getVariable(evalArgs.get(0).toString());
+				Variable var = null;
+				if (evalArgs.get(0)!=null)
+					var = Expressor.getVariable(evalArgs.get(0).toString());
 				if (var != null) {
 					String value = var.getValue();
-					Log.d("vortex","Found value "+value+" for variable "+var.getLabel()+" in has!");
+					//Log.d("vortex","Found value "+value+" for variable "+var.getLabel()+" in has!");
 					if (value== null)
 						return false;
 					else
@@ -1846,7 +1834,7 @@ public class Expressor {
 				} else {
 					Log.e("vortex","Variable not found for literal: ["+evalArgs.get(0)+"]");
 					o.addRow("");
-					o.addRedText("Variable not found in historical: ["+evalArgs.get(0)+"]");
+					o.addRedText("Variable not found in Has(): ["+evalArgs.get(0)+"]");
 					return null;
 				}
 				//return checkPreconditions(evalArgs,1,No_Null);
@@ -2231,6 +2219,27 @@ public class Expressor {
 	}
 
 
+	public static Variable getVariable(String varId) {
+		//check first if variable context exists
+
+		if (variables!=null) {
+
+			for (Variable v:variables) {
+				if (v.getId().endsWith(varId)) {
+					return v;
+				}
+
+
+			}
+			Log.e("vortex","Variable "+varId+" not found in var context!");
+
+		}
+
+
+
+		return gs.getVariableCache().getVariable(currentKeyChain,varId);
+
+	}
 
 
 	private static void printfail(Expr rez, Expr arg2, Expr op) throws ExprEvaluationException {

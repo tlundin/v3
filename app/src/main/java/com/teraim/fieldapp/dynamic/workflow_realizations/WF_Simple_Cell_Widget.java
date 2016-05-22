@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -19,9 +21,10 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 	private Variable myVariable = null;
 	
 	public WF_Simple_Cell_Widget(Map<String, String> columnKeyHash, String headerT, String descriptionT,
-			WF_Context context, String id,boolean isVisible) {
+			final WF_Context context, String id,boolean isVisible) {
 		super(id,new CheckBox(context.getContext()),isVisible,context);
 		myCheckBox = (CheckBox)this.getWidget();
+		myCheckBox.setGravity(Gravity.CENTER_VERTICAL);
 		myHash = columnKeyHash;
 		
 		myCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -30,9 +33,12 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (myVariable!=null) {
 					if (isChecked)
-						myVariable.setValue("1");
-					else
+						myVariable.setValue("true");
+						else
 						myVariable.deleteValue();
+
+					context
+							.registerEvent(new WF_Event_OnSave("table_cell", null));
 				} 
 			}
 		});
@@ -43,7 +49,7 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 		myVariable = GlobalState.getInstance().getVariableCache().getCheckedVariable(myHash, varId, prefetchValue, prefetchValue!=null);
 		if (myVariable!=null) {
 			String val = myVariable.getValue();
-			myCheckBox.setChecked(val!=null && Integer.parseInt(val)==1);
+			myCheckBox.setChecked(val!=null && val.equals("true"));
 		}
 		
 	}

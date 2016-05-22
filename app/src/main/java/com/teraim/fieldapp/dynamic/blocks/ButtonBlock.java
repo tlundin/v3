@@ -563,10 +563,10 @@ public  class ButtonBlock extends Block {
 				toggleB.setTextOff(text);
 				toggleB.setChecked(enabled);
 				LayoutParams params = new LayoutParams();
-				params.width = LayoutParams.MATCH_PARENT;
-				params.height = LayoutParams.WRAP_CONTENT;
-				toggleB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-				toggleB.setLayoutParams(params);
+				//params.width = LayoutParams.MATCH_PARENT;
+				//params.height = LayoutParams.WRAP_CONTENT;
+				//toggleB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+				//toggleB.setLayoutParams(params);
 
 				toggleB.setOnClickListener(new OnClickListener() {
 
@@ -592,6 +592,9 @@ public  class ButtonBlock extends Block {
 										d.show();
 								} else {
 									Log.e("nils","Couldn't find target "+target+" for button");
+									for (Drawable dd:myContext.getDrawables()) {
+										Log.d("vortex",((WF_Widget)dd).getId());
+									}
 									o.addRow("");
 									o.addRedText("Target for button missing: "+target);
 								}

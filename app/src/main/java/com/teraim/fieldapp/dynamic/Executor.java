@@ -47,7 +47,7 @@ import com.teraim.fieldapp.dynamic.blocks.ContainerDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateImageBlock;
-import com.teraim.fieldapp.dynamic.blocks.CreateListFilter;
+import com.teraim.fieldapp.dynamic.blocks.AddFilter;
 import com.teraim.fieldapp.dynamic.blocks.CreateSortWidgetBlock;
 import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.JumpBlock;
@@ -759,8 +759,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				}
 
 
-				else if (b instanceof CreateListFilter) {
-					((CreateListFilter) b).create(myContext);
+				else if (b instanceof AddFilter) {
+					((AddFilter) b).create(myContext);
 				}
 
 				String cId = b.getBlockId();
@@ -919,6 +919,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		}
 
 	}
+
 
 
 }

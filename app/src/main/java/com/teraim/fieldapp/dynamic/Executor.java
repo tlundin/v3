@@ -568,6 +568,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 																if (!found) {
 																	Log.d("nils","Variable "+v.getId()+" not found.Removing");
 																	v.deleteValue();
+																	//here we need a onSave event.
+																	myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_setvalue"));
 																}
 
 															}	
@@ -672,6 +674,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 												if (!found) {
 													Log.d("nils","Variable "+v.getId()+" not found.Removing");
 													v.deleteValue();
+													myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_cond_cont"));
+
 												}
 
 											}	

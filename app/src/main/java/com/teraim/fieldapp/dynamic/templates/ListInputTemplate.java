@@ -87,10 +87,10 @@ public class ListInputTemplate extends Executor {
 		return myLayouts;
 	}
 
-	public void execute(String name, String target) {
+	public boolean execute(String name, String target) {
 		if (name.equals("template_function_hide_edited"))
 			hideEdited(target);
-
+		return true;
 	}
 
 	Filter f = new WF_OnlyWithoutValue_Filter("_filter");

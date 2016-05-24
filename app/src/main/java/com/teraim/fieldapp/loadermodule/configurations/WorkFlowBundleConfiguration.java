@@ -501,7 +501,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private Block readBlockAddGisPointObjects(XmlPullParser parser,GisObjectType type) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_add_gis_point_objects...");
 		String id=null,nName=null,target=null,label=null,coordType = null, color=null,polyType=null,fillType=null,
-				location=null,objContext=null,imgSource=null,refreshRate=null,radius=null,onClick=null,statusVariable = null;
+				palette = null, location=null,objContext=null,imgSource=null,refreshRate=null,radius=null,onClick=null,statusVariable = null;
 		boolean isVisible=true,isUser=true,createAllowed=false;
 
 		//parser.require(XmlPullParser.START_TAG, null,"block_add_gis_point_objects")
@@ -545,7 +545,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				radius= readText("radius",parser);
 			} else if (name.equalsIgnoreCase("create_allowed")) {
 				createAllowed= readText("create_allowed",parser).equals("true");
-			}else if (name.equalsIgnoreCase("status_variable")) {
+			} else if (name.equalsIgnoreCase("palette")) {
+				palette = readText("palette",parser);
+			} else if (name.equalsIgnoreCase("status_variable")) {
 				statusVariable = readText("status_variable",parser);
 			}
 
@@ -559,7 +561,10 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		checkForNull("block_ID",id,"target",target,"location",location);
 		if (imgSource!=null&&!imgSource.isEmpty())
 			Tools.preCacheImage(baseBundlePath+"extras/",imgSource,cacheFolder,o);
-		return new AddGisPointObjects(id,nName,label,target,objContext,coordType,location,imgSource,refreshRate,radius,isVisible,type,color,polyType,fillType,onClick,statusVariable,isUser,createAllowed,o);
+		if (createAllowed==false && palette!=null) {
+			createAllowed=true;
+		}
+		return new AddGisPointObjects(id,nName,label,target,objContext,coordType,location,imgSource,refreshRate,radius,isVisible,type,color,polyType,fillType,onClick,statusVariable,isUser,createAllowed,palette,o);
 
 	}
 

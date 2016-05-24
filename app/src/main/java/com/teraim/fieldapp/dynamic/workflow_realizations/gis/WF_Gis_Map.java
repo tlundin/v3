@@ -2,7 +2,9 @@ package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -95,7 +97,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	private View gisObjectsPopUp;
 	private boolean gisObjMenuOpen=false;
 	protected boolean animationRunning=false;
-	private List<FullGisObjectConfiguration> myGisObjectTypes;
+	private Map<String,List<FullGisObjectConfiguration>> myGisObjectTypes;
 	private Button createBackB;
 	private Button createOkB;
 	private TextView selectedT,selectedT2,circumT,lengthT,areaT;
@@ -458,7 +460,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		popupHide = AnimationUtils.loadAnimation(ctx, R.anim.popup_hide);
 		popupHide.setAnimationListener(this);
 
-		myGisObjectTypes = new ArrayList<FullGisObjectConfiguration>();
+		myGisObjectTypes = new HashMap<String,List<FullGisObjectConfiguration>>();
 
 
 
@@ -652,8 +654,13 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	}
 
 	//Add a gisobject to the createMenu.
-	public void addGisObjectType(FullGisObjectConfiguration gop) {
-		myGisObjectTypes.add(gop);
+	public void addGisObjectType(FullGisObjectConfiguration gop,String paletteName) {
+		List typesInPalette = myGisObjectTypes.get(paletteName);
+		if (typesInPalette==null) {
+			typesInPalette=new ArrayList <FullGisObjectConfiguration>();
+			myGisObjectTypes.put(paletteName,typesInPalette);
+		}
+		typesInPalette.add(gop);
 		objectMenuB.setVisibility(View.VISIBLE);
 	}
 

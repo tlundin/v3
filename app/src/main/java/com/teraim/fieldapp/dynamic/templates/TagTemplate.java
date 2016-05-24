@@ -14,7 +14,6 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,7 +39,6 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Delyta;
-import com.teraim.fieldapp.dynamic.types.Marker;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
@@ -80,9 +78,9 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 	}
 
 	@Override
-	public void execute(String function, String target) {
-		// TODO Auto-generated method stub
+	public boolean execute(String function, String target) {
 
+		return true;
 	}
 
 

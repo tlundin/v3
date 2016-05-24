@@ -44,6 +44,7 @@ import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
@@ -111,9 +112,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 		//First time vortex runs? Then create global folders.
 		if (this.initIfFirstTime()) {
-			if (!Start.singleton.isNetworkAvailable()) {
-				showErrorMsg("You need a working network connection first time you start the program to load the configuration files.");
-				//TODO EXIT HERE.
+			if (!Connectivity.isConnected(getActivity())) {
+				showErrorMsg("You need a network connection first time you start the program to load the configuration files.");
+				return view;
 			} else {
 				this.initialize();
 				debugConsole.addRow("First time use...creating folders");
@@ -190,7 +191,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				Intent intent = new Intent();
 				intent.setAction("INITSTARTS");
 				mActivity.sendBroadcast(intent);
-				loginConsole.addRow("Loading In Memory Modules");
+				loginConsole.addRow("Loading modules");
 				loginConsole.addRow("Version control: "+globalPh.get(PersistenceHelper.VERSION_CONTROL));
 				Log.d("vortex","Loading In Memory Modules");
 				myLoader.loadModules(true);

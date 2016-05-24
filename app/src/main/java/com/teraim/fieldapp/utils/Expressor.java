@@ -347,8 +347,10 @@ public class Expressor {
 		}
 
 		//	System.out.println(expressions.toString()+" -->  "+endResult.toString());       
-
-		return endResult.toString();
+		if (endResult.toString().isEmpty())
+			return null;
+		else
+			return endResult.toString();
 	}
 
 

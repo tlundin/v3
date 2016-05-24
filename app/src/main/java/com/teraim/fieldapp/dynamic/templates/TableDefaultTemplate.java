@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +17,12 @@ import android.widget.LinearLayout;
 
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_List;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
+import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithValue_Filter;
+import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithoutValue_Filter;
 
 /**
  *
@@ -96,9 +98,9 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		} else
 			Log.d("vortex","No workflow found in oncreate default!!!!");
 
-		popupShow = AnimationUtils.loadAnimation(getActivity(), R.anim.popup_show_bottom);
+		popupShow = AnimationUtils.loadAnimation(getActivity(), R.anim.popup_show);
 		popupShow.setAnimationListener(this);
-		popupHide = AnimationUtils.loadAnimation(getActivity(), R.anim.popup_hide_bottom);
+		popupHide = AnimationUtils.loadAnimation(getActivity(), R.anim.popup_hide);
 		popupHide.setAnimationListener(this);
 
 		return v;
@@ -122,8 +124,9 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 
 	@Override
-	public void execute(String function, String target) {
-
+	public boolean execute(String function, String target) {
+		if(animationRunning)
+			return false;
 		Log.d("vortex","Called execute with target "+target);
 		if (function.equals("template_pop_up_filters") ) {
 
@@ -160,10 +163,23 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 					filterPop.removeView(target.equals("filter_C1") ? filterC1o : filterC2o);
 				}
 			}
-		}
-
+		} else 	if (function.equals("template_function_show_only_edited"))
+			showEdited(target);
+	return true;
 	}
 
+	Filter f = new WF_OnlyWithValue_Filter("_filter");
+	private boolean toggleStateH = true;
+
+	private void showEdited(String target) {
+		final WF_List fieldList = (WF_List)myContext.getFilterable(target);
+		if (toggleStateH) {
+			fieldList.addFilter(f);
+		} else
+			fieldList.removeFilter(f);
+		fieldList.draw();
+		toggleStateH = !toggleStateH;
+	}
 
 
 	@Override

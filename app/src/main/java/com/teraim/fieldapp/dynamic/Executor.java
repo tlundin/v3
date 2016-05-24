@@ -112,7 +112,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 
 	protected abstract List<WF_Container> getContainers();
-	public abstract void execute(String function, String target);
+	public abstract boolean execute(String function, String target);
 
 	protected GlobalState gs;
 
@@ -519,7 +519,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				else if (b instanceof SetValueBlock) {
 					final SetValueBlock bl = (SetValueBlock)b;
 					//final List<TokenizedItem> tokens = gs.getRuleExecutor().findTokens(bl.getFormula(),null);
-					if (bl.getBehavior()!=ExecutionBehavior.constant) {
+					if (bl.getBehavior()!=ExecutionBehavior.constant && bl.getBehavior()!= ExecutionBehavior.constant_value) {
 						EventListener tiva = new EventListener() {
 							@Override
 							public void onEvent(Event e) {
@@ -602,10 +602,14 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						o.addRow("Evaluation: "+eval);
 
 						if (eval==null) {
-							o.addRow("");
-							o.addRow("Execution stopped on SetValueBlock "+bl.getBlockId()+". Expression "+bl.getExpression()+"evaluates to null");
-							//jump.put(bl.getBlockId(), Executor.STOP_ID);
-							notDone = false;
+							if (bl.getBehavior()==ExecutionBehavior.constant) {
+								o.addRow("");
+								o.addRow("Execution stopped on SetValueBlock " + bl.getBlockId() + ". Expression " + bl.getExpression() + "evaluates to null");
+								//jump.put(bl.getBlockId(), Executor.STOP_ID);
+								notDone = false;
+							} else {
+
+							}
 						} 				
 
 						String val = v.getValue();

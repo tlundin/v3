@@ -444,14 +444,14 @@ public class Tools {
 		File f = new File(folder,fileName);
 		return (f.exists() && !f.isDirectory());
 	}
-
+/*
 	public static boolean isNetworkAvailable(Context ctx) {
 		ConnectivityManager connectivityManager 
 		= (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
 	}
-
+*/
 
 	public static boolean isNumeric(String str)
 	{	

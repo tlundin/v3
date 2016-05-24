@@ -86,8 +86,8 @@ public class DefaultTemplate extends Executor {
 		return ret;
 	}
 	@Override
-	public void execute(String function, String target) {
-		
+	public boolean execute(String function, String target) {
+		return true;
 	}
 	
 	

@@ -32,6 +32,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfig
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisMultiPointObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObjectsMenu;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisPolygonObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.StaticGisPoint;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
@@ -72,12 +73,13 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	private final List<Expressor.EvalExpr> objContextE;
 	private String unevaluatedLabel;
 	private String thisCheck,lastCheckTimeStamp;
+	private String palette;
 
 	public AddGisPointObjects(String id, String nName, String label,
 			String target, String objectContext,String coordType, String locationVars, 
 			String imgSource, String refreshRate, String radius, boolean isVisible, 
 			GisObjectType type, String color, String polyType, String fillType, 
-			String onClick, String statusVariable, boolean isUser, boolean createAllowed, LoggerI o) {
+			String onClick, String statusVariable, boolean isUser, boolean createAllowed, String palette, LoggerI o) {
 		super();
 		this.blockId = id;
 		this.nName = nName;
@@ -92,6 +94,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		this.statusVariable=statusVariable;
 		this.isUser=isUser;
 		this.createAllowed=createAllowed;
+		this.palette = palette;
 		myType = type;
 
 		if (coordType==null)
@@ -152,7 +155,9 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		} else {
 			if (createAllowed) {
 				Log.d("vortex","Adding type to create menu for "+nName);
-				gisB.addGisObjectType(this);
+				if (palette==null ||palette.isEmpty())
+					palette = GisObjectsMenu.Default;
+				gisB.addGisObjectType(this,palette);
 			}
 			if (gisB.isZoomLevel() && !refresh) {
 				Log.d("vortex","Zoom level!..use existing gis objects!");

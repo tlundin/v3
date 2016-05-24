@@ -58,6 +58,7 @@ import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
+import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -122,7 +123,7 @@ EventGenerator {
 						.getBackingDataSet();
 				String url = al.getUrl(row);
 
-				if (!Tools.isNetworkAvailable(gs.getContext()) || url == null
+				if (!Connectivity.isConnectedFast(gs.getContext()) || url == null
 						|| url.length() == 0)
 					x.setVisible(false);
 				else

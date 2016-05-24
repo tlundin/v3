@@ -553,9 +553,8 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 
 
 	@Override
-	public void execute(String function, String target) {
-		// TODO Auto-generated method stub
-
+	public boolean execute(String function, String target) {
+		return true;
 	}
 
 

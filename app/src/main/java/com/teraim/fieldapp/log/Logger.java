@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -25,7 +26,7 @@ public class Logger implements LoggerI {
 	String loggerId;
 	int ticky=0;
 	boolean hasRed=false;
-	
+
 	public Logger(Context c,String loggerId) {
 		myContext = c;
 		this.loggerId = loggerId;
@@ -51,17 +52,17 @@ public class Logger implements LoggerI {
 		if (log!=null) log.setText(myTxt);
 		//Log.d("vortex","hasRed true for "+this.toString());
 		//Log.d("vortex",""+this.toString());
-	}	 
+	}
 	public void addGreenText(String text) {
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.GreenStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		myTxt.append(s);	
+		myTxt.append(s);
 		if (log!=null) log.setText(myTxt);
 	}
 	public void addYellowText(String text) {
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.YellowStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		myTxt.append(s);	
+		myTxt.append(s);
 		if (log!=null) log.setText(myTxt);
 	}
 	public void addText(String text) {
@@ -79,6 +80,17 @@ public class Logger implements LoggerI {
 	public void draw() {
 		if (log!=null) {
 			log.setText(myTxt);
+			Layout layout = log.getLayout();
+			if (layout!=null) {
+				final int scrollAmount = layout.getLineTop(log.getLineCount()) - log.getHeight();
+				// if there is no need to scroll, scrollAmount will be <=0
+				if (scrollAmount > 0) {
+					Log.d("vortex","scrollamount is "+scrollAmount);
+					log.scrollTo(0, scrollAmount);
+				}
+				else
+					log.scrollTo(0, 0);
+			}
 		}
 		else
 			Log.e("nils","LOG WAS NULL IN DRAW!!");

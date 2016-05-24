@@ -557,7 +557,7 @@ public  class ButtonBlock extends Block {
 			} else if (type == Type.toggle) {
 				final String text =this.getText();
 				o.addRow("Creating Toggle Button with text: "+text);
-				ToggleButton toggleB = (ToggleButton)LayoutInflater.from(ctx).inflate(R.layout.toggle_button,null);
+				final ToggleButton toggleB = (ToggleButton)LayoutInflater.from(ctx).inflate(R.layout.toggle_button,null);
 				//ToggleButton toggleB = new ToggleButton(ctx);
 				toggleB.setTextOn(text);
 				toggleB.setTextOff(text);
@@ -580,8 +580,12 @@ public  class ButtonBlock extends Block {
 
 							o.addRow("Togglebutton "+text+" pressed. Executing function "+onClick);
 							String target = getTarget();
-							if (onClick.startsWith("template")) 
-								myContext.getTemplate().execute(onClick,target);	
+							if (onClick.startsWith("template")) {
+								boolean result = myContext.getTemplate().execute(onClick, target);
+								if (!result) {
+									toggleB.toggle();
+								}
+							}
 							else if (onClick.equals("toggle_visible")) {
 								Log.d("nils","Executing toggle");
 								Drawable d = myContext.getDrawable(target);

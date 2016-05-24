@@ -408,8 +408,8 @@ public class FotoTemplate extends Executor {
 		return myLayouts;
 	}
 
-	public void execute(String name, String target) {
-
+	public boolean execute(String name, String target) {
+		return true;
 	}
 
 /*

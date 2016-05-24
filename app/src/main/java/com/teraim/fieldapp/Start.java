@@ -281,20 +281,6 @@ public class Start extends MenuActivity {
 
 	}
 
-	/******************************
-	 * Network?
-	 */
-
-	public boolean isNetworkAvailable() {
-		ConnectivityManager connectivityManager
-		= (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-	}
-
-
-
-
 
 
 	/* (non-Javadoc)
@@ -392,11 +378,11 @@ public class Start extends MenuActivity {
 							.setIcon(android.R.drawable.ic_dialog_alert)
 							.show();
 				}
-			} else if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof TableDefaultTemplate) {
-				final TableDefaultTemplate lp = (TableDefaultTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
-				lp.closePopIfUp();
-				return true;
-			}
+			} //else if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof TableDefaultTemplate) {
+			//	final TableDefaultTemplate lp = (TableDefaultTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
+			//	lp.closePopIfUp();
+			//	return true;
+			//}
 			setTitle("");
 			}
 		}

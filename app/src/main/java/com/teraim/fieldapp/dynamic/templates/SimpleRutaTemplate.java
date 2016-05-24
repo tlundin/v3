@@ -340,9 +340,8 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 
 
 	@Override
-	public void execute(String function, String target) {
-		// TODO Auto-generated method stub
-
+	public boolean execute(String function, String target) {
+		return true;
 	}
 
 	//Export current Ruta

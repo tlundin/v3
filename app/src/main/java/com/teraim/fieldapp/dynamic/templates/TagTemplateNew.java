@@ -64,9 +64,9 @@ public class TagTemplateNew extends Executor implements EventListener, TagListen
 	}
 
 	@Override
-	public void execute(String function, String target) {
+	public boolean execute(String function, String target) {
 		// TODO Auto-generated method stub
-
+		return true;
 	}
 
 

@@ -30,9 +30,8 @@ public class PageWithAggregationTemplate extends Executor {
 	}
 
 	@Override
-	public void execute(String function, String target) {
-		// TODO Auto-generated method stub
-
+	public boolean execute(String function, String target) {
+		return true;
 	}
 
 	List<WF_Container> myLayouts;

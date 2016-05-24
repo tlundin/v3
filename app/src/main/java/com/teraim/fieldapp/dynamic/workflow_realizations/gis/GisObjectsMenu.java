@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.teraim.fieldapp.dynamic.types.Line;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.gis.GisImageView;
@@ -29,20 +31,20 @@ import com.teraim.fieldapp.gis.GisImageView;
  */
 
 public class GisObjectsMenu extends View {
-	private static final int Padding = 15,InnerPadding = 20;
+	private static final int PaddingX = 40,PaddingY=60,InnerPadding = 20;
 	private static final int NoOfButtonsPerRow = 5;
 	private static final int MAX_ROWS = 5;
 	private static final int SpaceBetweenHeaderAndButton = 5;
-	Map<GisObjectType,Set<FullGisObjectConfiguration>> menuGroupsM;
+
+	private  Map<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>> myPalettes;
 	private Paint headerTextP;
-	private Paint gopButtonBackgroundP;
+	private Paint gopButtonBackgroundP,tabTextP;
 	private Paint gopButtonEdgeP;
 	private GisImageView myGis;
 	private Paint thinBlackEdgeP;
 	private Paint blackTextP;
 	
-	private MenuButton[][] menuButtonArray= new MenuButton[NoOfButtonsPerRow][MAX_ROWS];
-	private String[] menuHeaderArray = new String[MAX_ROWS];
+
 	private MenuButton oldB = null;
 	private int buttonWidth; 
 	private int RowH,ColW;
@@ -51,6 +53,9 @@ public class GisObjectsMenu extends View {
 	private Paint thinWhiteEdgeP;
 	private Paint whiteTextP;
 	private WF_Gis_Map myMap;
+	//default palette
+	private String currentPalette=null;
+	public final static String Default = "default";
 
 	public GisObjectsMenu(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -69,12 +74,18 @@ public class GisObjectsMenu extends View {
 
 	private void init() {
 		
-		menuGroupsM = new LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>(); 
+		myPalettes = new HashMap<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>>();
+		currentPalette = Default;
 
-		
+		tabTextP = new Paint();
+		tabTextP.setColor(Color.WHITE);
+		tabTextP.setTextSize(40);
+		tabTextP.setStyle(Paint.Style.STROKE);
+		tabTextP.setTextAlign(Paint.Align.LEFT);
+
 		headerTextP = new Paint();
 		headerTextP.setColor(Color.WHITE);
-		headerTextP.setTextSize(20);
+		headerTextP.setTextSize(40);
 		headerTextP.setStyle(Paint.Style.STROKE);
 		headerTextP.setTextAlign(Paint.Align.CENTER);
 
@@ -122,8 +133,8 @@ public class GisObjectsMenu extends View {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					Log.e("vortex","Padding: "+Padding+" evX: "+event.getX()+" NOBu: "+NoOfButtonsPerRow+" ColW: "+ColW);
-					int clickedColumn = Math.round((event.getX()-Padding)/ColW);
+					Log.e("vortex"," evX: "+event.getX()+" NOBu: "+NoOfButtonsPerRow+" ColW: "+ColW);
+					int clickedColumn = Math.round((event.getX()-PaddingX)/ColW);
 					if (clickedColumn<0||clickedColumn>=NoOfButtonsPerRow) {
 						Log.d("vortex","click in column "+clickedColumn+". Outside allowed range");
 						
@@ -204,67 +215,96 @@ public class GisObjectsMenu extends View {
 		super.onSizeChanged(w, h, oldw, oldh);
 	}
 
-	public void setMenuItems(List<FullGisObjectConfiguration> myMenuItems, GisImageView gis, WF_Gis_Map map) {
+	//Before opening the menu, make sure all palettes are in place.
+
+	public void setMenuItems(Map<String,List<FullGisObjectConfiguration>> myMenuItems, GisImageView gis, WF_Gis_Map map) {
 		//Create Menu items.
 		myGis=gis;
 		myMap=map;
-		for (FullGisObjectConfiguration item:myMenuItems) {
-			Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(item.getGisPolyType());
-			if (itemSet==null) {
-				itemSet = new HashSet<FullGisObjectConfiguration>();
-				menuGroupsM.put(item.getGisPolyType(), itemSet);
+		for(String paletteName:myMenuItems.keySet()) {
+			List<FullGisObjectConfiguration> myMenuItemsForPalette = myMenuItems.get(paletteName);
+			LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>> menuGroupsM = myPalettes.get(paletteName);
+			if (menuGroupsM==null) {
+				Log.d("vortex","creating new menugroup for palette "+paletteName);
+				menuGroupsM= new LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>>();
+				myPalettes.put(paletteName,menuGroupsM);
 			}
-			itemSet.add(item);
+			//Sort the menuitems according to geojson type.
+			for (FullGisObjectConfiguration item : myMenuItemsForPalette) {
+				Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(item.getGisPolyType());
+				if (itemSet == null) {
+					itemSet = new HashSet<FullGisObjectConfiguration>();
+					menuGroupsM.put(item.getGisPolyType(), itemSet);
+				}
+				itemSet.add(item);
+			}
 		}
+
 	}
-	
+
+
+	private MenuButton[][] menuButtonArray= new MenuButton[NoOfButtonsPerRow][MAX_ROWS];
+	private String[] menuHeaderArray = new String[MAX_ROWS];
+
+
+
+
 	private void generateMenu() {
 
 		int col = 0;
 		int row = 0;		
-		Log.d("vortex","Width is "+w);
-		buttonWidth = (w-Padding*2-(InnerPadding*(NoOfButtonsPerRow-1)))/NoOfButtonsPerRow; 
+		Log.d("vortex","In generateMenu ");
+		buttonWidth = (w-PaddingX*2-(InnerPadding*(NoOfButtonsPerRow-1)))/NoOfButtonsPerRow;
 		RowH = InnerPadding+buttonWidth;
 		ColW = RowH;
 
 		//Padding needs to be greater than height of main header.
 		int totalHeaderHeight = 0;
 		int i=0;
-		for (GisObjectType type:menuGroupsM.keySet()) {
-			Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(type);
-			Iterator<FullGisObjectConfiguration> it = itemSet.iterator();
-			menuHeaderArray[i++]=type.name();
-			while (it.hasNext()) {
-				//Left padding + numer of buttons + number of spaces in between.
-				FullGisObjectConfiguration fop = it.next();
-				int left = col*ColW+Padding;
-				int top = row*RowH+Padding+totalHeaderHeight+SpaceBetweenHeaderAndButton;
-				RectF r = new RectF(left,top, left+buttonWidth,top+buttonWidth);
-				menuButtonArray[col][row] = new MenuButton(fop,r);
-				col++;
-				if (col==NoOfButtonsPerRow) {
-					col=0;
-					row++;
-					i++;
-					totalHeaderHeight+=SpaceBetweenHeaderAndButton;
+		//for (String paletteName:myPalettes.keySet()) {
+			LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>> menuGroupsM = myPalettes.get(currentPalette);
+			Log.d("vortex","palette is "+currentPalette);
+			for (GisObjectType type : menuGroupsM.keySet()) {
+				Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(type);
+				Iterator<FullGisObjectConfiguration> it = itemSet.iterator();
+
+				menuHeaderArray[i++] = type.name();
+				while (it.hasNext()) {
+					//Left padding + numer of buttons + number of spaces in between.
+					FullGisObjectConfiguration fop = it.next();
+					int left = col * ColW + PaddingX;
+					int top = row * RowH + PaddingY + totalHeaderHeight + SpaceBetweenHeaderAndButton;
+					RectF r = new RectF(left, top, left + buttonWidth, top + buttonWidth);
+					menuButtonArray[col][row] = new MenuButton(fop, r);
+					col++;
+					if (col == NoOfButtonsPerRow) {
+						col = 0;
+						row++;
+						i++;
+						totalHeaderHeight += SpaceBetweenHeaderAndButton;
+					}
+
 				}
+				totalHeaderHeight += headerTextP.getTextSize() + SpaceBetweenHeaderAndButton;
+				col = 0;
+				row++;
 
 			}
-			totalHeaderHeight += headerTextP.getTextSize()+SpaceBetweenHeaderAndButton;
-			col=0;
-			row++;
+
 		}
 
 
-	}
-
 	@Override
 	protected void onDraw(Canvas canvas) {
+
 		int totalHeaderHeight = 0;
 		int w = canvas.getWidth();
+
+		//Draw header and tabs
+		canvas.drawText(currentPalette,PaddingX,PaddingY/2,tabTextP);
 		for (int row = 0 ; row < MAX_ROWS; row++) {
 			if (menuHeaderArray[row]!=null)
-				canvas.drawText(menuHeaderArray[row]+" types", w/2, row*RowH+Padding+totalHeaderHeight, headerTextP);
+				canvas.drawText(menuHeaderArray[row]+" types", w/2, row*RowH+PaddingY+totalHeaderHeight, headerTextP);
 			MenuButton currB=null;
 			for (int col = 0; col < NoOfButtonsPerRow;col++) {
 				currB = menuButtonArray[col][row];

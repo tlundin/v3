@@ -532,8 +532,8 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 		return myLayouts;
 	}
 
-	public void execute(String name, String target) {
-
+	public boolean execute(String name, String target) {
+		return true;
 	}
 
 

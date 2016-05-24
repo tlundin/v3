@@ -475,9 +475,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
         int aff =
-        db.delete(TABLE_VARIABLES, //table name
-                s.selection,  // selections
-                s.selectionArgs); //selections args
+                db.delete(TABLE_VARIABLES, //table name
+                        s.selection,  // selections
+                        s.selectionArgs); //selections args
 
         //if(aff==0)
         //	Log.e("nils","Couldn't delete "+name+" from database. Not found. Sel: "+s.selection+" Args: "+print(s.selectionArgs));
@@ -525,8 +525,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     if (!z.isEmpty()) {
                         int li = z.lastIndexOf(" ");
                         String last = z.substring(li + 1, z.length());
-                    //    if (li != -1)
-                    //        Log.e("vortex", "var is " + last);
+                        //    if (li != -1)
+                        //        Log.e("vortex", "var is " + last);
                         realColNames[ii] = last;
 
                     }
@@ -692,10 +692,10 @@ public class DbHelper extends SQLiteOpenHelper {
                     //only add row if one of the values is not null.
                     ret.add(row);
                 } //else
-                    //Log.e("vortex","Null row! "+print(row));
+                //Log.e("vortex","Null row! "+print(row));
             } while (c.moveToNext());
             if (ret.size()==0)
-            	Log.d("nils","Found no values in GetValues");
+                Log.d("nils","Found no values in GetValues");
             c.close();
             return ret;
         }
@@ -1877,7 +1877,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
 
-           Log.d("vortex", "Tmpval has " + tmp.values().size() );
+        Log.d("vortex", "Tmpval has " + tmp.values().size() );
         /*
 			for (String v:tmp.keySet()) {
 					TmpVal tv = tmp.get(v);
@@ -1935,15 +1935,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
         String query = "SELECT " + VARID + "," + getDatabaseColumnName(variatorColumn) + ",value FROM " + TABLE_VARIABLES +
                 " WHERE " + VARID + " LIKE '" + namePrefix + "%'";
-
-        //Add keychain parts.
-        String[] selArgs = new String[keyChain.size()];
-        int i = 0;
-        for (String key : keyChain.keySet()) {
-            query += " AND " + this.getDatabaseColumnName(key) + "= ?";
-            selArgs[i++] = keyChain.get(key);
+        String[] selArgs=null;
+        if (keyChain!=null) {
+            //Add keychain parts.
+            selArgs = new String[keyChain.size()];
+            int i = 0;
+            for (String key : keyChain.keySet()) {
+                query += " AND " + this.getDatabaseColumnName(key) + "= ?";
+                selArgs[i++] = keyChain.get(key);
+            }
         }
-
         Log.d("nils", "Query: " + query);
         //Return cursor.
         return db.rawQuery(query, selArgs);

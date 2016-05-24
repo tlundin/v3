@@ -3,9 +3,7 @@ package com.teraim.fieldapp.dynamic.templates;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ActionBar;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,9 +32,8 @@ public class PageWithDelytaTemplate extends Executor {
 	}
 
 	@Override
-	public void execute(String function, String target) {
-		// TODO Auto-generated method stub
-
+	public boolean execute(String function, String target) {
+		return true;
 	}
 
 	List<WF_Container> myLayouts;

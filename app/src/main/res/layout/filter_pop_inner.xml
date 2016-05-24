@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_height="match_parent"
-    android:layout_marginBottom = "50dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    >
+<ScrollView
+    android:layout_height="0dp"
+    android:layout_weight=".9"
+    android:layout_marginTop="20dp"
+    android:fillViewport="true"
+    android:layout_marginBottom="80dp"
     android:layout_width="wrap_content">
 <LinearLayout
             android:id="@+id/inner"
@@ -14,3 +22,11 @@
 </LinearLayout>
 
 </ScrollView>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:layout_width="wrap_content"
+        />
+
+</LinearLayout>

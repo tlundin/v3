@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.teraim.fieldapp"
     android:versionCode="3"
-    android:versionName="3.80" >
+    android:versionName="4.03" >
 
     <uses-sdk
         android:minSdkVersion="14"

@@ -24,6 +24,7 @@ import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
+import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.Tools;
 
 
@@ -40,7 +41,6 @@ public class WebLoader extends Loader {
 		ConfigurationModule module = params[0];
 		URL url;
 		try {
-
 			url = new URL(module.fullPath);
 
 			URLConnection ucon = url.openConnection();

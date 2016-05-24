@@ -235,7 +235,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	 */
 	public void initialize(WF_Gis_Map wf_Gis_Map, PhotoMeta pm,boolean allowZoom) {
 
-
+		if (pm== null) {
+			Log.e("vortex","Photometadata was null for "+wf_Gis_Map.getName());
+		}
 		mapLocationForClick=null;
 		this.photoMetaData=pm;
 		pXR = this.getImageWidth()/pm.getWidth();

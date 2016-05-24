@@ -41,7 +41,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.05f;
+	public final static float VORTEX_VERSION = 4.06f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -231,7 +231,10 @@ public class Constants {
 	//public static final String SynkServerURI = "http://109.157.177.172:8080/com.teraim.synkserv/SynkServ";
 
 	//public static final String SynkServerURI = "http://130.211.51.77:8080/synkserv/SynkServ";
-	public static final String SynkServerURI = "https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
+	public static final String SynkServerURI = "https://rlo.slu.se:8443/com.teraim.synkserv/SynkServ";
+
+
+			//"https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
 	public static final Object TRANS_ACK = "TRANSACK";
 
 	

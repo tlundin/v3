@@ -85,7 +85,7 @@ public class Logger implements LoggerI {
 				final int scrollAmount = layout.getLineTop(log.getLineCount()) - log.getHeight();
 				// if there is no need to scroll, scrollAmount will be <=0
 				if (scrollAmount > 0) {
-					Log.d("vortex","scrollamount is "+scrollAmount);
+					//Log.d("vortex","scrollamount is "+scrollAmount);
 					log.scrollTo(0, scrollAmount);
 				}
 				else

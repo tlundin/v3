@@ -62,6 +62,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private TextView appTxt;
 	private float oldV = -1;
 	private Activity mActivity;
+	private final static String InitialBundleName = "Nils";
 
 
 	@Override
@@ -70,7 +71,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		View view = inflater.inflate(R.layout.fragment_login_console,
 				container, false);
 		TextView versionTxt,licenseTxt;
-
+		Log.e("vortex","oncreatevieww!");
 		log = (TextView)view.findViewById(R.id.logger);
 		versionTxt = (TextView)view.findViewById(R.id.versionTxt);
 		licenseTxt = (TextView)view.findViewById(R.id.licenseTxt);
@@ -89,7 +90,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		
 		bundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 		if (bundleName == null || bundleName.length()==0)
-			bundleName = "Vortex";
+			bundleName = InitialBundleName;
 		ph	 = new PersistenceHelper(mActivity.getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 		if (oldV==-1)
@@ -113,7 +114,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//First time vortex runs? Then create global folders.
 		if (this.initIfFirstTime()) {
 			if (!Connectivity.isConnected(getActivity())) {
-				showErrorMsg("You need a network connection first time you start the program to load the configuration files.");
+				showErrorMsg("You need a network connection first time you start the program. Vortex requires configuration files to run.");
 				return view;
 			} else {
 				this.initialize();
@@ -178,14 +179,19 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.e("vortex","onresume!");
 		if (GlobalState.getInstance() == null) {
-			if (!globalPh.get(PersistenceHelper.BUNDLE_NAME).equals(bundleName)) {
-				Fragment frg = null;
-				frg = getFragmentManager().findFragmentById(R.id.content_frame);
-				final FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.detach(frg);
-				ft.attach(frg);
-				ft.commit();
+			String storedBundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
+			if (!storedBundleName.equals(bundleName)) {
+				if (!storedBundleName.isEmpty()) {
+					Log.e("horcrux", "bundlename: " + bundleName + " inPHBN: " + globalPh.get(PersistenceHelper.BUNDLE_NAME));
+					Fragment frg = null;
+					frg = getFragmentManager().findFragmentById(R.id.content_frame);
+					final FragmentTransaction ft = getFragmentManager().beginTransaction();
+					ft.detach(frg);
+					ft.attach(frg);
+					ft.commit();
+				}
 			} else {
 
 				Intent intent = new Intent();
@@ -205,12 +211,13 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	@Override
 	public void onStop() {
+		Log.e("vortex","onstop!");
 		if (myLoader!=null)
 			myLoader.stop();
 		if (myDBLoader!=null)
 			myDBLoader.stop();
-		Log.e("vortex","stop called on loaders!");
-		super.onStart();
+
+		super.onStop();
 	}
 
 
@@ -251,7 +258,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (globalPh.get(PersistenceHelper.SERVER_URL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.SERVER_URL, "www.teraim.com");
 		if (globalPh.get(PersistenceHelper.BUNDLE_NAME).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.BUNDLE_NAME, "Nils");
+			globalPh.put(PersistenceHelper.BUNDLE_NAME, InitialBundleName);
 		if (globalPh.get(PersistenceHelper.DEVELOPER_SWITCH).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.DEVELOPER_SWITCH, false);
 		if (globalPh.get(PersistenceHelper.VERSION_CONTROL).equals(PersistenceHelper.UNDEFINED))
@@ -449,6 +456,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		}
 
 		protected void onPostExecute(Bitmap result) {
+			Log.d("vortex","setting image!!");
 			if (result!=null)
 				bmImage.setImageBitmap(result);
 		}
@@ -458,7 +466,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	@Override
 	public void loadFail(String loaderId) {
-		Log.d("vortex","sending broadcast");
+		Log.d("vortex","loadFail!");
 		getActivity().sendBroadcast(new Intent(MenuActivity.INITFAILED));
 	}
 

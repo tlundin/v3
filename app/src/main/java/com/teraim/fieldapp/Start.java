@@ -145,7 +145,7 @@ public class Start extends MenuActivity {
 	private void checkStatics() {
 		if (GlobalState.getInstance()==null) {
 			loading = true;
-			Log.d("vortex","Globalstate null...need to reload");
+
 			//Create a global logger.
 
 
@@ -155,7 +155,7 @@ public class Start extends MenuActivity {
 			    fm.popBackStack();
 			}
 			loginFragment = new LoginConsoleFragment();
-
+			Log.d("vortex","LoginFragment on stack!");
 			fm.beginTransaction()
 				.replace(R.id.content_frame, loginFragment)
 				.commit();

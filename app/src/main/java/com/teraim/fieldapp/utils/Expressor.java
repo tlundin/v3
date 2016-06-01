@@ -965,7 +965,7 @@ public class Expressor {
 			return String.format("%s(%s,%s)", operator.toString(), arg1s.toString(), arg2s.toString());
 		}
 
-		public Object eval() {
+		public Object eval()  {
 			//Log.d("vortex","In eval for convo");
 			Object arg1v = arg1.eval();
 			//			Log.e("vortex","I am literal? "+isLiteralOperator);
@@ -1035,73 +1035,76 @@ public class Expressor {
 				}
 			}
 			//Requires Double arguments.
-			if (isIntegerOperator||isDoubleOperator) {
-				double arg1F,arg2F;
-				Object res=null;
-				if (isDoubleOperator) {
-					arg1F = ((Double) arg1v).doubleValue();
-					arg2F = ((Double) arg2v).doubleValue();
-				} else {
-					if (arg1v instanceof Integer)
-						arg1F = ((Integer) arg1v).doubleValue();
-					else
-						arg1F = (Double) arg1v;
-					if (arg2v instanceof Integer)
-						arg2F = ((Integer) arg2v).doubleValue();
-					else
-						arg2F = (Double) arg2v;
-				}
-				String opS =operator.myToken.str;
-				if (opS!=null) {
-					TokenType op = TokenType.valueOf(opS);
-					switch (op) {
-
-					case add:
-						res = (int)(arg1F+arg2F);
-						break;
-					case subtract:
-						res = (int)(arg1F-arg2F);
-						break;
-					case multiply:
-						res = (int)(arg1F*arg2F);
-						break;
-					case divide:
-						res = (int)(arg1F/arg2F);
-						break;
-					case eq:
-						res = arg2F==arg1F;
-						Log.e("vortex","arg1F eq arg2F? "+arg1F+" eq "+arg2F+": "+res);
-						break;
-					case neq:
-						res = arg1F!=arg2F;
-						Log.e("vortex","arg1F neq arg2F? "+arg1F+" neq "+arg2F+": "+res);
-						break;
-					case gt:
-						res = arg1F > arg2F;
-						break;
-					case lt:
-						res = arg1F < arg2F;
-						break;
-					case lte:
-						res = arg1F <= arg2F;
-						break;
-					case gte:
-						res = arg1F >= arg2F;
-						break;
-					default:
-						System.err.println("Unsupported operand: "+op);
-						o.addRow("");
-						o.addRedText("Unsupported arithmetic operator: "+op);
-						break;
+			try {
+				if (isIntegerOperator || isDoubleOperator) {
+					double arg1F, arg2F;
+					Object res = null;
+					if (isDoubleOperator) {
+						arg1F = ((Double) arg1v).doubleValue();
+						arg2F = ((Double) arg2v).doubleValue();
+					} else {
+						if (arg1v instanceof Integer)
+							arg1F = ((Integer) arg1v).doubleValue();
+						else
+							arg1F = (Double) arg1v;
+						if (arg2v instanceof Integer)
+							arg2F = ((Integer) arg2v).doubleValue();
+						else
+							arg2F = (Double) arg2v;
 					}
-				} else {
-					System.err.println("Unsupported arithmetic operand: "+operator.getType());
-					o.addRow("");
-					o.addRedText("Unsupported arithmetic operand: "+operator.getType());
+
+					String opS = operator.myToken.str;
+					if (opS != null) {
+						TokenType op = TokenType.valueOf(opS);
+						switch (op) {
+
+							case add:
+								res = (int) (arg1F + arg2F);
+								break;
+							case subtract:
+								res = (int) (arg1F - arg2F);
+								break;
+							case multiply:
+								res = (int) (arg1F * arg2F);
+								break;
+							case divide:
+								res = (int) (arg1F / arg2F);
+								break;
+							case eq:
+								res = arg2F == arg1F;
+								Log.e("vortex", "arg1F eq arg2F? " + arg1F + " eq " + arg2F + ": " + res);
+								break;
+							case neq:
+								res = arg1F != arg2F;
+								Log.e("vortex", "arg1F neq arg2F? " + arg1F + " neq " + arg2F + ": " + res);
+								break;
+							case gt:
+								res = arg1F > arg2F;
+								break;
+							case lt:
+								res = arg1F < arg2F;
+								break;
+							case lte:
+								res = arg1F <= arg2F;
+								break;
+							case gte:
+								res = arg1F >= arg2F;
+								break;
+							default:
+								System.err.println("Unsupported operand: " + op);
+								o.addRow("");
+								o.addRedText("Unsupported arithmetic operator: " + op);
+								break;
+						}
+					} else {
+						System.err.println("Unsupported arithmetic operand: " + operator.getType());
+						o.addRow("");
+						o.addRedText("Unsupported arithmetic operand: " + operator.getType());
+					}
+
+					return res;
 				}
 
-				return res;
-			}
 			//Requires boolean arguments.
 			else if (isBooleanOperator) {
 				Boolean arg1B,arg2B,res=null;
@@ -1158,6 +1161,12 @@ public class Expressor {
 					o.addRedText("Unsupported literal operator: "+op);
 					break;
 				}
+			}
+			} catch (ClassCastException e) {
+				Log.d("vortex","Classcast exception for expression "+this.toString());
+				o.addRow("");
+				o.addRedText("Illegal arguments (wrong type) in expression: " +this.toString());
+
 			}
 			return null;
 		}

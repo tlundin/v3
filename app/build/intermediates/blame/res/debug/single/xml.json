@@ -1,18 +1,18 @@
 [
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\xml\\account_preferences.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\xml\\account_preferences.xml"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\xml\\syncadapter.xml",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\xml\\syncadapter.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\xml\\myprefs.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\xml\\myprefs.xml"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\xml\\authenticator.xml",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\xml\\authenticator.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\xml\\authenticator.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\xml\\authenticator.xml"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\xml\\account_preferences.xml",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\xml\\account_preferences.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\xml\\syncadapter.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\xml\\syncadapter.xml"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\xml\\myprefs.xml",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\xml\\myprefs.xml"
     }
 ]

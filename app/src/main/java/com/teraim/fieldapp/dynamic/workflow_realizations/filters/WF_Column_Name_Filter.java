@@ -72,10 +72,15 @@ public class WF_Column_Name_Filter extends WF_Filter {
 
 			if (!match) {
 				it.remove();
-				//Log.d("nils","filter removes element "+key+" because "+key.charAt(0)+" doesn't match "+myPrefix);
+				if (!key.isEmpty())
+					Log.d("nils", "filter removes element " + key + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+				else
+					Log.d("vortex","removed empty key");
 			}
-			else 
-				totMatch=true;
+			else {
+				Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
+				totMatch = true;
+			}
 
 		}
 		if (!totMatch) {

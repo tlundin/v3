@@ -41,13 +41,11 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.07f;
+	public final static float VORTEX_VERSION = 4.09f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
 	//Remember to always add system root path before any app specific path!
-
-	//Root for NILS
 
 	public final static String HISTORICAL_TOKEN_IN_XML = "*HISTORICAL*";
 	

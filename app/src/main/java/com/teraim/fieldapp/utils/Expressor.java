@@ -84,6 +84,7 @@ public class Expressor {
 		getCurrentWeekNumber(valueFunction,0),
 		getSweDate(valueFunction,0),
 		getStatusVariableValues(valueFunction,1),
+		getAppName(valueFunction,0),
 		getUserRole(valueFunction,0),
 		sum(valueFunction,-1),
 		concatenate(valueFunction,-1),
@@ -105,8 +106,6 @@ public class Expressor {
 		max(valueFunction,2),
 		min(valueFunction,2),
 		unaryMinus(valueFunction,1),
-
-
 		variable(null,-1),
 		text(variable,0),
 		numeric(variable,0),
@@ -1547,6 +1546,8 @@ public class Expressor {
 					}
 				}
 				break;
+				case getAppName:
+					return gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
 			case getStatusVariableValues:
 				if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
 					//Gets the status from all buttons on the page.

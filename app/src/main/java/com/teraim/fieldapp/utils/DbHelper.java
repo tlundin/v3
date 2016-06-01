@@ -1224,10 +1224,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 //if (keySet == null)
                 //	Log.d("nils","Keyset was null");
                 //Log.d("sync","SYNC WITH PARAMETER NAMED "+name);
-                //Log.d("vortex", "Keyset:  " + keySet.toString());
+                Log.d("vortex", "Keyset:  " + keySet.toString());
 
                 Selection sel = this.createSelection(keySet, name);
-                //Log.d("vortex", "Selection:  " + sel.selection);
+                Log.d("vortex", "Selection:  " + sel.selection);
                 if (sel.selectionArgs != null) {
                     StringBuilder xor = new StringBuilder("");
                     for (String sz : sel.selectionArgs) {
@@ -1240,8 +1240,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 c = getExistingVariableCursor(name, sel);
                 long rId = -1;
                 boolean hasValueAlready = c.moveToNext();
-
-
 
                 if (!hasValueAlready || s.isInsertArray()) {// || gs.getVariableConfiguration().getnumType(row).equals(DataType.array)) {
                     Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
@@ -1263,7 +1261,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     String author = c.getString(4);
 
                     //Is the existing entry done by me?
-                    //Log.d("vortex", "Author is " + author);
+                    //Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
                     if (isMe(author)) {
                         if (varName.startsWith("STATUS:")) {
                             Log.d("vortex", "This is a status variable");
@@ -1356,7 +1354,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         for (String sz : sel.selectionArgs)
                             xor += sz + ",";
                         Log.d("nils", "Selection ARGS: " + xor);
-                        //Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
+                        Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
                         //Check timestamp. If timestamp is older, delete. Otherwise skip.
 
                         //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
@@ -1365,7 +1363,15 @@ public class DbHelper extends SQLiteOpenHelper {
                         boolean existingTimestampIsMoreRecent = true;
                         String timestamp ="";
                         if (hasValueAlready) {
+
                             timestamp = c.getString(1);
+                            String value = c.getString(2);
+                            String varName = c.getString(3);
+                            String author = c.getString(4);
+
+                            //Is the existing entry done by me?
+                            Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
+                            Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
                             existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
                         }
                         else

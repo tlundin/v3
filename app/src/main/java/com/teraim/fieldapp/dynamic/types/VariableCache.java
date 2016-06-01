@@ -156,7 +156,7 @@ public class VariableCache {
                         Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);
                         //Entry is either historical or normal. Delete independently
                         deleteHash.remove("år");
-                        gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), true);
+                        gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), false);
                         Log.e("vortex", "Deleted " + varName);
 
                     } else {

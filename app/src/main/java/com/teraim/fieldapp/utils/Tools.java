@@ -81,7 +81,7 @@ public class Tools {
 		år,
 		nd
 
-	};
+	}
 
 
 	public static boolean writeToFile(String filename,String text) {
@@ -123,13 +123,13 @@ public class Tools {
 
 	/**
 	 * 
-	 * @param filename
-	 * @return
+	 * @param filename abc
+	 * @return abc
 	 * @throws IOException 
 	 * @throws StreamCorruptedException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Object readObjectFromFile(String filename) throws StreamCorruptedException, IOException, ClassNotFoundException {
+	public static Object readObjectFromFile(String filename) throws IOException, ClassNotFoundException {
 		ObjectInputStream objectIn = null;
 		Object object = null;
 		try {
@@ -954,7 +954,7 @@ public class Tools {
 
 		fileName = folder+fileName;
 		File f = new File(fileName);
-		Log.d("vortex", "getCached: "+fileName);
+		Log.d("vortex", "getCached: " + fileName);
 		if (f.exists()) {
 
 			return f;
@@ -973,9 +973,19 @@ public class Tools {
 	}
 
 	public static boolean existingTimestampIsMoreRecent(String existingTime, String newTime) {
-		long existingTimeStamp = Long.parseLong(existingTime);
-		long newTimeStamp = Long.parseLong(newTime);
-		return (existingTimeStamp>=newTimeStamp);
+		if (newTime==null || existingTime == null) {
+			Log.e("vortex","A timestamp was null in more recent!");
+			return true;
+		}
+		try {
+			long existingTimeStamp = Long.parseLong(existingTime);
+			long newTimeStamp = Long.parseLong(newTime);
+			return (existingTimeStamp>=newTimeStamp);
+		} catch (NumberFormatException e) {
+			Log.e("vortex","A timestamp was not a number in more recent!");
+			return true;
+		}
+
 	}
 
 	public static Object bytesToObject(byte[] inB) {

@@ -1,18 +1,18 @@
 [
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_launcher_o.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher_o.png"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_drawer.png",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\drawable-mdpi\\ic_drawer.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\drawer_shadow.9.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-mdpi\\drawer_shadow.9.png"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_launcher.png",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_drawer.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-mdpi\\ic_drawer.png"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_launcher_o.png",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher_o.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\ic_launcher.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable-mdpi\\ic_launcher.png"
+        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4\\drawer_shadow.9.png",
+        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\drawable-mdpi\\drawer_shadow.9.png"
     }
 ]

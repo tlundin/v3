@@ -72,9 +72,9 @@ public class CreateEntryFieldBlock extends Block {
 			Variable v = gs.getVariableCache().getVariable(name,initialValue,-1);
 			if (v == null) {
 				o.addRow("");
-				o.addRedText("Failed to create entryfield for block "+blockId);
-				Log.d("nils","Variable "+name+" referenced in block_create_entry_field not found.");
-
+				o.addRedText("Failed to create entryfield for block " + blockId);
+				Log.d("nils", "Variable " + name + " referenced in block_create_entry_field not found.");
+				o.addRedText("Variable ["+name+"] referenced in block_create_entry_field not found.");
 				o.addRedText("Current DB Context: ["+gs.getVariableCache().getContext()+"]");
 			} else	{	
 				myField = new WF_ClickableField_Selection_OnSave(label==null||label.equals("")?v.getLabel():label,

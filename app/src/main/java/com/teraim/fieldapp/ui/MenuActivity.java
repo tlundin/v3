@@ -407,11 +407,12 @@ public class MenuActivity extends Activity   {
 	}
 
 	protected void refreshStatusRow() {
-		if (initfailed) {
-			mnu[2].setVisible(true);
-			mnu[mnu.length-1].setVisible(true);
-			mnu[mnu.length-1].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-
+		if (initfailed ) {
+			if (mnu[2]!=null) {
+				mnu[2].setVisible(true);
+				mnu[mnu.length - 1].setVisible(true);
+				mnu[mnu.length - 1].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			}
 		} else 	if (GlobalState.getInstance()!=null && initdone) { 
 			gs = GlobalState.getInstance();
 			if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE") || gs.isSolo()) 

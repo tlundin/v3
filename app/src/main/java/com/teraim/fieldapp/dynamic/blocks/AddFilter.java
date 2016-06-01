@@ -1,5 +1,7 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import android.util.Log;
+
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filterable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
@@ -42,10 +44,11 @@ public class AddFilter extends Block {
 		}
 		
 		if (type ==null) {
-			o.addRow("FilterType was not set in block_create_filter (blockId: "+blockId+"). Cannot execute block.");
+			o.addRow("");
+			o.addRedText("FilterType was not set in block_create_filter (blockId: "+blockId+"). Cannot execute block.");
 			return;
 		}
-		
+		Log.d("vortex", "Adding filter of type " + type + " with selPat " + selectionPattern + " and selField " + selectionField);
 		if (type.equals("regular_expression"))
 			myList.addFilter(new WF_Column_RegExp_Filter(blockId,selectionField,selectionPattern));
 		else if (type.equals("exact"))

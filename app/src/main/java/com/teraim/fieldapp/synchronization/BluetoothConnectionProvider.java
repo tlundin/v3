@@ -223,7 +223,6 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 	 * If the device is not named, take first found.		
 	 * 
 	 * @throws BluetoothDevicesNotPaired
-	 * @throws BluetoothDeviceExtra
 	 */
 
 	private ClientConnectThread startClient(String partnerName) throws BluetoothDevicesNotPaired {
@@ -256,6 +255,10 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 					} else
 						Log.d("vortex","No match, partner name: "+potentialPartner);
 				}
+			}
+			if (partner == null && pairedDevices.size()>0) {
+				Log.d("vortex","Could not find partner named "+partnerName+" .Will try first device in list");
+				partner=pairedDevices.iterator().next();
 			}
 			if (partner!=null) {
 				Log.d("Vortex","Bluetooth: Starting client connect to partner: "+partner.getName());

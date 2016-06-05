@@ -53,7 +53,7 @@ WF_Not_ClickableField implements EventListener {
 			Log.e("parser","couldn't create SumAndCountOfVariables - could not find target list "+myTarget);
 		} else {
 
-			for (Listable l:targetList.getList()) {
+			for (Listable l:targetList.get()) {
 				Set<Variable> vars = l.getAssociatedVariables();
 				for (Variable v:vars) {
 					//Log.e("vortex","VAR: "+v.getId());

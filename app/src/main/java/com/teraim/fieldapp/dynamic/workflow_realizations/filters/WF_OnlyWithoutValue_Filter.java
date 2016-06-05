@@ -30,5 +30,10 @@ public class WF_OnlyWithoutValue_Filter extends WF_Filter {
 		return list;
 	}
 
-	
+	@Override
+	public boolean isRemovedByFilter(Listable l) {
+		return l.hasValue();
+	}
+
+
 }

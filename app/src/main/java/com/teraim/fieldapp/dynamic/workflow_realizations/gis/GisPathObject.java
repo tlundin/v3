@@ -13,8 +13,8 @@ public abstract class GisPathObject extends GisObject {
 	private Path myPath = null;
 	public GisPathObject(FullGisObjectConfiguration conf,
 			Map<String, String> keyChain, List<Location> myCoordinates,
-			Variable statusVar) {
-		super(conf, keyChain, myCoordinates, statusVar);
+			String statusVarName, String statusValue) {
+		super(conf, keyChain, myCoordinates, statusVarName,statusValue);
 		
 	}
 

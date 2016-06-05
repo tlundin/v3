@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
@@ -317,7 +318,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		Map<String, String> map1,map2;
 		StoredVariableData storedVar1,storedVar2;
 
-
+		final Pair nullPair = new Pair<String, String>(null,null);
 
 		if (pickerLocation1 !=null ) {
 			
@@ -341,9 +342,9 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 						o.addRedText("Cannot find variable "+locationVar2);
 						return;
 					}
-					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,v2,null));
+					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,v2,null,null));
 				} else
-					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,null));
+					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,null,null));
 			} else {
 
 
@@ -358,24 +359,22 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 					Log.d("vortex","No values in database for static GisPObject with name "+nName);
 					o.addRow("No values in database for static GisPObject with name "+nName);
 				} else {
-					Map <String,Variable> statusVarM=null;
-					boolean foundStatusVar = false;
-					if (pickerStatusVars!=null) 
-						foundStatusVar=pickerStatusVars.moveToFirst();
+					Map <String,Pair<String,String>> statusVarM=null;
+					//Find status per UID for all geo objects. This is used to color the objects later on.
+					if (pickerStatusVars!=null) {
+						while (pickerStatusVars.next()) {
+							String value = pickerStatusVars.getVariable().value;
+							String name = pickerStatusVars.getVariable().name;
+							//Store status var name & value for per uuid.
+							if (statusVarM == null)
+								statusVarM = new HashMap<String, Pair<String, String>>();
+							//ERRUR?
+							statusVarM.put(pickerStatusVars.getKeyColumnValues().get("uid"), new Pair(name, value));
+							Log.d("cleggo", "added statusvar with uid " + pickerStatusVars.getKeyColumnValues().get("uid"));
+						}
+					}
 
-
-					while (foundStatusVar) {
-						String value  = pickerStatusVars.getVariable().value;
-						Variable statusVar = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerStatusVars.getKeyColumnValues(),pickerStatusVars.getVariable().name,value,true);
-						if (statusVarM == null) 
-							statusVarM = new HashMap<String,Variable>();
-						statusVarM.put(statusVar.getKeyChain().get("uid"), statusVar);
-						Log.d("vortex","added statusvar");
-						foundStatusVar = pickerStatusVars.next();
-					} 
-
-
-
+					Pair<String,String> statusVarP=null;
 					do {
 
 						storedVar1 = pickerLocation1.getVariable();
@@ -383,14 +382,17 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 						map1 = pickerLocation1.getKeyColumnValues();
 						//Log.d("vortex","Found columns "+map1.toString()+" for "+storedVar1.name);
 						//Log.d("vortex","bitmap null? "+(icon==null));
-						Variable v1=null,v2=null,statusVar=null;
+						Variable v1=null,v2=null;
 						//If status variable has a value in database, use it. 
 						if (statusVarM!=null) 
-							statusVar = statusVarM.get(map1.get("uid"));
+							statusVarP = statusVarM.get(map1.get("uid"));
 						//if there is a statusvariable defined, but no value found, create a new empty variable.
-						if (statusVariable !=null && statusVar == null) {
+						if (statusVariable !=null && statusVarP == null) {
 							currYearH.put("uid",map1.get("uid"));
-							statusVar = GlobalState.getInstance().getVariableCache().getCheckedVariable(currYearH,statusVariable,"0",true);
+							statusVarP = new Pair<String, String>(statusVariable,"0");
+						}
+						if (statusVarP == null) {
+							statusVarP = nullPair;
 						}
 						if (dynamic) {
 							String value = pickerLocation1.getVariable().value;
@@ -405,13 +407,13 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 								Log.e("vortex","key mismatch in db fetch: X key:"+map1.toString()+"\nY key: "+map2.toString());
 							} else {
 								if (!dynamic) {
-									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value,storedVar2.value),statusVar));
+									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value,storedVar2.value),statusVarP.first,statusVarP.second));
 								}
 								else {
 									String value = pickerLocation2.getVariable().value;
 									v2 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar2.name,value,true);
 									if (v1!=null && v2!=null) 
-										myGisObjects.add(new DynamicGisPoint(this,map1, v1,v2,statusVar));
+										myGisObjects.add(new DynamicGisPoint(this,map1, v1,v2,statusVarP.first,statusVarP.second));
 									else {
 										Log.e("vortex","cannot create dyna 2 gis obj. One or both vars is null: "+v1+","+v2);
 										continue;
@@ -423,16 +425,16 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 						} else {
 							if (myType.equals(GisObjectType.Point)) {
 								if (!dynamic)
-									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value),statusVar));
+									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value),statusVarP.first,statusVarP.second));
 								else
-									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVar));
+									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
 							}
 							else if (myType.equals(GisObjectType.Multipoint)||myType.equals(GisObjectType.Linestring))
 								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType)));
 
 							else if (myType.equals(GisObjectType.Polygon)) {
 								Log.d("vortex","Adding polygon");
-								myGisObjects.add(new GisPolygonObject(this,map1,storedVar1.value,coordType,statusVar));
+								myGisObjects.add(new GisPolygonObject(this,map1,storedVar1.value,coordType,statusVarP.first,statusVarP.second));
 							}
 						}
 						//Add these variables to bag 

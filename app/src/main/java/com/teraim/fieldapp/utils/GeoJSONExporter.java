@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.util.Log;
 
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.NamedVariables;
@@ -61,7 +63,7 @@ public class GeoJSONExporter extends Exporter {
 				//gisobjects: A map between UID and variable key-value pairs.
 				Map<String,Map<String,String>> gisObjects=null;
 				
-				String uid=null;
+				String uid=null,ruta=null;
 				Map<String, String> gisObjM;
 				do {
 					currentHash = cp.getKeyColumnValues();
@@ -72,7 +74,7 @@ public class GeoJSONExporter extends Exporter {
 						continue;
 					}
 					uid = currentHash.get("uid");
-
+					ruta = currentHash.get("ruta");
 					/*
 					if (varC>0) {
 						if (!Tools.sameKeys(previousHash,currentHash)) {
@@ -96,12 +98,18 @@ public class GeoJSONExporter extends Exporter {
 						if (gisObjM==null) { 
 							gisObjM = new LinkedHashMap<String,String>();
 							gisObjects.put(uid, gisObjM);
-							gisObjM.put("Gistyp", currentHash.get(GisConstants.TYPE_COLUMN));
+							//gisObjM.put("Gistyp", currentHash.get(GisConstants.TYPE_COLUMN));
 							Log.d("vortex","keyhash: "+currentHash.toString());
 						}
 						//Hack for multiple SPY1 variables.
+						List<String> row;
 						if (cp.getVariable()!=null) {
 							String name = cp.getVariable().name;
+							//Try to find in variable config.
+							row = gs.getVariableConfiguration().getCompleteVariableDefinition(name);
+							if (row!=null) {
+								name =  gs.getVariableConfiguration().getVarName(row);
+							}
 
 							author  = cp.getVariable().creator;
 
@@ -198,6 +206,8 @@ public class GeoJSONExporter extends Exporter {
 						writer.beginObject();	
 						//Add the UUID
 						write(GisConstants.FixedGid,key);
+						if (ruta!=null)
+							write("RUTA",ruta);
 						write("author",author);
 						//write("timestamp",cp.getVariable().timeStamp);
 						//write("author",cp.getKeyColumnValues().get("author"));

@@ -60,7 +60,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 			String[]  r = Tools.split(row);
 			if (r.length<noOfRequiredColumns) {
 				o.addRow("");
-				o.addRedText("Too short row on line in spinnerdef file."+currentRow+" length: "+r.length);
+				o.addRedText("Too short row in spinnerdef file. Row #"+currentRow+" has "+r.length+" columns but should have "+noOfRequiredColumns+" columns");
 			for (int i=0;i<r.length;i++) {
 				o.addRow("R"+i+":"+r[i]);
 			}

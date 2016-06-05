@@ -23,9 +23,9 @@ public class GisPolygonObject extends GisPathObject {
 
 	//Called when XML has defined the object with a full configuration
 	public GisPolygonObject(FullGisObjectConfiguration conf, Map<String, String> keyChain,
-			String polygons,String coordType,Variable statusVar) {
+			String polygons,String coordType,String statusVar,String statusVal) {
 		//TODO: Add statusvariable
-		super(conf,keyChain,null,statusVar);
+		super(conf,keyChain,null,statusVar,statusVal);
 		this.polygons=null;
 		polyString = polygons;
 		this.conf=conf;

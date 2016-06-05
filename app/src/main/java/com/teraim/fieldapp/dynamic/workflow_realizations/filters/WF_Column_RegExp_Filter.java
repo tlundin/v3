@@ -59,8 +59,16 @@ public class WF_Column_RegExp_Filter extends WF_Filter {
 		return list;
 	}
 
-
-
+	@Override
+	public boolean isRemovedByFilter(Listable l) {
+		String key = l.getSortableField(columnToMatch);
+		if (key!=null)
+			return (!key.matches(regularExpression));
+		else {
+			Log.e("vortex","null in filter");
+			return true;
+		}
+	}
 
 
 }

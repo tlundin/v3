@@ -72,7 +72,7 @@ public class WF_Table extends WF_List  {
 		headerRow.addNoClickHeaderCell(label, null, null);
 		tableView.addView(headerRow.getWidget());
 		//
-		tableView.setStretchAllColumns (true);
+		tableView.setStretchAllColumns (false);
 		addSorter(new WF_Alphanumeric_Sorter());
 
 	}
@@ -115,9 +115,11 @@ public class WF_Table extends WF_List  {
 	public void addRow(List<String> row) {		
 		WF_Table_Row rowWidget = new WF_Table_Row(tableView,(rowNumber++)+"",inflater.inflate(R.layout.table_row, null),myContext,true);
 		rowWidget.addEntryField(row);
-		list.add(rowWidget);
+		add(rowWidget);
 	}
-	
+
+
+
 	public void addColumns(List<String> labels,
 			List<String> columnKeyL, String type, String width,String backgroundColor, String textColor) {
 
@@ -151,6 +153,18 @@ public class WF_Table extends WF_List  {
 			tableTypeSimple=true;
 		
 	}
+
+	public void unCollapse() {
+		if (headerRow.getSelectedColumn() == -1) {
+			if (columnKeys != null) {
+				int numColumns = columnKeys.size();
+				Log.d("vortex", "uncollapsing all columns: " + numColumns);
+				for (int i = 1; i < numColumns + 1; i++) {
+					tableView.setColumnCollapsed(i, false);
+				}
+			}
+		}
+	}
 	
 	
 	//Keep column keys in memory.
@@ -167,12 +181,14 @@ public class WF_Table extends WF_List  {
 		
 		
 		//Create all row entries.
-		for (Listable l:list) {
+		for (Listable l:get()) {
 			WF_Table_Row wft = (WF_Table_Row)l;
 			wft.addCell(header, colKey, colHash, type, width);
 		}
 		columnKeys.add(colKey);
 	}
+
+
 
 	//Keep track of Aggregate column cells.
 	public enum AggregateFunction {
@@ -289,7 +305,7 @@ public class WF_Table extends WF_List  {
 								}
 							}
 							if (done) {
-								Log.d("vortex","I am done..exiting");
+								//Log.d("vortex","I am done..exiting");
 								break;
 							}
 						}
@@ -345,7 +361,7 @@ public class WF_Table extends WF_List  {
 		} catch (NumberFormatException e) {};
 		//Add elements
 		View view;
-		for (Listable l:list) {
+		for (Listable l:get()) {
 			WF_Table_Row wft = (WF_Table_Row)l;
 			if (!isLogical) {
 				TextView tv = wft.addAggregateTextCell(backgroundColor,textColor);
@@ -385,7 +401,7 @@ public class WF_Table extends WF_List  {
 			boolean showHistorical, String initialValue) {
 		//Map<String, String> colHash = Tools.copyKeyHash(myContext.getKeyHash());
 		//get rows.
-		for (Listable l:list) {
+		for (Listable l:get()) {
 			WF_Table_Row wft = (WF_Table_Row)l;
 			Set<String> varIds = varIdMap.get(wft.getLabel());
 			String varGrId=null;
@@ -393,9 +409,9 @@ public class WF_Table extends WF_List  {
 				Log.e("vortex","No variableIds found for "+wft.getLabel());
 				return;
 			} else {
-				Log.d("vortex","varIds contains "+varIds.size()+" variables");
+				//Log.d("vortex","varIds contains "+varIds.size()+" variables");
 				for (String varGr:varIds) {
-					Log.d("vortex","varGr: "+varGr);
+					//Log.d("vortex","varGr: "+varGr);
 					if (varGr.endsWith(variableSuffix)) {
 						varGrId = varGr;
 						break;
@@ -410,7 +426,7 @@ public class WF_Table extends WF_List  {
 			}
 			//Construct variablename. 
 			//String varId = varNamePrefix+Constants.VariableSeparator+varGrId+Constants.VariableSeparator+variableSuffix;
-			Log.d("vortex","Adding variable "+varGrId);
+			//Log.d("vortex","Adding variable "+varGrId);
 			if (tableTypeSimple) {
 				List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varGrId);
 				if (row != null) {

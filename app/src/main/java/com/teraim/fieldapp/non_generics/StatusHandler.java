@@ -53,14 +53,11 @@ public class StatusHandler {
 	private int getCount(Map<String, String> keySet,String columnName) {
 		String[] column = new String[] {columnName};
 		Selection s = gs.getDb().createCoulmnSelection(keySet);
-		List<String[]> values = dbh.getValues(column, s);
+		List<String[]> values = dbh.getUniqueValues(column, s);
 		if (values == null)
 			return 0;
-		Set<String> set = new HashSet<String>();
-		for (String[] ss:values)
-			set.add(ss[0]);					
-		Log.d("nils","getCount has this set: "+set.toString());
-		return set.size();
+
+		return values.size();
 	}
 
 

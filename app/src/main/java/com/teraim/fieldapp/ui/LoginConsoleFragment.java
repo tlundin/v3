@@ -47,6 +47,7 @@ import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 
 public class LoginConsoleFragment extends Fragment implements ModuleLoaderListener {
@@ -75,7 +76,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		log = (TextView)view.findViewById(R.id.logger);
 		versionTxt = (TextView)view.findViewById(R.id.versionTxt);
 		licenseTxt = (TextView)view.findViewById(R.id.licenseTxt);
-		ImageView logo = (ImageView)view.findViewById(R.id.logo);
+		final ImageView logo = (ImageView)view.findViewById(R.id.logo);
+		final ImageView bg = (ImageView)view.findViewById(R.id.bgImg);
 		appTxt = (TextView)view.findViewById(R.id.appTxt);
 		Typeface type=Typeface.createFromAsset(getActivity().getAssets(),
 				"clacon.ttf");
@@ -91,22 +93,53 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		bundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = InitialBundleName;
+
 		ph	 = new PersistenceHelper(mActivity.getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 		if (oldV==-1)
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));
-		String logoUrl = server()+bundleName+"/logo.png";
-		String bgUrl = server()+bundleName+"/bg_image.jpg";
-		Log.d("vortex",  logoUrl);
-		new DownloadImageTask(logo)
-		.execute(logoUrl.toLowerCase());
-		new DownloadImageTask((ImageView) view.findViewById(R.id.bgImg))
-				.execute(bgUrl.toLowerCase());
+		String appBaseUrl = server()+bundleName.toLowerCase()+"/";
 
-
-
+		//Log.d("vortex",  logoUrl);
+		//new DownloadImageTask(logo)
+		//.execute(logoUrl.toLowerCase());
+		final String appRootFolderPath = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/";
 		loginConsole = new Logger(mActivity,"INITIAL");
 		loginConsole.setOutputView(log);
+		Tools.onLoadCacheImage(appBaseUrl,"bg_image.jpg", appRootFolderPath+"cache/", new Tools.WebLoaderCb() {
+			@Override
+			public void loaded(Boolean result) {
+				if (result) {
+					Bitmap bm = BitmapFactory.decodeFile(appRootFolderPath+"cache/bg_image.jpg", new BitmapFactory.Options());
+					if (bm!=null)
+						bg.setImageBitmap(bm);
+				}
+			}
+
+			@Override
+			public void progress(int bytesRead) {
+			}
+		});
+		Tools.onLoadCacheImage(appBaseUrl,"logo.png", appRootFolderPath+"cache/", new Tools.WebLoaderCb() {
+			@Override
+			public void loaded(Boolean result) {
+				if (result) {
+					Bitmap bm = BitmapFactory.decodeFile(appRootFolderPath+"cache/logo.png", new BitmapFactory.Options());
+					if (bm!=null)
+						logo.setImageBitmap(bm);
+				}
+			}
+			@Override
+			public void progress(int bytesRead) {
+			}
+		});
+
+		//Tools.preCacheImage(bgUrl,"logo.png",appRootFolderPath+"cache/",loginConsole);
+
+		//new DownloadImageTask((ImageView) view.findViewById(R.id.bgImg))
+		//		.execute(bgUrl.toLowerCase());
+
+
 		debugConsole = Start.singleton.getLogger();
 
 		//Send a signal that init starts

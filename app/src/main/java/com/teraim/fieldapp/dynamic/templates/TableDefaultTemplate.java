@@ -21,6 +21,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithValue_Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithoutValue_Filter;
 
@@ -172,12 +173,20 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 	private boolean toggleStateH = true;
 
 	private void showEdited(String target) {
+		boolean filterWasRemoved=false;
 		final WF_List fieldList = (WF_List)myContext.getFilterable(target);
 		if (toggleStateH) {
 			fieldList.addFilter(f);
-		} else
+		} else {
 			fieldList.removeFilter(f);
+			filterWasRemoved=true;
+		}
+		//need to review togglestate for columns.
+		Log.d("vortex","show edited...adding filter: "+toggleStateH);
 		fieldList.draw();
+		//Need to do uncollapse at this point in time.
+		if (filterWasRemoved)
+			((WF_Table)myContext.getFilterable(target)).unCollapse();
 		toggleStateH = !toggleStateH;
 	}
 

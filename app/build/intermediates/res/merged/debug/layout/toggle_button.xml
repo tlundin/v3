@@ -4,6 +4,6 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:textSize="30sp"
+    android:textSize = "22sp"
     android:background="@drawable/inset_toggle"
     />

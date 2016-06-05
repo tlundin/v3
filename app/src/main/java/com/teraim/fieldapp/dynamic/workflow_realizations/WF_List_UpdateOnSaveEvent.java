@@ -14,6 +14,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 import com.teraim.fieldapp.non_generics.Constants;
 
 public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventListener,EventGenerator{
@@ -58,8 +59,8 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		//Log.d("nils","ADD EntryField with label "+entryLabel);
 		ef = entryFields.get(entryLabel);
 		if (ef==null) 	{	
-			WF_ClickableField_Selection entryF = new WF_ClickableField_Selection(entryLabel,al.getDescription(r),myContext,"C_F_"+index++,true);
-			list.add(entryF);	
+			WF_ClickableField_Selection entryF = new WF_ClickableField_Selection(entryLabel,al.getDescription(r),myContext,this.getId()+"_"+index++,true);
+			get().add(entryF);
 			ef = new EntryField();
 			entryFields.put(entryLabel, ef);
 			ef.cfs = entryF;
@@ -83,13 +84,13 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 			boolean success=false;
 
-			Log.d("vortex","varIDs contain: "+ef.varIDs);
+			//Log.d("vortex","varIDs contain: "+ef.varIDs);
 			for (String varID:ef.varIDs) {
 				//Log.d("vortex",varID);
 				if (varID.endsWith(varSuffix)) {
 					mapmap.put(varID,ef);
 					success=true;
-					Log.e("nils","Found Match for suffix: "+varSuffix+" Match: "+varID);
+					//Log.e("nils","Found Match for suffix: "+varSuffix+" Match: "+varID);
 					break;
 				}
 
@@ -146,7 +147,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			//Historical value will be set if the variable does not exist already. If it exists, the current value is used, even if it is null.
 
 			if (v!=null) {
-				Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
+				//Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
 				mapmap.get(vs).cfs.addVariable(v, displayOut,format,isVisible,showHistorical);		
 			} else {
 				o.addRow("");
@@ -162,7 +163,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 	@Override
 	public void addFieldListEntry(String listEntryID,String label,String description) {		
 		WF_ClickableField_Selection entryF = new WF_ClickableField_Selection(label,description,myContext,this.getId()+listEntryID,true);
-		list.add(entryF);	
+		get().add(entryF);
 		EntryField ef = new EntryField();
 		entryFields.put(this.getId()+listEntryID, ef);
 		Log.d("vortex","I am now adding listentry "+this.getId()+listEntryID);
@@ -201,11 +202,18 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 	@Override
 	public void onEvent(Event e) {
-		if (e.getProvider().equals(this))
+		if (e.getProvider().equals(this) )
 			Log.d("nils","Throwing event that originated from me");
 		else {
-			Log.d("nils","GOT EVENT!!");
-			draw();
+			Log.d("nils","GOT EVENT!! Provider: "+e.getProvider());
+			if (e.getType()==EventType.onSave) {
+				//force complete redraw if incremental fails.
+				if (!prepareIncrementalDraw(((WF_Event_OnSave)e).getListable())) {
+					Log.d("nils","REDRAW!!");
+					resetOnEvent();
+				}
+				draw();
+			}
 			myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 		}
 

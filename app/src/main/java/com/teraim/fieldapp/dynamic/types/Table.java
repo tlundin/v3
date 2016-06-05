@@ -129,13 +129,12 @@ public class Table implements Serializable {
 	
 		List<List<String>> ret = null;
 		List<String> column = colTable.get(columnName);
-		if(column!=null && pattern!=null) {
+		if(column!=null && pattern!=null && column.size()>0) {
 			pattern.trim();
+			ret = new ArrayList<List<String>>();
 			for(int i = 0;i<column.size();i++) {
 				//Log.d("nils","i: "+i+" col: "+column.get(i));
 				if (column.get(i).equals(pattern)||column.get(i).matches(pattern)) {
-					if (ret == null)
-						ret = new ArrayList<List<String>>();
 					ret.add(rowTable.get(i));
 				}
 			}

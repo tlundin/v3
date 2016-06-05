@@ -36,6 +36,7 @@ import android.view.View;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.Start;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
@@ -470,13 +471,17 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			String uid = UUID.randomUUID().toString();
 			Log.d("vortex","HACK: Adding uid: "+uid);
 			keyHash.put("uid", uid);
-			Log.d("vortex","keyhash for new obj is: "+keyHash.toString());
+			Variable gistyp = GlobalState.getInstance().getVariableCache().getVariable(keyHash,NamedVariables.GIS_TYPE);
+			if (gistyp!=null && keyHash != null) {
+				gistyp.setValue(gisTypeToCreate.getObjectKeyHash().getContext().get("gistyp"));
+				Log.d("vortex", "keyhash for new obj is: " + keyHash.toString() + " and gistyp: " + gistyp.getValue());
+			}
 			List<Location> myDots;
 
 			switch (gisTypeToCreate.getGisPolyType()) {
 
 				case Point:
-					ret = new StaticGisPoint(gisTypeToCreate,keyHash,mapLocationForClick, null);
+					ret = new StaticGisPoint(gisTypeToCreate,keyHash,mapLocationForClick, null,null);
 					int[] xy = new int[2];
 					translateMapToRealCoordinates(mapLocationForClick,xy);
 					((StaticGisPoint)ret).setTranslatedLocation(xy);
@@ -488,7 +493,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					break;
 				case Polygon:
 					ret = new GisPolygonObject(gisTypeToCreate, keyHash,
-							"",GisConstants.SWEREF,null);
+							"",GisConstants.SWEREF,null,null);
 					break;
 
 			}
@@ -633,7 +638,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								Style style = gop.getStyle();
 								PolyType polyType=gop.getShape();
 
-								String statusColor = colorShiftOnStatus(gop.getStatusVariable());
+								String statusColor = colorShiftOnStatus(gop.getStatus());
 								if (statusColor!=null)
 									color = statusColor;
 
@@ -797,17 +802,17 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		handler.postDelayed(runnable, interval);
 	}
 	 */
-	private String colorShiftOnStatus(Variable statusVar) {
+	private String colorShiftOnStatus(String statusValue) {
 		String color=null;
-		if (statusVar!=null ) {
-			String value = statusVar.getValue();
-			if (value.equals("1")) {
+		if (statusValue!=null ) {
+
+			if (statusValue.equals("1")) {
 				color = "yellow";
 			}
-			else if (value.equals("2")) {
+			else if (statusValue.equals("2")) {
 				color = "red";
 			}
-			else if	(value.equals("3")) {
+			else if	(statusValue.equals("3")) {
 				color = "green";
 			}
 		}
@@ -881,7 +886,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					//myMap.showLenthOfPath(new PathMeasure(p,false));
 
 				} else {
-					String color = colorShiftOnStatus(go.getStatusVariable());
+					String color = colorShiftOnStatus(go.getStatus());
 					if (color==null)
 						color = go.getColor();
 					canvas.drawPath(p, createPaint(color,Paint.Style.STROKE,0));
@@ -1144,21 +1149,32 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					.show();
 		} else {
 
-			Variable statusVariable = gop.getStatusVariable();
-			String statusVarS=null;
-			if (statusVariable!=null) {
-				statusVarS = statusVariable.getId();
-				String valS = statusVariable.getValue();
-				if (valS==null || valS.equals("0")) {
-					Log.d("vortex","Setting status variable to 1");
-					statusVariable.setValue("1");
-				} else
-					Log.d("vortex","NOT Setting status variable to 1...current val: "+statusVariable.getValue());
-				myMap.registerEvent(new WF_Event_OnSave("Gis"));
 
-			}
+			if (gop.getStatusVariableId()!=null) {
+				Map<String, String> keyHash = gop.getKeyHash();
+				if (keyHash!=null)
+					keyHash.put(VariableConfiguration.KEY_YEAR,Constants.getYear());
+				Variable statusVariable = GlobalState.getInstance().getVariableCache().getVariable(keyHash,gop.getStatusVariableId());
+				if (statusVariable!=null) {
+					String valS = statusVariable.getValue();
+					if (valS == null || valS.equals("0")) {
+						Log.d("grogg", "Setting status variable to 1");
+						statusVariable.setValue("1");
+						gop.setStatus("1");
+					} else
+						Log.d("grogg", "NOT Setting status variable to 1...current val: " + statusVariable.getValue());
+					myMap.registerEvent(new WF_Event_OnSave("Gis"));
+				} else {
+					Log.e("grogg", "StatusVariable definition error");
+					LoggerI o = GlobalState.getInstance().getLogger();
+					o.addRow("");
+					o.addRedText("StatusVariable definition missing for: "+gop.getStatusVariableId());
+				}
 
-			Start.singleton.changePage(wf,statusVarS);
+			} else
+				Log.e("grogg",gop.getStatusVariableId()+" is null");
+
+			Start.singleton.changePage(wf,gop.getStatusVariableId());
 
 		}
 	}

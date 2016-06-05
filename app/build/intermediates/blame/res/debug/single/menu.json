@@ -4,6 +4,10 @@
         "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\menu\\provytadeletemenu.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\provytadeletemenu.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\provytadeletemenu.xml"
+    },
+    {
         "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\menu\\tagpopmenu.xml",
         "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\menu\\tagpopmenu.xml"
     },
@@ -16,7 +20,23 @@
         "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\menu\\gis_longpress_menu.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\tagpopmenu.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\tagpopmenu.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\foto_deletemenu.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\foto_deletemenu.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\activity_nils.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\activity_nils.xml"
+    },
+    {
         "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\menu\\foto_deletemenu.xml",
         "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\menu\\foto_deletemenu.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\gis_longpress_menu.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\gis_longpress_menu.xml"
     }
 ]

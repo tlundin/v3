@@ -38,7 +38,7 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 						myVariable.deleteValue();
 
 					context
-							.registerEvent(new WF_Event_OnSave("table_cell", null));
+							.registerEvent(new WF_Event_OnSave("table_cell", null,null));
 				} 
 			}
 		});

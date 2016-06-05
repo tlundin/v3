@@ -175,9 +175,9 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 	private void refreshList() {
 		Log.d("nils","In refereshlist..");
 
-		list.clear();
+		clear();
 		linjeV.removeAllMarkers();
-		List<String[]> rows = gs.getDb().getValues(columnNames,s);
+		List<String[]> rows = gs.getDb().getUniqueValues(columnNames,s);
 		if (rows!=null) {
 			Log.d("nils","Got "+rows.size()+" results in refreshList, WF_Instance");
 			int rowC=0;
@@ -221,13 +221,15 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 						linjeV.addMarker(start, colVals[myHeaderCol]);
 					}
 
-					list.add(entryF);	
+					get().add(entryF);
 				}
 				rowC++;
 			}
 		}
 		linjeV.invalidate();
 	}
+
+
 
 
 	private String getCorrectLabel(String value) {

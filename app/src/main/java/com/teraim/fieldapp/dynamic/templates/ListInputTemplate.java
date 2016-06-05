@@ -19,9 +19,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithoutV
 
 
 public class ListInputTemplate extends Executor {
-	public static String FIELD_LIST = "Field_list_1",
-			SORTER_A_O = "alphanumeric_sorting_function",
-			SORTER_FAMILJ="familje_sorting_function";
 	private LinearLayout sortPanel;
 	List<WF_Container> myLayouts;
 

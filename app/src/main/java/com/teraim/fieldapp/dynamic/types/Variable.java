@@ -95,8 +95,9 @@ public class Variable implements Serializable {
 	public String getValue() {
 		if (unknown) {
 			//update keyhash.
-			//Log.d("nils","fetching: "+System.currentTimeMillis()+" var: "+this.getId());
-			myValue = myDb.getValue(name,mySelection,myValueColumn);	
+			Log.d("nils","fetching: "+System.currentTimeMillis()+" var: "+this.getId());
+			myValue = myDb.getValue(name,mySelection,myValueColumn);
+			Log.d("zzzz","myValue in get "+myValue);
 			//Variable doesnt exist in database
 			if (myValue==null && myType == DataType.auto_increment) {
 				//find value for global auto_inc counter in persistent memory.
@@ -111,6 +112,7 @@ public class Variable implements Serializable {
 				Log.d("nils","Value null! Using default: "+myDefaultValue);
 				//use default value.
 				myValue = myDefaultValue;
+				Log.d("zzzz","myValue in get def"+myValue);
 				usingDefault = true;
 			}
 			unknown = false;
@@ -191,8 +193,9 @@ public class Variable implements Serializable {
 		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext());
 		value = Tools.removeStartingZeroes(value);
 		myValue = value;
+		Log.d("zzzz","myValue in setValue "+myValue);
 		//Remove any .xx if numeric or list
-		if (this.getType()==DataType.numeric || this.getType()==DataType.list&& value.endsWith(".0")) {
+		if ((this.getType()==DataType.numeric || this.getType()==DataType.list) && value.endsWith(".0")) {
 			value = (int)(Float.parseFloat(value))+"";
 			Log.d("vortex","chopped of .0 in setvalue: "+value);
 		}
@@ -223,12 +226,14 @@ public class Variable implements Serializable {
 		unknown=false;
 		value = Tools.removeStartingZeroes(value);		
 		myValue=value;
+		Log.d("zzzz","myValue in setOnlyCached "+myValue);
 		
 	}
 	//Force fetch from db next get.
 	public void revert() {
 		unknown=true;
 		myValue=null;
+		Log.d("zzzz","myValue in revert! "+myValue);
 	}
 	boolean isSynchronizedNext = false;
 
@@ -253,11 +258,12 @@ public class Variable implements Serializable {
 	        }
 	    }));
 	    */
-		Log.d("vortex","Timex used "+(System.currentTimeMillis()-mil)+"");
+		//GlobalState.getInstance().getLogger().addRow("Insert db time used "+(System.currentTimeMillis()-mil)+"");
 	}
 
 	public void setValueNoSync(String value) {
 		myValue = value;
+		Log.d("zzzz","myValue in setValueNoSync! "+myValue);
 		insert(value, false);
 	}
 
@@ -323,9 +329,9 @@ public class Variable implements Serializable {
 		myLabel = label;
 		realValueColumnName = valueColumn;
 		myValueColumn[0]=myDb.getDatabaseColumnName(valueColumn);
-		//Log.d("nils","myValueColumn: "+myValueColumn[0]);
+
 		myValue = null;
-		
+		Log.d("zzzz","myValue is set to Null in New()");
 		if (historicalValue!=null) {
 			//Log.e("vortex","Historicalvaluefor "+this.getId()+" is "+historicalValue+" varObj: "+this.toString());
 			historyChecked=true;
@@ -347,6 +353,7 @@ public class Variable implements Serializable {
 		else {
 			unknown = false;
 			myValue = myDefaultValue;
+			Log.d("zzzz","myValue in New() def: "+myValue);
 			if (!valueIsPersisted) {
 				setValue(myDefaultValue);
 				//Log.d("nils","Creating variable "+this.getId()+". Variable is not persisted: "+myValue);
@@ -359,7 +366,7 @@ public class Variable implements Serializable {
 			isKeyVariable=true;
 		}
 		
-		Log.d("vortex","unknown? "+unknown);
+		//Log.d("vortex","unknown? "+unknown);
 	}
 
 	
@@ -367,6 +374,7 @@ public class Variable implements Serializable {
 
 	public void deleteValue() {
 		myDb.deleteVariable(name,mySelection,isSynchronized);
+		Log.d("zzzz","myValue null in DeleteValue");
 		myValue=null;
 		unknown = false;
 		usingDefault = false;
@@ -374,6 +382,7 @@ public class Variable implements Serializable {
 	
 	public void deleteValueNoSync() {
 		myDb.deleteVariable(name,mySelection,false);
+		Log.d("zzzz","myValue null in DeleteValueNoS");
 		myValue=null;
 		unknown = false;
 		usingDefault = false;
@@ -557,7 +566,7 @@ public class Variable implements Serializable {
 
 
 	private void setDefault(String defaultValue) {
-		Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
+		//Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
 		if (defaultValue == null) {
 
 			myDefaultValue = null;

@@ -35,50 +35,18 @@ public class WF_Column_Name_Filter extends WF_Filter {
 		Iterator<? extends Listable> it = list.iterator();		
 		while(it.hasNext()) {
 			Listable l = it.next();
-			key = l.getSortableField(columnToMatch);
-			if (key==null) {
-				Log.e("nils","Key was null in filter");
-				continue;
-			}				
-			boolean match = false;
-			
-			if (filterType == FilterType.prefix) {
-				if (key.isEmpty()) {
-					match=false;					
-				}
-					
-				for (int i=0;i<myPrefix.length();i++) {
-					if (Character.toLowerCase(key.charAt(0))==Character.toLowerCase(myPrefix.charAt(i))) {
-						match = true;
-						break;					
-					}
-				}
-			} else {
-				if (filterType == FilterType.exact) {
-					match = true;
-					if (myPrefix.length()!=key.length()) {
-						match = false;
-					}
-					else {
-						for (int i=0;i<myPrefix.length();i++) {
-							if (Character.toLowerCase(key.charAt(i))!=Character.toLowerCase(myPrefix.charAt(i))) {
-								match = false;
-								break;
-							}
-						}
-					}
-				}
-			}
 
-			if (!match) {
+
+			key = l.getSortableField(columnToMatch);
+			if (key==null)
+				continue;
+			if (!match(key)) {
 				it.remove();
-				if (!key.isEmpty())
-					Log.d("nils", "filter removes element " + key + " because " + key.charAt(0) + " doesn't match " + myPrefix);
-				else
-					Log.d("vortex","removed empty key");
+				//if (!key.isEmpty())
+				//	Log.d("nils", "filter removes element " + key + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 			}
 			else {
-				Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
+				//Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
 				totMatch = true;
 			}
 
@@ -92,8 +60,44 @@ public class WF_Column_Name_Filter extends WF_Filter {
 		return list;
 	}
 
+	@Override
+	public boolean isRemovedByFilter(Listable l) {
+		return !match(l.getSortableField(columnToMatch));
+	}
 
-	
 
+	private boolean match(String key) {
+
+		boolean match = false;
+
+		if (filterType == FilterType.prefix) {
+			if (key.isEmpty()) {
+				match=false;
+			}
+
+			for (int i=0;i<myPrefix.length();i++) {
+				if (Character.toLowerCase(key.charAt(0))==Character.toLowerCase(myPrefix.charAt(i))) {
+					match = true;
+					break;
+				}
+			}
+		} else {
+			if (filterType == FilterType.exact) {
+				match = true;
+				if (myPrefix.length()!=key.length()) {
+					match = false;
+				}
+				else {
+					for (int i=0;i<myPrefix.length();i++) {
+						if (Character.toLowerCase(key.charAt(i))!=Character.toLowerCase(myPrefix.charAt(i))) {
+							match = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return match;
+	}
 
 }

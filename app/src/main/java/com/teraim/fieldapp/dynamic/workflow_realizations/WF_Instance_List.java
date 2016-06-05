@@ -124,7 +124,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 							//cache
 							entryFields.put(entryInstanceLabel, ef);	
 							
-							list.add(ef);
+							get().add(ef);
 							//Create a standard variable for each as part of entryfield.
 							String efVarName;
 							Variable efVar;
@@ -317,7 +317,8 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 						Log.d("vortex","ef is not null, found it!");
 						if (!ef.hasValue()) {
 							Log.d("vortex","main variable is null. Delete!");
-							list.remove(ef);
+							get().remove(ef);
+							reSortAndFilter();
 							draw();
 						}
 					}

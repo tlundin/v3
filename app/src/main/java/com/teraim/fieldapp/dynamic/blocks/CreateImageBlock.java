@@ -3,17 +3,29 @@
  */
 package com.teraim.fieldapp.dynamic.blocks;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.InputStream;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.RelativeLayout;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
@@ -67,14 +79,25 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 		Log.d("vortex","Source name is "+source);
 		if (myContainer != null && sourceE!=null) {
 			dynImgName = Expressor.analyze(sourceE);
+			Log.d("botox","my image name before: "+dynImgName);
+
 			ScaleType scaleT=ScaleType.FIT_XY;
 			img = new ImageView(myContext.getContext());
 			if (Tools.isURL(dynImgName)) {
 				new DownloadImageTask(img).execute(dynImgName);
 			} else {
-				setImageFromFile(myContext);
+				//Try to parse as regexp.
+				String fileName = this.figureOutFileToLoad(dynImgName);
+				if (fileName==null) {
+					Log.d("botox","Failed to find file using "+dynImgName+" as regexp pattern");
+				} else {
+					Log.d("botox","Find filename from pattern: "+fileName);
+					dynImgName=fileName;
+				}
+
+				setImageFromFile(myContext,img);
 			}
-			Log.d("vortex","Dynamic name is "+dynImgName);
+
 			if (scale!=null || scale.length()>0)
 				scaleT = ScaleType.valueOf(scale.toUpperCase());
 			img.setScaleType(scaleT);
@@ -89,18 +112,48 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 			o.addRow("");
 			o.addRedText("Failed to add image with block id "+blockId+" - missing container "+container);
 		}
+		img.setClickable(true);
+		img.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showImage();
+			}
+		});
+	}
+
+	public void showImage() {
+		Dialog builder = new Dialog(myContext.getContext());
+		builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		builder.getWindow().setBackgroundDrawable(
+				new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialogInterface) {
+				//nothing;
+			}
+		});
+
+		ImageView imageView = new ImageView(myContext.getContext());
+		if (Tools.isURL(dynImgName)) {
+			new DownloadImageTask(imageView).execute(dynImgName);
+		} else {
+			setImageFromFile(myContext,imageView);
+		}
+		builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT));
+		builder.show();
 	}
 
 
-
-	private void setImageFromFile(WF_Context myContext) {
+	private void setImageFromFile(WF_Context myContext, ImageView img) {
 		if (dynImgName==null) {
 			Log.e("vortex","no dynimage name in createimageblock... exit");
 		}
 		final int divisor = 1;
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds=true;
-		Bitmap bip = BitmapFactory.decodeFile(Constants.PIC_ROOT_DIR+dynImgName,options);		
+		Bitmap bip = BitmapFactory.decodeFile(Constants.PIC_ROOT_DIR+dynImgName,options);
 		int realW = options.outWidth;
 		int realH = options.outHeight;
 		if (realW>0) {
@@ -123,6 +176,45 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 			Log.d("nils","Did not find picture "+dynImgName);
 		}
 	}
+
+	private String figureOutFileToLoad(String pattern) {
+
+		String fileName = null;
+
+		File f = new File(Constants.PIC_ROOT_DIR);
+		if (f.exists() && f.isDirectory() && pattern!=null)
+
+		{
+			final Pattern p = Pattern.compile(pattern);
+			File[] flists = f.listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File file) {
+					p.matcher(file.getName()).matches();
+					Log.e("botox", "patternmatch " + p.matcher(file.getName()).matches());
+
+					return p.matcher(file.getName()).matches();
+
+				}
+			});
+
+			if (flists!=null && flists.length>0) {
+				Log.d("botox","found file matches for pattern "+pattern);
+				for (File fl:flists) {
+					Log.d("vortex",fl.getName());
+				}
+				return flists[0].getName();
+			}
+		}
+
+		return null;
+	}
+
+
+
+
+
+
+
 
 
 
@@ -157,7 +249,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 	@Override
 	public void onEvent(Event e) {
 		Log.d("vortex","Img was taken");
-		setImageFromFile(myContext);
+		setImageFromFile(myContext,img);
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
-import com.teraim.fieldapp.utils.Expressor;
 
 public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Listable> {
 	List<String> myRow;
@@ -116,10 +115,8 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 	public void addNoClickHeaderCell(String label, String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.headerT);
-
 		tv.setText(label);
 		((TableRow)this.getWidget()).addView(emptyCell);
-		Log.d("mozarella","backgroundcolor is "+backgroundColor+" and label "+label);
 		if (backgroundColor!=null)
 			emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
 		if (textColor!=null)
@@ -127,6 +124,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 	}
 
 	int headerIndex=1;
+	int selectedColumnIndex =-1;
 	//Add a cell of purely graphical nature.
 	public void addHeaderCell(String label, String backgroundColor, String textColor) {
 		View headerC = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
@@ -136,16 +134,17 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 		headerC.setOnClickListener(new OnClickListener() {
 			final int myHeaderIndex=headerIndex;
-			boolean toggle=true;
+
 			@Override
 			public void onClick(View v) {
 				Log.d("vortex","column "+myHeaderIndex+" clicked!");
-				for (int i=1;i<headerIndex;i++) {
-					if (i!=myHeaderIndex)
-						myTable.setColumnCollapsed(i, toggle);
-
-				}
-				toggle = !toggle;
+				toggleToggleState();
+				selectedColumnIndex = getToggleState()?myHeaderIndex:-1;
+					for (int i = 1; i < headerIndex; i++) {
+						if (i != myHeaderIndex) {
+							myTable.setColumnCollapsed(i, getToggleState());
+						}
+					}
 			}
 
 		});
@@ -153,8 +152,25 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			headerC.setBackgroundColor(Color.parseColor(backgroundColor));
 		if (textColor!=null)
 			headerT.setTextColor(Color.parseColor(textColor));
+		//If no column selected, selectedIndex is -1
+
 		headerIndex++;
 	}
+	private boolean iAmCollapsed =false;
+
+	private boolean getToggleState() {
+		return iAmCollapsed;
+
+	}
+	public int getSelectedColumn() {
+		return selectedColumnIndex;
+	}
+	private void toggleToggleState() {
+		iAmCollapsed =!iAmCollapsed;
+	}
+
+
+
 
 	//Add a Vortex Cell.
 	public void addCell(String colHeader, String colKey, Map<String,String> columnKeyHash, String type, String width) {
@@ -181,10 +197,10 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			//SHOW HISTORICAL IS TRUE!
 			//Variable v= al.getVariableUsingKey(columnKeyHash, this.getKey());
 			//if (v!=null)
-			//	widget.addVariable(v, true,null,true,true);	
-
+			//	widget.addVariable(v, true,null,true,true);
 			myColumns.add(widget);
 			((TableRow)getWidget()).addView(widget.getWidget());
+			//Log.d("feodor","Row now has "+((TableRow) getWidget()).getChildCount()+" children");
 	}
 
 	public TextView addAggregateTextCell(String backgroundColor, String textColor) {

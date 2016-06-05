@@ -9,8 +9,8 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 
 public class StaticGisPoint extends GisPointObject {
 	
-	public StaticGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Location myLocation, Variable statusVar) {
-		super(conf,keyChain,Arrays.asList(new Location[]{myLocation}),statusVar);
+	public StaticGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Location myLocation, String statusVar, String statusVal) {
+		super(conf,keyChain,Arrays.asList(new Location[]{myLocation}),statusVar,statusVal);
 	}
 
 

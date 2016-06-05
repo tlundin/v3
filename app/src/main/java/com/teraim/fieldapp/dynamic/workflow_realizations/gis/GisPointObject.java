@@ -21,8 +21,8 @@ public abstract class GisPointObject extends GisObject {
 	
 	private int[] xy=null;
 	
-	public GisPointObject(FullGisObjectConfiguration poc,Map<String, String> keyChain,List<Location> myCoordinates, Variable statusVar) {
-		super(poc,keyChain,myCoordinates,statusVar);
+	public GisPointObject(FullGisObjectConfiguration poc,Map<String, String> keyChain,List<Location> myCoordinates, String statusVar, String statusVal) {
+		super(poc,keyChain,myCoordinates,statusVar,statusVal);
 		this.poc=poc;
 		
 	}
@@ -67,7 +67,7 @@ public abstract class GisPointObject extends GisObject {
 		 */
 		//Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
 		if (distanceToClick<ClickThresholdInMeters) {
-			Log.d("vortex","found friend!");			
+			//Log.d("vortex","found friend!");
 			return true;
 		}
 		//Log.d("vortex", "Dist x  y  tresh: "+xD+","+yD+","+touchThresh);

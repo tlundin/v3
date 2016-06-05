@@ -886,7 +886,7 @@ EventGenerator {
 			Log.d("nils", "IN SAVE() SENDING EVENT");
 			gs.sendEvent(MenuActivity.REDRAW);
 			myContext
-			.registerEvent(new WF_Event_OnSave(this.getId(), oldValue));
+			.registerEvent(new WF_Event_OnSave(this.getId(), oldValue,this));
 
 			// myContext.registerEvent(new WF_Event_OnContextChange());
 			// if (contextChanged)

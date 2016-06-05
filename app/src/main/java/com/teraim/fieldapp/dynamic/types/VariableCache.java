@@ -95,13 +95,26 @@ public class VariableCache {
     }
     public Map<String, Variable> createOrGetCache(Map<String, String> myKeyHash) {
         Map<String, Variable> ret = newcache.get(myKeyHash);
+        Map<String, String> copy = null;
+        boolean yearWasRemoved=false;
         if (ret == null) {
-            if (myKeyHash != null)
+            if (myKeyHash != null) {
                 Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
+                //remove år="H" if any.
+                copy = copyKeyHash(myKeyHash);
+                if (copy.get("år").equals("H")) {
+                    Log.d("vortex","removing histoår from cache key");
+                    copy.remove("år");
+                    yearWasRemoved=true;
+                }
+
+            }
             else
                 Log.d("vortex", "Creating Cache for keyhash null");
 
-            Map<String, String> copy = myKeyHash == null ? null : copyKeyHash(myKeyHash);
+
+
+
             ret = createAllVariablesForKey(copy);
             if (ret == null) {
                 //Log.e("vortex","No variables found in db for "+myKeyHash+". Creating empty hash");
@@ -110,8 +123,13 @@ public class VariableCache {
 
 
             newcache.put(copy, ret);
+            //If år was removed, also link this cache to the original key.
+            if (yearWasRemoved) {
+                Log.d("vortex","Adding also year key to same cache ");
+                newcache.put(myKeyHash, ret);
+            }
         } else {
-            Log.d("vortex", "Returning existing cache for " + myKeyHash);
+            //Log.d("vortex", "Returning existing cache for " + myKeyHash+" : "+ret);
 
         }
         return ret;
@@ -181,7 +199,7 @@ public class VariableCache {
                         else
                             v = new Variable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);
                         ret.put(varName.toLowerCase(), v);
-						Log.d("vorto","Added "+varName+" to cache");
+						//Log.d("vorto","Added "+varName+" to cache");
                     }
                 }
             } else
@@ -224,7 +242,7 @@ public class VariableCache {
     }
 
 
-    //A variable that is given a value at start. This call will not generate all possible variables for the given key.
+    //A variable that is given a value at start.
     public Variable getCheckedVariable(Map<String, String> keyChain, String varId, String value, Boolean wasInDatabase) {
         return getVariable(keyChain, createOrGetCache(keyChain), varId, value, wasInDatabase);
     }
@@ -235,6 +253,14 @@ public class VariableCache {
     public Variable getCheckedVariable(String varId, String value, Boolean wasInDatabase) {
         return getVariable(currentHash, currentCache, varId, value, wasInDatabase);
     }
+
+
+
+
+
+
+
+    //Only get the value.
 
     public String getVariableValue(Map<String, String> keyChain, String varId) {
         Variable v = getVariable(keyChain, varId);
@@ -253,7 +279,7 @@ public class VariableCache {
 
 
     public Variable getVariable(Map<String, String> hash, Map<String, Variable> cache, String varId, String defaultValue, Boolean hasValueInDB) {
-        Log.d("vortex", "in CACHE GetVariable for " + varId);
+        //Log.d("vortex", "in CACHE GetVariable for " + varId);
         long t0 = System.currentTimeMillis();
         //Log.d("vortex","cache is "+cache);
         Variable variable = cache.get(varId.toLowerCase());
@@ -303,7 +329,7 @@ public class VariableCache {
             //Log.d("vortex","default value: "+defaultValue);
         }
         //Log.d("vortex","Te:"+(System.currentTimeMillis()-t0));
-        Log.d("vortex", "variable found with value " + variable.getValue());
+        //Log.d("vortex", "variable found with value " + variable.getValue());
         return variable;
     }
 

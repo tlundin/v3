@@ -555,7 +555,7 @@ public class Tools {
 					} else 
 						Log.d("nils","no additional keys..only column");
 					Selection s = gs.getDb().createCoulmnSelection(keySet);
-					List<String[]> values = gs.getDb().getValues(column, s);
+					List<String[]> values = gs.getDb().getUniqueValues(column, s);
 					if (values !=null) {
 						Log.d("nils","Got "+values.size()+" results");
 						//Remove duplicates and sort.

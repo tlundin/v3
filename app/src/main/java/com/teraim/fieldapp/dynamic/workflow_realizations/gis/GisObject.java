@@ -23,9 +23,10 @@ public class GisObject {
 	protected static final double ClickThresholdInMeters = 50;
 	protected double distanceToClick=-1;
 	private String label=null;
-	private Variable statusVar=null;
-	
-	
+	private String statusVariableId=null,statusVariableValue=null;
+
+
+
 	public enum CoordinateType {
 		sweref,
 		latlong
@@ -44,11 +45,12 @@ public class GisObject {
 	}
 
 	public GisObject(FullGisObjectConfiguration conf,
-			Map<String, String> keyChain,List<Location> myCoordinates,Variable statusVar) {
+			Map<String, String> keyChain,List<Location> myCoordinates,String statusVarName,String statusVariableValue) {
 		this.keyChain=keyChain;
 		this.foc = conf;
 		this.myCoordinates=myCoordinates;
-		this.statusVar=statusVar;
+		this.statusVariableId=statusVarName;
+		this.statusVariableValue=statusVariableValue;
 		
 	}
 	
@@ -116,9 +118,14 @@ public class GisObject {
 		return foc.getShape();
 	}
 	
-	public Variable getStatusVariable() {
-		return statusVar;
+	public String getStatusVariableId() {
+		return statusVariableId;
 	}
+
+	public String getStatus() {
+		return statusVariableValue;
+	}
+	public void setStatus(String s) {statusVariableValue=s; }
 	
 	public String getColor() {
 		return foc.getColor();

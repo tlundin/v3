@@ -246,16 +246,16 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				myContext.registerEventListener(new EventListener() {
 					@Override
 					public void onEvent(Event e) {
-						Log.e("vortex","Received onSave in statusvariable change when first save event!");
+						Log.d("vortex","Received onSave in statusvariable change on first save event");
 						String statusVar = myContext.getStatusVariable();
 						Variable statusVariable =null;
 						if (statusVar!=null)
 							statusVariable = varCache.getVariable(statusVar);
 						if (statusVariable!=null && statusVariable.getValue()!=null && statusVariable.getValue().equals(Constants.STATUS_INITIAL)) {
 							statusVariable.setValue(Constants.STATUS_STARTAD_MEN_INTE_KLAR);
-							Log.e("vortex","GOTZZZ");
+
 						} else
-							Log.e("vortex","TURKEY");
+
 						myContext.removeEventListener(this);
 					}
 

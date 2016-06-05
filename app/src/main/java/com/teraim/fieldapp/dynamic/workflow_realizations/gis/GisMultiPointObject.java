@@ -16,7 +16,7 @@ public class GisMultiPointObject extends GisPathObject {
 	
 	public GisMultiPointObject(FullGisObjectConfiguration conf,Map<String, String> keyChain,List<Location> myCoordinates) {
 		//TODO: Add statusvariable.
-		super(conf,keyChain,myCoordinates,null);
+		super(conf,keyChain,myCoordinates,null,null);
 		poc = conf;
 	}
 	

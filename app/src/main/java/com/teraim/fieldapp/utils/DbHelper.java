@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -29,6 +30,7 @@ import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -574,7 +576,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 String value = entry.getValue();
                 //KOKKO
                 String column = entry.getKey();
-                Log.d("insa","in insertaudit column: "+column+" entry.getkey "+entry.getKey());
+                //Log.d("insa","in insertaudit column: "+column+" entry.getkey "+entry.getKey());
                 //Log.d("vortex","FIZ column: "+column+" maps to: "+entry.getKey());
                 //changes+=entry.getKey()+"="+value+"|";
                 changes += column + "=" + value + "|";
@@ -660,7 +662,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //public final static int MAX_RESULT_ROWS = 500;
 
-    public List<String[]> getValues(String[] columns, Selection s) {
+    public List<String[]> getUniqueValues(String[] columns, Selection s) {
 
         //Log.d("nils","In getvalues with columns "+print(columns)+", selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         //Substitute if possible.
@@ -670,7 +672,7 @@ public class DbHelper extends SQLiteOpenHelper {
             substCols[i] = getDatabaseColumnName(columns[i]);
         //Get cached selectionArgs if exist.
         //this.printAllVariables();
-        Cursor c = db.query(TABLE_VARIABLES, substCols,
+        Cursor c = db.query(true,TABLE_VARIABLES, substCols,
                 s.selection, s.selectionArgs, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             List<String[]> ret = new ArrayList<String[]>();
@@ -814,10 +816,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //Insert or Update existing value. Synchronize tells if var should be synched over blutooth.
     //This is done in own thread.
+    ContentValues insertContentValues = new ContentValues();
 
     public void insertVariable(Variable var, String newValue, boolean syncMePlease) {
 
-
+        insertContentValues.clear();
         boolean isReplace = false;
         long milliStamp = System.currentTimeMillis();
         String timeStamp = TimeUnit.MILLISECONDS.toSeconds(milliStamp) + "";
@@ -825,10 +828,8 @@ public class DbHelper extends SQLiteOpenHelper {
         //for logging
         //Log.d("nils", "INSERT VALUE ["+var.getId()+": "+var.getValue()+"] Local: "+isLocal+ "NEW Value: "+newValue);
 
-        //Delete any existing value.
-        deleteVariable(var.getId(), var.getSelection(), false);
 
-        ContentValues values = new ContentValues();
+
         //Key need to be updated?
         if (var.isKeyVariable()) {
             //Log.d("nils","updating key to "+newValue);
@@ -838,33 +839,33 @@ public class DbHelper extends SQLiteOpenHelper {
             int id = getId(var.getSelection());
             //Found match. Replace.
             if (id != -1) {
-                //Log.d("nils","variable exists");
-                values.put("id", id);
+                Log.d("nils", "variable exists");
+                insertContentValues.put("id", id);
                 isReplace = true;
             }
         }
         // 1. create ContentValues to add key "column"/value
 
-        createValueMap(var, newValue, values, timeStamp);
+        createValueMap(var, newValue, insertContentValues, timeStamp);
         // 3. insert
         long rId;
         if (isReplace) {
             rId = db.replace(TABLE_VARIABLES, // table
                     null, //nullColumnHack
-                    values
+                    insertContentValues
             );
 
         } else {
             rId = db.insert(TABLE_VARIABLES, // table
                     null, //nullColumnHack
-                    values
+                    insertContentValues
             );
         }
 
         if (rId == -1) {
             Log.e("nils", "Could not insert variable " + var.getId());
         } else {
-            Log.d("zorg","Inserted "+var.getId()+" into database. Values: "+values.toString());//==null?"null":(var.getKeyChain().values()==null?"null":var.getKeyChain().values().toString()));
+            //Log.d("zorg","Inserted "+var.getId()+" into database. Values: "+values.toString());//==null?"null":(var.getKeyChain().values()==null?"null":var.getKeyChain().values().toString()));
 
             //If this variable is not local, store the action for synchronization.
             if (syncMePlease) {
@@ -874,9 +875,35 @@ public class DbHelper extends SQLiteOpenHelper {
             //else
             //	Log.d("nils","Variable "+var.getId()+" not inserted in Audit: local");
         }
+
+        //delete lateron
+        //Delete any existing value.
+        deleteOldVariable(var.getId(),var.getSelection(), rId);
         Log.d("vortex", "time used: " + (System.currentTimeMillis() - milliStamp) + "");
+
     }
 
+
+    private void deleteOldVariable(final String name,final Selection s, final long newId) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String stmt = "var = '"+name+"' AND id <> '"+newId+"' AND "+getDatabaseColumnName("år")+" <> '"+Constants.HISTORICAL_TOKEN_IN_DATABASE+"'";
+                Log.d("vova","stmt: \n"+stmt);
+                int aff =
+                        db.delete(TABLE_VARIABLES, //table name
+                            stmt
+                                ,null);
+                if (aff == 0) {
+                    Log.d("vova", "could not delete old value for " + name);
+                }
+                if (aff == 1)
+                    Log.d("vova","perfetto");
+                else
+                    Log.d("vova","oh no");
+            }
+        }, 0);
+    };
 
     private void createValueMap(Variable var, String newValue, ContentValues values, String timeStamp) {
         //Add column,value mapping.
@@ -1790,9 +1817,26 @@ public class DbHelper extends SQLiteOpenHelper {
         return ret;
     }
 
+    Map<String,Map<Map<String,String>,Map<String,String>>> mapCache= new HashMap<String, Map<Map<String, String>, Map<String, String>>>();
 
     public Map<String, String> preFetchValuesForAllMatchingKey(Map<String, String> keyChain, String namePrefix) {
+        Map<String, String> ret = null;
+        Map<Map<String, String>, Map<String, String>> map = mapCache.get(namePrefix);
+        if (map!=null) {
+            ret = map.get(keyChain);
 
+            if (ret!=null) {
+                Log.d("timex", "returning cached object.");
+                return ret;
+            }
+        }
+        ret = new HashMap<String, String>();
+        if (map==null)
+            map = new HashMap<Map<String, String>, Map<String, String>>();
+        map.put(keyChain,ret);
+        mapCache.put(namePrefix,map);
+
+        long timeE = System.currentTimeMillis();
         String query = "SELECT " + VARID + ",value FROM " + TABLE_VARIABLES +
                 " WHERE " + VARID + " LIKE '" + namePrefix + "%'";
 
@@ -1809,7 +1853,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         Cursor c = db.rawQuery(query, selArgs);
         Log.d("nils", "Got " + c.getCount() + " results. PrefetchValue." + namePrefix + " with key: " + keyChain.toString());
-        Map<String, String> ret = new HashMap<String, String>();
+
         if (c != null && c.moveToFirst()) {
             do {
                 ret.put(c.getString(0), c.getString(1));
@@ -1818,6 +1862,8 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         if (c != null)
             c.close();
+        Log.d("timex","Time spent: "+(System.currentTimeMillis()-timeE));
+
         return ret;
 
     }

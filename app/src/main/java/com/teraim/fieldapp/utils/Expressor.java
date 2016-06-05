@@ -385,8 +385,8 @@ public class Expressor {
 		currentKeyChain = evalContext;		
 		// Log.d("Vortex","Class "+expr.getClass().getCanonicalName());
 		Object eval = expr.eval();
-		Log.d("Vortex","BoolExpr: "+expr.toString()+" evaluated to "+eval);
-		o.addRow("Expression "+expr.toString()+" evaluated to "+eval);
+		//Log.d("Vortex","BoolExpr: "+expr.toString()+" evaluated to "+eval);
+		//o.addRow("Expression "+expr.toString()+" evaluated to "+eval);
 		variables = null;
 		if (eval instanceof String) {
 			Log.e("vortex","String back in analyzeBoolean...likely missing [..]");
@@ -1306,7 +1306,7 @@ public class Expressor {
 		@Override
 		public Object eval() {
 
-			Log.d("vortex","Function eval: "+getType());
+			//Log.d("vortex","Function eval: "+getType());
 
 			Object argEval=null,result=null;
 			List<Object> evalArgs = new ArrayList<Object>();

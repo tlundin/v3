@@ -2,5 +2,9 @@
     {
         "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\raw\\gestures",
         "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\raw\\gestures"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\raw\\gestures",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\raw\\gestures"
     }
 ]

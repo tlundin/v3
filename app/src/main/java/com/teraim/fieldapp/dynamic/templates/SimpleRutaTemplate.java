@@ -196,7 +196,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		if (rutor == null) {
 			rutor = new ArrayList<Integer>();
 			HashSet<Integer> temp = new HashSet<Integer>();
-			List<String[]> values = db.getValues(new String[] {db.getDatabaseColumnName("ruta")}, new Selection());
+			List<String[]> values = db.getUniqueValues(new String[] {db.getDatabaseColumnName("ruta")}, new Selection());
 			for (String[] val:values)
 				temp.add(Integer.parseInt(val[0]));
 			rutor.addAll(temp);

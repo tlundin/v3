@@ -251,7 +251,7 @@ public class Expressor {
 		if (expression==null)
 			return null;
 		o = WorkFlowBundleConfiguration.debugConsole;
-		System.out.println("Precompiling: "+expression);
+		//System.out.println("Precompiling: "+expression);
 		List<Token> result = tokenize(expression);
 		List<EvalExpr> endResult = new ArrayList<EvalExpr>();
 		if (result!=null && testTokens(result)) {
@@ -277,9 +277,9 @@ public class Expressor {
 				StringBuilder sb = new StringBuilder();
 				for (EvalExpr e:endResult)
 					sb.append(e);
-				o.addRow("");
-				o.addRow("Precompiled: "+sb);
-				System.out.println("Precompiled: "+endResult.toString());
+				//o.addRow("");
+				//o.addRow("Precompiled: "+sb);
+				//System.out.println("Precompiled: "+endResult.toString());
 				return endResult;
 			}
 

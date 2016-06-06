@@ -96,7 +96,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 		ph	 = new PersistenceHelper(mActivity.getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-		if (oldV==-1)
+
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));
 		String appBaseUrl = server()+bundleName.toLowerCase()+"/";
 

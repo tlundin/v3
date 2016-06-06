@@ -677,15 +677,17 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					.setNeutralButton(ctx.getString(R.string.ok),new Dialog.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-
+							Toast.makeText(ctx,"Click on map to put down first coordinate",Toast.LENGTH_LONG).show();
 						}
 					} )
 					.show();
-		}
+		} else
+			Toast.makeText(ctx,"Click on map to put down first coordinate",Toast.LENGTH_LONG).show();
 		//Put Map and GisViewer into create mode.
 
 		//swap in buttons for create mode. 
 		gisImageView.startGisObjectCreation(fop);
+
 	}
 
 

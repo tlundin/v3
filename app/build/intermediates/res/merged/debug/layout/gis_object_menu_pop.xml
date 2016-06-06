@@ -14,7 +14,7 @@
         android:layout_marginTop="3dp"
         android:background="@color/black"
         android:gravity="center_horizontal"
-        android:text="Select object to add"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/white"
         android:layout_alignParentTop="true"

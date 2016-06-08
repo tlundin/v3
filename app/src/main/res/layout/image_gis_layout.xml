@@ -97,7 +97,6 @@
             android:layout_gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white"
-            android:textSize="25sp"
             android:textStyle="bold" />
         <RadioGroup
             android:id="@+id/radioL"
@@ -107,17 +106,17 @@
             android:paddingLeft="5dp"
             android:background="@drawable/transparent_object_menu_pop_bg"
             android:orientation="horizontal" />
-       <ScrollView
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
-           <LinearLayout
-               android:id="@+id/LayersL"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginLeft="10dp"
-               android:orientation="vertical" >
-           </LinearLayout>
-       </ScrollView>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/LayersL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 
@@ -149,7 +148,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/car"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -189,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:text="Start"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
@@ -198,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:text="Cancel"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextSwitcher
@@ -209,8 +208,8 @@
                 android:inAnimation="@anim/push_up_in"
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"
+                 />
 
             <TextSwitcher
                 android:id="@+id/riktTS"
@@ -220,8 +219,8 @@
                 android:inAnimation="@anim/push_up_in"
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"
+                 />
         </LinearLayout>
 
         <LinearLayout
@@ -260,7 +259,7 @@
                 android:layout_height="wrap_content"
                 android:text="&lt;--"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <Button
@@ -269,8 +268,35 @@
                 android:layout_height="wrap_content"
                 android:text="OK"
                 android:textColor="@color/white"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/candidatesMenuL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/object_menu_pop_bg"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Candidates"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/candidatesButtonL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical"
+                android:padding="5dp"/>
+
+        </LinearLayout>
+
     </FrameLayout>
 </FrameLayout>

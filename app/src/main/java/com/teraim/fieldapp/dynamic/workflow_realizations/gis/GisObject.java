@@ -130,6 +130,8 @@ public class GisObject {
 	public String getColor() {
 		return foc.getColor();
 	}
+
+	public FullGisObjectConfiguration getFullConfiguration() {return foc;}
 	
 	public double getDistanceToClick() {
 		return distanceToClick;

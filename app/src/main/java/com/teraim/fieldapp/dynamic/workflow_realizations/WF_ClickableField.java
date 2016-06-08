@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -235,7 +236,6 @@ EventGenerator {
 		 Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
 
 		gs = GlobalState.getInstance();
-
 		sd = gs.getSpinnerDefinitions();
 		al = gs.getVariableConfiguration();
 		o = gs.getLogger();
@@ -277,6 +277,7 @@ EventGenerator {
 
 			@Override
 			public void onClick(final View v) {
+
 				originalBackground = v.getBackground();
 				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 				// special case. No dialog.
@@ -638,26 +639,56 @@ EventGenerator {
 			break;
 		case numeric:
 		case decimal:
-			// o.addRow("Adding edit field for dy-variable with label "+label+", name "+varId+", type "+numType.name()+" and unit "+unit.name());
-			if (var.getType() == DataType.numeric)
-				l = LayoutInflater.from(myContext.getContext()).inflate(
-						R.layout.edit_field_numeric, null);
-			else
-				l = LayoutInflater.from(myContext.getContext()).inflate(
-						R.layout.edit_field_float, null);
-			header = (TextView) l.findViewById(R.id.header);
-			String headerTxt = varLabel
-					+ ((unit != null && unit.length() > 0) ? " (" + unit + ")"
-							: "");
-			if (hist != null && showHistorical) {
-				SpannableString s = new SpannableString(headerTxt + " (" + hist
-						+ ")");
-				s.setSpan(new TextAppearanceSpan(gs.getContext(),
-						R.style.PurpleStyle), headerTxt.length() + 2, s
-						.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-				header.setText(s);
-			} else
-				header.setText(headerTxt);
+
+				// o.addRow("Adding edit field for dy-variable with label "+label+", name "+varId+", type "+numType.name()+" and unit "+unit.name());
+				if (var.getType() == DataType.numeric) {
+					if (format.equals("slider")) {
+						l = LayoutInflater.from(myContext.getContext()).inflate(
+								R.layout.edit_field_slider, null);
+						SeekBar sb = (SeekBar) l.findViewById(R.id.seekbar);
+						final EditText et = (EditText) l.findViewById(R.id.edit);
+						et.setKeyListener(null);
+						String value = var.getValue();
+						//Initiate seekbar to variable value if any.
+						if (value!=null)
+							sb.setProgress(Integer.parseInt(value));
+						sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+							@Override
+							public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+								et.setText(Integer.toString(progress));
+							}
+
+							@Override
+							public void onStartTrackingTouch(SeekBar seekBar) {
+
+							}
+
+							@Override
+							public void onStopTrackingTouch(SeekBar seekBar) {
+								Log.d("vortex","hepp!");
+							}
+						});
+					} else {
+						l = LayoutInflater.from(myContext.getContext()).inflate(
+								R.layout.edit_field_numeric, null);
+					}
+				}
+				else
+					l = LayoutInflater.from(myContext.getContext()).inflate(
+							R.layout.edit_field_float, null);
+				header = (TextView) l.findViewById(R.id.header);
+				String headerTxt = varLabel
+						+ ((unit != null && unit.length() > 0) ? " (" + unit + ")"
+						: "");
+				if (hist != null && showHistorical) {
+					SpannableString s = new SpannableString(headerTxt + " (" + hist
+							+ ")");
+					s.setSpan(new TextAppearanceSpan(gs.getContext(),
+							R.style.PurpleStyle), headerTxt.length() + 2, s
+							.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+					header.setText(s);
+				} else
+					header.setText(headerTxt);
 
 			/*
 			 * String limitDesc =

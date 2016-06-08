@@ -12,16 +12,20 @@ import java.util.Set;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.teraim.fieldapp.dynamic.types.Line;
+import com.teraim.fieldapp.dynamic.types.TabButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.gis.GisImageView;
@@ -33,11 +37,11 @@ import com.teraim.fieldapp.gis.GisImageView;
  */
 
 public class GisObjectsMenu extends View {
-	private static final int PaddingX = 40,PaddingY=60,InnerPadding = 20;
-	private static final int NoOfButtonsPerRow = 5;
+	private static int PaddingX,PaddingY,InnerPadding,spacingAroundTabs;
+	private static int NoOfButtonsPerRow;
 	private static final int MAX_ROWS = 5;
-	private static final int SpaceBetweenHeaderAndButton = 5;
-
+	private static int SpaceBetweenHeaderAndButton;
+	private static int scale;
 	private  Map<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>> myPalettes;
 	private Paint headerTextP;
 	private Paint gopButtonBackgroundP,tabTextP;
@@ -54,7 +58,7 @@ public class GisObjectsMenu extends View {
 	private Paint gopButtonBackgroundSP;
 	private Paint thinWhiteEdgeP;
 	private Paint whiteTextP;
-	private Paint tabPaint,selectedTabPaint;
+	private Paint tabEdgePaint,selectedTabPaint,notSelectedTabPaint,transparentPaint;
 	private WF_Gis_Map myMap;
 	//default palette
 	private String currentPalette=null;
@@ -79,35 +83,65 @@ public class GisObjectsMenu extends View {
 	private void init() {
 		//Mypalettes contains the palettes used to show gis objects.
 		myPalettes = new HashMap<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>>();
-		currentPalette = Default;
+
+
+		int large= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+				18, getResources().getDisplayMetrics());
+		int small= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+				12, getResources().getDisplayMetrics());
+
+
+		scale = (int)getResources().getDisplayMetrics().density;
+
+		PaddingX = 10*scale;
+		PaddingY=15*scale;
+		InnerPadding = 5*scale;
+		NoOfButtonsPerRow = 5;
+		SpaceBetweenHeaderAndButton = 10*scale;
+		spacingAroundTabs = 4*scale;
 
 		tabTextP = new Paint();
-		tabTextP.setColor(Color.BLACK);
-		tabTextP.setTextSize(80);
+		tabTextP.setColor(Color.WHITE);
+		tabTextP.setTextSize(scale*20);
+
+		Log.d("alfa","scale on device is "+scale);
 		tabTextP.setStyle(Paint.Style.STROKE);
 		tabTextP.setTextAlign(Paint.Align.CENTER);
 
-		tabPaint = new Paint();
-		tabPaint.setColor(Color.LTGRAY);
+		tabEdgePaint = new Paint();
+		tabEdgePaint.setColor(Color.parseColor("#C0C0C0"));
+		tabEdgePaint.setStyle(Paint.Style.STROKE);
+		tabEdgePaint.setStrokeWidth(4);
 		selectedTabPaint = new Paint();
-		selectedTabPaint.setColor(Color.parseColor("#287AA9"));
+		selectedTabPaint.setColor(Color.parseColor("#003D14"));
+		notSelectedTabPaint = new Paint();
+		notSelectedTabPaint.setColor(Color.parseColor("#668a72"));
+		//selectedTabPaint.setStrokeWidth(50);
 
+		transparentPaint=new Paint();
+		transparentPaint.setAlpha(0);
+
+		float radius = scale*6f;
+		CornerPathEffect corEffect = new CornerPathEffect(radius);
+		tabEdgePaint.setPathEffect(corEffect);
+		selectedTabPaint.setPathEffect(corEffect);
+		notSelectedTabPaint.setPathEffect(corEffect);
 		headerTextP = new Paint();
 		headerTextP.setColor(Color.WHITE);
-		headerTextP.setTextSize(40);
+		headerTextP.setTextSize(scale*10);
 		headerTextP.setStyle(Paint.Style.STROKE);
 		headerTextP.setTextAlign(Paint.Align.CENTER);
 
 		blackTextP = new Paint();
 		blackTextP.setColor(Color.BLACK);
-		blackTextP.setTextSize(20);
+		blackTextP.setTextSize(scale*10);
 		blackTextP.setStyle(Paint.Style.STROKE);
 		blackTextP.setTextAlign(Paint.Align.CENTER);
 
 
 		whiteTextP = new Paint();
 		whiteTextP.setColor(Color.WHITE);
-		whiteTextP.setTextSize(20);
+		whiteTextP.setTextSize(scale*10);
 		whiteTextP.setStyle(Paint.Style.STROKE);
 		whiteTextP.setTextAlign(Paint.Align.CENTER);
 
@@ -169,8 +203,9 @@ public class GisObjectsMenu extends View {
 					case MotionEvent.ACTION_UP:
 						for (TabButton tb:tabButtonArray) {
 							if (tb.clickInside(event.getX(),event.getY())) {
-								Log.d("vortex", "Click inside tab button: " + tb.text);
-								currentPalette = tb.text;
+								Log.d("vortex", "Click inside tab button: " + tb.fullText);
+								currentPalette = tb.fullText;
+								userSelectedPalette=tb.fullText;
 								generateMenu();
 								GisObjectsMenu.this.invalidate();
 							}
@@ -206,21 +241,7 @@ public class GisObjectsMenu extends View {
 	}
 
 
-	private class TabButton {
-		public Rect r;
-		public float centY;
-		public String text;
 
-		public TabButton(String textOnButton, Rect tabButtonRect, float v) {
-			this.text = textOnButton;
-			this.r=tabButtonRect;
-			this.centY=v;
-		}
-
-		public boolean clickInside(float x, float y) {
-			return r.contains((int)x,(int)y);
-		}
-	}
 
 	private class MenuButton {
 
@@ -251,31 +272,38 @@ public class GisObjectsMenu extends View {
 	}
 
 	//Before opening the menu, make sure all palettes are in place.
+	String userSelectedPalette = null;
 
 	public void setMenuItems(Map<String,List<FullGisObjectConfiguration>> myMenuItems, GisImageView gis, WF_Gis_Map map) {
 		//Create Menu items.
 		myGis=gis;
 		myMap=map;
-		for(String paletteName:myMenuItems.keySet()) {
-			List<FullGisObjectConfiguration> myMenuItemsForPalette = myMenuItems.get(paletteName);
-			LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>> menuGroupsM = myPalettes.get(paletteName);
-			if (menuGroupsM==null) {
-				Log.d("vortex","creating new menugroup for palette "+paletteName);
-				menuGroupsM= new LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>>();
-				myPalettes.put(paletteName,menuGroupsM);
-			}
-			//Sort the menuitems according to geojson type.
-			for (FullGisObjectConfiguration item : myMenuItemsForPalette) {
-				Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(item.getGisPolyType());
-				if (itemSet == null) {
-					itemSet = new HashSet<FullGisObjectConfiguration>();
-					menuGroupsM.put(item.getGisPolyType(), itemSet);
+		if (myMenuItems!=null && !myMenuItems.keySet().isEmpty()) {
+			String firstEntry = myMenuItems.keySet().iterator().next();
+			currentPalette= userSelectedPalette==null?firstEntry:userSelectedPalette;
+			//Make sure userSelectedPalette is not from previous collection.
+			if (!myMenuItems.keySet().contains(currentPalette))
+				currentPalette=firstEntry;
+			for (String paletteName : myMenuItems.keySet()) {
+				List<FullGisObjectConfiguration> myMenuItemsForPalette = myMenuItems.get(paletteName);
+				LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>> menuGroupsM = myPalettes.get(paletteName);
+				if (menuGroupsM == null) {
+					Log.d("vortex", "creating new menugroup for palette " + paletteName);
+					menuGroupsM = new LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>>();
+					myPalettes.put(paletteName, menuGroupsM);
 				}
-				Log.d("vortex","Adding "+item.getName()+" to "+paletteName);
-				itemSet.add(item);
+				//Sort the menuitems according to geojson type.
+				for (FullGisObjectConfiguration item : myMenuItemsForPalette) {
+					Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(item.getGisPolyType());
+					if (itemSet == null) {
+						itemSet = new HashSet<FullGisObjectConfiguration>();
+						menuGroupsM.put(item.getGisPolyType(), itemSet);
+					}
+					Log.d("vortex", "Adding " + item.getName() + " to " + paletteName);
+					itemSet.add(item);
+				}
 			}
 		}
-
 	}
 	private final int Max_Tabs = 15;
 	private List<TabButton> tabButtonArray;
@@ -289,6 +317,7 @@ public class GisObjectsMenu extends View {
 
 		int col = 0;
 		int row = 0;
+
 		Log.d("vortex","In generateMenu ");
 		buttonWidth = (w-PaddingX*2-(InnerPadding*(NoOfButtonsPerRow-1)))/NoOfButtonsPerRow;
 		RowH = InnerPadding+buttonWidth;
@@ -301,14 +330,16 @@ public class GisObjectsMenu extends View {
 
 
 		//marginal between buttons and between edge of button and text.
-		int marginal = 20;
-		int totalWidth = 0;
+		int marginal = 15*scale;
+
 
 
 		if (myPalettes.size()>1) {
-			tabRowHeight = 160;
+			tabRowHeight = scale*30;
+			int totalWidth=0,fulltextBoundsWidth=0;
 			boolean aggressive = false;
 			do {
+				totalWidth = 0;
 				tabButtonArray = new ArrayList<TabButton>();
 				if (aggressive)
 					Log.d("vortex","trying again with aggressive...");
@@ -319,16 +350,29 @@ public class GisObjectsMenu extends View {
 					do {
 						if (newEnd <= 0)
 							break;
+						else
+							Log.d("vortex","newEnd: "+newEnd);
+
 						textOnButton = tabText.substring(0, newEnd--);
-						tabTextP.getTextBounds(textOnButton, 0, tabText.length(), textBounds);
-						calcWidthOfTabButton = textBounds.width() + marginal * 2;
-					} while (aggressive && calcWidthOfTabButton > w / myPalettes.size());
-					Rect tabButtonRect = new Rect(PaddingX + totalWidth, PaddingY, PaddingX + totalWidth + textBounds.width() + marginal, PaddingY + tabRowHeight);
-					totalWidth += calcWidthOfTabButton;
-					tabButtonArray.add(new TabButton(textOnButton, tabButtonRect, textBounds.exactCenterY()));
+
+						tabTextP.getTextBounds(textOnButton, 0, textOnButton.length(), textBounds);
+						if (newEnd==(tabText.length()-1))
+							fulltextBoundsWidth = textBounds.width();
+						calcWidthOfTabButton = textBounds.width() + marginal;
+						Log.d("Vortex", "calcW: "+calcWidthOfTabButton+"w_myps: "+w/myPalettes.size()+" w: "+w+" myPalS: "+myPalettes.size());
+					} while (aggressive && ((calcWidthOfTabButton*myPalettes.size() + (marginal*(myPalettes.size()-1))) > w ));
+					Rect tabButtonRect = new Rect(spacingAroundTabs*2+PaddingX + totalWidth, PaddingY, spacingAroundTabs*2+PaddingX + totalWidth + textBounds.width() + marginal, PaddingY + tabRowHeight);
+					Rect fullRect = new Rect(spacingAroundTabs*2+PaddingX + totalWidth, PaddingY, spacingAroundTabs*2+PaddingX + totalWidth + fulltextBoundsWidth + marginal, PaddingY + tabRowHeight);
+					totalWidth += calcWidthOfTabButton+marginal;
+					tabButtonArray.add(new TabButton(textOnButton, tabButtonRect, fullRect,textBounds.exactCenterY(),tabText));
 				}
 				//If it fails, try again, this time with aggressive length setting.
-				aggressive = true;
+				//Log.d("vorr","Aggressive: "+aggresive+" totalWidth: "+totalWidth+" w: "+w);
+				if (aggressive)
+					break;
+				else
+					aggressive = true;
+
 			} while(totalWidth>w );
 		} else
 			tabRowHeight = 0;
@@ -377,12 +421,49 @@ public class GisObjectsMenu extends View {
 		int totalHeaderHeight = 0;
 		//int yFactor = (int)tabTextP.getTextSize()/2;
 		//draw Tab Buttons if any
-		for (TabButton tb:tabButtonArray) {
-			boolean selected = tb.text.equals(currentPalette);
-			canvas.drawRect(tb.r, selected ? selectedTabPaint : tabPaint);
-			canvas.drawText(tb.text, tb.r.exactCenterX(), tb.r.exactCenterY() - tb.centY, tabTextP);
-		}
 
+		if (tabButtonArray!=null) {
+			TabButton selectedTabButton = null;
+			for (TabButton tb : tabButtonArray) {
+				boolean selected = tb.fullText.equals(currentPalette);
+				canvas.drawRect(tb.r, transparentPaint);
+				Path path = new Path();
+				if (selected) {
+					selectedTabButton = tb;
+
+				} else {
+					path.moveTo(tb.r.left - spacingAroundTabs, tb.r.top);
+					path.lineTo(tb.r.left - spacingAroundTabs*2, tb.r.top + tb.r.height() + spacingAroundTabs*2);
+					path.lineTo(tb.r.right + spacingAroundTabs, tb.r.top + tb.r.height() + spacingAroundTabs*2);
+					path.lineTo(tb.r.right + spacingAroundTabs, tb.r.top);
+					path.close();
+					canvas.drawPath(path, notSelectedTabPaint);
+					canvas.drawPath(path, tabEdgePaint);
+					canvas.drawText(tb.getShortedText(), tb.r.exactCenterX(), tb.r.exactCenterY() - tb.centY, tabTextP);
+				}
+
+			}
+			if (selectedTabButton != null) {
+				Path path = new Path();
+				TabButton tb = selectedTabButton;
+				path.moveTo(tb.fr.left - spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
+				path.lineTo(tb.fr.left - spacingAroundTabs*2, tb.fr.top + tb.r.height() + spacingAroundTabs);
+				path.lineTo(PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
+				path.lineTo(PaddingX, canvas.getHeight() - PaddingY);
+				path.lineTo(canvas.getWidth() - PaddingX, canvas.getHeight() - PaddingY);
+				path.lineTo(canvas.getWidth() - PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
+				path.lineTo(tb.fr.right + spacingAroundTabs*2, tb.fr.top + tb.fr.height() + spacingAroundTabs);
+				path.lineTo(tb.fr.right + spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
+				//path.lineTo(600, 300);
+				//path.lineTo(400, 400);
+				//path.lineTo(20, 400);
+				path.close();
+				canvas.drawPath(path, selectedTabPaint);
+				canvas.drawPath(path, tabEdgePaint);
+
+				canvas.drawText(tb.fullText, tb.fr.exactCenterX(), tb.fr.exactCenterY() - tb.centY-spacingAroundTabs, tabTextP);
+			}
+		}
 		//Draw header and tabs
 		for (int row = 0 ; row < MAX_ROWS; row++) {
 			if (menuHeaderArray[row]!=null)

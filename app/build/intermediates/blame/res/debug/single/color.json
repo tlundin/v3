@@ -1,9 +1,5 @@
 [
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\color\\toggle_color.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\color\\toggle_color.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\toggle_color.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\color\\toggle_color.xml"
     }

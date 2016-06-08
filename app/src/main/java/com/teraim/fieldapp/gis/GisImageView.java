@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -32,7 +33,12 @@ import android.location.LocationManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.Start;
@@ -119,7 +125,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	});
 
 	private LocationManager locationManager;
-
+	private boolean candMenuVisible=false;
 
 
 	public GisImageView(Context context) {
@@ -319,6 +325,19 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		//Remove any gis objects outside current viewport.
 		initializeAndSiftGisObjects();
+
+	}
+
+	public void editSelectedGop() {
+		//Cancel any ongoing creation
+		newGisObj=touchedGop;
+		currentCreateBag=touchedBag;
+		cancelGisObjectCreation();
+		//start new.
+		this.startGisObjectCreation(touchedGop.getFullConfiguration());
+		myMap.setVisibleCreate(true,newGisObj.getLabel());
+
+
 
 	}
 
@@ -690,7 +709,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							}
 
 							//Check if an object has been clicked in this layer.
-							if (touchedGop==null && gisTypeToCreate == null && mapLocationForClick!=null && go.isTouchedByClick(mapLocationForClick,pXR,pYR) && !go.equals(userGop))
+							if (!candMenuVisible && touchedGop==null && gisTypeToCreate == null && mapLocationForClick!=null && go.isTouchedByClick(mapLocationForClick,pXR,pYR) && !go.equals(userGop))
 								candidates.add(go);
 						}
 					}
@@ -698,55 +717,63 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			}
 
 			//Special rendering of touched gop.
-			if (!candidates.isEmpty()) {
+			if (candidates.size()>1) {
 				//Candidates are sorted in a set. Return first.
 				String candidatesS="";
-				for (GisObject go:candidates) {
-					candidatesS+=go.getLabel()+" Distance: "+go.getDistanceToClick()+"\n";
+				if (!candMenuVisible) {
+					List<GisObject> candies = new ArrayList<GisObject>();
+					for (GisObject go : candidates) {
+
+						candies.add(go);
+						candMenuVisible = true;
+					}
+
+					myMap.showCandidates(candies);
 				}
-				Log.d("vortex","DEBUG: Members of candidateS: \n"+candidatesS);
-				touchedGop = candidates.iterator().next();
-				if (touchedGop!=null)
-					Log.d("vortex","Gop selected now has Keychain: "+touchedGop.getKeyHash());
+
+
+	//If only one candidate, select it.
+			} else if (!candidates.isEmpty()) {
+				touchedGop=candidates.iterator().next();
+			}
+
+			if (touchedGop!=null) {
+				Log.d("vortex", "Gop selected now has Keychain: " + touchedGop.getKeyHash());
 				//Find the layer and bag touched.
-				for (GisLayer layer:myMap.getLayers()) {
+				for (GisLayer layer : myMap.getLayers()) {
 					touchedBag = layer.getBagContainingGo(touchedGop);
-					if (touchedBag!=null) {
-						Log.d("vortex","setting touchedlayer");
+					if (touchedBag != null) {
+						Log.d("vortex", "setting touchedlayer");
 						touchedLayer = layer;
 						break;
 					}
 				}
-				if (touchedBag!=null) {
+
+				if (touchedBag != null) {
 					//if longclick, open the actionbar menu.
 					if (!clickWasShort)
 						myMap.startActionModeCb();
 					else {
-						myMap.setVisibleAvstRikt(true,touchedGop);
+						myMap.setVisibleAvstRikt(true, touchedGop);
 						displayDistanceAndDirection();
 					}
+
+					if (clickWasShort && (riktLinjeStart == null || riktLinjeEnd == null) && mostRecentGPSValueTimeStamp!=-1 && myX!=null&&myY!=null&&myX.getValue()!=null && myY.getValue()!=null) {
+						//Create a line from user to object.
+						double mX = Double.parseDouble(myX.getValue());
+						double mY = Double.parseDouble(myY.getValue());
+						riktLinjeStart = new int[2];riktLinjeEnd = new int[2];
+						translateMapToRealCoordinates(new SweLocation(mX,mY),riktLinjeStart);
+						translateMapToRealCoordinates(touchedGop.getLocation(),riktLinjeEnd);
+					}
+					//if (touchedLayer == null)
+					//	Log.d("vortex","TOUCHEDLAYER WAS NULL. TouchedBag was: "+touchedBag);
+
+					drawGop(canvas,touchedLayer,touchedGop,true);
 				} else {
-					Log.e("vortex","The touched object does not belong to a bag.");
-					touchedGop=null;
+					Log.e("vortex", "The touched object does not belong to a bag.");
+					touchedGop = null;
 				}
-				candidates.clear();
-
-			}
-
-			if (touchedGop!=null) {
-
-				if (clickWasShort && (riktLinjeStart == null || riktLinjeEnd == null) && mostRecentGPSValueTimeStamp!=-1 && myX!=null&&myY!=null&&myX.getValue()!=null && myY.getValue()!=null) {
-					//Create a line from user to object.
-					double mX = Double.parseDouble(myX.getValue());
-					double mY = Double.parseDouble(myY.getValue());
-					riktLinjeStart = new int[2];riktLinjeEnd = new int[2];
-					translateMapToRealCoordinates(new SweLocation(mX,mY),riktLinjeStart);
-					translateMapToRealCoordinates(touchedGop.getLocation(),riktLinjeEnd);
-				}
-				//if (touchedLayer == null)
-				//	Log.d("vortex","TOUCHEDLAYER WAS NULL. TouchedBag was: "+touchedBag);
-
-				drawGop(canvas,touchedLayer,touchedGop,true);
 			}
 		} catch(Exception e) {
 			if (GlobalState.getInstance()!=null) {
@@ -788,6 +815,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
+	public void selectGop(GisObject go) {
+		touchedGop=go;
+		candMenuVisible=false;
+	}
 	/*
 	private void startShowLabelTimer() {
 		final int interval = 1000; // 1 Second
@@ -846,32 +877,30 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Path p = gpo.getPath();
 
 			//objects being drawn cannot be cached.
-			if (p==null || beingDrawn) {
+			List<Location> ll = go.getCoordinates();
+			if (p==null || beingDrawn && ll!=null) {
 				p = new Path();
-				List<Location> ll = go.getCoordinates();
-				onlyOne = ll.size()==1;
-				Log.d("vortex","Only one is "+onlyOne);
-				boolean first = true;
-				if (ll!=null) {
+					boolean first = true;
 					int[] xy = new int[2];
-					for (Location l:ll) {
+					boolean last = false;
+					for (int i=0;i<ll.size();i++) {
+						Location l=ll.get(i);
+						last = i==(ll.size()-1);
 						translateMapToRealCoordinates(l,xy);
 						if (xy==null)
 							continue;
-						if (onlyOne) {
-							drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
-							break;
-						} else {
-							if (first) {
+						if (first) {
 								p.moveTo(xy[0],xy[1]);
 								first =false;
 							} else
 								p.lineTo(xy[0],xy[1]);
 						}
+						if (last)
+							drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
 					}
-				}
 
-			}
+
+
 			if (!onlyOne) {
 				gpo.setPath(p);
 
@@ -1238,6 +1267,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	public void startGisObjectCreation(FullGisObjectConfiguration fop) {
 		//unselect if selected
+		Toast.makeText(ctx,"Click on map to register a coordinate",Toast.LENGTH_LONG).show();
 		this.unSelectGop();
 		gisTypeToCreate=fop;
 	}

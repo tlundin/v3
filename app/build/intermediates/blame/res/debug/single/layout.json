@@ -1,19 +1,15 @@
 [
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_display_element.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_display_element.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_spinner.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_spinner.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_linje_portal_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_linje_portal_wf.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_background.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\fragment_background.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_login_console.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\fragment_login_console.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\refresh_load_icon.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\refresh_load_icon.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup.xml",
@@ -24,64 +20,32 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_tag.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\table_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\table_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\text_block.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\text_block.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_logical_aggregate.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\cell_field_logical_aggregate.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto_right.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_foto_right.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_slider.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_slider.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_table_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_table_row.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\selection_field_normal.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\chart_wrapper.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\chart_wrapper.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\map_layers_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\map_layers_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_fixpunkt_wf.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\display_value_textview.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\display_value_textview.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gron_lapp.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gron_lapp.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_numeric.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\edit_field_numeric.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_page_with_agg_wf.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_page_with_agg_wf.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_niva_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_provyta_niva_wf.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_wf_default.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_wf_default.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_started.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\button_status_started.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_niva_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_provyta_niva_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filters_row.xml",
@@ -92,20 +56,32 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\naviframe.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_normal.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\button_normal.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_tag_ny.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_tag_ny.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_header.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_header.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_logical_aggregate.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_logical_aggregate.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_wf.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_provyta_wf.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_fields_tag.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\edit_fields_tag.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_pop_inner.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\filter_pop_inner.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gis_object_menu_pop_old.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gis_object_menu_pop_old.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_list_input_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_list_input_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_started_with_errors.xml",
@@ -116,56 +92,60 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_float.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\output_field_selection_element.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\output_field_selection_element.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup_with_rows.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\tag_edit_popup_with_rows.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_background.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\fragment_background.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup_row.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\tag_edit_popup_row.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_normal.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_normal.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_ruta_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_ruta_wf.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_output_field_selection_element.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_output_field_selection_element.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_ruta_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_ruta_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_row.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\intervall_popup.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\intervall_popup.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_gis.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_gis.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\log_dialog_popup.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\log_dialog_popup.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_tag_textview.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\header_tag_textview.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\output_field_selection_element.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\output_field_selection_element.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_right.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_fixpunkt_right.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_started.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_status_started.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\map_layers_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\map_layers_row.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\area_elem.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\area_elem.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_list_input_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_list_input_wf.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto_right.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_foto_right.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_menu_selectable.xml",
@@ -176,56 +156,44 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal_colored.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_foto.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\text_block.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\text_block.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_pop_inner.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\filter_pop_inner.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_foto.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gis_object_menu_pop.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gis_object_menu_pop.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rule_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\rule_row.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_fields_tag.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_fields_tag.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal_colored.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\selection_field_normal_colored.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_table_default.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_table_default.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\ruta_list_top_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\ruta_list_top_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_spinner.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\edit_field_spinner.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rules_popup.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rules_popup.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rule_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rule_row.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_edit_popup.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_tag.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_tag.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\refresh_load_icon.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\refresh_load_icon.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\table_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\table_row.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gis_object_menu_pop.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\gis_object_menu_pop.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_text.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_text.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_menu_pop.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\filter_menu_pop.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\log_dialog_popup.xml",
@@ -236,6 +204,10 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\image_gis_layout.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_numeric.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_numeric.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_ready.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_status_ready.xml"
     },
@@ -244,12 +216,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_text_aggregate.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_none.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_status_none.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\chart_wrapper.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\chart_wrapper.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_text_aggregate.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\cell_field_text_aggregate.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gis_candidate_button.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gis_candidate_button.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_table_default.xml",
@@ -260,12 +236,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_wf_default_no_scroll.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\toggle_button.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\toggle_button.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_linje_portal_wf.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_linje_portal_wf.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rules_popup.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\rules_popup.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_normal.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_normal.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\table_view.xml",
@@ -280,8 +260,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\ruta_list_row.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_tag_ny.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_tag_ny.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_header.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_header.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_pop.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\status_pop.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_tag_textview.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_tag_textview.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_load.xml",
@@ -296,262 +284,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\ja_nej_radiogroup.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\image_gis_layout.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\image_gis_layout.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_wf_default.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_wf_default.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_niva_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_provyta_niva_wf.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_fixpunkt_wf.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_spinner.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_spinner.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_ruta_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_ruta_wf.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_background.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\fragment_background.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_header.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\layers_header.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_pop.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\status_pop.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_float.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\edit_field_float.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_load.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_load.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_wf_default_no_scroll.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_wf_default_no_scroll.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_output_field_selection_element.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\cell_output_field_selection_element.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_wf_default.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_wf_default.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\table_view.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\table_view.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_tag_ny.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_tag_ny.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_logical_aggregate.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_logical_aggregate.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_pop_inner.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\filter_pop_inner.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_list_input_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_list_input_wf.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_none.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\button_status_none.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\output_field_selection_element.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\output_field_selection_element.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup_row.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\tag_edit_popup_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\picture_issue.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\picture_issue.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\intervall_popup.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\intervall_popup.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_login_console.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\fragment_login_console.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_right.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_fixpunkt_right.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\toggle_button.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\toggle_button.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_started_with_errors.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\button_status_started_with_errors.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\area_elem.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\area_elem.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_provyta_wf.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_menu_header.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\drawer_menu_header.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto_right.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_foto_right.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_menu_pop.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\filter_menu_pop.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\text_block.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\text_block.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\ruta_list_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\ruta_list_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\ja_nej_radiogroup.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\ja_nej_radiogroup.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup_with_rows.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_edit_popup_with_rows.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_gis.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_gis.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_header.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\cell_field_header.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filters_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\filters_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_table_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_table_row.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_fields_tag.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_fields_tag.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gron_lapp.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\gron_lapp.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\intervall_popup.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\intervall_popup.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_normal.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\cell_field_normal.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rules_popup.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rules_popup.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\refresh_load_icon.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\refresh_load_icon.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_text.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_text.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\filter_menu_pop.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\filter_menu_pop.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_numeric.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_numeric.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_page_with_agg_wf.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_page_with_agg_wf.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_none.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_status_none.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_right.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_fixpunkt_right.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\toggle_button.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\toggle_button.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\area_elem.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\area_elem.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_normal.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\button_normal.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_menu_selectable.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\drawer_menu_selectable.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_header.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_header.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\template_foto.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_pop.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\status_pop.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_tag_textview.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_tag_textview.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_text.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\edit_field_text.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\tag_edit_popup_row.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\picture_issue.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\picture_issue.xml"
     },
@@ -560,24 +292,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\drawer_menu_header.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\layers_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_table_row.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\header_table_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\naviframe.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\naviframe.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_fixpunkt_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_fixpunkt_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\ruta_list_top_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\ruta_list_top_row.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_ready.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\layout\\button_status_ready.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_display_element.xml",

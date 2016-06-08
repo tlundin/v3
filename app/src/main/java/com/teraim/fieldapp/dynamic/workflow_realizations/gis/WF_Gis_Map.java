@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -87,6 +88,9 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	private GisImageView gisImageView;
 	private final WF_Context myContext;
 	private View avstRL,createMenuL;
+	private View candidatesL;
+	private LinearLayout candidatesButtonL;
+
 	private TextSwitcher avstTS;
 	private TextSwitcher riktTS;
 	private Button unlockB,startB;
@@ -142,6 +146,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 				case R.id.menu_info:
 					gisImageView.describeSelectedGop();
 					return false;
+				case R.id.menu_continue:
+					gisImageView.editSelectedGop();
+					mActionMode.finish();
+					return true;
 				default:
 					return false;
 			}
@@ -199,7 +207,6 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		avstTS = (TextSwitcher)avstRL.findViewById(R.id.avstTS);
 		riktTS = (TextSwitcher)avstRL.findViewById(R.id.riktTS);
-
 		LayoutInflater li = LayoutInflater.from(ctx);
 		gisObjectsPopUp = li.inflate(R.layout.gis_object_menu_pop,null);
 
@@ -214,7 +221,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		params.topMargin=300;
 
 		gisObjectsPopUp.setLayoutParams(params);
-		Button cancelB = (Button)gisObjectsPopUp.findViewById(R.id.cancelB);
+		/*Button cancelB = (Button)gisObjectsPopUp.findViewById(R.id.cancelB);
 
 		cancelB.setOnClickListener(new OnClickListener() {
 			@Override
@@ -222,7 +229,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 				gisObjectsPopUp.startAnimation(popupHide);
 			}
 		});
-
+		*/
 		objectMenuB = (ImageButton)mapView.findViewById(R.id.objectMenuB);
 		objectMenuB.setVisibility(View.GONE);
 		objectMenuB.setOnClickListener(new OnClickListener() {
@@ -409,8 +416,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 						Gravity.CENTER);
 				myText.setLayoutParams(params);
-
-				myText.setTextSize(36);
+				myText.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 				myText.setTextColor(Color.WHITE);
 				return myText;
 			}});
@@ -425,8 +431,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
 						Gravity.CENTER);
 				myText.setLayoutParams(params);
+				myText.setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
 
-				myText.setTextSize(36);
 				myText.setTextColor(Color.WHITE);
 				return myText;
 			}});
@@ -454,8 +460,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			}
 		});
 
+		candidatesL = (View)mapView.findViewById(R.id.candidatesMenuL);
+		candidatesButtonL = (LinearLayout) mapView.findViewById(R.id.candidatesButtonL);
 
-		popupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);
+				popupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);
 		popupShow.setAnimationListener(this);
 		popupHide = AnimationUtils.loadAnimation(ctx, R.anim.popup_hide);
 		popupHide.setAnimationListener(this);
@@ -681,8 +689,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						}
 					} )
 					.show();
-		} else
-			Toast.makeText(ctx,"Click on map to put down first coordinate",Toast.LENGTH_LONG).show();
+		}
+
 		//Put Map and GisViewer into create mode.
 
 		//swap in buttons for create mode. 
@@ -939,8 +947,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		}
 		menuState = gisObjectsPopUp.getVisibility();
 		if (menuState == View.VISIBLE) {
-			gisObjectsPopUp.setVisibility(View.GONE);
-			gisObjMenuOpen = false;
+			gisObjectsPopUp.startAnimation(popupHide);
+
 			ret=true;
 		}
 		menuState = avstRL.getVisibility();
@@ -949,6 +957,42 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			ret=true;
 		}
 
+		menuState = candidatesL.getVisibility();
+		if (menuState == View.VISIBLE) {
+			showCandidates(null);
+			ret=true;
+		}
+
+
 		return ret;
+	}
+
+
+	public void showCandidates(List<GisObject> candidates) {
+		if (candidates!=null) {
+			candidatesButtonL.removeAllViews();
+			candidatesL.setVisibility(View.VISIBLE);
+			LayoutInflater li = LayoutInflater.from(ctx);
+			Button button;
+			for (final GisObject go : candidates) {
+				button = (Button) li.inflate(R.layout.gis_candidate_button, null);
+				button.setText(go.getLabel() + " (" + (int)go.getDistanceToClick() + ")");
+				candidatesButtonL.addView(button);
+				button.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Log.d("vortex","getzzzur");
+						showCandidates(null);
+						gisImageView.selectGop(go);
+						//Redraw will show avstMenu.
+						gisImageView.invalidate();
+					}
+				});
+			}
+		} else {
+			candidatesL.setVisibility(View.GONE);
+			gisImageView.selectGop(null);
+		}
+
 	}
 }

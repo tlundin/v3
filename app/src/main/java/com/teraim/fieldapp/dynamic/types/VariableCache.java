@@ -100,13 +100,7 @@ public class VariableCache {
         if (ret == null) {
             if (myKeyHash != null) {
                 Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
-                //remove år="H" if any.
                 copy = copyKeyHash(myKeyHash);
-                if (copy.get("år").equals("H")) {
-                    Log.d("vortex","removing histoår from cache key");
-                    copy.remove("år");
-                    yearWasRemoved=true;
-                }
 
             }
             else
@@ -123,11 +117,7 @@ public class VariableCache {
 
 
             newcache.put(copy, ret);
-            //If år was removed, also link this cache to the original key.
-            if (yearWasRemoved) {
-                Log.d("vortex","Adding also year key to same cache ");
-                newcache.put(myKeyHash, ret);
-            }
+
         } else {
             //Log.d("vortex", "Returning existing cache for " + myKeyHash+" : "+ret);
 
@@ -199,7 +189,7 @@ public class VariableCache {
                         else
                             v = new Variable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);
                         ret.put(varName.toLowerCase(), v);
-						//Log.d("vorto","Added "+varName+" to cache");
+						Log.d("vorto","Added "+varName+" to cache with value n:"+variableValues.norm+" h: "+variableValues.hist);
                     }
                 }
             } else

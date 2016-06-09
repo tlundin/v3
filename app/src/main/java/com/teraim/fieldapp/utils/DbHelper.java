@@ -1876,6 +1876,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Map<String, TmpVal> preFetchValuesForAllMatchingKeyV(Map<String, String> keyChain) {
         final List<String> selectionArgs = new ArrayList<String>();
         final String AR = getDatabaseColumnName("år");
+        boolean hist = false;
         StringBuilder selection = new StringBuilder();
 
         Map<String, String> transMap = new HashMap<String, String>();
@@ -1883,6 +1884,9 @@ public class DbHelper extends SQLiteOpenHelper {
             for (String key : keyChain.keySet()) {
                 transMap.put(getDatabaseColumnName(key), keyChain.get(key));
             }
+            //Make sure key contains current year.
+            //transMap.remove(AR);
+            //transMap.put(AR,Constants.getYear());
         }
 
 
@@ -1896,13 +1900,17 @@ public class DbHelper extends SQLiteOpenHelper {
             if (transMap.get(key) != null) {
                 selection.append(key + "=? ");
                 selectionArgs.add(transMap.get(key));
-                if (arIndex == -1 && key.equals(AR))
+                if (key.equals(AR)) {
                     arIndex = selectionArgs.size() - 1;
+                    hist = Constants.HISTORICAL_TOKEN_IN_DATABASE.equals(selectionArgs.get(arIndex));
+
+                }
             } else
                 selection.append(key + " IS NULL ");
             if (!last)
                 selection.append("AND ");
         }
+
         int histC = 0;
         //		if (!key.equals(AR)) {
         String[] selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);
@@ -1914,9 +1922,11 @@ public class DbHelper extends SQLiteOpenHelper {
         Map<String, TmpVal> tmp = new HashMap<String, TmpVal>();
         while (c.moveToNext()) {
             getTmpVal(c.getString(0), tmp).norm = c.getString(1);
+            if (hist)
+                getTmpVal(c.getString(0), tmp).hist = c.getString(1);
         }
         c.close();
-        if (arIndex != -1) {
+        if (!hist &&arIndex != -1 ) {
             selectionArgs.set(arIndex, Constants.HISTORICAL_TOKEN_IN_DATABASE);
             //Log.d("vortex","historical selloArgs: "+selectionArgs);
             selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);

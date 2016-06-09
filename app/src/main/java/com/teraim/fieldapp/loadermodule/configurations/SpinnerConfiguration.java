@@ -25,7 +25,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 	private int c=0;
 
 	public SpinnerConfiguration(PersistenceHelper globalPh,PersistenceHelper ph, String server, String bundle, LoggerI debugConsole) {
-		super(globalPh, ph, Source.internet, server+bundle.toLowerCase()+"/", SpinnerConfiguration.NAME,"Spinner module        ");	 
+		super(globalPh, ph, Source.internet, server+bundle.toLowerCase()+"/", SpinnerConfiguration.NAME,"Spinner module         ");
 		this.o = debugConsole;
 		
 	}

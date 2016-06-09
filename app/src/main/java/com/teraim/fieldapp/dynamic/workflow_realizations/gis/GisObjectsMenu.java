@@ -111,7 +111,7 @@ public class GisObjectsMenu extends View {
 		tabEdgePaint = new Paint();
 		tabEdgePaint.setColor(Color.parseColor("#C0C0C0"));
 		tabEdgePaint.setStyle(Paint.Style.STROKE);
-		tabEdgePaint.setStrokeWidth(4);
+		tabEdgePaint.setStrokeWidth(0);
 		selectedTabPaint = new Paint();
 		selectedTabPaint.setColor(Color.parseColor("#003D14"));
 		notSelectedTabPaint = new Paint();
@@ -156,17 +156,17 @@ public class GisObjectsMenu extends View {
 		gopButtonEdgeP = new Paint();
 		gopButtonEdgeP.setColor(Color.BLACK);
 		gopButtonEdgeP.setStyle(Paint.Style.STROKE);
-		gopButtonEdgeP.setStrokeWidth(4);
+		gopButtonEdgeP.setStrokeWidth(2*scale);
 
 		thinBlackEdgeP = new Paint();
 		thinBlackEdgeP.setColor(Color.BLACK);
 		thinBlackEdgeP.setStyle(Paint.Style.STROKE);
-		thinBlackEdgeP.setStrokeWidth(1);
+		thinBlackEdgeP.setStrokeWidth(0);
 
 		thinWhiteEdgeP = new Paint();
 		thinWhiteEdgeP.setColor(Color.WHITE);
 		thinWhiteEdgeP.setStyle(Paint.Style.STROKE);
-		thinWhiteEdgeP.setStrokeWidth(1);
+		thinWhiteEdgeP.setStrokeWidth(0);
 
 
 
@@ -393,7 +393,7 @@ public class GisObjectsMenu extends View {
 				//Left padding + numer of buttons + number of spaces in between.
 				FullGisObjectConfiguration fop = it.next();
 				int left = col * ColW + PaddingX;
-				int top = row * RowH + totalHeaderHeight+ tabRowHeight + PaddingY + (int)headerTextP.getTextSize();
+				int top = row * RowH + totalHeaderHeight+ tabRowHeight + PaddingY + (int)headerTextP.getTextSize()+5*scale;
 				RectF r = new RectF(left, top, left + buttonWidth, top + buttonWidth);
 				menuButtonArray[col][row] = new MenuButton(fop, r);
 				col++;
@@ -483,7 +483,7 @@ public class GisObjectsMenu extends View {
 				//canvas.drawRoundRect(r,5f,5f,currB.isSelected?gopButtonBackgroundSP:gopButtonBackgroundP);
 				//canvas.drawRoundRect(r,5f,5f,gopButtonEdgeP);
 				//Draw symbol or icon inside Rect.
-				int iconPadding=10; int radius = 15;
+				int iconPadding=5*scale;
 				RectF rect = new RectF(r.left+iconPadding, r.top+iconPadding, r.right-iconPadding, r.bottom-iconPadding);
 
 				if (fop.getIcon()==null) {
@@ -512,7 +512,7 @@ public class GisObjectsMenu extends View {
 
 					canvas.drawBitmap(fop.getIcon(),null , rect, null);
 				}
-				canvas.drawText(fop.getName(), r.left+r.width()/2, r.bottom+blackTextP.getTextSize(),currB.isSelected?blackTextP:whiteTextP);
+				canvas.drawText(fop.getName(), r.left+r.width()/2, rect.bottom+blackTextP.getTextSize(),currB.isSelected?blackTextP:whiteTextP);
 
 			}
 			totalHeaderHeight += headerTextP.getTextSize()+SpaceBetweenHeaderAndButton;

@@ -55,7 +55,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:text="142"
-                    android:textSize="@dimen/text_size_huge"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>

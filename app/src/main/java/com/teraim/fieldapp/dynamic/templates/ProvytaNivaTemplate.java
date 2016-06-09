@@ -18,6 +18,7 @@ import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -150,7 +151,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		
 		tagSidaB.setText("Delningsskärm");
 		
-		tagSidaB.setTextSize(30);
+		tagSidaB.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
 		
 		tagSidaB.setOnClickListener(new OnClickListener() {
 			

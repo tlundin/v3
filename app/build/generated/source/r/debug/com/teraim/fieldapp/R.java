@@ -309,7 +309,7 @@ public final class R {
         public static final int tagLayout=0x7f0d00ba;
         public static final int tag_progress_bar=0x7f0d007d;
         public static final int tag_progress_text=0x7f0d007e;
-        public static final int teraimlogo=0x7f0d001b;
+        public static final int teraimlogo=0x7f0d001a;
         public static final int textView1=0x7f0d0022;
         public static final int textView6=0x7f0d007b;
         public static final int text_block=0x7f0d00bf;
@@ -317,7 +317,7 @@ public final class R {
         public static final int value=0x7f0d0001;
         public static final int vastT=0x7f0d0092;
         public static final int versionTxt=0x7f0d001d;
-        public static final int vortexlogo=0x7f0d001a;
+        public static final int vortexlogo=0x7f0d001b;
         public static final int whatever=0x7f0d0002;
         public static final int zoomB=0x7f0d002c;
     }

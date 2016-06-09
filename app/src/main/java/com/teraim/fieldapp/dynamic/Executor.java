@@ -294,12 +294,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		myContext.resetState();
 
 		DB_Context wfHash = DB_Context.evaluate(wf.getContext());
-		//TODO: Erase below if.
-		if (!wfHash.equals(gs.getVariableCache().getContext())) {
-			Log.e("vortex","MYSTICAL MISMATCH: "+wfHash.toString()+" and "+gs.getVariableCache().getContext().toString());
-			gs.setDBContext(wfHash);	
-		}
-
+		gs.setDBContext(wfHash);
 		myContext.setHash(wfHash);
 		getFlow();
 		myContext.setWorkflow(wf);

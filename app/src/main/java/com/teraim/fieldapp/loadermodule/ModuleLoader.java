@@ -131,12 +131,11 @@ public class ModuleLoader implements FileLoadedCb{
 							o.addRedText(res.errorMessage);
 							o.addText("]");
 						}
-						o.addRow("");
 						float frozenModuleVersion = module.getFrozenVersion();
 						String frozenModuleVersionS = frozenModuleVersion+"";
 						if (frozenModuleVersion==-1)
 							frozenModuleVersionS="missing";
-						o.addYellowText("Version used: "+frozenModuleVersionS);
+						o.addText(" ["+frozenModuleVersionS+"]");
 					} else {
 						Log.d("vortex","Retrying.");
 						o.addYellowText(" fail..retrying..");

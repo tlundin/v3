@@ -65,7 +65,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		
 		String space20 = new String(new char[20-fileName.length()]).replace('\0', ' ');
 
-		return ("[" + fileName + "]"+space20);
+		return (fileName+space20);
 	}
 
 	@Override

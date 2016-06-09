@@ -437,7 +437,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 				params.width = LayoutParams.MATCH_PARENT;
 				params.height = LayoutParams.WRAP_CONTENT;
 				b.setLayoutParams(params);
-				b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+				b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
 				if (linjeObjLabel.equals(NamedVariables.RENSTIG))
 					b.setText("Liten fjällstig");
 				else
@@ -555,7 +555,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 		linjeStartNorth.setValue(north+"");
 		center = new SweLocation(east,north);
 		startB.setBackgroundColor(Color.GREEN);
-		stopB.setBackgroundColor(Color.RED);
+		//stopB.setBackgroundColor(Color.RED);
 		fieldListB.setVisibility(View.VISIBLE);
 		startB.setText("STARTAD");
 		linjeStatus.setValue(Constants.STATUS_STARTAD_MEN_INTE_KLAR);

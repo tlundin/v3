@@ -2248,7 +2248,13 @@ public class Expressor {
 		}
 
 
-
+		if (varId.equalsIgnoreCase("objectid")) {
+			Log.d("fish","Current keyChain: "+currentKeyChain);
+			Variable v  = gs.getVariableCache().getVariable(currentKeyChain,varId);
+			Log.d("fish","var: "+v);
+			if (v!=null)
+				Log.d("fish","value: "+v.getValue()+" histVal: "+v.getHistoricalValue());
+		}
 		return gs.getVariableCache().getVariable(currentKeyChain,varId);
 
 	}

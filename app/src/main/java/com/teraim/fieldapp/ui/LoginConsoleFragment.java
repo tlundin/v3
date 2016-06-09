@@ -79,9 +79,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		final ImageView logo = (ImageView)view.findViewById(R.id.logo);
 		final ImageView bg = (ImageView)view.findViewById(R.id.bgImg);
 		appTxt = (TextView)view.findViewById(R.id.appTxt);
-		Typeface type=Typeface.createFromAsset(getActivity().getAssets(),
-				"clacon.ttf");
-		log.setTypeface(type);
+		//Typeface type=Typeface.createFromAsset(getActivity().getAssets(),
+		//		"clacon.ttf");
+		//log.setTypeface(type);
 		log.setMovementMethod(new ScrollingMovementMethod());
 		versionTxt.setText("Vortex engine ver. "+Constants.VORTEX_VERSION);
 		licenseTxt.setText(License);
@@ -151,9 +151,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				return view;
 			} else {
 				this.initialize();
-				debugConsole.addRow("First time use...creating folders");
-				debugConsole.addRow("");
-				debugConsole.addYellowText("To change defaults, go to the settings menu");
 			}
 		}
 		//First time this application runs? Then create config folder.
@@ -213,7 +210,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	public void onResume() {
 		super.onResume();
 		Log.e("vortex","onresume!");
-		if (GlobalState.getInstance() == null) {
+		if (GlobalState.getInstance() == null ) {
 			String storedBundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 			if (!storedBundleName.equals(bundleName)) {
 				if (!storedBundleName.isEmpty()) {
@@ -230,8 +227,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				Intent intent = new Intent();
 				intent.setAction("INITSTARTS");
 				mActivity.sendBroadcast(intent);
-				loginConsole.addRow("Loading modules");
-				loginConsole.addRow("Version control: "+globalPh.get(PersistenceHelper.VERSION_CONTROL));
 				Log.d("vortex","Loading In Memory Modules");
 				myLoader.loadModules(true);
 				loginConsole.draw();

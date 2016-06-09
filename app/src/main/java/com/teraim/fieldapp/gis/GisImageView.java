@@ -1189,7 +1189,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					if (valS == null || valS.equals("0")) {
 						Log.d("grogg", "Setting status variable to 1");
 						statusVariable.setValue("1");
-						gop.setStatus("1");
+						gop.setStatusVariable(statusVariable);
 					} else
 						Log.d("grogg", "NOT Setting status variable to 1...current val: " + statusVariable.getValue());
 					myMap.registerEvent(new WF_Event_OnSave("Gis"));
@@ -1256,10 +1256,16 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		if (gisTypeToCreate!=null) {
 			gisTypeToCreate=null;
 			if (newGisObj!=null) {
+				Variable gistyp = GlobalState.getInstance().getVariableCache().getVariable(newGisObj.getKeyHash(),NamedVariables.GIS_TYPE);
+				if (gistyp!=null) {
+					gistyp.deleteValue();
+					Log.d("bertox", "Removed gistype value for new gisobject");
+				}
 				currentCreateBag.remove(newGisObj);
 				currentCreateBag =null;
 				newGisObj=null;
 			}
+
 		}
 		invalidate();
 	}

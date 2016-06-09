@@ -24,7 +24,10 @@ public class GisObject {
 	protected double distanceToClick=-1;
 	private String label=null;
 	private String statusVariableId=null,statusVariableValue=null;
-
+	private Variable statusVariable = null;
+	public void setStatusVariable(Variable statusVariable) {
+		this.statusVariable = statusVariable;
+	}
 
 
 	public enum CoordinateType {
@@ -123,9 +126,12 @@ public class GisObject {
 	}
 
 	public String getStatus() {
-		return statusVariableValue;
+		if (statusVariable==null)
+			return statusVariableValue;
+		else
+			return statusVariable.getValue();
 	}
-	public void setStatus(String s) {statusVariableValue=s; }
+
 	
 	public String getColor() {
 		return foc.getColor();

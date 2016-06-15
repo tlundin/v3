@@ -888,12 +888,33 @@ public class DbHelper extends SQLiteOpenHelper {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                String stmt = "var = '"+name+"' AND id <> '"+newId+"' AND "+getDatabaseColumnName("år")+" <> '"+Constants.HISTORICAL_TOKEN_IN_DATABASE+"'";
-                Log.d("vova","stmt: \n"+stmt);
+
+
+                if (s == null) {
+                    Log.e("vortex","selection null in deleteOld!!");
+                    return;
+                }
+                String[] extendedSelArgs = new String[s.selectionArgs.length+1];
+                String extendedSelection = s.selection + " AND id <> ?";
+                System.arraycopy(s.selectionArgs, 0, extendedSelArgs, 0, s.selectionArgs.length);
+                String newIdS=null;
+                try {
+                    newIdS = Long.toString(newId);
+                } catch (NumberFormatException e) {
+                    Log.e("vortex","not an id number in deleteold");
+                    return;
+                }
+                extendedSelArgs[extendedSelArgs.length-1]=newIdS;
+//                String stmt = "var = '"+name+"' AND id <> '"+newId+"' AND "+
+//                        getDatabaseColumnName("år")+" <> '"+Constants.HISTORICAL_TOKEN_IN_DATABASE+"'";
+                Log.d("vova","selection: "+s.selection);
+                Log.d("vova","selectionArgs: "+print(s.selectionArgs));
+                Log.d("vova","EXT selection: "+extendedSelection);
+                Log.d("vova","EXT selectionArgs: "+print(extendedSelArgs));
                 int aff =
                         db.delete(TABLE_VARIABLES, //table name
-                            stmt
-                                ,null);
+                                extendedSelection,  // selections
+                                extendedSelArgs); //selections args
                 if (aff == 0) {
                     Log.d("vova", "could not delete old value for " + name);
                 }
@@ -903,7 +924,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     Log.d("vova","oh no");
             }
         }, 0);
-    };
+
+    }
 
     private void createValueMap(Variable var, String newValue, ContentValues values, String timeStamp) {
         //Add column,value mapping.

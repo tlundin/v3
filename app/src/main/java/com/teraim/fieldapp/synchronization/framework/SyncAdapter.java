@@ -114,8 +114,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	
 
-	//Never sync more than 100 at a time.
-	final int MaxSyncableRows = 100;
+	//Never sync more than 1000 at a time.
+	final int MaxSyncableRows = 1000;
 	private List<ContentValues> rowsToInsert=null;
 	private String potentiallyTimeStampToUseIfInsertDoesNotFail;
 
@@ -197,7 +197,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					long currentStamp = Long.parseLong(entryStamp);
 
 					//Keep track of the highest timestamp in the set!
-					if (currentStamp>maxStamp) 
+					if (currentStamp>maxStamp)
 						maxStamp=currentStamp;
 
 					sa[rowCount++] = new SyncEntry(action,changes,entryStamp,variable);

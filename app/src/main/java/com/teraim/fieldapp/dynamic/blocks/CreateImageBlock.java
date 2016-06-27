@@ -189,8 +189,8 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 			File[] flists = f.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File file) {
-					p.matcher(file.getName()).matches();
-					Log.e("botox", "patternmatch " + p.matcher(file.getName()).matches());
+					//p.matcher(file.getName()).matches();
+					//Log.e("botox", "patternmatch " + p.matcher(file.getName()).matches());
 
 					return p.matcher(file.getName()).matches();
 

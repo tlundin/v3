@@ -314,6 +314,7 @@ public class MenuActivity extends Activity   {
 				Thread thread = new Thread() {
 					@Override
 					public void run() {
+
 						if (GlobalState.getInstance().getDb().scanSyncEntries()) {
 							Log.d("vortex","Changes made by sync. Requesting page redraw.");
 							gs.sendEvent(Executor.REDRAW_PAGE);
@@ -326,9 +327,7 @@ public class MenuActivity extends Activity   {
 							runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
-
 									refreshStatusRow();
-
 								}
 							});
 

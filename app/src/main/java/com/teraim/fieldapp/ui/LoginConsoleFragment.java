@@ -79,6 +79,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		final ImageView logo = (ImageView)view.findViewById(R.id.logo);
 		final ImageView bg = (ImageView)view.findViewById(R.id.bgImg);
 		appTxt = (TextView)view.findViewById(R.id.appTxt);
+
 		//Typeface type=Typeface.createFromAsset(getActivity().getAssets(),
 		//		"clacon.ttf");
 		//log.setTypeface(type);

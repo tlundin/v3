@@ -1,7 +1,9 @@
 package com.teraim.fieldapp.utils;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -9,8 +11,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.ArrayVariable;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -21,10 +26,12 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.SyncEntry;
 import com.teraim.fieldapp.synchronization.SyncEntryHeader;
+import com.teraim.fieldapp.synchronization.SyncMessage;
 import com.teraim.fieldapp.synchronization.SyncReport;
 import com.teraim.fieldapp.synchronization.SyncStatus;
 import com.teraim.fieldapp.synchronization.SyncStatusListener;
 import com.teraim.fieldapp.synchronization.VariableRowEntry;
+import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
@@ -347,6 +354,7 @@ public class DbHelper extends SQLiteOpenHelper {
             selArgsA = selArgs.toArray(new String[selArgs.size()]);
         Cursor c = db.query(TABLE_VARIABLES, null, selection,
                 selArgsA, null, null, null, null);
+
         if (c != null) {
             Log.d("nils", "Variables found in db for context " + context);
             //Wrap the cursor in an object that understand how to pick it!
@@ -1203,6 +1211,7 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.d("nils","Audit entry (s): "+s.getChange());
         }
         Cursor c = null;
+        SyncStatus syncStatus=new SyncStatus();
 
         for (SyncEntry s : ses) {
             //Log.d("vortex", "SYNC:");
@@ -1210,11 +1219,14 @@ public class DbHelper extends SQLiteOpenHelper {
             //Log.d("vortex", "s.changes :" + s.getChange());
             //Log.d("vortex", "s.timestamp :" + s.getTimeStamp());
             synC++;
+            if (s.isInsertArray())
+                continue;
             if (synC % 10 == 0) {
-                String syncStatus = synC + "/" + size;
+                String syncStatusS = synC + "/" + size;
                 if (ui != null)
-                    ui.setInfo(syncStatus);
-                syncListener.send(new SyncStatus(syncStatus));
+                    ui.setInfo(syncStatusS);
+                syncStatus.setStatus(syncStatusS);
+                syncListener.send(syncStatus);
             }
             if (s.isInsert() || s.isInsertArray()) {
                 keySet.clear();
@@ -1298,9 +1310,10 @@ public class DbHelper extends SQLiteOpenHelper {
                             null, //nullColumnHack
                             cv
                     );
-                    //Insert also in cache.
+                    //Insert also in cache if not array.
                     //
-                    gs.getVariableCache().insert(name,keyHash,myValue);
+                    if (!s.isInsertArray())
+                        gs.getVariableCache().insert(name,keyHash,myValue);
                     changes.inserts++;
                 } else {
                     long id = c.getLong(0);
@@ -2098,6 +2111,9 @@ public class DbHelper extends SQLiteOpenHelper {
      *
      * @return true if any changes done to this Apps database by any of the sync entries
      */
+    //Less than 100 entries is considered small
+    final static int SMALL_SYNC = 100;
+
     public boolean scanSyncEntries() {
         boolean retValue = false;
         //SELECT Count(*) FROM tblName
@@ -2115,12 +2131,35 @@ public class DbHelper extends SQLiteOpenHelper {
                 Object o = Tools.bytesToObject(row);
                 if (o != null) {
                     SyncEntry[] ses = (SyncEntry[]) o;
+
+                    //final AlertDialog uiBlockerWindow;
                     //Log.d("vortex","calling SYNCHRONISE WITH "+ses.length+" entries!");
+                    /*if (ses !=null && ses.length>SMALL_SYNC) {
+                        //Provide Locking UI.
+                        uiBlockerWindow = new AlertDialog.Builder(ctx)
+                                .setTitle("Synchronizing")
+                                .setMessage("")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setCancelable(false)
+                                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        GlobalState.getInstance().sendEvent(MenuActivity.REDRAW);
+                                    }
+                                })
+                                .show();
+                    } else
+                        uiBlockerWindow=null;
+                        */
                     syncReport = this.synchronise(ses, null, GlobalState.getInstance().getLogger(), new SyncStatusListener() {
 
                         @Override
                         public void send(Object entry) {
-                            //Log.d("vortex","Synkstatus: "+((SyncStatus)entry).getStatus());
+                           //if (uiBlockerWindow!=null)
+                            //   uiBlockerWindow.setMessage(((SyncStatus)entry).getStatus());
+
+                            Log.d("vortex","Synkstatus: "+((SyncStatus)entry).getStatus());
                         }
                     });
                     if (syncReport != null && syncReport.hasChanges())

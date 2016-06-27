@@ -279,9 +279,7 @@ public class WF_Context {
 	public void registerEvent(Event event) {
 		eventBroker.onEvent(event);
 	}
-	public int getRootContainer() {
-		return rootContainerId;
-	}
+
 	
 	/*
 	public void onCreateView() {

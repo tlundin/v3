@@ -9,14 +9,10 @@ public class SyncStatus extends SyncMessage {
 
 	private String myStatus;
 	
-public SyncStatus(String status) {
-	
-	myStatus = status;
-}
-
 public String getStatus() {
 	return myStatus;
 }
+public void setStatus(String status) { 	myStatus = status;}
 
 }
 

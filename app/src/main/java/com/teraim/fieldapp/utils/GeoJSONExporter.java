@@ -61,9 +61,9 @@ public class GeoJSONExporter extends Exporter {
 				Map<String,String> currentHash=null;
 				
 				//gisobjects: A map between UID and variable key-value pairs.
-				Map<String,Map<String,String>> gisObjects=null;
+				HashMap<String, Map<String, Map<String, String>>> gisObjects=null;
 				
-				String uid=null,ruta=null;
+				String uid=null,ruta=null,spy=null;
 				Map<String, String> gisObjM;
 				do {
 					currentHash = cp.getKeyColumnValues();
@@ -75,29 +75,32 @@ public class GeoJSONExporter extends Exporter {
 					}
 					uid = currentHash.get("uid");
 					ruta = currentHash.get("ruta");
-					/*
-					if (varC>0) {
-						if (!Tools.sameKeys(previousHash,currentHash)) {
-							Log.e("vortex","Diff!!!");
-						Map<String, String> diff = Tools.findKeyDifferences(currentHash, previousHash);
-						if (diff!=null) {
-						//Find difference.
-							Log.d("vortex","UID: "+uid+" DIFF: "+diff.toString());
-						}
-						}
+					spy = currentHash.get("spy");
+					if (spy!=null) {
+						Log.d("vortex","found spy!!");
+
 					}
-					 */
+					Log.d("botox","CURRENT_HASH: "+currentHash);
+
 					if (uid==null) {
 						Log.e("vortex","missing uid!!!");
 						Log.e("vortex","keyhash: "+currentHash);
 					}
 					else {
 						if (gisObjects==null)
-							gisObjects = new HashMap<String,Map<String,String>>();
-						gisObjM = gisObjects.get(uid);
+							gisObjects = new HashMap<String,Map<String,Map<String,String>>>();
+						//Find maps per spy.
+						Map<String, Map<String, String>> gisObjH = gisObjects.get(uid);
+						if (gisObjH==null) {
+							//No spys at all? Create new sub.
+							gisObjH = new HashMap<String, Map<String, String>>();
+							gisObjects.put(uid,gisObjH);
+						}
+						//Find correct "spy" for this uid. if spy doesnt exist, create.
+						gisObjM = gisObjH.get(spy);
 						if (gisObjM==null) { 
 							gisObjM = new LinkedHashMap<String,String>();
-							gisObjects.put(uid, gisObjM);
+							gisObjH.put(spy, gisObjM);
 							//gisObjM.put("Gistyp", currentHash.get(GisConstants.TYPE_COLUMN));
 							Log.d("vortex","keyhash: "+currentHash.toString());
 						}
@@ -137,90 +140,115 @@ public class GeoJSONExporter extends Exporter {
 					}
 				} while (cp.next());
 				Log.d("vortex","now inserting into json.");
-				//For each gis object...
+				//For each fixedGid (uid)...
 				if (gisObjects!=null) {
-					for (String key:gisObjects.keySet()) {
-						Log.d("vortex","variables under "+key);
-						gisObjM = gisObjects.get(key);
+					for (String keyUID:gisObjects.keySet()) {
+						Log.d("vortex", "Spy sets under " + keyUID);
+						Map<String, Map<String, String>> gisObjH = gisObjects.get(keyUID);
 
-						String geoType = gisObjM.remove(GisConstants.Geo_Type);
-						if (geoType==null)
-							geoType = "point";
-						String coordinates = getCoordinates(key,gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
+							//First do the default.
+							gisObjM = gisObjH.get(null);
+							String geoType = gisObjM.remove(GisConstants.Geo_Type);
+							if (geoType == null)
+								geoType = "point";
+							String coordinates = getCoordinates(keyUID, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
 
-						if (coordinates==null) {
-							//Try to find the object from historical. If not possible, sound alert.
+							if (coordinates == null) {
+								//Try to find the object from historical. If not possible, sound alert.
 
-							Log.e("vortex","Object "+key+" is missing GPS Coordinates!!!");
-							o.addRow("");
-							o.addRedText("No GPS coordinates found for "+key);
-							for (String mKey:gisObjM.keySet()) {
+								Log.e("vortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
 								o.addRow("");
-								o.addRedText("variable: "+mKey+", value: "+gisObjM.get(mKey));
+								o.addRedText("No GPS coordinates found for " + keyUID);
+								for (String mKey : gisObjM.keySet()) {
+									o.addRow("");
+									o.addRedText("variable: " + mKey + ", value: " + gisObjM.get(mKey));
+								}
+								coordinates = "0,0";
 							}
-							coordinates = "0,0";
-						}
 
-						//Beg of line.
-						writer.beginObject();
-						write("type", "Feature");
-						writer.name("geometry");
-						writer.beginObject();
-						write("type",geoType);
-						writer.name("coordinates");
+							//Beg of line.
+							writer.beginObject();
+							write("type", "Feature");
+							writer.name("geometry");
+							writer.beginObject();
+							write("type", geoType);
+							writer.name("coordinates");
 
-						String[] polygons=null;
-						boolean isPoly = false;
-						if (!geoType.equals("Polygon")) {
-							Log.d("vortex","POINT!!!");
-							Log.d("geotype",geoType);
-							polygons = new String[] {coordinates};
-						}
-						else {
-							isPoly=true;
-							Log.d("vortex","POLYGON!!!");
-							polygons = coordinates.split("\\|");
+							String[] polygons = null;
+							boolean isPoly = false;
+							if (!geoType.equals("Polygon")) {
+								Log.d("volde", "POINT!!!");
+
+								polygons = new String[]{coordinates};
+							} else {
+								isPoly = true;
+								Log.d("volde", "POLYGON!!!");
+								polygons = coordinates.split("\\|");
+								writer.beginArray();
+							}
+							for (String polygon : polygons) {
+
+								String[] coords = polygon.split(",");
+
+								writer.beginArray();
+								for (int i = 0; i < coords.length; i += 2) {
+									Log.d("vortex", "coord [" + i + "] :" + coords[i]);
+									writer.beginArray();
+									printCoord(writer, coords[i]);
+									printCoord(writer, coords[i + 1]);
+									writer.endArray();
+								}
+
+								writer.endArray();
+							}
+							if (isPoly)
+								writer.endArray();
+							//End geometry.
+							writer.endObject();
+							writer.name("properties");
+							writer.beginObject();
+							//Add the UUID
+							write(GisConstants.FixedGid, keyUID);
+							if (ruta != null)
+								write("RUTA", ruta);
+							write("author", author);
+							//write("timestamp",cp.getVariable().timeStamp);
+							//write("author",cp.getKeyColumnValues().get("author"));
+							for (String mKey : gisObjM.keySet()) {
+								write(mKey, gisObjM.get(mKey));
+								Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
+							}
+							//Check if there are other spy than default.
+						if (gisObjH != null && !gisObjH.isEmpty()) {
+							writer.name("sub");
 							writer.beginArray();
-						}
-						for (String polygon:polygons) {
+							for (String key : gisObjH.keySet()) {
+								if (key == null) {
+									Log.d("volde", "skipping null key");
+									continue;
+								}
+								Log.d("volde", "found some extra under " + key);
+								gisObjM = gisObjH.get(key);
+								if (gisObjM != null) {
+									writer.beginObject();
+									write("SPY", key);
+									for (String mKey : gisObjM.keySet()) {
+										write(mKey, gisObjM.get(mKey));
+										Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
+									}
+									writer.endObject();
+								}
 
-							String[] coords = polygon.split(",");
-
-								writer.beginArray();
-							Log.d("vortex","cord length: "+coords.length);
-							for (int i =0;i<coords.length;i+=2) {
-								Log.d("vortex","coord ["+i+"] :"+coords[i]);
-								writer.beginArray();
-								printCoord(writer, coords[i]);
-								printCoord(writer, coords[i+1]);
-								writer.endArray();
 							}
-
-								writer.endArray();
-						}
-						if (isPoly)
 							writer.endArray();
-						//End geometry.
-						writer.endObject();
-						writer.name("properties");
-						writer.beginObject();	
-						//Add the UUID
-						write(GisConstants.FixedGid,key);
-						if (ruta!=null)
-							write("RUTA",ruta);
-						write("author",author);
-						//write("timestamp",cp.getVariable().timeStamp);
-						//write("author",cp.getKeyColumnValues().get("author"));
-						for (String mKey:gisObjM.keySet()) {
-							write(mKey,gisObjM.get(mKey));
-							Log.d("vortex","var, value: "+mKey+","+gisObjM.get(mKey));
 						}
-						writer.endObject();
+							writer.endObject();
 
-						//eol
-						writer.endObject();
-						
-					}
+							//eol
+							writer.endObject();
+
+						}
+
 				} else {
 					o.addRow("");
 					o.addRedText("GisObjects was null!");

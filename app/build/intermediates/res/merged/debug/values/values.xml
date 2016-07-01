@@ -98,6 +98,7 @@
     <string name="app_name">Field Pad</string>
     <string name="app_name_t">Name of application</string>
     <string name="avbrytsynk">Abort Sync</string>
+    <string name="backgrounds">Maps</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="context">Context</string>
@@ -106,7 +107,9 @@
     <string name="developer_functions">Developerfunctions</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
+    <string name="filters">Filters</string>
     <string name="iunderstand">OK</string>
+    <string name="layers">Layers</string>
     <string name="length_">Length:</string>
     <string name="local_service_started">Bluetooth started</string>
     <string name="log">Log</string>

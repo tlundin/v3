@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ActionMode;
@@ -48,6 +49,7 @@ import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import android.widget.ViewSwitcher.ViewFactory;
 
 import com.teraim.fieldapp.GlobalState;
@@ -95,10 +97,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	private TextSwitcher riktTS;
 	private Button unlockB,startB;
 	private ImageButton objectMenuB,carNavB,zoomB,centerB,plusB,minusB;
-	private Animation popupShow;
-	private Animation popupHide;
+	private Animation popupShow,layersPopupShow;
+	private Animation popupHide,layersPopupHide;
 	private GisObjectsMenu gisObjectMenu;
-	private View gisObjectsPopUp;
+	private View gisObjectsPopUp,layersPopup;
 	private boolean gisObjMenuOpen=false;
 	protected boolean animationRunning=false;
 	private Map<String,List<FullGisObjectConfiguration>> myGisObjectTypes;
@@ -109,7 +111,11 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	private List<GisLayer> myLayers = new ArrayList<GisLayer>();
 
 	private boolean isZoomLevel;
+
 	private final int  realW,realH;
+	private ToggleButton filterB,layerB,mapB;
+	private final static String[] statusValues = new String[] {"0","1","2","3"};
+	private final Map<String,Boolean> standardFilterM = new HashMap<String, Boolean>();
 
 	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
@@ -174,7 +180,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 	public WF_Gis_Map(CreateGisBlock createGisBlock,final Rect rect, String id, final FrameLayout mapView, boolean isVisible, Bitmap bmp,
-					  final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, View createMenuL,  List<GisLayer> daddyLayers, final int realWW, final int realHH) {
+					  final WF_Context myContext, final PhotoMeta photoMeta, View avstRL, List<GisLayer> daddyLayers, final int realWW, final int realHH) {
 		super(id, mapView, isVisible, myContext);
 
 		GlobalState gs = GlobalState.getInstance();
@@ -192,44 +198,130 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		this.photoMeta = photoMeta;
 		globalPh = gs.getGlobalPreferences();
 		ctx = myContext.getContext();
-
-		//Bitmap bmp = Tools.getScaledImage(ctx,fullPicFileName);
-
-
-
-
-		//Only allow zoom if this is *not* a zoom level. Only one level of zoom!
-
-
 		this.avstRL = avstRL;
-
-		this.createMenuL=createMenuL;
-
+		createMenuL=getWidget().findViewById(R.id.createMenuL);
 		avstTS = (TextSwitcher)avstRL.findViewById(R.id.avstTS);
 		riktTS = (TextSwitcher)avstRL.findViewById(R.id.riktTS);
 		LayoutInflater li = LayoutInflater.from(ctx);
 		gisObjectsPopUp = li.inflate(R.layout.gis_object_menu_pop,null);
+		layersPopup = li.inflate(R.layout.layers_menu_pop,null);
 
 		gisObjectMenu = (GisObjectsMenu)gisObjectsPopUp.findViewById(R.id.gisObjectsMenu);
 		gisObjectsPopUp.setVisibility(View.GONE);
+		layersPopup.setVisibility(View.GONE);
 		mapView.addView(gisObjectsPopUp);
+		mapView.addView(layersPopup);
 		//LinearLayout filtersL = (LinearLayout)mapView.findViewById(R.id.FiltersL);
 		//filtersL.setVisibility(View.GONE);
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 
-		params.gravity=Gravity.RIGHT;
-		params.topMargin=300;
+		params.gravity=Gravity.CENTER_HORIZONTAL|Gravity.TOP;
+		params.topMargin=200;
 
 		gisObjectsPopUp.setLayoutParams(params);
-		/*Button cancelB = (Button)gisObjectsPopUp.findViewById(R.id.cancelB);
+		layersPopup.setLayoutParams(params);
 
-		cancelB.setOnClickListener(new OnClickListener() {
+
+		final ImageButton menuB = (ImageButton)mapView.findViewById(R.id.menuB);
+		menuB.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
-				gisObjectsPopUp.startAnimation(popupHide);
+
+				if (!layersPopup.isShown()) {
+					layersPopup.startAnimation(layersPopupShow);
+					getGis().setClickable(false);
+					mapView.invalidate();
+				} else {
+					layersPopup.startAnimation(layersPopupHide);
+					getGis().setClickable(true);
+				}
+
 			}
 		});
-		*/
+
+
+
+
+		layerB = (ToggleButton) layersPopup.findViewById(R.id.btn_Layers);
+
+		filterB = (ToggleButton)layersPopup.findViewById(R.id.btn_filters);
+
+		mapB = (ToggleButton) layersPopup.findViewById(R.id.btn_bckgrounds);
+
+		final TextView headerT = (TextView) layersPopup.findViewById(R.id.filterName);
+		headerT.setText("Layers");
+		final OnCheckedChangeListener myToggleListener = new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+				switch (buttonView.getId()) {
+
+					case R.id.btn_Layers:
+						if (isChecked) {
+							headerT.setText("Layers");
+							Log.d("vortex", "Layer checked!!");
+							initializeLayersMenu();
+							filterB.setOnCheckedChangeListener(null);
+							mapB.setOnCheckedChangeListener(null);
+							filterB.setChecked(false);
+							mapB.setChecked(false);
+						}
+						else {
+							layerB.setOnCheckedChangeListener(null);
+							layerB.setChecked(true);
+						}
+						break;
+					case R.id.btn_filters:
+						if (isChecked) {
+							headerT.setText("Filters");
+							Log.d("vortex", "Filter checked!!");
+							initializeFiltersMenu();
+							layerB.setOnCheckedChangeListener(null);
+							mapB.setOnCheckedChangeListener(null);
+							layerB.setChecked(false);
+							mapB.setChecked(false);
+
+						}
+						else {
+							filterB.setOnCheckedChangeListener(null);
+							filterB.setChecked(true);
+						}
+
+						break;
+					case R.id.btn_bckgrounds:
+						if (isChecked) {
+							headerT.setText("Map backgrounds");
+							Log.d("vortex", "MAP checked!!");
+							initializeMapBgMenu();
+							filterB.setOnCheckedChangeListener(null);
+							layerB.setOnCheckedChangeListener(null);
+							filterB.setChecked(false);
+							layerB.setChecked(false);
+
+						}
+						else {
+							mapB.setOnCheckedChangeListener(null);
+							mapB.setChecked(true);
+						}
+
+						break;
+
+
+				}
+				layerB.setOnCheckedChangeListener(this);
+				filterB.setOnCheckedChangeListener(this);
+				mapB.setOnCheckedChangeListener(this);
+
+
+			}
+		};
+		layerB.setOnCheckedChangeListener(myToggleListener);
+		filterB.setOnCheckedChangeListener(myToggleListener);
+		mapB.setOnCheckedChangeListener(myToggleListener);
+
+		//layerB.setChecked(true);
+
 		objectMenuB = (ImageButton)mapView.findViewById(R.id.objectMenuB);
 		objectMenuB.setVisibility(View.GONE);
 		objectMenuB.setOnClickListener(new OnClickListener() {
@@ -241,6 +333,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					if (!gisObjMenuOpen && mActionMode==null) {
 						gisImageView.cancelGisObjectCreation();
 						gisObjectsPopUp.startAnimation(popupShow);
+						getGis().setClickable(false);
 						mapView.invalidate();
 
 						//gisImageView.centerOnUser();
@@ -325,8 +418,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			@Override
 			public void onClick(View v) {
 
-
-
+				resetMenus();
 				//get cutout
 				Rect r = gisImageView.getCurrentViewSize(realW,realH);
 				r.left=r.left+rect.left;
@@ -463,10 +555,17 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		candidatesL = (View)mapView.findViewById(R.id.candidatesMenuL);
 		candidatesButtonL = (LinearLayout) mapView.findViewById(R.id.candidatesButtonL);
 
-				popupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);
+		popupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);
 		popupShow.setAnimationListener(this);
 		popupHide = AnimationUtils.loadAnimation(ctx, R.anim.popup_hide);
 		popupHide.setAnimationListener(this);
+		layersPopupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);
+		layersPopupShow.setAnimationListener(this);
+		layersPopupHide = AnimationUtils.loadAnimation(ctx, R.anim.popup_hide);
+		layersPopupHide.setAnimationListener(this);
+
+
+
 
 		myGisObjectTypes = new HashMap<String,List<FullGisObjectConfiguration>>();
 
@@ -486,8 +585,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		//this.realH = realH;
 		this.mapView = mapView;
 		this.rect=rect;
-	}
 
+		for(String statusValue:statusValues)
+			standardFilterM.put(statusValue,true);
+	}
 
 
 
@@ -640,7 +741,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			Log.d("vortex","gets here!");
 			gisObjectsPopUp.setVisibility(View.VISIBLE);
 			gisObjectMenu.setMenuItems(myGisObjectTypes,gisImageView,this);
-		}
+		} else if (animation.equals(layersPopupShow))
+			layersPopup.setVisibility(View.VISIBLE);
 		animationRunning = true;
 	}
 
@@ -649,9 +751,26 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		animationRunning = false;
 		if (animation.equals(popupShow))
 			gisObjMenuOpen = true;
-		else {
+		else if (animation.equals(popupHide)) {
 			gisObjectsPopUp.setVisibility(View.GONE);
 			gisObjMenuOpen = false;
+			getGis().setClickable(true);
+		}
+		else if (animation.equals(layersPopupShow)) {
+			Log.d("vortex","Oooh...it ended!!");
+			FrameLayout layersF = (FrameLayout)layersPopup.findViewById(R.id.LayersL);
+			if (layersF.getChildCount()==0)
+			 {
+				 Log.d("vortox","setting checked");
+				 layerB.setChecked(true);
+			} else {
+
+				Log.d("vortox","layerspop has elements.");
+			}
+		}
+		else if (animation.equals(layersPopupHide)) {
+			layersPopup.setVisibility(View.GONE);
+			getGis().setClickable(true);
 		}
 	}
 
@@ -709,23 +828,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			lengthT.setText(ctx.getString(R.string.length_) + new DecimalFormat("##.##").format(lengthOfPath));
 	}
 
-	/*
-	public void addLayers (List<GisLayer> gl) {
-		Log.d("vortex","adding all layers at once.");
-		myLayers = gl;
-		for (GisLayer l:myLayers) {
-			Map<String,Set<GisObject>> bag = l.getGisBags();
-			for (String key:bag.keySet()) {
-				Set<GisObject> s = bag.get(key);
-				for (GisObject go:s)
-					if (go instanceof GisPointObject) {
-						((GisPointObject)go).setTranslatedLocation(null);
-					}
-			}
-		}
-		gisImageView.unSelectGop();
-	}
-	 */
+
 	public void addLayer(GisLayer layer) {
 		if(layer!=null) {
 			Log.d("vortex","Succesfully added layer "+layer.getLabel());
@@ -739,15 +842,18 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	 */
 	int currentlyChecked=-1;
+	int previouslyChecked = -1;
 
-	public void initializeLayersMenu(final List<GisLayer> layers) {
-		LinearLayout layersL = (LinearLayout)getWidget().findViewById(R.id.LayersL);
-		layersL.removeAllViews();
-		LayoutInflater li = LayoutInflater.from(myContext.getContext());
+	private void initializeMapBgMenu() {
 		int bgId=0;
-		View layersRow=null;
-		final RadioGroup radioGroup= (RadioGroup) getWidget().findViewById(R.id.radioL);
-		radioGroup.removeAllViews();
+		LayoutInflater li = LayoutInflater.from(myContext.getContext());
+		View bg = li.inflate(R.layout.map_background_radiogroup,null);
+		final RadioGroup radioGroup = (RadioGroup)bg.findViewById(R.id.radioL);
+		FrameLayout  layersL = (FrameLayout )layersPopup.findViewById(R.id.LayersL);
+		layersL.removeAllViews();
+		layersL.addView(bg);
+		//(RadioGroup)layersPopup.findViewById(R.id.radioL);
+
 		radioGroup.setOnCheckedChangeListener(null);
 		radioGroup.clearCheck();
 		RadioButton rb = (RadioButton)li.inflate(R.layout.map_layers_row, null);
@@ -756,88 +862,39 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		rb.setId(bgId++);
 		radioGroup.addView(rb);
 
-		//find the longest text. if shorter than max, all strings will have this length.
-		final int MaxLabelLength = 18;
-		int maxLength=-1,length=0;
-		for (final GisLayer layer:layers) {
-			length = layer.getLabel().length();
-			if (length> maxLength)
-				maxLength=length;
-		}
-		if (maxLength>MaxLabelLength)
-			maxLength=MaxLabelLength;
-		Log.d("vortex","maxlength now "+maxLength);
-		for (final GisLayer layer:layers) {
+		for (final GisLayer layer:myLayers) {
 			if (layer instanceof MapGisLayer) {
-				rb = (RadioButton)li.inflate(R.layout.map_layers_row, null);
+				rb = (RadioButton) li.inflate(R.layout.map_layers_row, null);
 				rb.setText(layer.getLabel());
 				rb.setId(bgId);
 				radioGroup.addView(rb);
 				if (layer.isVisible()) {
-					Log.d("vortex","found visible layer "+layer.getLabel()+"...setting rb to on");
+					Log.d("vortex", "found visible layer " + layer.getLabel() + "...setting rb to on");
 					radioGroup.clearCheck();
 					radioGroup.check(bgId);
 					currentlyChecked = bgId;
 				}
 				bgId++;
-			} else {
-
-				if (layer.hasWidget()) {
-					layersRow = li.inflate(R.layout.layers_row, null);
-					CheckBox lShow = (CheckBox) layersRow.findViewById(R.id.cbShow);
-					CheckBox lLabels = (CheckBox) layersRow.findViewById(R.id.cbLabels);
-					//Log.d("vortex","Layer "+layer.getLabel()+" has a widget");
-					TextView filterNameT = (TextView) layersRow.findViewById(R.id.filterName);
-					String fixedL = Tools.fixedLengthString(layer.getLabel(),maxLength);
-					filterNameT.setText(fixedL);
-					//Log.d("vortex","length for"+fixedL+" is "+fixedL.length());
-					lShow.setChecked(layer.isVisible());
-					//Log.d("vortex","SETCCHECKED: "+layer.isVisible());
-
-
-					lLabels.setChecked(layer.showLabels());
-
-
-					lShow.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-
-							layer.setVisible(((CheckBox) v).isChecked());
-							gisImageView.invalidate();
-
-						}
-					});
-
-					lLabels.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-						@Override
-						public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-							layer.setShowLabels(isChecked);
-							gisImageView.invalidate();
-						}
-					});
-
-
-
-
-				} else
-					layersRow = null;
-				if (layersRow!=null)
-					layersL.addView(layersRow);
 			}
-
 		}
+		Log.d("vortex","children: "+radioGroup.getChildCount());
 
-		final String cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
-		int previouslyChecked = -1;
 		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+
+			public void onCheckedChanged2(RadioGroup group, int checkedId) {
+				Log.d("vortex","inoncheckchanged");
+				for (int i=0;i<radioGroup.getChildCount();i++) {
+					RadioButton child = (RadioButton)radioGroup.getChildAt(i);
+					Log.d("vortex","setting checked: "+child.getId());
+					child.setChecked(checkedId==child.getId());
+				}
+			}
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-
 				RadioButton radioB;
 				String text;
-				gisImageView.setImageDrawable(null);
+				gisImageView.hideImage();
 				MapGisLayer layer=null;
 				//Current layer if visible -> not visible.
 				if (currentlyChecked!=-1) {
@@ -851,6 +908,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						Log.e("vortex", "could not find layer " + text);
 				}
 				radioB = (RadioButton) radioGroup.findViewById(checkedId);
+				if (radioB==null) {
+					Log.d("vortex","cannot find radiobutton "+checkedId+" currently checked: "+currentlyChecked);
+					return;
+				}
 				text = radioB.getText().toString();
 				if (text.equals("None")) {
 					setZoomButtonVisible(false);
@@ -859,6 +920,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					layer = (MapGisLayer) getLayerFromLabel(text);
 					if (layer!=null) {
 						layer.setVisible(true);
+						final String cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
 
 						String cachedImgFilePath = cacheFolder + layer.getImageName();
 						Log.d("vortex", "found layer on checked change: "+cachedImgFilePath+" for text "+text);
@@ -874,6 +936,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						if (bmp!=null) {
 							gisImageView.setImageBitmap(bmp);
 						}
+						currentlyChecked = checkedId;
 					}
 					else
 						Log.d("vortex","oh bugger");
@@ -881,12 +944,131 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 				}
+				Log.d("vortex","Checked radiobutton is "+radioGroup.getCheckedRadioButtonId()+" checkedID: "+checkedId+" TEXT: "+((RadioButton) radioGroup.findViewById(checkedId)).getText());
+				//group.check(checkedId);
 				gisImageView.redraw();
 			}
 		});
+	}
+
+	private void initializeFiltersMenu() {
+		FrameLayout layersF = (FrameLayout)layersPopup.findViewById(R.id.LayersL);
+		layersF.removeAllViews();
+		LayoutInflater li = LayoutInflater.from(myContext.getContext());
+		LinearLayout layersL = (LinearLayout)li.inflate(R.layout.layers_body,null);
+		layersF.addView(layersL);
+		View layersRow=null;
+
+		String[] filterNames = new String[] {"Not Started","Started (Yellow)","Faulty (Red)","Status Done (Green)"};
+
+
+		int i=0;
+		for (String filterName:filterNames) {
+			layersRow = li.inflate(R.layout.filters_row, null);
+			((TextView)layersRow.findViewById(R.id.filterName)).setText(filterName);
+			CheckBox cb = ((CheckBox)layersRow.findViewById(R.id.cbShow));
+			final String statusValue = statusValues[i++];
+			cb.setChecked(isNotExcluded(statusValue));
+			cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					standardFilterM.put(statusValue,isChecked);
+					gisImageView.invalidate();
+				}
+			});
+			layersL.addView(layersRow);
+		}
 
 
 	}
+
+	private void resetMenus() {
+		FrameLayout layersF = (FrameLayout)layersPopup.findViewById(R.id.LayersL);
+		layersF.removeAllViews();
+
+		layerB.setChecked(false);
+		mapB.setChecked(false);
+		filterB.setChecked(false);
+
+	}
+	private void initializeLayersMenu() {
+		FrameLayout layersF = (FrameLayout)layersPopup.findViewById(R.id.LayersL);
+		layersF.removeAllViews();
+		LayoutInflater li = LayoutInflater.from(myContext.getContext());
+		LinearLayout layersL = (LinearLayout)li.inflate(R.layout.layers_body,null);
+		layersF.addView(layersL);
+		View layersRow=null;
+		layersRow = li.inflate(R.layout.layers_row, null);
+
+		//find the longest text. if shorter than max, all strings will have this length.
+		final int MaxLabelLength = 18;
+		int maxLength=-1,length=0;
+
+		for (final GisLayer layer:myLayers) {
+			if (layer instanceof MapGisLayer)
+				continue;
+			length = layer.getLabel().length();
+			if (length> maxLength)
+				maxLength=length;
+		}
+		if (maxLength>MaxLabelLength)
+			maxLength=MaxLabelLength;
+		Log.d("vortex","maxlength now "+maxLength);
+		for (final GisLayer layer:myLayers) {
+			if (layer instanceof MapGisLayer)
+				continue;
+			if (layer.hasWidget()) {
+				layersRow = li.inflate(R.layout.layers_row, null);
+				CheckBox lShow = (CheckBox) layersRow.findViewById(R.id.cbShow);
+				CheckBox lLabels = (CheckBox) layersRow.findViewById(R.id.cbLabels);
+				//Log.d("vortex","Layer "+layer.getLabel()+" has a widget");
+				TextView filterNameT = (TextView) layersRow.findViewById(R.id.filterName);
+				String fixedL = Tools.fixedLengthString(layer.getLabel(),maxLength);
+				filterNameT.setText(fixedL);
+				//Log.d("vortex","length for"+fixedL+" is "+fixedL.length());
+				lShow.setChecked(layer.isVisible());
+				Log.d("mantox","SETCCHECKED LABEL: "+layer.showLabels());
+
+
+				lLabels.setChecked(layer.showLabels());
+
+
+				lShow.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+						layer.setVisible(((CheckBox) v).isChecked());
+						gisImageView.invalidate();
+
+					}
+				});
+
+				lLabels.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						Log.d("vortex","checking "+isChecked+" for button "+buttonView.getId());
+						layer.setShowLabels(isChecked);
+						gisImageView.invalidate();
+					}
+				});
+
+
+
+
+			} else
+				layersRow = null;
+			if (layersRow!=null)
+				layersL.addView(layersRow);
+		}
+
+	}
+
+
+
+
+
+
 
 	public GisLayer getLayerFromLabel(String label) {
 		if (myLayers==null||myLayers.isEmpty()||label==null)
@@ -937,33 +1119,35 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 
 	public boolean wasShowingPopup() {
+		Log.d("vortex","popupshowing?");
 		boolean ret=false;
 		final View menuL = mapView.findViewById(R.id.mmenuL);
 		int menuState = menuL.getVisibility();
 		if (menuState == View.VISIBLE) {
-			getGis().setClickable(true);
-			menuL.setVisibility(View.INVISIBLE);
+			layersPopup.startAnimation(layersPopupHide);
 			ret=true;
+
 		}
+		Log.d("vortex","layers? "+ret);
 		menuState = gisObjectsPopUp.getVisibility();
 		if (menuState == View.VISIBLE) {
 			gisObjectsPopUp.startAnimation(popupHide);
-
 			ret=true;
 		}
+		Log.d("vortex","gisObjCreate? "+ret);
 		menuState = avstRL.getVisibility();
 		if (menuState == View.VISIBLE) {
 			getGis().unSelectGop();
 			ret=true;
 		}
-
+		Log.d("vortex","avstRikt? "+ret);
 		menuState = candidatesL.getVisibility();
 		if (menuState == View.VISIBLE) {
 			showCandidates(null);
 			ret=true;
 		}
-
-
+		Log.d("vortex","candidates? "+ret);
+		getGis().setClickable(true);
 		return ret;
 	}
 
@@ -981,7 +1165,6 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 				button.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Log.d("vortex","getzzzur");
 						showCandidates(null);
 						gisImageView.selectGop(go);
 						//Redraw will show avstMenu.
@@ -994,5 +1177,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			gisImageView.selectGop(null);
 		}
 
+	}
+
+
+	public boolean isNotExcluded(String status) {
+		return standardFilterM.get(status);
 	}
 }

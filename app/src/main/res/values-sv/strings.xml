@@ -55,4 +55,8 @@
 	<string name="show_author_s">Visa vem som gjort en inmatning</string>
 	<string name="show_author_t">Visa inmatare</string>
 	<string name="reset_sync_d">Raderar allt synkdata </string>
+
+	<string name="layers">Lager</string>
+	<string name="filters">Filter</string>
+	<string name="backgrounds">Kartor</string>
 </resources>

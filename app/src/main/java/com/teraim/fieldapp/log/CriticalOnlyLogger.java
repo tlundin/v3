@@ -73,6 +73,11 @@ public class CriticalOnlyLogger implements LoggerI {
 	}
 
 	@Override
+	public void addCriticalText(String text) {
+		this.addRow(text);
+	}
+
+	@Override
 	public CharSequence getLogText() {
 		return myTxt;
 	}

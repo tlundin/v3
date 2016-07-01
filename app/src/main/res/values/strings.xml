@@ -56,5 +56,8 @@
 	<string name="show_author_t">Show Author</string>
 	<string name="reset_sync_d">Erases all sync data</string>
 
+	<string name="layers">Layers</string>
+	<string name="filters">Filters</string>
+	<string name="backgrounds">Maps</string>
 
 </resources>

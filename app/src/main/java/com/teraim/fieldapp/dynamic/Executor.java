@@ -98,6 +98,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 	public static final String REDRAW_PAGE = "executor_redraw_page";
 
+
 	protected Workflow wf;
 
 	//Extended context.
@@ -109,6 +110,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	protected final Map<Rule,Boolean>executedRules = new LinkedHashMap<Rule,Boolean>();	
 
 	protected List<Rule> rules = new ArrayList<Rule>();
+
+	public WF_Context getCurrentContext() {
+		return myContext;
+	}
 
 
 	protected abstract List<WF_Container> getContainers();
@@ -314,7 +319,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			}
 		}
 		myContext.setContextVariables(contextVars);
-		gs.setCurrentWorkflowContext(myContext);		
+		//gs.setCurrentWorkflowContext(myContext);
 		gs.sendEvent(MenuActivity.REDRAW);
 		visiVars = new HashSet<Variable>();
 		//LinearLayout my_root = (LinearLayout) findViewById(R.id.myRoot);		

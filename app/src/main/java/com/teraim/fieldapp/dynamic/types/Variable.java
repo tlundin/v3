@@ -331,7 +331,7 @@ public class Variable implements Serializable {
 		myValueColumn[0]=myDb.getDatabaseColumnName(valueColumn);
 
 		myValue = null;
-		Log.d("zzzz","myValue is set to Null in New()");
+		//Log.d("zzzz","myValue is set to Null in New()");
 		if (historicalValue!=null) {
 			//Log.e("vortex","Historicalvaluefor "+this.getId()+" is "+historicalValue+" varObj: "+this.toString());
 			historyChecked=true;
@@ -353,7 +353,7 @@ public class Variable implements Serializable {
 		else {
 			unknown = false;
 			myValue = myDefaultValue;
-			Log.d("zzzz","myValue in New() def: "+myValue);
+			//Log.d("zzzz","myValue in New() def: "+myValue);
 			if (!valueIsPersisted) {
 				setValue(myDefaultValue);
 				//Log.d("nils","Creating variable "+this.getId()+". Variable is not persisted: "+myValue);

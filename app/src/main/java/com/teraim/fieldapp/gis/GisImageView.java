@@ -267,9 +267,16 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			@Override
 			public void onClick(View v) {
 				Log.d("vortex","Gets short! Clickable is "+GisImageView.this.isClickable());
-				if (clickXY!=null || !GisImageView.this.isClickable())
+				if (clickXY!=null)
 					return;
-
+				if (!GisImageView.this.isClickable()) {
+					Log.d("vortex","click outside popup?");
+					if (myMap.wasShowingPopup()) {
+						Log.d("vortex","YES!");
+						GisImageView.this.setClickable(true);
+					}
+					return;
+				}
 				calculateMapLocationForClick(polyVertexX,polyVertexY);
 
 
@@ -297,8 +304,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 					} else
 						Log.e("vortex","New GisObj is null!");
-				} else
-					Log.e("vortex","gistype null!");
+				} else {
+					Log.e("vortex", "gistype null!");
+					//close candidates window if showing.
+					myMap.showCandidates(null);
+				}
 				clickWasShort = true;
 				invalidate();
 
@@ -398,7 +408,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 	private Location translateRealCoordinatestoMap(float[] xy) {
-
+		Log.d("betex","IMGW: "+this.getImageWidth());
 		float rX = this.getImageWidth()/2+((float)xy[0]);
 		float rY = this.getImageHeight()/2+((float)xy[1]);
 		pXR = photoMetaData.getWidth()/this.getImageWidth();
@@ -585,6 +595,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				myMap.setZoomButtonVisible(true);
 			else
 				myMap.setZoomButtonVisible(false);
+
 			canvas.translate(x, y);
 			if(adjustedScale != 1.0f) {
 				canvas.scale(adjustedScale, adjustedScale);
@@ -622,7 +633,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
 							//If not inside map, or if touched, skip.
-							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)))
+							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus()))
 								continue;
 							if (go instanceof GisPointObject) {
 								GisPointObject gop = (GisPointObject)go;
@@ -815,6 +826,14 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
+	private boolean isExcludedByStandardFilter(String status) {
+		if (status==null)
+			return false;
+		//Log.d("vortex","status is: "+status+" excluded? "+!myMap.isNotExcluded(status));
+
+		return !myMap.isNotExcluded(status);
+	}
+
 	public void selectGop(GisObject go) {
 		touchedGop=go;
 		candMenuVisible=false;
@@ -865,6 +884,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				drawPoint(canvas, null,gop.getRadius(), "red", Style.FILL, gop.getShape(), gop.getTranslatedLocation(),1);
 			} else
 				Log.e("vortex","NOT calling drawpoint since translatedlocation was null");
+
 		}
 
 		else if (go instanceof GisPathObject) {
@@ -962,10 +982,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 
 	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale) {
+
 		Rect r = new Rect();
-		//pXR = this.getImageWidth()/photoMetaData.getWidth();
-		//radius = Math.max(5, (int)(radius*pXR));
-		//Log.d("vortex","PXR: Radius:"+pXR+","+radius);
+
 		if (bitmap!=null) {
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);
@@ -1244,6 +1263,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			} )
 			.show();
 		}*/
+	}
+
+	public void hideImage() {
+		//use exisitng size if any so that clicks on empty canvas get correctly calculated coordinates.
+		this.setStaticMeasure(this.getImageWidth(),this.getImageHeight());
+		setImageDrawable(null);
 	}
 
 	enum CreateState {

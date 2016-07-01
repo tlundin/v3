@@ -71,6 +71,10 @@ public class Logger implements LoggerI {
 		if (log!=null) log.setText(myTxt);
 	}
 
+	@Override
+	public void addCriticalText(String text) {
+		addRow(text);
+	}
 
 
 	public CharSequence getLogText() {

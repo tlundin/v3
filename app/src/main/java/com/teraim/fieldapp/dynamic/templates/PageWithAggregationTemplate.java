@@ -9,12 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 
 public class PageWithAggregationTemplate extends Executor {
+
+	private ScrollView mScrollView;
+	private int[] scrollPosition;
 
 	@Override
 	protected List<WF_Container> getContainers() {		
@@ -51,14 +55,31 @@ public class PageWithAggregationTemplate extends Executor {
 		myContext.addContainers(getContainers());
 		if (wf!=null) {
 			run();
-		}		
+		}
+
+		mScrollView = (ScrollView)v.findViewById(R.id.scrollView3);
 		
 		return v;
 	}
-	
 
-	
-	
-	
-	
+
+	@Override
+	public void onResume() {
+		if(scrollPosition != null) {
+			mScrollView.post(new Runnable() {
+				public void run() {
+					mScrollView.scrollTo(scrollPosition[0], scrollPosition[1]);
+				}
+			});
+		}
+		super.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		scrollPosition= new int[]{ mScrollView.getScrollX(), mScrollView.getScrollY()};
+		super.onPause();
+	}
+
+
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 import com.teraim.fieldapp.dynamic.blocks.Block;
 import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
@@ -25,7 +26,7 @@ public class Workflow implements Serializable {
 	private List<Block> blocks;
 	private String name,applicationName,applicationVersion;
 	private DB_Context mContext=null;
-
+	//Extended context.
 
 
 
@@ -70,6 +71,8 @@ public class Workflow implements Serializable {
 				return "";
 	}
 
+
+
 	public boolean isBackAllowed() {
 		if (blocks!=null && blocks.size()>1 && blocks.get(1) instanceof PageDefineBlock)
 			return ((PageDefineBlock)blocks.get(1)).goBackAllowed();
@@ -105,9 +108,7 @@ public class Workflow implements Serializable {
 		return null;
 	}
 
-	public String getApplication() {
-		return applicationName;
-	}
+
 
 
 	public List<EvalExpr> getContext() {

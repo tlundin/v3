@@ -64,6 +64,7 @@
     <string name="app_name">Field Pad</string>
     <string name="app_name_t">Appens namn</string>
     <string name="avbrytsynk">Avbryt Synkning</string>
+    <string name="backgrounds">Kartor</string>
     <string name="cancel">Avbryt</string>
     <string name="close">Stäng</string>
     <string name="context">Context</string>
@@ -72,7 +73,9 @@
     <string name="developer_functions">Avlusningsfunktioner</string>
     <string name="drawer_close">Stäng</string>
     <string name="drawer_open">Öppna</string>
+    <string name="filters">Filter</string>
     <string name="iunderstand">Jag förstår!</string>
+    <string name="layers">Lager</string>
     <string name="length_">Length:</string>
     <string name="local_service_started">Blåtandtjänst startad</string>
     <string name="log">Logg</string>

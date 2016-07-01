@@ -52,6 +52,7 @@ public class SyncService extends Service {
     class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
+
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
                 	Log.d("vortex","received MSG_REGISTER_CLIENT in SyncService");
@@ -115,15 +116,16 @@ public class SyncService extends Service {
          * in the base class code when the SyncAdapter
          * constructors call super()
          */
+
     	sSyncAdapter.releaseLock();
     	if (intent.getAction().equals(Start.MESSAGE_ACTION)) {
-    		Log.d("vortex","MASSAGE!");
+    		Log.d("vortex","OnBind returning mMessgenger_Binder");
     		return mMessenger.getBinder();
     		}
     	else {
-    		Log.d("vortex","CRISP!");
+    		Log.d("vortex","In OnBindm returning syncAdapter_Binder");
     		if (mClient!=null) {
-    			Log.d("vortex","CRAP!");
+    			Log.e("vortex","myClient is not Null. Setting sSyncAdapter: "+mClient);
     			sSyncAdapter.setClient(mClient);
     		}
     		return sSyncAdapter.getSyncAdapterBinder();

@@ -446,19 +446,25 @@ public class GestureImageView extends ImageView  {
 	public int getScaledHeight() {
 		return Math.round(getImageHeight() * getScale());
 	}
-	
+
 	public int getImageWidth() {
 		if(drawable != null) {
 			return drawable.getIntrinsicWidth();
 		}
-		return 0;
+		return bWidth;
 	}
 
 	public int getImageHeight() {
 		if(drawable != null) {
 			return drawable.getIntrinsicHeight();
 		}
-		return 0;
+		return bHeight;
+	}
+
+	int bWidth=0,bHeight=0;
+	public void setStaticMeasure(int w, int h) {
+		bWidth=w;
+		bHeight=h;
 	}
 
 	public void moveBy(float x, float y) {

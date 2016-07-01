@@ -202,7 +202,6 @@ public class CreateGisBlock extends Block {
 			LayoutInflater li = LayoutInflater.from(myContext.getContext());
 			final FrameLayout mapView = (FrameLayout)li.inflate(R.layout.image_gis_layout, null);
 			final View avstRL = mapView.findViewById(R.id.avstRL);
-			final View createMenuL = mapView.findViewById(R.id.createMenuL);
 
 			r=null;
 
@@ -251,7 +250,7 @@ public class CreateGisBlock extends Block {
 					Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,r);
 					if (bmp!=null) {
 
-						gis = new WF_Gis_Map(CreateGisBlock.this,r,blockId, mapView, isVisible, bmp,myContext,photoMetaData,avstRL,createMenuL,myLayers,r.width(),r.height());
+						gis = new WF_Gis_Map(CreateGisBlock.this,r,blockId, mapView, isVisible, bmp,myContext,photoMetaData,avstRL,myLayers,r.width(),r.height());
 
 						//need to throw away the reference to myLayers.
 						myLayers=null;
@@ -260,36 +259,15 @@ public class CreateGisBlock extends Block {
 						myContext.registerEventListener(gis, EventType.onSave);
 						myContext.registerEventListener(gis, EventType.onFlowExecuted);
 						myContext.addDrawable(name,gis);
-						final View menuL = mapView.findViewById(R.id.mmenuL);
 
-						menuL.setVisibility(View.INVISIBLE);
 						avstRL.setVisibility(View.INVISIBLE);
-						final ImageButton menuB = (ImageButton)mapView.findViewById(R.id.menuB);
+
 
 							for (GisLayer gl:mapLayers) {
 								gis.addLayer(gl);
 							}
 
 
-						menuB.setOnClickListener(new OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-
-								int menuState = menuL.getVisibility();
-								if (menuState == View.VISIBLE) {
-									menuL.setVisibility(View.INVISIBLE);
-									Log.d("vortex","setclickabletotrue");
-									gis.getGis().setClickable(true);
-								}
-								else {
-									gis.initializeLayersMenu(gis.getLayers());
-									menuL.setVisibility(View.VISIBLE);
-									Log.d("vortex","setclickabletofalse");
-									gis.getGis().setClickable(false);
-								}
-							}
-						});
 						cb.continueExecution();
 					} else {
 						Log.e("vortex","Failed to create map image. Will exit");

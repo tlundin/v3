@@ -48,6 +48,7 @@ public class GisLayer {
 		this.label = label;
 		this.hasWidget = hasWidget;
 		this.showLabels=showLabels;
+		Log.d("vortex","showlabels "+showLabels+" for gislayer "+label);
 		//If no user set value exist, use default.
 		//Else, set isvisible if stored value is 1.
 		defaultVisible = isVisible;

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mmenuL"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|center"
+    android:background="@drawable/transparent_object_menu_pop_bg"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:padding="10dp"
+    >
+    <TextView
+        android:id="@+id/filterName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filtering"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+    <RadioGroup android:id="@+id/toggleGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:measureWithLargestChild="true"
+        android:background="#FF002600"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <ToggleButton android:id="@+id/btn_Layers"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textOn="@string/layers"
+            android:textOff="@string/layers"
+            android:background="@drawable/inset_toggle"
+            android:layout_marginRight="5dp"
+            android:padding="15dp"
+             />
+        <ToggleButton android:id="@+id/btn_filters"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textOn="@string/filters"
+            android:textOff="@string/filters"
+            android:background="@drawable/inset_toggle"
+            android:layout_marginRight="5dp"
+            android:padding="15dp"
+            />
+        <ToggleButton android:id="@+id/btn_bckgrounds"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:padding="15dp"
+            android:background="@drawable/inset_toggle"
+            android:textOn="@string/backgrounds"
+            android:textOff="@string/backgrounds"
+            />
+    </RadioGroup>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <FrameLayout
+            android:id="@+id/LayersL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#CC003300"
+
+           >
+        </FrameLayout>
+    </ScrollView>
+</LinearLayout>

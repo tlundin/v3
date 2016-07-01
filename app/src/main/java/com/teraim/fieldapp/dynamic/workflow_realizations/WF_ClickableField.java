@@ -233,7 +233,7 @@ EventGenerator {
 	public WF_ClickableField(final String label, final String descriptionT,
 			WF_Context context, String id, View view, boolean isVisible) {
 		super(id, label, descriptionT, context, view, isVisible);
-		 Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
+		 //Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
 
 		gs = GlobalState.getInstance();
 		sd = gs.getSpinnerDefinitions();
@@ -380,7 +380,7 @@ EventGenerator {
 
 		// Set an EditText view to get user input
 		if (super.getKey() == null) {
-			Log.d("vortex", "Setting key variable to " + varId);
+			//Log.d("vortex", "Setting key variable to " + varId);
 			super.setKey(var);
 
 		}

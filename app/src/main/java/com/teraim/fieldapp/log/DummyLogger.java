@@ -42,6 +42,11 @@ public class DummyLogger implements LoggerI {
 	}
 
 	@Override
+	public void addCriticalText(String text) {
+
+	}
+
+	@Override
 	public CharSequence getLogText() {
 		return("");
 	}

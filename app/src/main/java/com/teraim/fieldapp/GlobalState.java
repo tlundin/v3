@@ -286,7 +286,7 @@ public class GlobalState  {
 	public LoggerI getLogger() {
 		return logger;
 	}
-
+/*
 	public void setCurrentWorkflowContext(WF_Context myContext) {
 		currentContext = myContext;
 	}
@@ -295,7 +295,7 @@ public class GlobalState  {
 		return currentContext;
 	}
 	
-	
+*/
 	public void setDBContext(DB_Context context) {
 		myVariableCache.setCurrentContext(context);
 	}

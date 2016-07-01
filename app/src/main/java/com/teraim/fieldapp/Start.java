@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
 
+import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.templates.LinjePortalTemplate;
 import com.teraim.fieldapp.dynamic.templates.TableDefaultTemplate;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
@@ -62,16 +63,16 @@ public class Start extends MenuActivity {
 	private boolean loading = false;
 
 	// Constants
-    // The authority for the sync adapter's content provider
-    public static final String AUTHORITY = "com.teraim.fieldapp.provider";
-    // An account type, in the form of a domain name
-    public static final String ACCOUNT_TYPE = "teraim.com";
-    // The account name
-    public static final String ACCOUNT = "FieldApp";
+	// The authority for the sync adapter's content provider
+	public static final String AUTHORITY = "com.teraim.fieldapp.provider";
+	// An account type, in the form of a domain name
+	public static final String ACCOUNT_TYPE = "teraim.com";
+	// The account name
+	public static final String ACCOUNT = "FieldApp";
 
 	public static final long SYNC_INTERVAL = 20;
-    // Instance fields
-   // Account mAccount;
+	// Instance fields
+	// Account mAccount;
 
 	private ContentResolver mResolver;
 
@@ -96,23 +97,23 @@ public class Start extends MenuActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		  // Create a Sync account
-       // mAccount = CreateSyncAccount(this);
+		// Create a Sync account
+		// mAccount = CreateSyncAccount(this);
 
 		//Determine if program should start or first reload its configuration.
 		if (!loading)
 			checkStatics();
 
-		 try {
-		        ViewConfiguration config = ViewConfiguration.get(this);
-		        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-		        if(menuKeyField != null) {
-		            menuKeyField.setAccessible(true);
-		            menuKeyField.setBoolean(config, false);
-		        }
-		    } catch (Exception ex) {
-		        // Ignore
-		    }
+		try {
+			ViewConfiguration config = ViewConfiguration.get(this);
+			Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+			if(menuKeyField != null) {
+				menuKeyField.setAccessible(true);
+				menuKeyField.setBoolean(config, false);
+			}
+		} catch (Exception ex) {
+			// Ignore
+		}
 		super.onCreate(savedInstanceState);
 	}
 
@@ -152,13 +153,13 @@ public class Start extends MenuActivity {
 			//Start the login fragment.
 			android.app.FragmentManager fm = getFragmentManager();
 			for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-			    fm.popBackStack();
+				fm.popBackStack();
 			}
 			loginFragment = new LoginConsoleFragment();
 			Log.d("vortex","LoginFragment on stack!");
 			fm.beginTransaction()
-				.replace(R.id.content_frame, loginFragment)
-				.commit();
+					.replace(R.id.content_frame, loginFragment)
+					.commit();
 
 		} else {
 			Log.d("vortex","Globalstate is not null!");
@@ -267,16 +268,16 @@ public class Start extends MenuActivity {
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 
 		ft
-		.replace(R.id.content_frame, newPage)
-		.addToBackStack(null)
-		.commit();
+				.replace(R.id.content_frame, newPage)
+				.addToBackStack(null)
+				.commit();
 		setTitle(label);
 		//If previous was an empty fragment, clean it
-	if (emptyFragmentToExecute!=null) {
-		Log.d("vortex","removing empty fragment");
-		ft.remove(emptyFragmentToExecute);
-		emptyFragmentToExecute=null;
-	}
+		if (emptyFragmentToExecute!=null) {
+			Log.d("vortex","removing empty fragment");
+			ft.remove(emptyFragmentToExecute);
+			emptyFragmentToExecute=null;
+		}
 		//mDrawerLayout.closeDrawer(mDrawerList);
 
 	}
@@ -288,8 +289,9 @@ public class Start extends MenuActivity {
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		GlobalState.getInstance().getCurrentWorkflowContext().registerEvent(new WF_Event_OnActivityResult("Start",EventType.onActivityResult));
-		// TODO Auto-generated method stub
+		Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
+		if (f!=null)
+			((Executor)f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start",EventType.onActivityResult));
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -318,73 +320,73 @@ public class Start extends MenuActivity {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 			Log.d("vortex","gets here key back");
 
-			GlobalState gs = GlobalState.getInstance();
-			if (gs!=null) {
-			final WF_Context wfCtx = gs.getCurrentWorkflowContext();
-			boolean map=false;
-			if (wfCtx!=null) {
-				if (wfCtx.getCurrentGis()!=null) {
-					map=true;
-					if (wfCtx.getCurrentGis().wasShowingPopup()) {
-						Log.d("vortex","closed popup, exiting");
-						return true;
+
+			Fragment currentContentFrameFragment = getFragmentManager().findFragmentById(R.id.content_frame);
+			if (currentContentFrameFragment!=null && currentContentFrameFragment instanceof Executor) {
+
+ 				final WF_Context wfCtx = ((Executor) currentContentFrameFragment).getCurrentContext();
+				Log.d("vortex", "current context: " + wfCtx.toString());
+				boolean map = false;
+
+				if (wfCtx!=null) {
+					if (wfCtx.getCurrentGis()!=null) {
+						map=true;
+						if (wfCtx.getCurrentGis().wasShowingPopup()) {
+							Log.d("vortex","closed popup, exiting");
+							return true;
+						}
 					}
+					Workflow wf = wfCtx.getWorkflow();
+					Log.d("vortex","gets here wf is "+wf);
+					if (wf!=null) {
+						if (!wf.isBackAllowed()) {
+							new AlertDialog.Builder(this).setTitle("Warning!")
+									.setMessage("This will exit the page.")
+									.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
 
-				}
-				Workflow wf = wfCtx.getWorkflow();
-				Log.d("vortex","gets here wf is "+wf);
-				if (wf!=null) {
-					if (!wf.isBackAllowed()) {
-						new AlertDialog.Builder(this).setTitle("Warning!")
-						.setMessage("This will exit the page.")
-						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
+											wfCtx.upOneMapLevel();
+											Log.d("vortex","mapLayer is now "+wfCtx.getMapLayer());
+											getFragmentManager().popBackStackImmediate();
+											//GlobalState.getInstance().setCurrentWorkflowContext(null);
+										}})
+									.setNegativeButton(R.string.cancel,new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
 
+										}})
+									.setCancelable(false)
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.show();
+						} else {
+							if (map)
 								wfCtx.upOneMapLevel();
-								Log.d("vortex","mapLayer is now "+wfCtx.getMapLayer());
-								getFragmentManager().popBackStackImmediate();
-								GlobalState.getInstance().setCurrentWorkflowContext(null);
-							}})
-							.setNegativeButton(R.string.cancel,new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) {
 
-								}})
+							Log.d("vortex","back was allowed");
+						}
+					}
+				}
+
+				if (currentContentFrameFragment instanceof LinjePortalTemplate) {
+					final LinjePortalTemplate lp = (LinjePortalTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
+					if (lp.isRunning()) {
+						new AlertDialog.Builder(this).setTitle("Linjemätning pågår!")
+								.setMessage("Vill du verkligen gå ut från sidan?")
+								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+										getFragmentManager().popBackStackImmediate();
+									}})
+								.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+
+									}})
 								.setCancelable(false)
 								.setIcon(android.R.drawable.ic_dialog_alert)
 								.show();
-					} else {
-						if (map)
-							wfCtx.upOneMapLevel();
-
-						Log.d("vortex","back was allowed");
 					}
 				}
 			}
-
-			if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof LinjePortalTemplate) {
-				final LinjePortalTemplate lp = (LinjePortalTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
-				if (lp.isRunning()) {
-					new AlertDialog.Builder(this).setTitle("Linjemätning pågår!")
-					.setMessage("Vill du verkligen gå ut från sidan?")
-					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							getFragmentManager().popBackStackImmediate();
-						}})
-						.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-
-							}})
-							.setCancelable(false)
-							.setIcon(android.R.drawable.ic_dialog_alert)
-							.show();
-				}
-			} //else if (getFragmentManager().findFragmentById(R.id.content_frame) instanceof TableDefaultTemplate) {
-			//	final TableDefaultTemplate lp = (TableDefaultTemplate)getFragmentManager().findFragmentById(R.id.content_frame);
-			//	lp.closePopIfUp();
-			//	return true;
-			//}
 			setTitle("");
-			}
+
 		}
 
 		return super.onKeyDown(keyCode, event);
@@ -392,20 +394,20 @@ public class Start extends MenuActivity {
 
 	private void showErrorMsg(DB_Context context) {
 
-			String dialogText = "Faulty or incomplete context\nError: "+context.toString();
-			new AlertDialog.Builder(this)
-			.setTitle("Context problem")
-			.setMessage(dialogText)
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setCancelable(false)
-			.setNeutralButton("Ok",new Dialog.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+		String dialogText = "Faulty or incomplete context\nError: "+context.toString();
+		new AlertDialog.Builder(this)
+				.setTitle("Context problem")
+				.setMessage(dialogText)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setCancelable(false)
+				.setNeutralButton("Ok",new Dialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
 
-				}
-			} )
-			.show();
+					}
+				} )
+				.show();
 
 	}
 

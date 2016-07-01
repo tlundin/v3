@@ -432,9 +432,10 @@ public  class ButtonBlock extends Block {
 									if (exportFormat == null)
 										exportFormat = "csv";
 									exportFormat = exportFormat.toLowerCase();
-									Report jRep = gs.getDb().export(exportContext, Exporter.getInstance(ctx, exportFormat), exportFileName);
+									Exporter exporter = Exporter.getInstance(ctx, exportFormat);
+									Report jRep = gs.getDb().export(exportContext, exporter, exportFileName);
 									if (jRep.er == ExportReport.OK) {
-										msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exportFormat + "\n";
+										msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
 										msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
 
 									} else {

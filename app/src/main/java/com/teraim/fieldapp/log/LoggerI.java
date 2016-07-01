@@ -10,7 +10,10 @@ public interface LoggerI {
 	 public void addGreenText(String text);
 	 public void addYellowText(String text);
 	 public void addText(String text);
-	 public CharSequence getLogText();
+
+	void addCriticalText(String text);
+
+	public CharSequence getLogText();
 	 public void draw();
 	 public void clear();
 	 public void addPurpleText(String string);

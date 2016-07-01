@@ -30,6 +30,9 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.Start;
+import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
@@ -65,6 +68,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		 * If your app uses a content resolver, get an instance of it
 		 * from the incoming Context
 		 */
+
 		mContentResolver = context.getContentResolver();
 		
 		
@@ -92,6 +96,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	 * constructor maintains compatibility with Android 3.0
 	 * and later platform versions
 	 */
+
+
 	public SyncAdapter(
 			Context context,
 			boolean autoInitialize,
@@ -102,6 +108,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		 * If your app uses a content resolver, get an instance of it
 		 * from the incoming Context
 		 */
+
 		mContentResolver = context.getContentResolver();
 
 
@@ -140,7 +147,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		//Check for any change of username or team name. 
 		else if (!refreshUserAppAndTeam()) {
 			if (!internetSync) {
-				Log.e("vortex", "Not internet sync so discarding call");		
+				Log.e("vortex", "Not internet sync so discarding call");
 				err=SyncService.ERR_NOT_INTERNET_SYNC;
 			}
 			else {
@@ -367,7 +374,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						if (ph!=null)
 								ph.edit().putString(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team,maxStamp+"").apply();
 						else
-							Log.e("bortex","something wrong PH NULL!");
+							Log.e("vortex","something wrong PH NULL!");
 						Log.e("vortex","UPDATED TIMESTAMP: "+maxStamp+"");
 
 				} else
@@ -381,10 +388,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				while (true) {
 					reply = objIn.readObject();
 					if (reply instanceof String) {
-						Log.d("Vortex","received timestamp for next cycle: "+reply);
+						Log.d("vortex","received timestamp for next cycle: "+reply);
 						//This should be the Timestamp of the last entry arriving.
 						potentiallyTimeStampToUseIfInsertDoesNotFail = (String) reply;
-						Log.d("Vortex","Inserted rows: "+insertedRows);
+						Log.d("vortex","Inserted rows: "+insertedRows);
 						objIn.close();
 						objOut.close();
 						if (insertedRows == 0 && sa == null ) {

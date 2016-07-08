@@ -423,16 +423,17 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							if (!pickerLocation2.next())
 								break;
 						} else {
-							if (myType.equals(GisObjectType.Point)) {
+							String myTypeS = myType.toString();
+							if (myTypeS.equalsIgnoreCase(GisObjectType.Point.toString())) {
 								if (!dynamic)
 									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value),statusVarP.first,statusVarP.second));
 								else
 									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
 							}
-							else if (myType.equals(GisObjectType.Multipoint)||myType.equals(GisObjectType.Linestring))
+							else if (myTypeS.equals(GisObjectType.Multipoint.toString())||myTypeS.equalsIgnoreCase(GisObjectType.Linestring.toString()))
 								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType)));
 
-							else if (myType.equals(GisObjectType.Polygon)) {
+							else if (myTypeS.equalsIgnoreCase(GisObjectType.Polygon.toString())) {
 								Log.d("vortex","Adding polygon");
 								myGisObjects.add(new GisPolygonObject(this,map1,storedVar1.value,coordType,statusVarP.first,statusVarP.second));
 							}

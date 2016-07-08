@@ -16,6 +16,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateNewEntryField;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
@@ -45,8 +46,9 @@ import com.teraim.fieldapp.dynamic.blocks.NoOpBlock;
 import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.RoundChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
+import com.teraim.fieldapp.dynamic.blocks.SliderGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
-import com.teraim.fieldapp.dynamic.blocks.TextFieldBlock;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.VarValueSourceBlock;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Not_ClickableField_SumAndCountOfVariables;
@@ -248,6 +250,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					dummyWarning("block_create_list_entries",parser);
 				else if (name.equals("block_create_entry_field")) 
 					blocks.add(readBlockCreateEntryField(parser));
+				else if (name.equals("block_create_new_entry_field"))
+					blocks.add(readBlockCreateEntryFieldNew(parser));
 				else if (name.equals("block_create_display_field"))
 					blocks.add(readBlockCreateDisplayField(parser));
 				else if (name.equals("block_create_list_entries_from_field_list"))
@@ -311,6 +315,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockDeleteMatchingVariables(parser));
 				else if (name.equals("block_no_op"))
 					blocks.add(readBlockNoOp(parser));
+				else if (name.equals("block_slider_group"))
+					blocks.add(readBlockSliderGroup(parser));
 				else {			
 					skip(name,parser,o);
 				}
@@ -339,6 +345,42 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		return blocks;
 	}
 
+
+	private Block readBlockSliderGroup(XmlPullParser parser) throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_slider_group...");
+		String id=null,groupName=null,function=null,arguments=null,delay=null;
+
+
+		parser.require(XmlPullParser.START_TAG, null,"block_slider_group");
+		Log.d("vortex","In create_list_filter!!");
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name= parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID",parser);
+			} else if (name.equals("group_name")) {
+				groupName = readText("group_name",parser);
+			} else if (name.equals("function")) {
+				function = readText("function",parser);
+			} else if (name.equals("arguments")) {
+				arguments = readText("arguments",parser);
+			} else if (name.equals("delay")) {
+				delay = readText("delay",parser);
+			}
+
+			else {
+
+				Log.e("vortex","Skipped "+name);
+				skip(name,parser);
+			}
+		}
+
+		checkForNull("block_ID",id);
+		return new SliderGroupBlock(id,groupName,function,arguments,delay);
+
+	}
 
 	private Block readBlockNoOp(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_no_operation...");
@@ -786,7 +828,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	}
 	private Block readBlockCreateTextField(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
-		String id=null,label=null,container=null;
+		String id=null,label=null,container=null,background=null;
 		boolean isVisible=true;
 		parser.require(XmlPullParser.START_TAG, null,"block_create_text_field");
 		while (parser.next() != XmlPullParser.END_TAG) {
@@ -798,10 +840,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				id = readText("block_ID",parser);
 			} else if (name.equals("label")) {
 				label = readText("label",parser);
+			} else if (name.equals("bck_color")) {
+				background = readText("bck_color",parser);
 			} else if (name.equals("container_name")) {
 				container = readText("container_name",parser);
-			} 
-			else if (name.equals("is_visible")) {
+			} else if (name.equals("is_visible")) {
 				isVisible = !readText("is_visible",parser).equals("false");
 			}
 
@@ -810,7 +853,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 		checkForNull("block_ID",id,"label",label,"container",container);
-		return new TextFieldBlock(id,label,container,isVisible);
+		return new BlockCreateTextField(id,label,background,container,isVisible);
 
 	}
 
@@ -1390,6 +1433,49 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				formula,containerId,isVisible,format,textColor,bgColor);
 	}
 
+
+	private BlockCreateNewEntryField readBlockCreateEntryFieldNew(XmlPullParser parser)throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_create_new_entry_field...");
+		boolean isVisible = true,showHistorical = false,autoOpenSpinner=true;
+		String namn=null,containerId=null,postLabel="",id=null,initialValue=null,label=null,variableName=null,group=null;
+		Unit unit = Unit.nd;
+		parser.require(XmlPullParser.START_TAG, null,"block_create_new_entry_field");
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name= parser.getName();
+
+			if (name.equals("block_ID")) {
+				id = readText("block_ID",parser);
+			} else if (name.equals("name")) {
+				namn = readText("name",parser);
+			}
+			else if (name.equals("label")) {
+				label= readText("label",parser);
+			} else if (name.equals("container_name")) {
+				containerId = readText("container_name",parser);
+			}
+			else if (name.equals("is_visible")) {
+				isVisible = !readText("is_visible",parser).equals("false");
+
+			}  else if (name.equals("show_historical")) {
+				showHistorical = readText("show_historical",parser).equals("true");
+			}  else if (name.equals("initial_value")) {
+				initialValue = readText("initial_value",parser);
+			} else if (name.equals("auto_open_spinner")) {
+				autoOpenSpinner = readText("auto_open_spinner",parser).equals("true");;
+			} else if (name.equals("variable_name")) {
+				variableName = readText("variable_name",parser);
+			} else if (name.equals("slider_group_name")) {
+				group = readText("slider_group_name",parser);
+			}
+			else
+				skip(name,parser,o);
+		}
+		checkForNull("block_ID",id,"name",namn,"container_name",containerId,"variableName",variableName);
+		return new BlockCreateNewEntryField(id,namn, containerId,isVisible,showHistorical,initialValue,label,variableName,group);
+	}
 
 	private CreateEntryFieldBlock readBlockCreateEntryField(XmlPullParser parser)throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_create_entry_field...");

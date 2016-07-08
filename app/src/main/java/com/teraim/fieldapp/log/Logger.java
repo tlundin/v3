@@ -39,10 +39,10 @@ public class Logger implements LoggerI {
 	public void addRow(String text) {
 		s = new SpannableString("\n"+text);
 		myTxt.append(s);
+
 	}
 	public void addRedText(String text) {
 		if (!hasRed) {
-			Log.e("vortex", "GETS TO SEND");
 			hasRed = true;
 			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}

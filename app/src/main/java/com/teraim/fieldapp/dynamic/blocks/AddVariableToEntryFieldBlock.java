@@ -1,8 +1,12 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import android.util.Log;
+
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 
@@ -34,10 +38,11 @@ public class AddVariableToEntryFieldBlock extends Block {
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 
-		WF_ClickableField_Selection myField = (WF_ClickableField_Selection)myContext.getDrawable(target);
+		WF_ClickableField myField = (WF_ClickableField)myContext.getDrawable(target);
 		if (myField == null) {
 			o.addRow("");
 			o.addRedText("Couldn't find Entry Field with name "+target+" in AddVariableToEntryBlock" );
+			myContext.printD();
 			
 		} else {
 			Variable var =  gs.getVariableCache().getVariable(namn,initialValue,-1);

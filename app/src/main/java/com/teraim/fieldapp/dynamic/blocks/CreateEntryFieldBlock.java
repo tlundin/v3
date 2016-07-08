@@ -7,6 +7,7 @@ import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
@@ -24,7 +25,7 @@ public class CreateEntryFieldBlock extends Block {
 	boolean isVisible = false,showHistorical,autoOpenSpinner=true;
 	String format;
 	
-	WF_ClickableField_Selection myField;
+	WF_ClickableField myField;
 
 
 	public CreateEntryFieldBlock(String id,String name, 

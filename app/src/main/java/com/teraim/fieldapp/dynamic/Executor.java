@@ -29,6 +29,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateNewEntryField;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
@@ -58,7 +59,8 @@ import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.RoundChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
-import com.teraim.fieldapp.dynamic.blocks.TextFieldBlock;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
+import com.teraim.fieldapp.dynamic.blocks.SliderGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.VarValueSourceBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Rule;
@@ -387,10 +389,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					ButtonBlock bl = (ButtonBlock) b;
 					bl.create(myContext);
 				}			
-				else if (b instanceof TextFieldBlock) {
+				else if (b instanceof BlockCreateTextField) {
 					o.addRow("");
 					o.addYellowText("CreatTextBlock found "+b.getBlockId());
-					TextFieldBlock bl = (TextFieldBlock) b;
+					BlockCreateTextField bl = (BlockCreateTextField) b;
 					bl.create(myContext);
 				}
 				else if (b instanceof CreateSortWidgetBlock) {
@@ -415,6 +417,14 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					if (v!=null)
 						visiVars.add(v);
 				}
+				else if (b instanceof BlockCreateNewEntryField) {
+					o.addRow("");
+					o.addYellowText("CreateEntryFieldBlock found "+b.getBlockId());
+					BlockCreateNewEntryField bl = (BlockCreateNewEntryField)b;
+					Log.d("NILS","BlockCreateNewEntryField found");
+					bl.create(myContext);
+
+				}
 				else if (b instanceof AddSumOrCountBlock) {
 					o.addRow("");
 					o.addYellowText("AddSumOrCountBlock found "+b.getBlockId());
@@ -425,6 +435,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					o.addRow("");
 					o.addYellowText("DisplayValueBlock found "+b.getBlockId());
 					DisplayValueBlock bl = (DisplayValueBlock)b;
+					bl.create(myContext);
+				}
+				else if (b instanceof SliderGroupBlock) {
+					o.addRow("");
+					o.addYellowText("Slidergroupblock found "+b.getBlockId());
+					SliderGroupBlock bl = (SliderGroupBlock) b;
 					bl.create(myContext);
 				}
 				else if (b instanceof AddVariableToEveryListEntryBlock) {

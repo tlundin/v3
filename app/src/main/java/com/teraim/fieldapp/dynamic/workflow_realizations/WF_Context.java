@@ -23,6 +23,7 @@ import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
+import com.teraim.fieldapp.dynamic.blocks.SliderGroupBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Rule;
@@ -59,6 +60,7 @@ public class WF_Context {
 	private int mapLayer=0;
 	private List<String> contextVariables = null;
 	private boolean myEndIsNear=false;
+	private Map<String,SliderGroupBlock> sliderGroupM=new HashMap<String, SliderGroupBlock>();
 
 
 	public WF_Context(Context ctx,Executor e,int rootContainerId) {
@@ -207,6 +209,7 @@ public class WF_Context {
 		lists.clear();
 		filterables.clear();
 		drawables.clear();
+		sliderGroupM.clear();
 		eventBroker.removeAllListeners();
 		rules.clear();
 		currentGis = null;
@@ -388,4 +391,20 @@ public class WF_Context {
 		mapLayer--;
 	}
 
+	public void printD() {
+		for (String d:drawables.keySet()) {
+			Log.d("Bortex","key: "+d);
+		}
+	}
+
+	public void addSliderGroup(SliderGroupBlock sliderGroupBlock) {
+
+		sliderGroupM.put(sliderGroupBlock.getName(),sliderGroupBlock);
+	}
+
+	public SliderGroupBlock getGroup(String groupName) {
+		if (sliderGroupM!=null)
+			return sliderGroupM.get(groupName);
+		return null;
+	}
 }

@@ -37,8 +37,8 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 
 	View view;
-	private LinearLayout my_root,displayPanel,tablePanel,filterPanel,filterPop,filterC1,filterC2;
-	private View filterC1o,filterC2o;
+	private LinearLayout my_root,displayPanel,tablePanel,filterPanel,filterPop,filterC1,filterC2,filterC3,filterC4;
+	private View filterC1o,filterC2o,filterC3o,filterC4o;
 	private FrameLayout frame;
 	Map<String,Boolean> popupVisible=null;
 	private Animation popupShow;
@@ -80,8 +80,12 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 		filterC1o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC2o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC3o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC4o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC1 = (LinearLayout)filterC1o.findViewById(R.id.inner);
 		filterC2 = (LinearLayout)filterC2o.findViewById(R.id.inner);
+		filterC3 = (LinearLayout)filterC3o.findViewById(R.id.inner);
+		filterC4 = (LinearLayout)filterC4o.findViewById(R.id.inner);
 		myContext.addContainers(getContainers());
 
 		/*Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -120,6 +124,8 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		ret.add(new WF_Container("filter_panel",filterPanel,root));
 		ret.add(new WF_Container("filter_C1",filterC1,root));
 		ret.add(new WF_Container("filter_C2",filterC2,root));
+		ret.add(new WF_Container("filter_C3",filterC3,root));
+		ret.add(new WF_Container("filter_C4",filterC4,root));
 		return ret;
 	}
 
@@ -140,10 +146,13 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 				}
 				if (target.equals("filter_C1")) {
 					filterPop.addView(filterC1o);
-				}
-				else {
+				} else if (target.equals("filter_C2")) {
 					filterPop.addView(filterC2o);
-				}
+				} else if (target.equals("filter_C3")) {
+					filterPop.addView(filterC3o);
+				} else
+					filterPop.addView(filterC4o);
+
 				if (filterPop.getParent()==null) {
 					frame.addView(filterPop);
 					filterPop.startAnimation(popupShow);
@@ -160,8 +169,18 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 					closePopIfUp();
 				}
 				else {
+					View targetO;
 					Log.d("vortex","removing!");
-					filterPop.removeView(target.equals("filter_C1") ? filterC1o : filterC2o);
+					if (target.equals("filter_C1"))
+						targetO=filterC1o;
+					else if (target.equals("filter_C2"))
+						targetO=filterC2o;
+					else if (target.equals("filter_C3"))
+						targetO=filterC3o;
+					else
+						targetO=filterC4o;
+					filterPop.removeView(targetO);
+
 				}
 			}
 		} else 	if (function.equals("template_function_show_only_edited"))
@@ -222,7 +241,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 	@Override
 	public void onAnimationRepeat(Animation animation) {
-		// TODO Auto-generated method stub
+
 
 	}
 

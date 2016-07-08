@@ -44,7 +44,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private Table varTable;
 
 	public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
-		super(globalPh,ph, source,fileLocation, fileName, fixedLength(fileName));
+		super(globalPh,ph, source,fileLocation, fileName, fileName);
 		this.o = debugConsole;
 		this.myDb = myDb;
 		//isDatabaseModule=true;
@@ -54,7 +54,6 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		if (myType!=null&&myType.length()>0) {
 			myType = myType.toLowerCase();
 			myType =( myType.substring(0,1).toUpperCase() + myType.substring(1));
-			Log.e("vortex","MYTYPE: "+myType);
 		}
 		varTable = t;
 	}
@@ -62,7 +61,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private static String fixedLength(String fileName) {
 		if ((20-fileName.length())<=0)
 			return fileName;
-		
+
 		String space20 = new String(new char[20-fileName.length()]).replace('\0', ' ');
 
 		return (fileName+space20);
@@ -112,180 +111,209 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		Location myLocation;
 		try {
 
-		JsonToken tag = reader.peek();
-		if (tag.equals(JsonToken.END_ARRAY)) {
-			//end array means we are done.
-			this.setEssence();
-			reader.close();
-			o.addRow("");
-			o.addText("Found "+myGisObjects.size()+" objects");
-			freezeSteps = myGisObjects.size();
-			Log.d("vortex","Found "+myGisObjects.size()+" objekt");
-			//freezeSteps=myBlocks.size();
-			return new LoadResult(this,ErrorCode.parsed);
-		}
-		else if (tag.equals(JsonToken.BEGIN_OBJECT)) {
-			reader.beginObject();
-			//type
-			reader.nextName();
-			//Feature
-			this.getAttribute(reader);	
-			//Geometry
-			reader.nextName();
-			reader.beginObject();
-			reader.nextName();
-			String type = this.getAttribute(reader);
-			//Log.d("vortex","This is a "+type);
-			if (type==null) {
+			JsonToken tag = reader.peek();
+			if (tag.equals(JsonToken.END_ARRAY)) {
+				//end array means we are done.
+				this.setEssence();
+				reader.close();
 				o.addRow("");
-				o.addRedText("Type field expected (point, polygon..., but got null");
-				Log.e("vortex","type null!");
-				return new LoadResult(this,ErrorCode.ParseError);
+				o.addText("Found "+myGisObjects.size()+" objects");
+				freezeSteps = myGisObjects.size();
+				Log.d("vortex","Found "+myGisObjects.size()+" objekt");
+				//freezeSteps=myBlocks.size();
+				return new LoadResult(this,ErrorCode.parsed);
 			}
-			reader.nextName();
-			reader.beginArray();
-			double x,y,z;
-			Map<String,String>keyChain = new HashMap<String,String>();
-			Map<String,String> attributes = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-			String mType = type.trim();
-			if (mType.equals(GisConstants.POINT)) {
-				//Log.d("vortex","parsing point object.");
-				//coordinates
-				//Log.d("vortex","reading coords");
-				x = reader.nextDouble();
-				y = reader.nextDouble();
-				myLocation = new SweLocation(x, y);
-				myGisObjects.add(new GisObject(keyChain,Arrays.asList(new Location[] {myLocation}),attributes));
-			} else if (mType.equals(GisConstants.MULTI_POINT)||(mType.equals(GisConstants.LINE_STRING))){
-				List<Location> myCoordinates = new ArrayList<Location>();
-				while (!reader.peek().equals(JsonToken.END_ARRAY)) {					
-					reader.beginArray();
+			else if (tag.equals(JsonToken.BEGIN_OBJECT)) {
+				reader.beginObject();
+				//type
+				reader.nextName();
+				//Feature
+				this.getAttribute(reader);
+				//Geometry
+				reader.nextName();
+				reader.beginObject();
+				reader.nextName();
+				String type = this.getAttribute(reader);
+				//Log.d("vortex","This is a "+type);
+				if (type==null) {
+					o.addRow("");
+					o.addRedText("Type field expected (point, polygon..., but got null");
+					Log.e("vortex","type null!");
+					return new LoadResult(this,ErrorCode.ParseError);
+				}
+				reader.nextName();
+				reader.beginArray();
+				double x,y,z;
+				Map<String,String>keyChain = new HashMap<String,String>();
+				Map<String,String> attributes = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+				String mType = type.trim();
+				Log.d("vortex","myType: "+mType);
+				if (mType.equalsIgnoreCase(GisConstants.POINT)) {
+					//Log.d("vortex","parsing point object.");
+					//coordinates
+					//Log.d("vortex","reading coords");
 					x = reader.nextDouble();
 					y = reader.nextDouble();
-					myCoordinates.add(new SweLocation(x, y));
-					reader.endArray();
-				}
-				myGisObjects.add(new GisObject(keyChain,myCoordinates,attributes));
-			}  else if (mType.equals(GisConstants.POLYGON)){
-				Map<String,List<Location>> holedPolygons = null;
-				List<Location> myCoordinates=null; 
-				int proxyId = 0;
-				holedPolygons = new HashMap<String,List<Location>>();
-				while (!reader.peek().equals(JsonToken.END_ARRAY)) {	
-					reader.beginArray();
-					myCoordinates = new ArrayList<Location>();
+					myLocation = new SweLocation(x, y);
+					myGisObjects.add(new GisObject(keyChain,Arrays.asList(new Location[] {myLocation}),attributes));
+				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POINT)||(mType.equalsIgnoreCase(GisConstants.LINE_STRING.toString()))){
+					List<Location> myCoordinates = new ArrayList<Location>();
 					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 						reader.beginArray();
 						x = reader.nextDouble();
 						y = reader.nextDouble();
-						if (!reader.peek().equals(JsonToken.END_ARRAY)) 
-							z = reader.nextDouble();
 						myCoordinates.add(new SweLocation(x, y));
 						reader.endArray();
-					}					
-					holedPolygons.put((proxyId)+"" , myCoordinates);
-					proxyId++;
-					reader.endArray();
-				}
-
-				if (holedPolygons!=null&&!holedPolygons.isEmpty())
-					myGisObjects.add(new GisPolygonObject(keyChain,holedPolygons,attributes));
-
-			} else if (mType.equals(GisConstants.MULTI_POLYGON)){
-				Log.d("vortex","MULTIPOLYGON!!");
-				Set<GisPolygonObject> multiPoly 			= new HashSet<GisPolygonObject>();
-				Map<String,List<Location>> 	 holedPolygons 	= new HashMap<String,List<Location>>();
-				List<Location> myCoordinates=null; 
-				int proxyId = 0;
-				while (!reader.peek().equals(JsonToken.END_ARRAY)) {
-					while (!reader.peek().equals(JsonToken.END_ARRAY)) {	
+					}
+					myGisObjects.add(new GisObject(keyChain,myCoordinates,attributes));
+				}  else if (mType.equalsIgnoreCase(GisConstants.POLYGON)){
+					Map<String,List<Location>> polygons = null;
+					List<Location> myCoordinates=null;
+					int proxyId = 0;
+					polygons = new HashMap<String,List<Location>>();
+					//First polygon is exterior ring. Following ones define holes.
+					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 						reader.beginArray();
 						myCoordinates = new ArrayList<Location>();
 						while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 							reader.beginArray();
 							x = reader.nextDouble();
 							y = reader.nextDouble();
-							if (!reader.peek().equals(JsonToken.END_ARRAY)) 
+							if (!reader.peek().equals(JsonToken.END_ARRAY))
 								z = reader.nextDouble();
 							myCoordinates.add(new SweLocation(x, y));
 							reader.endArray();
-						}					
-						holedPolygons.put((proxyId)+"" , myCoordinates);
+						}
+						polygons.put((proxyId)+"" , myCoordinates);
 						proxyId++;
 						reader.endArray();
-					} 
-					if (holedPolygons!=null&&!holedPolygons.isEmpty())
-						multiPoly.add(new GisPolygonObject(keyChain,holedPolygons,attributes));
+					}
 
+					if (!polygons.isEmpty())
+						myGisObjects.add(new GisPolygonObject(keyChain,polygons,attributes));
+
+				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POLYGON)){
+					Log.d("vortex","MULTIPOLYGON!!");
+					Set<GisPolygonObject> multiPoly 				= new HashSet<GisPolygonObject>();
+					Map<String,List<Location>> 	 onePolygonSet		= new HashMap<String,List<Location>>();
+					List<Location> myCoordinates=null;
+					int proxyId = 0;
+					//reader.beginArray();//"Coordinates": [
+					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
+
+						//Polygon here.
+						reader.beginArray();
+
+						//Always at least Exterior polygon and then holes.
+						Log.d("vortex","Exterior polygon");
+						boolean first=true;
+						while (reader.peek() == JsonToken.BEGIN_ARRAY) {
+							if (!first)
+								Log.d("vortex","Hole!");
+							first = false;
+							reader.beginArray();
+
+							//Individual elements.
+							while (reader.peek() != JsonToken.END_ARRAY) {
+								reader.beginArray();
+								x = reader.nextDouble();
+								y = reader.nextDouble();
+								Log.d("vortex","Added "+x+","+y);
+								if (!reader.peek().equals(JsonToken.END_ARRAY))
+									z = reader.nextDouble();
+								reader.endArray();
+							}
+							reader.endArray();
+							Log.d("vortex","ProxyID: "+proxyId);
+							onePolygonSet.put((proxyId)+"" , myCoordinates);
+							proxyId++;
+
+						}
+						reader.endArray(); // ] End polygon
+					}
+					//Log.d("vortex","kikko "+reader+"PEEK: "+reader.peek());
+					//reader.endArray();// ] Coordinates
+					//Log.d("vortex","kikko "+reader+"PEEK: "+reader.peek());
+					if (!onePolygonSet.isEmpty())
+						multiPoly.add(new GisPolygonObject(keyChain,onePolygonSet,attributes));
+
+				} else {
+					o.addRow("");
+					o.addRedText("Unsupported Geo Type in parser: "+type);
+					Log.e("vortex","type not supported! "+type);
+					return new LoadResult(this,ErrorCode.ParseError);
 				}
-				if (holedPolygons!=null&&!holedPolygons.isEmpty())
-					myGisObjects.add(new GisPolygonObject(keyChain,holedPolygons,attributes));
+				int skipped=0;
+				while(reader.hasNext()) {
+					Log.d("vortex","skipping "+this.getAttribute(reader));
+					//this.getAttribute(reader);
+					skipped++;
+				}
+				if (skipped>0) {
+					o.addRow("");
+					o.addYellowText("Skipped "+skipped+" attributes in file "+getFileName());
+				}
+
+				Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
+				reader.endArray();
+				Log.d("vortex","PEEK: "+reader.peek());
+				reader.endObject();
+				//Properties
+				Log.d("vortex","PEEK: "+reader.peek());
+				reader.nextName();
+				reader.beginObject();
+				while(reader.hasNext()) {
+					Log.d("vortex","PEEK: "+reader.peek());
+					if (reader.peek()==JsonToken.NUMBER)
+						Log.d("vortex","NUMBER: "+reader.nextLong());
+					else {
+						String name = reader.nextName().toLowerCase();
+						Log.d("vortex","NAME: "+name);
+						attributes.put(name, this.getAttribute(reader));
+					}
+				}
+				//Log.d("vortex",attributes.toString());
+				//end attributes
+				reader.endObject();
+				//end row
+				reader.endObject();
+				String uuid = attributes.remove(GisConstants.FixedGid);
+				//Log.d("vortex","FixedGid: "+uuid);
+				String rutaId = attributes.remove(GisConstants.RutaID);
+
+
+				if (uuid!=null) {
+					uuid = uuid.replace("{","").replace("}","");
+					//Log.d("vortex","FixedGid: "+uuid);
+					keyChain.put("uid", uuid);
+				}
+				else {
+					generatedUID=true;
+					keyChain.put("uid", UUID.randomUUID().toString());
+				}
+				//keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
+
+				//Tarfala hack. TODO: Remove.
+				if (rutaId==null)
+					Log.e("vortex","ingen ruta ID!!!!");
+				else
+					keyChain.put("ruta", rutaId);
+
+				keyChain.put(GisConstants.TYPE_COLUMN, myType);
+
+				//Add geotype to attributes so that the correct object can be used at export.
+				attributes.put(GisConstants.Geo_Type, mType);
+
+
+
+				//Log.d("vortex","added new gis object");
+				return null;
 			} else {
 				o.addRow("");
-				o.addRedText("Unsupported Geo Type in parser: "+type);
-				Log.e("vortex","type not supported! "+type);
+				o.addRedText("Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString());
+				Log.e("vortex","Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString()+" peek: "+reader.peek());
 				return new LoadResult(this,ErrorCode.ParseError);
 			}
-			int skipped=0;
-			while(reader.hasNext()) {
-				this.getAttribute(reader);
-				skipped++;
-			}
-			if (skipped>0) {
-				o.addRow("");
-				o.addYellowText("Skipped "+skipped+" attributes in file "+getFileName());
-			}
-
-			reader.endArray();
-			reader.endObject();
-			//Properties
-			reader.nextName();
-			reader.beginObject();
-			while(reader.hasNext()) {
-				attributes.put(reader.nextName().toLowerCase(),this.getAttribute(reader));
-			}
-			//Log.d("vortex",attributes.toString());
-			//end attributes
-			reader.endObject();
-			//end row
-			reader.endObject();
-			String uuid = attributes.remove(GisConstants.FixedGid);
-			//Log.d("vortex","FixedGid: "+uuid);
-			String rutaId = attributes.remove(GisConstants.RutaID);
-
-
-			if (uuid!=null) {
-				uuid = uuid.replace("{","").replace("}","");
-				//Log.d("vortex","FixedGid: "+uuid);
-				keyChain.put("uid", uuid);
-			}
-			else {
-				generatedUID=true;
-				keyChain.put("uid", UUID.randomUUID().toString());
-			}
-			//keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
-
-			//Tarfala hack. TODO: Remove.
-			if (rutaId==null)
-				Log.e("vortex","ingen ruta ID!!!!");
-			else
-				keyChain.put("ruta", rutaId);
-
-			keyChain.put(GisConstants.TYPE_COLUMN, myType);
-
-			//Add geotype to attributes so that the correct object can be used at export.
-			attributes.put(GisConstants.Geo_Type, mType);
-
-
-
-			//Log.d("vortex","added new gis object");
-			return null;
-		} else {
-			o.addRow("");
-			o.addRedText("Parse error when parsing file "+fileName+". Expected Object type at line ");
-			Log.e("vortex","Parse error when parsing file "+fileName+". Expected Object type at line ");
-			return new LoadResult(this,ErrorCode.ParseError);
-		}
 		} catch (MalformedJsonException je) {
 			Tools.printErrorToLog(o, je);
 			throw(je);

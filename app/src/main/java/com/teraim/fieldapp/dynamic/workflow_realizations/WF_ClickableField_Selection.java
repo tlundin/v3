@@ -31,12 +31,7 @@ public class WF_ClickableField_Selection extends WF_ClickableField {
 		return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_selection_element,null);
 	}
 
-	public void attachRule(Rule r) {
-		if (myRules == null)
-			myRules = new ArrayList<Rule>();
-		myRules.add(r);
-		Log.d("vortex","Added rule "+r.getCondition());
-	}
+
 
 
 

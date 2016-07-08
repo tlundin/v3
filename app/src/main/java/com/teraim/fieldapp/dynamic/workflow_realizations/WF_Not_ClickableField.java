@@ -91,7 +91,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			virgin = false;
 			super.setKey(var);
 			myDescription=al.getDescription(var.getBackingDataSet());
-		}		
+		}
+
 		if (displayOut) {
 			LinearLayout ll = getFieldLayout();
 

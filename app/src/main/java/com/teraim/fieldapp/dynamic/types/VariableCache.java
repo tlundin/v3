@@ -272,6 +272,10 @@ public class VariableCache {
         //Log.d("vortex", "in CACHE GetVariable for " + varId);
         long t0 = System.currentTimeMillis();
         //Log.d("vortex","cache is "+cache);
+        if (varId == null) {
+            Log.e("vortex","getVariable in Cache called with VarId = null");
+            return null;
+        }
         Variable variable = cache.get(varId.toLowerCase());
         if (variable == null) {
             //check if variable has subset of keypairs

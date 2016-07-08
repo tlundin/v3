@@ -49,6 +49,7 @@ import android.widget.TextView;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.InnerLayout;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition.SpinnerElement;
@@ -69,13 +70,14 @@ EventGenerator {
 	final LinearLayout inputContainer;
 
 	protected Map<Variable, View> myVars = new HashMap<Variable, View>();
+
 	private boolean autoOpenSpinner = true;
 	private GlobalState gs;
 	private VariableConfiguration al;
 	private static boolean HIDE = false, SHOW = true;
 	private Map<Variable, String[]> values = new HashMap<Variable, String[]>();
 
-	public abstract LinearLayout getFieldLayout();
+
 
 	private final SpinnerDefinition sd;
 
@@ -90,6 +92,7 @@ EventGenerator {
 	protected List<Rule> myRules;
 	
 	
+	public abstract LinearLayout getFieldLayout();
 
 	@Override
 	public Set<Variable> getAssociatedVariables() {
@@ -277,10 +280,14 @@ EventGenerator {
 
 			@Override
 			public void onClick(final View v) {
-
+				if (WF_ClickableField.this instanceof WF_ClickableField_Slider) {
+					Log.d("vortex","click denied! I am slideR? ");
+					return;
+				}
 				originalBackground = v.getBackground();
 				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 				// special case. No dialog.
+
 				if (singleBoolean) {
 					Log.d("vortex","singleboolean true..setting radio");
 					View vv = myVars.values().iterator().next();
@@ -642,7 +649,7 @@ EventGenerator {
 
 				// o.addRow("Adding edit field for dy-variable with label "+label+", name "+varId+", type "+numType.name()+" and unit "+unit.name());
 				if (var.getType() == DataType.numeric) {
-					if (format.equals("slider")) {
+					if (format !=null && format.equals("slider")) {
 						l = LayoutInflater.from(myContext.getContext()).inflate(
 								R.layout.edit_field_slider, null);
 						SeekBar sb = (SeekBar) l.findViewById(R.id.seekbar);
@@ -717,9 +724,9 @@ EventGenerator {
 		}
 
 		OutC w = null;
+		Log.d("vortex","in addvariable, displayout is "+displayOut+" for variable "+var.getId());
 		if (displayOut) {
 			LinearLayout ll = getFieldLayout();
-
 			/*
 			 * TextView o = (TextView)ll.findViewById(R.id.outputValueField);
 			 * TextView u = (TextView)ll.findViewById(R.id.outputUnitField);
@@ -754,7 +761,7 @@ EventGenerator {
 		return h;
 	}
 
-	private void save() {
+	protected void save() {
 		boolean saveEvent = false;
 		String newValue = null, existingValue = null;
 		// for now only delytevariabler.
@@ -1088,9 +1095,16 @@ EventGenerator {
 	 * tmp = et.getFilters(); return
 	 * tmp.length==0?null:(CombinedRangeAndListFilter)tmp[0]; }
 	 */
-
 	protected void setAutoOpenSpinner(boolean open) {
 		autoOpenSpinner = open;
+	}
+
+
+	public void attachRule(Rule r) {
+		if (myRules == null)
+			myRules = new ArrayList<Rule>();
+		myRules.add(r);
+		Log.d("vortex","Added rule "+r.getCondition());
 	}
 
 }

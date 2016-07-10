@@ -23,11 +23,9 @@ import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
-import com.teraim.fieldapp.dynamic.blocks.SliderGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
-import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Rule;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
@@ -60,7 +58,8 @@ public class WF_Context {
 	private int mapLayer=0;
 	private List<String> contextVariables = null;
 	private boolean myEndIsNear=false;
-	private Map<String,SliderGroupBlock> sliderGroupM=new HashMap<String, SliderGroupBlock>();
+	private Map<String,List<WF_ClickableField_Slider>> sliderGroupM=new HashMap<String, List<WF_ClickableField_Slider>>();
+	private Map<String,CoupledVariableGroupBlock> mySliderGroups = new HashMap<String, CoupledVariableGroupBlock>();
 
 
 	public WF_Context(Context ctx,Executor e,int rootContainerId) {
@@ -210,6 +209,7 @@ public class WF_Context {
 		filterables.clear();
 		drawables.clear();
 		sliderGroupM.clear();
+		mySliderGroups.clear();
 		eventBroker.removeAllListeners();
 		rules.clear();
 		currentGis = null;
@@ -397,14 +397,26 @@ public class WF_Context {
 		}
 	}
 
-	public void addSliderGroup(SliderGroupBlock sliderGroupBlock) {
 
-		sliderGroupM.put(sliderGroupBlock.getName(),sliderGroupBlock);
-	}
-
-	public SliderGroupBlock getGroup(String groupName) {
+	public List<WF_ClickableField_Slider> getSliderGroupMembers(String groupName) {
 		if (sliderGroupM!=null)
 			return sliderGroupM.get(groupName);
 		return null;
+	}
+
+	public CoupledVariableGroupBlock getSliderGroup(String groupName) {
+		return mySliderGroups.get(groupName);
+	}
+
+	public void addSliderGroup(CoupledVariableGroupBlock sliderGroup) {
+		mySliderGroups.put(sliderGroup.getName(),sliderGroup);
+	}
+
+	public void addSliderToGroup(String groupName, WF_ClickableField_Slider wf_clickableField_slider) {
+		List list = getSliderGroupMembers(groupName);
+		if (list==null)
+			list = new ArrayList<WF_ClickableField_Slider>();
+		list.add(wf_clickableField_slider);
+		sliderGroupM.put(groupName,list);
 	}
 }

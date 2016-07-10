@@ -239,7 +239,8 @@ public class ModuleLoader implements FileLoadedCb{
 					o.addRow("No data (Network error)");
 			}
 		} else if (errCode==ErrorCode.Unsupported) {
-			o.addRow("Remote file requires Vortex version ["+res.errorMessage+"]. Please upgrade.");
+			o.addRow("");
+			o.addRedText("The Vortex version you use is too old to run this App version ["+res.errorMessage+"]. Please upgrade!");
 		} else if (errCode==ErrorCode.ParseError) {
 			o.addRow("");
 			o.addRedText("The file contains an error. Please check log for details");

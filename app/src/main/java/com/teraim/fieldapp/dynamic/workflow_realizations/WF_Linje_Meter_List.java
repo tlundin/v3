@@ -191,7 +191,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 						Log.d("nils","Bonnlapp - Adding key "+cd.get(colC).colName+" with value "+colVals[colC]);
 					}
 					String header = colVals[myHeaderCol];
-					WF_ClickableField entryF = new WF_ClickableField_Selection(header,"",myContext,this.getId()+rowC,true);
+					WF_ClickableField entryF = new WF_ClickableField_Selection(header,"",myContext,this.getId()+rowC,true,"black",null);
 					if (colVals[myHeaderCol]!=null && colVals[myHeaderCol].equals("Avgränsning")) {
 						Log.d("vortex","In refreshlist for avgränsning");						
 						//(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted)

@@ -19,7 +19,7 @@ public class CreateEntryFieldBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = 2013870148670474248L;
-	String name,type,label,containerId,postLabel,initialValue;
+	String name,type,label,containerId,postLabel,initialValue,textColor,backgroundColor;
 	Unit unit;
 	GlobalState gs;
 	boolean isVisible = false,showHistorical,autoOpenSpinner=true;
@@ -29,7 +29,7 @@ public class CreateEntryFieldBlock extends Block {
 
 
 	public CreateEntryFieldBlock(String id,String name, 
-			String containerId,boolean isVisible,String format,boolean showHistorical,String initialValue, String label, boolean autoOpenSpinner) {
+			String containerId,boolean isVisible,String format,boolean showHistorical,String initialValue, String label, boolean autoOpenSpinner,String textColor,String backgroundColor) {
 		super();
 		this.name = name;
 		this.containerId=containerId;
@@ -40,6 +40,11 @@ public class CreateEntryFieldBlock extends Block {
 		this.showHistorical=showHistorical;
 		this.label=label;
 		this.autoOpenSpinner=autoOpenSpinner;
+		this.textColor=textColor;
+		this.backgroundColor=backgroundColor;
+
+		if (textColor.isEmpty())
+			this.textColor="black";
 	}
 
 	/**
@@ -79,7 +84,7 @@ public class CreateEntryFieldBlock extends Block {
 				o.addRedText("Current DB Context: ["+gs.getVariableCache().getContext()+"]");
 			} else	{	
 				myField = new WF_ClickableField_Selection_OnSave(label==null||label.equals("")?v.getLabel():label,
-						al.getDescription(v.getBackingDataSet()),myContext,name,isVisible,autoOpenSpinner);
+						al.getDescription(v.getBackingDataSet()),myContext,name,isVisible,autoOpenSpinner,textColor,backgroundColor);
 				Log.d("nils", "In CreateEntryField. Description: "+al.getDescription(v.getBackingDataSet()));
 				Log.d("nils","Backing data: "+v.getBackingDataSet().toString());
 				myField.addVariable(v, true,format,true,showHistorical);

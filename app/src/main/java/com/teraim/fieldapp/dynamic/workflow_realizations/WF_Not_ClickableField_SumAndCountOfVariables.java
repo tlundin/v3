@@ -32,20 +32,20 @@ WF_Not_ClickableField implements EventListener {
 	Type myType;
 
 	public WF_Not_ClickableField_SumAndCountOfVariables(String header,String descriptionT, WF_Context myContext, 
-			String myTarget, String pattern,Type sumOrCount,boolean isVisible, String textColor, String bgColor) {
-		super(header,header, descriptionT, myContext, LayoutInflater.from(myContext.getContext()).inflate(R.layout.selection_field_normal_colored,null),isVisible);
+			String myTarget, String pattern,Type sumOrCount,boolean isVisible, String textColor, String backgroundColor) {
+		super(header,header, descriptionT, myContext, LayoutInflater.from(myContext.getContext()).inflate(R.layout.selection_field_normal_colored,null),isVisible,textColor, backgroundColor);
 		this.myContext=myContext;
 		o = GlobalState.getInstance().getLogger();
 		targetList = myContext.getList(myTarget);
 		myType = sumOrCount;
 		myPattern = pattern;
 		allMatchingVariables=new HashSet<Variable>();
-		TextView text = (TextView)getWidget().findViewById(R.id.editfieldtext);
-		LinearLayout bg = (LinearLayout)getWidget().findViewById(R.id.background);
-		if (bgColor!=null)
-			bg.setBackgroundColor(Color.parseColor(bgColor));
-		if (textColor!=null)
-			text.setTextColor(Color.parseColor(textColor));
+		//TextView text = (TextView)getWidget().findViewById(R.id.editfieldtext);
+		//LinearLayout bg = (LinearLayout)getWidget().findViewById(R.id.background);
+		//if (bgColor!=null)
+		//	bg.setBackgroundColor(Color.parseColor(bgColor));
+		//if (textColor!=null)
+		//	text.setTextColor(Color.parseColor(textColor));
 
 		if (targetList == null) {
 			o.addRow("");

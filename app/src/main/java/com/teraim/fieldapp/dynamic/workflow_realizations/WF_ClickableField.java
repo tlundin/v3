@@ -227,15 +227,15 @@ EventGenerator {
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			mActionMode = null;
-			longClickedRow.setBackgroundDrawable(originalBackground);
+			longClickedRow.setBackgroundColor(backgroundColor);
 		}
 	};
 
 	ActionMode mActionMode;
 
 	public WF_ClickableField(final String label, final String descriptionT,
-			WF_Context context, String id, View view, boolean isVisible) {
-		super(id, label, descriptionT, context, view, isVisible);
+			WF_Context context, String id, View view, boolean isVisible,String textColor, String backgroundColor) {
+		super(id, label, descriptionT, context, view, isVisible,textColor, backgroundColor);
 		 //Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
 
 		gs = GlobalState.getInstance();
@@ -263,7 +263,7 @@ EventGenerator {
 				if (mActionMode != null) {
 					return false;
 				}
-				originalBackground = v.getBackground();
+
 				longClickedRow = v;
 				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 
@@ -875,6 +875,8 @@ EventGenerator {
 
 				}
 
+			} else {
+				Log.d("nils", "New value was not set: " + newValue);
 			}
 		}
 

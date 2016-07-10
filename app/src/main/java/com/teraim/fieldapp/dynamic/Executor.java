@@ -29,7 +29,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
-import com.teraim.fieldapp.dynamic.blocks.BlockCreateNewEntryField;
+import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
@@ -60,7 +60,7 @@ import com.teraim.fieldapp.dynamic.blocks.RoundChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
-import com.teraim.fieldapp.dynamic.blocks.SliderGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.VarValueSourceBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Rule;
@@ -417,11 +417,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					if (v!=null)
 						visiVars.add(v);
 				}
-				else if (b instanceof BlockCreateNewEntryField) {
+				else if (b instanceof CreateSliderEntryFieldBlock) {
 					o.addRow("");
 					o.addYellowText("CreateEntryFieldBlock found "+b.getBlockId());
-					BlockCreateNewEntryField bl = (BlockCreateNewEntryField)b;
-					Log.d("NILS","BlockCreateNewEntryField found");
+					CreateSliderEntryFieldBlock bl = (CreateSliderEntryFieldBlock)b;
+					Log.d("NILS","CreateSliderEntryFieldBlock found");
 					bl.create(myContext);
 
 				}
@@ -437,10 +437,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					DisplayValueBlock bl = (DisplayValueBlock)b;
 					bl.create(myContext);
 				}
-				else if (b instanceof SliderGroupBlock) {
+				else if (b instanceof CoupledVariableGroupBlock) {
 					o.addRow("");
 					o.addYellowText("Slidergroupblock found "+b.getBlockId());
-					SliderGroupBlock bl = (SliderGroupBlock) b;
+					CoupledVariableGroupBlock bl = (CoupledVariableGroupBlock) b;
 					bl.create(myContext);
 				}
 				else if (b instanceof AddVariableToEveryListEntryBlock) {

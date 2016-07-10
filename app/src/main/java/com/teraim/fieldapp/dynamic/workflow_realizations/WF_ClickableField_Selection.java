@@ -13,10 +13,10 @@ public class WF_ClickableField_Selection extends WF_ClickableField {
 
 
 	public WF_ClickableField_Selection(String headerT, String descriptionT,
-			WF_Context context, String id,boolean isVisible) {
+			WF_Context context, String id,boolean isVisible,String textColor,String backgroundColor) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(R.layout.selection_field_normal,null),
-				isVisible);
+				isVisible,textColor,backgroundColor);
 
 
 	}

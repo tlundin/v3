@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
             android:gravity="center|left"
             android:text="Variable name"
             android:singleLine="true"

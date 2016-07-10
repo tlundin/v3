@@ -18,7 +18,7 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 			WF_Context context, String id,boolean isVisible) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(R.layout.cell_field_normal,null),
-				isVisible);
+				isVisible,"black",null);
 
 		myHash = columnKeyHash;
 	}

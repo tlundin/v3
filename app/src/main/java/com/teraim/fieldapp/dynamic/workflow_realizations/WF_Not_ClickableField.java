@@ -19,6 +19,7 @@ import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public abstract class WF_Not_ClickableField extends WF_ListEntry {
+	private final int textColorC;
 	protected WF_Context myContext;
 	protected String myDescription;
 	final LinearLayout outputContainer;
@@ -33,6 +34,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 	public abstract LinearLayout getFieldLayout();
 	private TextView myHeader;
 	private String entryFieldAuthor = null;
+	protected int backgroundColor=Color.TRANSPARENT;
 
 	//	public abstract String getFormattedText(Variable varId, String value);
 
@@ -67,7 +69,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 
 	public WF_Not_ClickableField(String id,final String label,final String descriptionT, WF_Context myContext, 
-			View view,boolean isVisible) {
+			View view,boolean isVisible,String textColor, String backgroundColor) {
 		super(id,view,myContext,isVisible);
 
 
@@ -75,15 +77,25 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		myHeader = (TextView)getWidget().findViewById(R.id.editfieldtext);
 		outputContainer = (LinearLayout)getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
-		if (myHeader!=null)
-			myHeader.setText(label);
+		Log.d("vortex","TEXT: "+label+" COLOR: "+textColor);
+		textColorC = Color.parseColor(textColor);
+		myHeader.setTextColor(textColorC);
+		myHeader.setText(label);
 		this.label = label;
 		myDescription = descriptionT;
 		//Show owner.
 		showAuthor = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.SHOW_AUTHOR_KEY);
+		if (backgroundColor!=null) {
+			this.backgroundColor = Color.parseColor(backgroundColor);
+			getWidget().setBackgroundColor(this.backgroundColor);
+		}
+		//Log.d("vortex","setting background to "+this.backgroundColor);
+
 
 
 	}
+
+
 
 	public void addVariable(Variable var, boolean displayOut, String format, boolean isVisible) {
 
@@ -96,10 +108,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		if (displayOut) {
 			LinearLayout ll = getFieldLayout();
 
-			/*
-			 TextView o = (TextView)ll.findViewById(R.id.outputValueField);
-			TextView u = (TextView)ll.findViewById(R.id.outputUnitField);
 
+			/*
 			String value = Variable.getPrintedValue();
 			if (!value.isEmpty()) {
 				o.setText(varLabel+": "+value);	
@@ -131,16 +141,20 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 			if (variable.hasBrokenRules()||variable.hasValueOutOfRange()) {
 				Log.d("nils","VARID: "+variable.getId()+" hasBroken: "+variable.hasBrokenRules()+" hasoutofRange: "+variable.hasValueOutOfRange());
-				o.setTextColor(Color.RED);	
+				o.setTextColor(Color.RED);
+				u.setTextColor(Color.RED);
 			} else {
 				if (variable.isUsingDefault()) {
 					Log.d("nils","Variable "+variable.getId()+" is purple");
 					int purple = myContext.getContext().getResources().getColor(R.color.purple);
 					o.setTextColor(purple);
+					u.setTextColor(purple);
 					if (myHeader!=null)
 						myHeader.setTextColor(purple);
-				} else
-					o.setTextColor(Color.BLACK);
+				} else {
+					o.setTextColor(textColorC);
+					u.setTextColor(textColorC);
+				}
 			}
 			String outS="";
 

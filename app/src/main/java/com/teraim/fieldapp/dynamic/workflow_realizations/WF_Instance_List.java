@@ -119,7 +119,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 						String entryInstanceLabel = al.getEntryLabel(var.getBackingDataSet())+" ["+index+"]";
 						WF_ClickableField_Selection ef = entryFields.get(entryInstanceLabel);
 						if (ef == null) {
-							ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true);
+							ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true,"black",null);
 							Log.d("nils","Added list entry for "+entryInstanceLabel);
 							//cache
 							entryFields.put(entryInstanceLabel, ef);	

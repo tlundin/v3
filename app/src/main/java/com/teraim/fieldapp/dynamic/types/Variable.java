@@ -99,7 +99,7 @@ public class Variable implements Serializable {
 			myValue = myDb.getValue(name,mySelection,myValueColumn);
 			Log.d("zzzz","myValue in get "+myValue);
 			//Variable doesnt exist in database
-			if (myValue==null && myType == DataType.auto_increment) {
+			if (myType == DataType.auto_increment && myValue==null) {
 				//find value for global auto_inc counter in persistent memory.
 				//increment global counter.
 				int globalAC = gs.getPreferences().getI(PersistenceHelper.GLOBAL_AUTO_INC_COUNTER);
@@ -307,7 +307,7 @@ public class Variable implements Serializable {
 
 
 	public Variable(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted, String historicalValue) {
-		//Log.d("nils","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nthis obj: "+this);
+		Log.d("nils","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
 		this.gs=gs;
 		al=gs.getVariableConfiguration();
 		this.name = name;
@@ -347,6 +347,7 @@ public class Variable implements Serializable {
 		setDefault(defaultOrExistingValue);
 		//No information if this variable exists or not.
 		if (valueIsPersisted == null) {
+			Log.d("vortex","I do end up here.");
 			unknown = true;
 			usingDefault = false;
 		}
@@ -566,7 +567,7 @@ public class Variable implements Serializable {
 
 
 	private void setDefault(String defaultValue) {
-		//Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
+		Log.d("vortex","Setting defaultvalue : "+defaultValue+" for "+this.getId());
 		if (defaultValue == null) {
 
 			myDefaultValue = null;
@@ -577,6 +578,7 @@ public class Variable implements Serializable {
 			Log.d("vortex","Setting default from historical: "+myDefaultValue+" for "+this.getId());
 		}
 		else {
+			Log.d("vortex","Setting default from default value: "+defaultValue+" for "+this.getId());
 			myDefaultValue = defaultValue.equals(Constants.NO_DEFAULT_VALUE)?null:defaultValue;
 		}
 	}

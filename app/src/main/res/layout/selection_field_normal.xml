@@ -20,7 +20,8 @@
             android:gravity="center|left"
             android:text="Variable name"
             android:singleLine="true"
-            android:ellipsize="end"
+            android:ellipsize="marquee"
+            android:minEms="6"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 

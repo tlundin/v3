@@ -21,14 +21,34 @@ public class BlockCreateTextField extends Block {
 	String label,containerId;
 	boolean isVisible = true;
 	private List<EvalExpr> labelE;
+	int horizontalMargin,verticalMargin,textSize;
 	
-	public BlockCreateTextField(String id, String label, String background, String containerId, boolean isVisible) {
+	public BlockCreateTextField(String id, String label, String background, String containerId, boolean isVisible,String textSize,String horiz,String vert) {
 		this.blockId=id;
 		this.label=label;
 		this.labelE=Expressor.preCompileExpression(label);
 		this.containerId=containerId;
 		this.isVisible = isVisible;
 		this.background = background;
+		try {
+			horizontalMargin=Integer.parseInt(horiz);
+
+		} catch (NumberFormatException e) {
+			horizontalMargin=5;
+
+		}
+		try {
+			verticalMargin=Integer.parseInt(vert);
+
+		} catch (NumberFormatException e) {
+			verticalMargin=5;
+
+		}
+		try {
+			this.textSize=Integer.parseInt(textSize);
+		} catch (NumberFormatException e) {
+			this.textSize=-1;
+		}
 	}
 
 	
@@ -39,7 +59,7 @@ public class BlockCreateTextField extends Block {
 		//Identify targetList. If no list, no game.
 		Container myContainer = ctx.getContainer(containerId);
 		if (myContainer != null)  {
-			myContainer.add(new WF_TextBlockWidget(ctx,Expressor.analyze(labelE),background,blockId,isVisible));
+			myContainer.add(new WF_TextBlockWidget(ctx,Expressor.analyze(labelE),background,blockId,isVisible,textSize,horizontalMargin, verticalMargin));
 			o.addRow("Added new TextField with ID"+blockId);
 		} else {
 			o.addRow("");

@@ -24,8 +24,11 @@ import android.util.Log;
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
+import com.teraim.fieldapp.dynamic.types.DataSource;
 import com.teraim.fieldapp.dynamic.types.Rule;
+import com.teraim.fieldapp.dynamic.types.SimpleChartDataSource;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
@@ -60,6 +63,7 @@ public class WF_Context {
 	private boolean myEndIsNear=false;
 	private Map<String,List<WF_ClickableField_Slider>> sliderGroupM=new HashMap<String, List<WF_ClickableField_Slider>>();
 	private Map<String,CoupledVariableGroupBlock> mySliderGroups = new HashMap<String, CoupledVariableGroupBlock>();
+	private Map<String,DataSource> chartGroupM = new HashMap<String, DataSource>();
 
 
 	public WF_Context(Context ctx,Executor e,int rootContainerId) {
@@ -210,6 +214,7 @@ public class WF_Context {
 		drawables.clear();
 		sliderGroupM.clear();
 		mySliderGroups.clear();
+		chartGroupM.clear();
 		eventBroker.removeAllListeners();
 		rules.clear();
 		currentGis = null;
@@ -418,5 +423,14 @@ public class WF_Context {
 			list = new ArrayList<WF_ClickableField_Slider>();
 		list.add(wf_clickableField_slider);
 		sliderGroupM.put(groupName,list);
+	}
+
+
+	public void addChartDataSource(String myChart, DataSource dataSource) {
+		chartGroupM.put(myChart,dataSource);
+	}
+
+	public DataSource getChartDataSource(String chartName) {
+		return chartGroupM.get(chartName);
 	}
 }

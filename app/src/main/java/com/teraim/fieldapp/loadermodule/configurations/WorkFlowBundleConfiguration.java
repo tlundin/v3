@@ -16,6 +16,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
@@ -49,7 +50,6 @@ import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
-import com.teraim.fieldapp.dynamic.blocks.VarValueSourceBlock;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Not_ClickableField_SumAndCountOfVariables;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
@@ -293,8 +293,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockAddFilter(parser));
 				else if (name.equals("block_create_round_chart"))
 					blocks.add(readBlockCreateRoundChart(parser));
-				else if (name.equals("block_create_var_value_source"))
-					blocks.add(readBlockCreateVarValueSource(parser));
+				else if (name.equals("block_create_category_data_source"))
+					blocks.add(readBlockCreateCategoryDataSource(parser));
 				else if (name.equals("block_create_picture"))
 					blocks.add(readBlockCreatePicture(parser));
 				else if (name.equals("block_add_gis_image_view"))
@@ -737,10 +737,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	}
 
-	private Block readBlockCreateVarValueSource(XmlPullParser parser) throws IOException, XmlPullParserException {
+	private Block readBlockCreateCategoryDataSource(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
-		String id=null,filter=null;
-		parser.require(XmlPullParser.START_TAG, null,"block_create_var_value_source");
+		String id=null,title=null,chart=null;
+		String[] categories=null, variableNames=null;
+		parser.require(XmlPullParser.START_TAG, null,"block_create_category_data_source");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
@@ -748,22 +749,35 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			String name= parser.getName();
 			if (name.equals("block_ID")) {
 				id = readText("block_ID",parser);
-			} else if (name.equals("filter")) {
-				filter = readText("filter",parser);
-			} 
+			} else if (name.equals("title")) {
+				title = readText("title",parser);
+			} else if (name.equals("chart_name")) {
+				chart = readText("chart_name",parser);
+			} else if (name.equals("categories")) {
+				categories = createStringArray(readText("categories",parser));
+			} else if (name.equals("variables")) {
+				variableNames = createStringArray(readText("variables",parser));
+			}
+
 			else
 				skip(name,parser,o);
 
 		}
-		checkForNull("block_ID",id,"filter",filter);
-		return new VarValueSourceBlock(id,filter);
+		checkForNull("block_ID",id);
+		return new CreateCategoryDataSourceBlock(id,title,chart, categories, variableNames);
 
+	}
+
+	private String[] createStringArray(String args) {
+		if (args==null || args.isEmpty())
+			return null;
+		return args.split(",");
 	}
 
 	private Block readBlockCreateRoundChart(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
 		String id=null,label=null,container=null;
-		String type=null,axisTitle=null,textSize=null,margins=null,startAngle=null, dataSource=null;
+		String type=null,axisTitle=null,textSize=null,margins=null,startAngle=null, dataSource=null,mName=null;
 		String h = null, w=null;
 		int height=-1,width=-1;
 		boolean isVisible=true,displayValues=true,percentage=false;
@@ -775,6 +789,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			String name= parser.getName();
 			if (name.equals("block_ID")) {
 				id = readText("block_ID",parser);
+			} else if (name.equals("name")) {
+				mName= readText("name",parser);
 			} else if (name.equals("label")) {
 				label = readText("label",parser);
 			} else if (name.equals("container_name")) {
@@ -812,23 +828,21 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("percentage")) {
 				percentage = !readText("percentage",parser).equals("false");
 			}			
-			else if (name.equals("data_source")) {
-				dataSource = readText("data_source",parser);
-			}			
+
 			else
 				skip(name,parser,o);
 
 		}
 
-		checkForNull("block_ID",id,"label",label,"container",container,
+		checkForNull("block_ID",id,"name",mName,"label",label,"container",container,
 				"axis_title",axisTitle,"text_size",textSize,"margins",margins,"start_angle",startAngle,"height",h,"width",w,
 				"data_source",dataSource);
-		return new RoundChartBlock(id,label,container,type,axisTitle,textSize,margins,startAngle,height,width,displayValues,percentage,isVisible,dataSource);
+		return new RoundChartBlock(id,mName,label,container,type,axisTitle,textSize,margins,startAngle,height,width,displayValues,percentage,isVisible);
 
 	}
 	private Block readBlockCreateTextField(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
-		String id=null,label=null,container=null,background=null;
+		String id=null,label=null,container=null,background=null,horizontalMargin=null,verticalMargin=null,textSize=null;
 		boolean isVisible=true;
 		parser.require(XmlPullParser.START_TAG, null,"block_create_text_field");
 		while (parser.next() != XmlPullParser.END_TAG) {
@@ -846,6 +860,12 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				container = readText("container_name",parser);
 			} else if (name.equals("is_visible")) {
 				isVisible = !readText("is_visible",parser).equals("false");
+			} else if (name.equals("horizontal_margin")) {
+				horizontalMargin = readText("horizontal_margin",parser);
+			} else if (name.equals("text_size")) {
+				textSize = readText("text_size",parser);
+			} else if (name.equals("vertical_margin")) {
+				verticalMargin = readText("vertical_margin",parser);
 			}
 
 			else
@@ -853,7 +873,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 		checkForNull("block_ID",id,"label",label,"container",container);
-		return new BlockCreateTextField(id,label,background,container,isVisible);
+		return new BlockCreateTextField(id,label,background,container,isVisible,textSize,horizontalMargin,verticalMargin);
 
 	}
 

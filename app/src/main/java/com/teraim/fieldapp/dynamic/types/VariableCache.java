@@ -307,9 +307,11 @@ public class VariableCache {
                 //Log.d("vortex","T1:"+(System.currentTimeMillis()-t0));
                 //TODO: ABRAKA CHANGE TO FALSE BELOW
                 if (type == DataType.array)
-                    variable = new ArrayVariable(varId, header, row, hash, gs, vCol, defaultValue, true, "*NULL*");
-                else
-                    variable = new Variable(varId, header, row, hash, gs, vCol, defaultValue, true, "*NULL*");
+                    variable = new ArrayVariable(varId, header, row, hash, gs, vCol, defaultValue, hasValueInDB, "*NULL*");
+                else {
+                    Log.d("vortex","varche defval: "+defaultValue+" for "+varId);
+                    variable = new Variable(varId, header, row, hash, gs, vCol, defaultValue, hasValueInDB, "*NULL*");
+                }
                 cache.put(varId.toLowerCase(), variable);
             } else
                 Log.d("vortex", "Found " + variable.getId() + " in global cache with value " + variable.getValue() + " varhash:" + tryThis);

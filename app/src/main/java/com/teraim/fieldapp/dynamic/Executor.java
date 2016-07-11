@@ -29,6 +29,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
@@ -61,7 +62,6 @@ import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
-import com.teraim.fieldapp.dynamic.blocks.VarValueSourceBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
@@ -748,8 +748,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					((RoundChartBlock) b).create(myContext);
 
 				}
-				else if (b instanceof VarValueSourceBlock) {
-					((VarValueSourceBlock) b).create(myContext);
+				else if (b instanceof CreateCategoryDataSourceBlock) {
+					((CreateCategoryDataSourceBlock) b).create(myContext);
 
 				}
 				else if (b instanceof CreateGisBlock) {

@@ -8,15 +8,20 @@ import org.achartengine.model.CategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.types.DataSource;
+import com.teraim.fieldapp.dynamic.types.SimpleChartDataSource;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
@@ -29,7 +34,7 @@ public class RoundChartBlock extends Block implements EventListener {
 
 
 	private static final long serialVersionUID = 4030652478782165890L;
-	String label, container,
+	String label, container,name,
 	type, axisTitle, margins,startAngle, dataSource;
 
 	boolean displayValues=true,isVisible=true,percentage=false;
@@ -38,11 +43,17 @@ public class RoundChartBlock extends Block implements EventListener {
 	private WF_Widget myWidget;
 	GraphicalView pie;
 	private CategorySeries distributionSeries;
+	private Context ctx;
+	private final static int DefaultHeight=300,DefaultWidth=300;
+	private WF_Context myContext;
 
-	public RoundChartBlock(String id, String label, String container,
+	private SimpleChartDataSource myDataSource;
+
+
+	public RoundChartBlock(String blockId, String name, String label, String container,
 			String type, String axisTitle, String textSize, String margins,
 			String startAngle, int height,int width, boolean displayValues, boolean percentage,
-			boolean isVisible,String dataSource) {
+			boolean isVisible) {
 		super();
 		float textSizeF = 10;
 		try {
@@ -50,7 +61,8 @@ public class RoundChartBlock extends Block implements EventListener {
 		} catch (NumberFormatException e) {
 			Log.d("vortex","error in format...default to 10");
 		}
-		this.blockId = id;
+		this.blockId = blockId;
+		this.name = name;
 		this.label = label;
 		this.container = container;
 		this.type = type;
@@ -63,129 +75,122 @@ public class RoundChartBlock extends Block implements EventListener {
 		this.percentage = percentage;
 		this.height=height;
 		this.width=width;
-		this.dataSource = dataSource;
 		Log.d("vortex","height"+height);
 
 	}
 
 	public void create(WF_Context myContext) {
-		o = GlobalState.getInstance().getLogger();
-		WF_Container myContainer = (WF_Container)myContext.getContainer("root");
-		//		WF_Container myPieContainer = (WF_Container)myContext.getContainer("pie");
-		if (myContainer !=null) {
-			if (startAngle ==null||startAngle.isEmpty())
-				startAngle = "0";
-			pie = createPie(myContext.getContext());
-
-			//View mX = LayoutInflater.from(myContext.getContext()).inflate(R.layout.chart_wrapper,myContainer.getViewGroup());
-			//LinearLayout mChart = (LinearLayout)mX.findViewById(R.id.myChart);
-
-			myWidget = new WF_Widget(blockId,pie,isVisible,myContext);	
-			myContainer.add(myWidget);
-			Button b = new Button(myContext.getContext());
-			b.setText("Generate some data");
-			b.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					RoundChartBlock.this.onEvent(new WF_Event_OnSave("me"));
-				}
-			});
-			myContainer.add(new WF_Widget("tst",b,isVisible,myContext));
-			Log.d("nils","Added pie chart "+myWidget.getId()+" to container "+myContainer.getId());
-			myContext.registerEventListener(this, EventType.onFlowExecuted);
-
-		}  else {
-			o.addRow("");
-			o.addRedText("Failed to add round chart block with id "+blockId+" - missing container "+"root");
-		}
-
-	}
-
-
-	private GraphicalView createPie(Context ctx){
-
-		//View mChart = LayoutInflater.from(ctx).inflate(R.layout.chart_wrapper,null);
-		// Pie Chart Section Names
-		String[] code = new String[] {
-				"Eclair & Older", "Froyo", "Gingerbread", "Honeycomb",
-				"IceCream Sandwich", "Jelly Bean"
-		};
-
-		// Pie Chart Section Value
-		double[] distribution = { 3.9, 12.9, 55.8, 1.9, 23.7, 1.8 } ;
-
-
 		// Color of each Pie Chart Sections
-		int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
-				Color.YELLOW };
 
-		// Instantiating CategorySeries to plot Pie Chart
-		distributionSeries = new CategorySeries("PIe");
-		for(int i=0 ;i < distribution.length;i++){
-			// Adding a slice with its values and name to the Pie Chart
-			distributionSeries.add(code[i], distribution[i]);
-		}
+		this.myContext = myContext;
+		//delay creat until after other blocks executed, to make sure datasource has been added to context.
+		//(In case this block is executed after the datasource block)
+		myContext.registerEventListener(this, EventType.onFlowExecuted);
 
-		// Instantiating a renderer for the Pie Chart
-		DefaultRenderer defaultRenderer  = new DefaultRenderer();
-		for(int i = 0 ;i<distribution.length;i++){
-			SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
-			seriesRenderer.setColor(colors[i]);
-			seriesRenderer.setDisplayChartValues(true);
-			// Adding a renderer for a slice
-			defaultRenderer.addSeriesRenderer(seriesRenderer);
-		}
+		o = GlobalState.getInstance().getLogger();
 
-		defaultRenderer.setChartTitle(label);
-		defaultRenderer.setChartTitleTextSize(textSize+10);
-		//defaultRenderer.setZoomButtonsVisible(true);
-		defaultRenderer.setBackgroundColor(Color.GRAY);
-		defaultRenderer.setDisplayValues(true);
-		defaultRenderer.setInScroll(true);
-		defaultRenderer.setStartAngle(Float.parseFloat(startAngle));
-
-
-		//Need to create the datasource and ask for data.
-
-
-		// Getting a reference to LinearLayout of the MainActivity Layout
-		//LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart_container);
-
-
-		// Creating a Line Chart
-		// ((LinearLayout)mChart.findViewById(R.id.chart)).addView(ChartFactory.getPieChartView(ctx, distributionSeries , defaultRenderer),new LayoutParams
-		// 		(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-
-		//Log.w("In Chart", mChart.toString() +"");
-		return ChartFactory.getPieChartView(ctx, distributionSeries , defaultRenderer);
 
 	}
 
-	private final String[] cat = new String[] {"ab","ra","ka","da","bra","la"};
+
+
+
+	private float dpMeasure(float textSize) {
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, textSize, ctx.getResources().getDisplayMetrics());
+	}
+
+
 	@Override
 	public void onEvent(Event e) {
 		if (e.getType()==Event.EventType.onFlowExecuted) {
 			Log.d("vortex","got onAttach event in pieblock. h w "+height+","+width);
-			LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) pie.getLayoutParams();
-			layoutParams.height=(height!=-1?height:300);
-			layoutParams.width=(width!=-1?width:300);
-		} else if (e.getType()==Event.EventType.onSave) {
-			Random random = new Random();
-			int[] d2 = new int[6];
-			distributionSeries.clear();
-			for (int i=0;i<d2.length;i++) {
-				int R = random.nextInt(100);			
-				distributionSeries.add(cat[i],(double)R);
+
+
+			WF_Container myContainer = (WF_Container)myContext.getContainer("root");
+			if (myContainer !=null) {
+				if (startAngle ==null||startAngle.isEmpty())
+					startAngle = "0";
+				ctx = myContext.getContext();
+				myDataSource = (SimpleChartDataSource) myContext.getChartDataSource(name);
+				if (myDataSource!=null) {
+					// Instantiating CategorySeries to plot Pie Chart
+
+
+
+					DefaultRenderer defaultRenderer = new DefaultRenderer();
+					for (int i = 0; i < myDataSource.getSize(); i++) {
+						SimpleSeriesRenderer seriesRenderer = new SimpleSeriesRenderer();
+						seriesRenderer.setColor(myDataSource.getColors()[i]);
+						seriesRenderer.setDisplayChartValues(true);
+						// Adding a renderer for a slice
+						defaultRenderer.addSeriesRenderer(seriesRenderer);
+					}
+					defaultRenderer.setChartTitle(label);
+					defaultRenderer.setChartTitleTextSize(dpMeasure(textSize + 10));
+					//defaultRenderer.setZoomButtonsVisible(true);
+					defaultRenderer.setDisplayValues(true);
+					defaultRenderer.setStartAngle(Float.parseFloat(startAngle));
+
+					pie = ChartFactory.getPieChartView(ctx, generateSeries(), defaultRenderer);
+					myWidget = new WF_Widget(blockId, pie, isVisible, myContext);
+					myContainer.add(myWidget);
+				} else {
+					o.addRow("");
+					o.addRedText("Failed to add round chart block with id "+blockId+" - missing datasource!");
+					return;
+				}
+
+			}  else {
+				o.addRow("");
+				o.addRedText("Failed to add round chart block with id "+blockId+" - missing container "+"root");
+				return;
 			}
-			pie.repaint();
+
+			LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) pie.getLayoutParams();
+			if (height==-1&&width==-1) {
+				width = ctx.getResources().getDisplayMetrics().widthPixels;
+				height=width;
+			} else {
+				if (height==-1)
+					height=DefaultHeight;
+				if (width==-1)
+					width=DefaultWidth;
+				Log.d("vortex", "Applying DIP measurements for density." + height + "," + width);
+				height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, ctx.getResources().getDisplayMetrics());
+				width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, ctx.getResources().getDisplayMetrics());
+			}
+			layoutParams.height=height;
+			layoutParams.width=width;
+
+		} else if (e.getType()==Event.EventType.onSave) {
+			if (myDataSource != null && myDataSource.hasChanged()) {
+
+				distributionSeries.clear();
+				generateSeries();
+
+
+				pie.repaint();
+			}
 		}
+
+	}
+
+	private CategorySeries generateSeries() {
+		distributionSeries = myDataSource.getSeries();
+		boolean hasCategories = myDataSource.getCategories()!=null;
+		int[] currentValues = myDataSource.getCurrentValues();
+		for(int i=0;i<myDataSource.getSize();i++) {
+			if (hasCategories)
+				distributionSeries.add(myDataSource.getCategories()[i],currentValues[i]);
+			else
+				distributionSeries.add(currentValues[i]);
+		}
+		return distributionSeries;
 	}
 
 	@Override
 	public String getName() {
-		return "ROUND CHART ";
+		return name;
 	}
 
 

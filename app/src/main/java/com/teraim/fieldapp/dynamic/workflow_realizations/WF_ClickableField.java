@@ -85,7 +85,7 @@ EventGenerator {
 	// Just set the value on click.
 	private boolean singleBoolean = false;
 
-	private Drawable originalBackground;
+	//private Drawable originalBackground;
 	protected View longClickedRow;
 	protected boolean iAmOpen = false;
 	private Spinner firstSpinner = null;
@@ -234,7 +234,7 @@ EventGenerator {
 	ActionMode mActionMode;
 
 	public WF_ClickableField(final String label, final String descriptionT,
-			WF_Context context, String id, View view, boolean isVisible,String textColor, String backgroundColor) {
+							 WF_Context context, String id, View view, boolean isVisible, String textColor, final String backgroundColor) {
 		super(id, label, descriptionT, context, view, isVisible,textColor, backgroundColor);
 		 //Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
 
@@ -281,10 +281,11 @@ EventGenerator {
 			@Override
 			public void onClick(final View v) {
 				if (WF_ClickableField.this instanceof WF_ClickableField_Slider) {
-					Log.d("vortex","click denied! I am slideR? ");
+					Log.d("vortex","click denied! I am slider ");
 					return;
 				}
-				originalBackground = v.getBackground();
+
+				//originalBackground = v.getBackground();
 				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 				// special case. No dialog.
 
@@ -301,7 +302,8 @@ EventGenerator {
 						nej.setChecked(true);
 					save();
 					refresh();
-					v.setBackgroundDrawable(originalBackground);
+					//v.setBackgroundDrawable(originalBackground);
+					v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
 				} else {
 					// On click, create dialog
 					AlertDialog.Builder alert = new AlertDialog.Builder(v
@@ -322,7 +324,8 @@ EventGenerator {
 									.getParent());
 							if (x != null)
 								x.removeView(inputContainer);
-							v.setBackgroundDrawable(originalBackground);
+							v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
+							//v.setBackgroundDrawable(originalBackground);
 						}
 					});
 					alert.setNegativeButton(R.string.cancel,
@@ -334,7 +337,8 @@ EventGenerator {
 									.getParent());
 							if (x != null)
 								x.removeView(inputContainer);
-							v.setBackgroundDrawable(originalBackground);
+							v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
+							//v.setBackgroundDrawable(originalBackground);
 						}
 					});
 					if (inputContainer.getParent() != null)

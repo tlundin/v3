@@ -226,7 +226,7 @@ public class Expressor {
 						try {
 							rez = streamAnalyzer.next();
 						} catch (ExprEvaluationException e) {
-							// TODO Auto-generated catch block
+
 							e.printStackTrace();
 						}
 						if (rez!=null) {
@@ -248,11 +248,14 @@ public class Expressor {
 
 
 	public static List<EvalExpr> preCompileExpression(String expression) {
-		if (expression==null)
+		if (expression==null) {
+			Log.e("vortex","Precompile expression returns immediately on null string input");
 			return null;
+		}
 		o = WorkFlowBundleConfiguration.debugConsole;
 		//System.out.println("Precompiling: "+expression);
 		List<Token> result = tokenize(expression);
+		printTokens(result);
 		List<EvalExpr> endResult = new ArrayList<EvalExpr>();
 		if (result!=null && testTokens(result)) {
 			StreamAnalyzer streamAnalyzer = new StreamAnalyzer(result);
@@ -262,7 +265,7 @@ public class Expressor {
 				try {
 					rez = streamAnalyzer.next();
 				} catch (ExprEvaluationException e) {
-					// TODO Auto-generated catch block
+
 					e.printStackTrace();
 				}
 				if (rez!=null) {
@@ -279,7 +282,7 @@ public class Expressor {
 					sb.append(e);
 				//o.addRow("");
 				//o.addRow("Precompiled: "+sb);
-				//System.out.println("Precompiled: "+endResult.toString());
+				System.out.println("Precompiled: "+endResult.toString());
 				return endResult;
 			}
 
@@ -299,7 +302,27 @@ public class Expressor {
 	public static String analyze(List<EvalExpr> expressions) {
 		return analyze(expressions,GlobalState.getInstance().getVariableCache().getContext().getContext());
 	}
+	public static int[] intAnalyzeList(List<EvalExpr> expressions) {
+		currentKeyChain = GlobalState.getInstance().getVariableCache().getContext().getContext();
+		int i=0;
+		int[] res = new int[expressions.size()];
+		for (EvalExpr expr:expressions) {
+			tret = null;
+			Object rez = expr.eval();
+			Integer intVal = null;
+			if (rez instanceof Integer)
+				intVal = ((Integer) rez).intValue();
+			else if (rez instanceof Double)
+				intVal = ((Double) rez).intValue();
+			if (intVal !=null) {
+				res[i++] = intVal;
+			}
+			else
+				System.err.println("Got NEE back when evaluating " + expr.toString() + " . will not be included in endresult.");
+		}
 
+		return res;
+	}
 	//analyze within a given variable set as context. This allows for incomplete variable references.
 	//Eg. cars:Vovlo_lot_count can be referred to as "lot_count".
 	public static String analyze(EvalExpr expression, Set<Variable> variablez) {
@@ -429,31 +452,38 @@ public class Expressor {
 	private static class StreamAnalyzer {
 		Iterator<Token> mIterator;
 		List<Token> curr;
+		int depth = 0;
 		public StreamAnalyzer(List<Token> tokens) {
 			mIterator = tokens.iterator();
-
+			curr=null;
 		}
 		public boolean hasNext() {
 			return mIterator.hasNext();
 		}
 
 		public EvalExpr next() throws ExprEvaluationException {
-			curr=null;
+			Log.d("vortex","entering next with : "+mIterator.toString());
+
 			while (mIterator.hasNext()) {
 				Token t = mIterator.next();
 				if (t.type==TokenType.text)
 					return new Text(t);
+				if (curr!=null&&t.type==TokenType.leftparenthesis)
+					depth++;
+				if (curr!=null&&t.type==TokenType.rightparenthesis)
+					depth--;
 				if (t.type==TokenType.startMarker) {
 					curr = new ArrayList<Token>();
-				} else if (t.type==TokenType.endMarker) {
+					//new token either if endmarker, or a comma on toplevel.
+				} else if (t.type==TokenType.endMarker || (t.type==TokenType.comma && depth==0)) {
 					if (curr!=null && !curr.isEmpty()) {
+						Log.d("vortex","CURR tokens: ");
+						printTokens(curr);
 						EvalExpr ret = analyzeExpression(curr);
-						if (ret==null) {
+						if (ret==null)
 							System.err.println("Eval of expression "+curr.toString()+" failed");
-							return null;
-						}
-						else
-							return ret;
+						curr = new ArrayList<Token>();
+						return ret;
 					} else {
 						System.err.println("Empty Expr or missing startTag.");
 						return null;
@@ -1308,82 +1338,102 @@ public class Expressor {
 
 			//Log.d("vortex","Function eval: "+getType());
 
-			Object argEval=null,result=null;
+			Object result=null;
 			List<Object> evalArgs = new ArrayList<Object>();
 			VariableConfiguration al = gs.getVariableConfiguration();
 			VariableCache varCache = gs.getVariableCache();
+			int j=0;
+			double arg1F=0,arg2F=0;
 			for (EvalExpr arg:args) {
-				argEval= arg.eval();
-				evalArgs.add(argEval);
+				result = arg.eval();
+				evalArgs.add(result);
+				if (j==0) {
+					if (result instanceof Integer)
+						arg1F = ((Integer) result).doubleValue();
+					if (result instanceof Double)
+						arg1F = (Double) result;
+				}
+				else if (j==1) {
+					if (result instanceof Integer)
+						arg2F = ((Integer) result).doubleValue();
+					if (result instanceof Double)
+						arg2F = (Double) result;
+				}
+				j++;
+
 			}
 
 
 			boolean gH=false;
+
+
 			//Now all arguments are evaluated. Execute function!
+
 			switch (getType()) {
+
 			case max:
 				if (checkPreconditions(evalArgs,2,No_Null_Numeric))
-					return Math.max((Double)evalArgs.get(0), (Double)evalArgs.get(1));
+					return Math.max(arg1F, arg2F);
 				break;
 			case abs:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.abs((Double)evalArgs.get(0));
+					return Math.abs(arg1F);
 				break;
 			case acos:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.acos((Double)evalArgs.get(0));
+					return Math.acos(arg1F);
 				break;
 			case asin:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.asin((Double)evalArgs.get(0));
+					return Math.asin(arg1F);
 				break;
 			case atan:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.atan((Double)evalArgs.get(0));
+					return Math.atan(arg1F);
 				break;
 			case ceil:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.ceil((Double)evalArgs.get(0));
+					return Math.ceil(arg1F);
 				break;
 			case cos:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.cos((Double)evalArgs.get(0));
+					return Math.cos(arg1F);
 				break;
 			case exp:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.exp((Double)evalArgs.get(0));
+					return Math.exp(arg1F);
 				break;
 			case floor:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.floor((Double)evalArgs.get(0));
+					return Math.floor(arg1F);
 				break;
 			case log:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.log((Double)evalArgs.get(0));
+					return Math.log(arg1F);
 				break;
 			case round:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.round((Double)evalArgs.get(0));
+					return Math.round(arg1F);
 				break;
 			case sin:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.sin((Double)evalArgs.get(0));
+					return Math.sin(arg1F);
 				break;
 			case sqrt:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.sqrt((Double)evalArgs.get(0));
+					return Math.sqrt(arg1F);
 				break;
 			case tan:
 				if (checkPreconditions(evalArgs,1,No_Null_Numeric))
-					return Math.tan((Double)evalArgs.get(0));
+					return Math.tan(arg1F);
 				break;
 			case atan2:
 				if (checkPreconditions(evalArgs,2,No_Null_Numeric))
-					return Math.atan2((Double)evalArgs.get(0),(Double)evalArgs.get(1));
+					return Math.atan2(arg1F,arg2F);
 				break;
 			case min:
 				if (checkPreconditions(evalArgs,2,No_Null_Numeric))
-					return Math.min((Double)evalArgs.get(0),(Double)evalArgs.get(1));
+					return Math.min(arg1F,arg2F);
 				break;
 
 			case iff:

@@ -12,6 +12,10 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\fragment_login_console.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\nudge_button_panel_pop.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\nudge_button_panel_pop.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\tag_edit_popup.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\tag_edit_popup.xml"
     },

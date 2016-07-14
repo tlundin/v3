@@ -9,6 +9,7 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.utils.Expressor;
 
 import org.achartengine.model.CategorySeries;
 
@@ -16,44 +17,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateCategoryDataSourceBlock extends Block {
-	
+
+	private final List<Expressor.EvalExpr> argumentE;
 	String id=null,myChart=null;
 
 	CategorySeries series;
-	String[] myCategories =null,myVariableNames=null;
+	String[] myCategories =null;
 
-	List<Variable> myVariables;
 
-	final int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
-			Color.YELLOW,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
+	final int[] colors = { Color.RED, Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN,
+			Color.YELLOW,Color.BLACK,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW };
 	
-	public CreateCategoryDataSourceBlock(String id,String title,String chart, String[] categories, String[] variableNames) {
+	public CreateCategoryDataSourceBlock(String id,String title,String chart, String[] categories, String expressions) {
 		super();
 		this.blockId = id;
+		series = new CategorySeries(title);
+		argumentE= Expressor.preCompileExpression(expressions);
 
-		myVariableNames = variableNames;
 		myChart=chart;
+		Log.d("battox",argumentE.toString());
+		if (categories != null && argumentE!=null && (categories.length == argumentE.size())) {
 
-		if (categories != null && variableNames!=null && (categories.length == variableNames.length))
 			myCategories = categories;
+			Log.d("vortex","categories ok");
+		}
 	}
 
 	public void create(WF_Context myContext) {
 		Variable v;
 		VariableCache cache = GlobalState.getInstance().getVariableCache();
 		LoggerI o = GlobalState.getInstance().getLogger();
-		for (String variable:myVariableNames) {
-			v = cache.getVariable(variable);
-			if (v==null) {
-				o.addRow("");
-				o.addRedText("Variable "+variable+" not found when creating datasource in block "+blockId);
-				return;
-			}
-			if (myVariables==null)
-				myVariables = new ArrayList<Variable>();
-			myVariables.add(v);
-		}
+
 
 		myContext.addChartDataSource(myChart, new SimpleChartDataSource() {
 			@Override
@@ -69,24 +64,18 @@ public class CreateCategoryDataSourceBlock extends Block {
 			@Override
 			public int[] getCurrentValues() {
 
-				int i = 0;
-				int[] ret = new int[myVariables.size()];
-				for(Variable v:myVariables) {
-					String valS = v.getValue();
-					ret[i]=-1;
-					if (valS!=null)
-					try {
-						ret[i] = Integer.parseInt(valS);
-					} catch (NumberFormatException e) {}
-					i++;
-				}
+				int j = 0;
+
+				int[] ret = Expressor.intAnalyzeList(argumentE);
+				//Log.d("botox","values: "+Expressor.analyze(argumentE));
+
 				Log.d("vortex","CurrValues: "+ret.toString());
 				return ret;
 			}
 
 			@Override
 			public int getSize() {
-				return myVariables.size();
+				return argumentE.size();
 			}
 
 			@Override

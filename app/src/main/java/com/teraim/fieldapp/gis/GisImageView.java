@@ -1228,28 +1228,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 
 
-
-
-
-	final static float ScaleTo = 4.0f;
 	public void centerOnUser() {
-		if (userGop!=null) {
-			int[] xy = new int[2];
-			boolean inside = translateMapToRealCoordinates(userGop.getLocation(),xy);
-			if (inside) {
-				//float[] rxy = translateToReal((float)xy[0],(float)xy[1]);
-				float scaleDiff = ScaleTo-scaleAdjust;
-				//moveBy(rxy[0],rxy[1]);
-				setPosition(fixedX-xy[0]*ScaleTo,fixedY-xy[1]*ScaleTo); //300 450
-				redraw();
-				Log.d("vortex","X Y USER "+xy[0]+","+xy[1]);
-				//Log.d("vortex","RX RY USER "+rxy[0]+","+rxy[1]);
-				Log.d("vortex","X Y SCALE: SCALEADJ:"+x+","+y+","+scale+","+scaleAdjust);
-				//this.invalidate();
-				//float newScale = 4.0f-scaleAdjust;
-				startZoom(x, y,scaleDiff);
-			}
-		}/* else {
+		centerOn(userGop);
+	}/* else {
 			new AlertDialog.Builder(ctx)
 			.setTitle("Context problem")
 			.setMessage("You are either outside map or have no valid GPS location.")
@@ -1263,13 +1244,39 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			} )
 			.show();
 		}*/
+
+	public void centerOnCurrentDot() {
+		centerOn(newGisObj);
 	}
+
+
+	private void centerOn(GisObject gisObject) {
+
+		if (gisObject!=null) {
+			int[] xy = new int[2];
+		boolean inside = translateMapToRealCoordinates(gisObject.getLocation(),xy);
+				if (inside) {
+//					Log.d("vortex","X Y USER "+xy[0]+","+xy[1]);
+					//Log.d("vortex","RX RY USER "+rxy[0]+","+rxy[1]);
+//					Log.d("vortex","X Y SCALE: SCALEADJ:"+x+","+y+","+scale+","+scaleAdjust);
+					setPosition(fixedX-xy[0]*scaleAdjust,fixedY-xy[1]*scaleAdjust);
+					this.invalidate();
+			}
+		}
+	}
+
 
 	public void hideImage() {
 		//use exisitng size if any so that clicks on empty canvas get correctly calculated coordinates.
 		this.setStaticMeasure(this.getImageWidth(),this.getImageHeight());
 		setImageDrawable(null);
 	}
+
+	public GisObject getGopBeingCreated() {
+		return newGisObj;
+	}
+
+
 
 	enum CreateState {
 		initial,

@@ -59,7 +59,9 @@ import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.MapGisLayer;
+import com.teraim.fieldapp.dynamic.types.NudgeListener;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
+import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
@@ -86,6 +88,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	private final FrameLayout mapView;
 	private final Rect rect;
+	private final View nudgePopUp;
 	private PersistenceHelper globalPh;
 	private GisImageView gisImageView;
 	private final WF_Context myContext;
@@ -176,7 +179,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	final CreateGisBlock myDaddy;
 	private PhotoMeta photoMeta;
-
+	private NudgeView nudgeMenu;
 
 
 	public WF_Gis_Map(CreateGisBlock createGisBlock,final Rect rect, String id, final FrameLayout mapView, boolean isVisible, Bitmap bmp,
@@ -204,13 +207,63 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		riktTS = (TextSwitcher)avstRL.findViewById(R.id.riktTS);
 		LayoutInflater li = LayoutInflater.from(ctx);
 		gisObjectsPopUp = li.inflate(R.layout.gis_object_menu_pop,null);
+		nudgePopUp = li.inflate(R.layout.nudge_button_panel_pop,null);
 		layersPopup = li.inflate(R.layout.layers_menu_pop,null);
 
 		gisObjectMenu = (GisObjectsMenu)gisObjectsPopUp.findViewById(R.id.gisObjectsMenu);
+		nudgeMenu = (NudgeView)nudgePopUp.findViewById(R.id.gisNudgeButtonMenu);
+		nudgeMenu.setListener(new NudgeListener() {
+			@Override
+			public void onNudge(Direction d, int changeDistance) {
+				Log.d("vortex","nudging");
+				if (d.equals(Direction.NONE))
+					return;
+				GisObject gop = gisImageView.getGopBeingCreated();
+				if (gop != null) {
+					Log.d("vortex", "gisobject is being created!");
+					List<Location> gopCoordinates = gop.getCoordinates();
+					if (gopCoordinates != null && !gopCoordinates.isEmpty()) {
+						Location last = gopCoordinates.get(gopCoordinates.size()-1);
+						Log.d("vortex", "it has last coordinate");
+						if (last instanceof SweLocation) {
+							Log.d("vortex","Its swedish!");
+							SweLocation sweloc = (SweLocation)last;
+							double north=sweloc.getY(),east = sweloc.getX();
+
+							switch (d) {
+								case UP:
+									north+=changeDistance;
+									break;
+								case DOWN:
+									north-=changeDistance;
+									break;
+								case LEFT:
+									east-=changeDistance;
+									break;
+								case RIGHT:
+									east+=changeDistance;
+									break;
+
+							}
+							gopCoordinates.remove(last);
+							gopCoordinates.add(new SweLocation(east,north));
+							gisImageView.redraw();
+						}
+					}
+				}
+			}
+
+			@Override
+			public void centerOnNudgeDot() {
+				gisImageView.centerOnCurrentDot();
+			}
+		});
 		gisObjectsPopUp.setVisibility(View.GONE);
 		layersPopup.setVisibility(View.GONE);
+		nudgePopUp.setVisibility(View.GONE);
 		mapView.addView(gisObjectsPopUp);
 		mapView.addView(layersPopup);
+		mapView.addView(nudgePopUp);
 		//LinearLayout filtersL = (LinearLayout)mapView.findViewById(R.id.FiltersL);
 		//filtersL.setVisibility(View.GONE);
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -470,10 +523,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		minusB.setOnTouchListener(new OnTouchListener() {
 			final float Initial = .5f;
-			float scaleIncrement = Initial;
-			long interval=100;
-			Handler handler;
-			Runnable runnable;
+
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 
@@ -676,10 +726,14 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	public void setVisibleCreate(boolean isVisible, String label) {
 
-		if (isVisible)
+		if (isVisible) {
 			createMenuL.setVisibility(View.VISIBLE);
-		else
+			nudgePopUp.setVisibility(View.VISIBLE);
+		}
+		else {
 			createMenuL.setVisibility(View.GONE);
+			nudgePopUp.setVisibility(View.GONE);
+		}
 
 		if (selectedT2==null) {
 			selectedT2 = (TextView)createMenuL.findViewById(R.id.selectedT2);

@@ -79,8 +79,11 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		//outputContainer.setLayoutParams(params);
 		Log.d("vortex","TEXT: "+label+" COLOR: "+textColor);
 		textColorC = Color.parseColor(textColor);
-		myHeader.setTextColor(textColorC);
-		myHeader.setText(label);
+		//myheader can be null in case this is a Cell in a table.
+		if (myHeader !=null) {
+			myHeader.setTextColor(textColorC);
+			myHeader.setText(label);
+		}
 		this.label = label;
 		myDescription = descriptionT;
 		//Show owner.

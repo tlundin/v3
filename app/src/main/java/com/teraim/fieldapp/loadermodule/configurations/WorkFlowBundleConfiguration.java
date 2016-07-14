@@ -295,6 +295,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockCreateRoundChart(parser));
 				else if (name.equals("block_create_category_data_source"))
 					blocks.add(readBlockCreateCategoryDataSource(parser));
+				else if (name.equals("block_create_xy_data_source"))
+					blocks.add(readBlockCreateCategoryDataSource(parser));
 				else if (name.equals("block_create_picture"))
 					blocks.add(readBlockCreatePicture(parser));
 				else if (name.equals("block_add_gis_image_view"))
@@ -739,9 +741,39 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	private Block readBlockCreateCategoryDataSource(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
+		String id=null,title=null,chart=null,expressions=null;
+		String[] categories=null;
+		parser.require(XmlPullParser.START_TAG, null,"block_create_category_data_source");
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name= parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID",parser);
+			} else if (name.equals("title")) {
+				title = readText("title",parser);
+			} else if (name.equals("chart_name")) {
+				chart = readText("chart_name",parser);
+			} else if (name.equals("categories")) {
+				categories = createStringArray(readText("categories",parser));
+			} else if (name.equals("expressions")) {
+				expressions = readText("expressions",parser);
+			}
+
+			else
+				skip(name,parser,o);
+
+		}
+		checkForNull("block_ID",id);
+		return new CreateCategoryDataSourceBlock(id,title,chart, categories, expressions);
+
+	}
+
+	private Block readBlockXYDataSource(XmlPullParser parser) throws IOException, XmlPullParserException {
 		String id=null,title=null,chart=null;
 		String[] categories=null, variableNames=null;
-		parser.require(XmlPullParser.START_TAG, null,"block_create_category_data_source");
+		parser.require(XmlPullParser.START_TAG, null,"block_create_xy_data_source");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
@@ -764,9 +796,10 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 		checkForNull("block_ID",id);
-		return new CreateCategoryDataSourceBlock(id,title,chart, categories, variableNames);
+		return new CreateCategoryDataSourceBlock(id,title,chart, categories, "dummy");
 
 	}
+
 
 	private String[] createStringArray(String args) {
 		if (args==null || args.isEmpty())
@@ -777,10 +810,10 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private Block readBlockCreateRoundChart(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
 		String id=null,label=null,container=null;
-		String type=null,axisTitle=null,textSize=null,margins=null,startAngle=null, dataSource=null,mName=null;
+		String textSize=null,margins=null,startAngle=null,mName=null;
 		String h = null, w=null;
 		int height=-1,width=-1;
-		boolean isVisible=true,displayValues=true,percentage=false;
+		boolean isVisible=true,displayValues=true;
 		parser.require(XmlPullParser.START_TAG, null,"block_create_round_chart");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -799,12 +832,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("is_visible")) {
 				isVisible = !readText("is_visible",parser).equals("false");
 			}
-			else if (name.equals("type")) {
-				type = readText("type",parser);
-			}			
-			else if (name.equals("axis_title")) {
-				axisTitle = readText("axis_title",parser);
-			}			
+
+
 			else if (name.equals("text_size")) {
 				textSize = readText("text_size",parser);
 			}			
@@ -825,9 +854,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("display_values")) {
 				displayValues = !readText("display_values",parser).equals("false");
 			}			
-			else if (name.equals("percentage")) {
-				percentage = !readText("percentage",parser).equals("false");
-			}			
+
 
 			else
 				skip(name,parser,o);
@@ -835,9 +862,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		}
 
 		checkForNull("block_ID",id,"name",mName,"label",label,"container",container,
-				"axis_title",axisTitle,"text_size",textSize,"margins",margins,"start_angle",startAngle,"height",h,"width",w,
-				"data_source",dataSource);
-		return new RoundChartBlock(id,mName,label,container,type,axisTitle,textSize,margins,startAngle,height,width,displayValues,percentage,isVisible);
+				"text_size",textSize,"margins",margins,"start_angle",startAngle,"height",h,"width",w
+				);
+		return new RoundChartBlock(id,mName,label,container,textSize,margins,startAngle,height,width,displayValues,isVisible);
 
 	}
 	private Block readBlockCreateTextField(XmlPullParser parser) throws IOException, XmlPullParserException {

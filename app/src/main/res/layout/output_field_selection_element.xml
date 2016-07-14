@@ -11,8 +11,9 @@
     android:layout_width="0dp"
     android:layout_weight="1"
     android:singleLine="true"
-    android:gravity="center_vertical"
+	android:gravity="center_vertical|right"
     android:layout_height="match_parent"
+	android:minEms="2"
     android:text="30"
     android:textSize="25sp" />
 <TextView
@@ -25,4 +26,5 @@
     android:layout_marginRight="10dp"
     android:text="%"
     android:textSize="20sp" />
+
 </LinearLayout>

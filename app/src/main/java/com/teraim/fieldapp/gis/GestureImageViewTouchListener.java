@@ -408,6 +408,8 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 		return true;
 	}
 
+
+
 	protected void handleUp() {
 		//Log.d("vortex","Touched is now false");
 		touched = false;

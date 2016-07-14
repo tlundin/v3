@@ -1,6 +1,7 @@
 package com.teraim.fieldapp.loadermodule;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import org.json.JSONException;
 
@@ -28,7 +29,15 @@ public abstract class JSONConfigurationModule extends ConfigurationModule {
 				if (ret.isEmpty())
 					ret = null;
 			} else if (reader.peek() == JsonToken.NUMBER) {
-				ret = Long.toString(reader.nextLong());
+				/*
+				try {
+					//ret = Integer.toString((int)reader.nextDouble());
+				} catch (NumberFormatException e) {
+					Log.e("vortex","Numberformat exception here: "+reader);
+					return null;
+				}
+				*/
+				ret = reader.nextString();
 			}
 			else if (reader.peek() == JsonToken.BEGIN_OBJECT) {
 				reader.beginObject();

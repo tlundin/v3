@@ -63,7 +63,8 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell {
 
 	@Override
 	public void refresh() {
-		//This does nothing.
+		//this.getWidget().refreshDrawableState();
+		//this.getWidget().requestLayout();
 	}
 
 	@Override

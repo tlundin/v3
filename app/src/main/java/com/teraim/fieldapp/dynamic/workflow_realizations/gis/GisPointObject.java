@@ -65,8 +65,8 @@ public abstract class GisPointObject extends GisObject {
 			touchThresh = this.getRadius()/pyr;
 		}
 		 */
-		Log.d("vortex","pxr pyr"+pxr+","+pyr);
-		Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
+		//Log.d("vortex","pxr pyr"+pxr+","+pyr);
+		//Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
 		if (distanceToClick<ClickThresholdInMeters) {
 			//Log.d("vortex","found friend!");
 			return true;

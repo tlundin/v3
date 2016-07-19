@@ -256,10 +256,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			//Log.d("vortex", "inserting: "+i);
 			i++;
 			list.add(ContentProviderOperation.newInsert(CONTENT_URI).withValues(it.next()).build());
-			if (i%50==0) {
-				sendAwayBatch(list);
-				list.clear();
-			}
+			sendAwayBatch(list);
+			list.clear();
+
 		}
 		if (!list.isEmpty())
 			sendAwayBatch(list);
@@ -304,6 +303,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private Message sendAndReceive(List<ContentValues> ret, String team,String user, String app, SyncEntry[] sa, long maxStamp) {
 		URL url ;
 		URLConnection conn=null;
+		int orderNr = 0;
 		assert(sa!=null);
 
 		Log.d("vortex","In Send And Receive.");
@@ -411,6 +411,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					else if (reply instanceof byte[]) {
 						ContentValues cv = new ContentValues();
 						cv.put("DATA", (byte[])reply);
+						cv.put("count",orderNr++);
 						ret.add(cv);
 						insertedRows++;
 					}

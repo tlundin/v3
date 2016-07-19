@@ -204,8 +204,8 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		Log.d("vortex","show edited...adding filter: "+toggleStateH);
 		fieldList.draw();
 		//Need to do uncollapse at this point in time.
-		if (filterWasRemoved)
-			((WF_Table)myContext.getFilterable(target)).unCollapse();
+//		if (filterWasRemoved)
+//			((WF_Table)myContext.getFilterable(target)).unCollapse();
 		toggleStateH = !toggleStateH;
 	}
 

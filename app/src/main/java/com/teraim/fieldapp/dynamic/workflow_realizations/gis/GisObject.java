@@ -159,10 +159,13 @@ public class GisObject {
 				coordX=coord;
 			} else {
 				isXCoordinate=true;
-				if(coordType.equals(GisConstants.SWEREF))
+				if(coordType.equalsIgnoreCase(GisConstants.SWEREF))
 					ret.add(new SweLocation(coordX,coord));
-				else
-					ret.add(new LatLong(coordX,coord));
+				else {
+
+					Log.e("vortex","kukkaborra: "+coordType);
+					ret.add(new LatLong(coordX, coord));
+				}
 			}
 		}
 		//Log.d("vortex","createlistlocations returning: "+ret.toString());

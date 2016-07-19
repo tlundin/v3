@@ -148,20 +148,24 @@ public class RoundChartBlock extends Block implements EventListener {
 							public void run() {
 								WF_Container myContainer = (WF_Container) myContext.getContainer(container);
 								LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) pie.getLayoutParams();
-								if (height == -1 && width == -1) {
-									//width = ctx.getResources().getDisplayMetrics().widthPixels;
-									//height = width;
-									Log.d("vortex","My parents width is "+myContainer.getViewGroup().getWidth());
-									width = myContainer.getViewGroup().getWidth();
-									height = width;
+								if (height < 0) {
+									height = myContainer.getViewGroup().getHeight();
 								} else {
-									if (height == -1)
-										height = DefaultHeight;
-									if (width == -1)
-										width = DefaultWidth;
-									Log.d("vortex", "Applying DIP measurements for density." + height + "," + width);
+									Log.d("vortex", "Applying DIP measurements for height." + height );
 									height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height, ctx.getResources().getDisplayMetrics());
-									width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, ctx.getResources().getDisplayMetrics());
+								}
+								if (width < 0) {
+									if (width == -1)
+										width = myContainer.getViewGroup().getWidth();
+									else {
+										Log.d("bretox","w set to fill!");
+										int w = myContainer.getViewGroup().getWidth();
+										width = w;
+										height = w;
+									}
+								} else {
+									Log.d("vortex", "Applying DIP measurements for width." + height );
+								  width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, width, ctx.getResources().getDisplayMetrics());
 								}
 
 								layoutParams.height = height;

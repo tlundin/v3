@@ -462,7 +462,7 @@ public class Expressor {
 		}
 
 		public EvalExpr next() throws ExprEvaluationException {
-			Log.d("vortex","entering next with : "+mIterator.toString());
+
 
 			while (mIterator.hasNext()) {
 				Token t = mIterator.next();

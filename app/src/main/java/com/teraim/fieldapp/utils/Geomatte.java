@@ -57,7 +57,7 @@ public class Geomatte {
 	}
 	
 	private static double sweDist(Location location, Location location2) {
-		Log.d("Vortex","swedist: x1,y1  - x2,y2"+location.getX()+","+location.getY()+" - "+location2.getX()+","+location2.getY());
+		//Log.d("Vortex","swedist: x1,y1  - x2,y2"+location.getX()+","+location.getY()+" - "+location2.getX()+","+location2.getY());
 		return sweDist(location.getX(),location.getY(),location2.getX(),location2.getY());
 	}
 	

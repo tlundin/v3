@@ -63,7 +63,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private TextView appTxt;
 	private float oldV = -1;
 	private Activity mActivity;
-	private final static String InitialBundleName = "Vortex";
+	private final static String InitialBundleName = "Rlotst";
 
 
 	@Override
@@ -314,6 +314,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 	private String getRandomName() {
+
 		List<String> start= Arrays.asList(new String[]{"Anna","Eva","Fiona","Berta"});
 		List<String> end= Arrays.asList(new String[]{"stina","getrud","lena","eulalia"});        
         Collections.shuffle(start);

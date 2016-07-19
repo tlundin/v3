@@ -100,10 +100,24 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	public void addVariable(final Variable var, boolean displayOut,
 							String format, boolean isVisible, boolean showHistorical) {
 		Integer val=null;
+
+		if (this.var!=null) {
+			Log.e("vortex","only one variable allowed for slider entryfield");
+			String varId = "<null_value_given>";
+			if (var!=null)
+				varId = var.getId();
+				o.addRow("");
+				o.addRedText("Attempt to add more than one variable to slider entryfield. Variable not added: " +varId);
+
+			return;
+		}
+
 		if (var.getValue()!=null && !var.getValue().isEmpty())
 			val = Integer.parseInt(var.getValue());
 
 		String limitDesc = GlobalState.getInstance().getVariableConfiguration().getLimitDescription(var.getBackingDataSet());
+
+
 		if (limitDesc!=null) {
 
 			if (!limitDesc.contains(",")) {
@@ -121,28 +135,20 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 			}
 		}
 
-		if (val==null||val>max||val<min) {
+		if (val!=null && (val>max||val<min)) {
 			Log.e("vortex","variable out of boundaries");
 			o.addRow("");
 			o.addRedText("Variable "+var.getId()+" is out of boundaries for slider. Value: "+val+" Min Max: ["+min+","+max+"]");
-			if (val!=null) {
-				if (val > max)
-					max = val;
-				else
-					min = val;
-				o.addRow("");
-				o.addRedText("Readjusted bonds to [" + min + "," + max + "]");
-			}
+			if (val > max)
+				max = val;
+			else
+				min = val;
+			o.addRow("");
+			o.addRedText("Readjusted bonds to [" + min + "," + max + "]");
+
 		}
 
-		if (this.var!=null) {
-			Log.e("vortex","only one variable allowed for slider entryfield");
-			if (var!=null) {
-				o.addRow("");
-				o.addRedText("Attempt to add more than one variable to slider entryfield. Variable not added: " + var.getId());
-			}
-			return;
-		}
+
 
 		super.addVariable(var,displayOut,null,isVisible,showHistorical);
 		if (!myVars.isEmpty()) {

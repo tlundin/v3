@@ -43,8 +43,10 @@ public class WF_Table extends WF_List  {
 	private LinearLayout headerV;
 	private LayoutInflater inflater ;
 	private TableLayout tableView;
+	//The index of the currently selected column.
+	private int selectedColumnIndex =-1;
 
-	private 		int rowNumber=0;
+	private int rowNumber=0, numberOfColumns =1;
 	private final String ColHeadId = "TableHeader";
 	private WF_Table_Row headerRow;
 	private boolean tableTypeSimple;
@@ -54,7 +56,7 @@ public class WF_Table extends WF_List  {
 	//How about using the Container's panel?? TODO
 	public WF_Table(String id,String label,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
-		this.tableView = (TableLayout)tableV.findViewById(R.id.table);;
+		tableView = (TableLayout)tableV.findViewById(R.id.table);;
 		myContext = ctx;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
@@ -67,7 +69,7 @@ public class WF_Table extends WF_List  {
 				(Context.LAYOUT_INFLATER_SERVICE); 
 		
 		//Add the header.
-		headerRow = new WF_Table_Row(tableView,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
+		headerRow = new WF_Table_Row(this,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
 		//Add a first empty cell 
 		headerRow.addNoClickHeaderCell(label, null, null);
 		tableView.addView(headerRow.getWidget());
@@ -113,12 +115,40 @@ public class WF_Table extends WF_List  {
 	}
 	//Create a new row + dataset.
 	public void addRow(List<String> row) {		
-		WF_Table_Row rowWidget = new WF_Table_Row(tableView,(rowNumber++)+"",inflater.inflate(R.layout.table_row, null),myContext,true);
+		WF_Table_Row rowWidget = new WF_Table_Row(this,(rowNumber++)+"",inflater.inflate(R.layout.table_row, null),myContext,true);
 		rowWidget.addEntryField(row);
 		add(rowWidget);
 	}
 
+	//only selectedcolumn should be uncollapsed. All other should be closed.
+	public void setSelectedColumnIndex(int index) {
+		boolean showAll=true;
+		if (index == selectedColumnIndex) {
+			selectedColumnIndex = -1;
+			Log.d("vortex","Deselected existing column.");
 
+		} else {
+			showAll = false;
+			selectedColumnIndex = index;
+		}
+
+
+		for (int i = 1; i < getNumberofColumns(); i++) {
+			if (showAll)
+				tableView.setColumnCollapsed(i,false);
+			else
+				tableView.setColumnCollapsed(i, selectedColumnIndex!=i);
+		}
+
+	}
+
+	public int getSelectedColumnIndex() {
+		return selectedColumnIndex;
+	}
+
+	public int getNumberofColumns() {
+		return numberOfColumns;
+	}
 
 	public void addColumns(List<String> labels,
 			List<String> columnKeyL, String type, String width,String backgroundColor, String textColor) {
@@ -145,6 +175,7 @@ public class WF_Table extends WF_List  {
 			l = (useColumKeyAsHeader?null:labels.get(i));
 			//Add the column
 			addColumn(l,k,type,width,backgroundColor,textColor);
+			numberOfColumns++;
 			
 		}
 		//for (String s:columnKeys)
@@ -153,9 +184,9 @@ public class WF_Table extends WF_List  {
 			tableTypeSimple=true;
 		
 	}
-
+/*
 	public void unCollapse() {
-		if (headerRow.getSelectedColumn() == -1) {
+		if (this.getSelectedColumnIndex() == -1) {
 			if (columnKeys != null) {
 				int numColumns = columnKeys.size();
 				Log.d("vortex", "uncollapsing all columns: " + numColumns);
@@ -165,7 +196,7 @@ public class WF_Table extends WF_List  {
 			}
 		}
 	}
-	
+*/
 	
 	//Keep column keys in memory.
 	private List<String> columnKeys = new ArrayList<String>();
@@ -467,4 +498,26 @@ public class WF_Table extends WF_List  {
 	}
 
 
+
+	@Override
+	public void draw() {
+		super.draw();
+		Log.d("vortex", "This is after draw");
+		Log.d("vortex", "selected column: " + selectedColumnIndex);
+		if (selectedColumnIndex != -1 && !tableView.isColumnCollapsed(selectedColumnIndex))
+			Log.d("vortex", "And this matches the collapsed in tableview");
+
+		//Need to check that all cells are visible that should be.
+		if (selectedColumnIndex != -1) {
+			for (Listable l : get()) {
+				WF_Table_Row wft = (WF_Table_Row) l;
+				Log.d("vortex", l.getLabel() + " Cells: " + wft.getCells().size());
+				//for (int i =0;i<wft.getCells().size();i++) {
+				WF_Cell cell = wft.getCells().get(selectedColumnIndex-1);
+				if (!cell.getWidget().isShown())
+					cell.getWidget().setVisibility(View.VISIBLE);
+//				Log.d("Vortex", "cell " + selectedColumnIndex + " is shown? " + cell.getWidget().isShown());
+			}
+		}
+	}
 }

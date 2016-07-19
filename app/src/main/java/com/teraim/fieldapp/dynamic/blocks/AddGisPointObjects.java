@@ -98,9 +98,10 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		this.palette = palette;
 		myType = type;
 
-		if (coordType==null)
+		if (coordType==null||coordType=="")
 			this.coordType=GisConstants.SWEREF;
-
+		else
+			Log.e("vortex","LATLONG!");
 		setRadius(radius);
 
 		this.fillType=Paint.Style.FILL;

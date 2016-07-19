@@ -21,21 +21,22 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
 public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Listable> {
+	private final WF_Table myWfTable;
 	List<String> myRow;
 	List<WF_Cell> myColumns;
 	private WF_Context myContext;
 	private LinearLayout myBody;
 	private TextView headerT;
 	private String id;
-	private TableLayout myTable;
 
-	public WF_Table_Row(TableLayout myTable,String id,View v,WF_Context ctx,boolean isVisible) {
+	public WF_Table_Row(WF_Table myWfTable,String id,View v,WF_Context ctx,boolean isVisible) {
 		super(id,v,isVisible,ctx);
 		myColumns=null;
 		myContext = ctx;
 		headerT = (TextView)v.findViewById(R.id.headerT);
 		this.id=id;
-		this.myTable = myTable;
+
+		this.myWfTable = myWfTable;
 		//Log.d("vortex","Added header "+this.getLabel() );
 
 	}
@@ -91,10 +92,12 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 	@Override
 	public void refresh() {
+
 		if (myColumns==null)
 			return ;
 		for (WF_Cell w:myColumns)
 			w.refresh();
+
 	}
 
 	//Return any cells assoicated variables since each cell contain same.
@@ -124,7 +127,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 	}
 
 	int headerIndex=1;
-	int selectedColumnIndex =-1;
+
 	//Add a cell of purely graphical nature.
 	public void addHeaderCell(String label, String backgroundColor, String textColor) {
 		View headerC = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
@@ -133,18 +136,15 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		((TableRow)this.getWidget()).addView(headerC);
 
 		headerC.setOnClickListener(new OnClickListener() {
+			//headerIndex is a counter that is starting at 1.
 			final int myHeaderIndex=headerIndex;
 
 			@Override
 			public void onClick(View v) {
 				Log.d("vortex","column "+myHeaderIndex+" clicked!");
-				toggleToggleState();
-				selectedColumnIndex = getToggleState()?myHeaderIndex:-1;
-					for (int i = 1; i < headerIndex; i++) {
-						if (i != myHeaderIndex) {
-							myTable.setColumnCollapsed(i, getToggleState());
-						}
-					}
+				myWfTable.setSelectedColumnIndex(myHeaderIndex);
+				Log.d("vortex","selectedcolumnindex is now "+myWfTable.getSelectedColumnIndex());
+
 			}
 
 		});
@@ -156,20 +156,6 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 		headerIndex++;
 	}
-	private boolean iAmCollapsed =false;
-
-	private boolean getToggleState() {
-		return iAmCollapsed;
-
-	}
-	public int getSelectedColumn() {
-		return selectedColumnIndex;
-	}
-	private void toggleToggleState() {
-		iAmCollapsed =!iAmCollapsed;
-	}
-
-
 
 
 	//Add a Vortex Cell.

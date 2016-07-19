@@ -215,18 +215,14 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		nudgeMenu.setListener(new NudgeListener() {
 			@Override
 			public void onNudge(Direction d, int changeDistance) {
-				Log.d("vortex","nudging");
 				if (d.equals(Direction.NONE))
 					return;
 				GisObject gop = gisImageView.getGopBeingCreated();
 				if (gop != null) {
-					Log.d("vortex", "gisobject is being created!");
 					List<Location> gopCoordinates = gop.getCoordinates();
 					if (gopCoordinates != null && !gopCoordinates.isEmpty()) {
 						Location last = gopCoordinates.get(gopCoordinates.size()-1);
-						Log.d("vortex", "it has last coordinate");
 						if (last instanceof SweLocation) {
-							Log.d("vortex","Its swedish!");
 							SweLocation sweloc = (SweLocation)last;
 							double north=sweloc.getY(),east = sweloc.getX();
 
@@ -248,9 +244,12 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 							gopCoordinates.remove(last);
 							gopCoordinates.add(new SweLocation(east,north));
 							gisImageView.redraw();
-						}
-					}
-				}
+						} else
+								Log.d("vortex","not sweloc!! "+last.getClass().getCanonicalName());
+					} else
+						Log.d("vortex","coordinates null or empty!");
+				} else
+					Log.d("vortex","Selected GOP null!!");
 			}
 
 			@Override

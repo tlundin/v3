@@ -1203,13 +1203,13 @@ public class DbHelper extends SQLiteOpenHelper {
             db.endTransaction();
             return null;
         }
-        Log.d("vortex", "In Synchronize with " + ses.length + " arguments.");
+        //Log.d("vortex", "In Synchronize with " + ses.length + " arguments.");
         ContentValues cv = new ContentValues();
         Map<String, String> keySet = new HashMap<String, String>();
         Map<String, String> keyHash = new HashMap<String, String>();
-        for (SyncEntry s : ses) {
-            Log.d("nils","Audit entry (s): "+s.getChange());
-        }
+        //for (SyncEntry s : ses) {
+        //    Log.d("nils","Audit entry (s): "+s.getChange());
+        //}
         Cursor c = null;
         SyncStatus syncStatus=new SyncStatus();
 
@@ -1285,10 +1285,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 //if (keySet == null)
                 //	Log.d("nils","Keyset was null");
                 //Log.d("sync","SYNC WITH PARAMETER NAMED "+name);
-                Log.d("vortex", "Keyset:  " + keySet.toString());
+            //    Log.d("vortex", "Keyset:  " + keySet.toString());
 
                 Selection sel = this.createSelection(keySet, name);
-                Log.d("vortex", "Selection:  " + sel.selection);
+//                Log.d("vortex", "Selection:  " + sel.selection);
                 if (sel.selectionArgs != null) {
                     StringBuilder xor = new StringBuilder("");
                     for (String sz : sel.selectionArgs) {
@@ -1303,8 +1303,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 boolean hasValueAlready = c.moveToNext();
 
                 if (!hasValueAlready || s.isInsertArray()) {// || gs.getVariableConfiguration().getnumType(row).equals(DataType.array)) {
-                    Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
-                    Log.d("sync", "cv: "+cv);
+  //                  Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
+  //                  Log.d("sync", "cv: "+cv);
                     //now there should be ContentValues that can be inserted.
                     rId = db.insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
@@ -1326,19 +1326,19 @@ public class DbHelper extends SQLiteOpenHelper {
                     //Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
                     if (isMe(author)) {
                         if (varName.startsWith("STATUS:")) {
-                            Log.d("vortex", "This is a status variable");
+  //                          Log.d("vortex", "This is a status variable");
                             String incomingValue = cv.getAsString("value");
 
-                            Log.d("vortex", "my value: " + value + " incoming: " + incomingValue + " values: " + s.getValues());
+  //                          Log.d("vortex", "my value: " + value + " incoming: " + incomingValue + " values: " + s.getValues());
                             if (value != null && incomingValue != null  && !value.equals("0")) {
-                                Log.e("vortex", "found potential conflict between import value and existing for " + varName);
+ //                               Log.e("vortex", "found potential conflict between import value and existing for " + varName);
                                 //&& !value.equals(incomingValue)
                                 List<String> row = GlobalState.getInstance().getVariableConfiguration().getCompleteVariableDefinition(varName);
                                 String assocWorkflow = GlobalState.getInstance().getVariableConfiguration().getAssociatedWorkflow(row);
 
-                                Log.d("vortex", "Assoc workflow is " + assocWorkflow);
+   //                             Log.d("vortex", "Assoc workflow is " + assocWorkflow);
                                 if (assocWorkflow != null && !assocWorkflow.isEmpty()) {
-                                    Log.d("vortex", "conflict!");
+   //                                 Log.d("vortex", "conflict!");
                                     String ks="";
                                     if (keyHash!=null)
                                         ks = keyHash.toString();
@@ -1355,7 +1355,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp()));
                     if (timestamp != null && s.getTimeStamp() != null) {
                         if (!existingTimestampIsMoreRecent) {
-                            Log.d("sync", "REPLACING " + name);
+     //                       Log.d("sync", "REPLACING " + name);
                             cv.put("id", id);
                             rId = db.replace(TABLE_VARIABLES, // table
                                     null, //nullColumnHack
@@ -1364,13 +1364,17 @@ public class DbHelper extends SQLiteOpenHelper {
                             gs.getVariableCache().insert(name,keyHash,myValue);
                             changes.inserts++;
 
-                            if (rId != id)
+                            if (rId != id) {
                                 Log.e("sync", "CRY FOUL!!! New Id not equal to found! " + " ID: " + id + " RID: " + rId);
+
+                                Log.e("sync", "varname: "+varName+"value: "+value+" timestamp: "+timestamp+" author: "+author+" ");
+                                Log.e("sync","CV: "+cv);
+                            }
                         } else {
                             changes.refused++;
-                            o.addRow("");
-                            o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
-                            Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+    //                        o.addRow("");
+    //                        o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+    //                        Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
                         }
                     } else
                         Log.e("sync", "A timestamp was null!!");
@@ -1383,7 +1387,7 @@ public class DbHelper extends SQLiteOpenHelper {
             } else {
                 if (s.isDelete()) {
                     keySet.clear();
-                    Log.d("sync", "Got Delete for: " + s.getTarget());
+    //                Log.d("sync", "Got Delete for: " + s.getTarget());
                     String[] keys = s.getChange().split("\\|");
                     String[] pair;
 
@@ -1406,7 +1410,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         }
 
                     }
-                    Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
+    //                Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
                     //Log.d("sync","Keyset:  "+keySet.toString());
 
                     Selection sel = this.createSelection(keySet, name);
@@ -1415,8 +1419,8 @@ public class DbHelper extends SQLiteOpenHelper {
                         String xor = "";
                         for (String sz : sel.selectionArgs)
                             xor += sz + ",";
-                        Log.d("nils", "Selection ARGS: " + xor);
-                        Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
+     //                   Log.d("nils", "Selection ARGS: " + xor);
+     //                   Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
                         //Check timestamp. If timestamp is older, delete. Otherwise skip.
 
                         //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
@@ -1427,31 +1431,31 @@ public class DbHelper extends SQLiteOpenHelper {
                         if (hasValueAlready) {
 
                             timestamp = c.getString(1);
-                            String value = c.getString(2);
-                            String varName = c.getString(3);
-                            String author = c.getString(4);
+                            //String value = c.getString(2);
+                            //String varName = c.getString(3);
+                            //String author = c.getString(4);
 
                             //Is the existing entry done by me?
-                            Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
-                            Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
+    //                        Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
+    //                        Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
                             existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
                         }
                         else
                             Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
                         if (!existingTimestampIsMoreRecent) {
-                            Log.d("sync", "Deleting " + name);
+    //                        Log.d("sync", "Deleting " + name);
                             this.deleteVariable(s.getTarget(), sel, false);
                             vc.insert(name,keyHash,null);
                             changes.deletes++;
                         } else {
                             changes.refused++;
-                            Log.d("sync", "Did not delete...a newer entry exists in database.");
-                            o.addRow("");
-                            o.addYellowText("DB_DELETE REFUSED: " + name);
-                            if (hasValueAlready)
-                                o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp);
-                            else
-                                o.addYellowText(", since this variable has no value in my database");
+     //                       Log.d("sync", "Did not delete...a newer entry exists in database.");
+     //                       o.addRow("");
+     //                       o.addYellowText("DB_DELETE REFUSED: " + name);
+     //                       if (hasValueAlready)
+     //                           o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp);
+     //                       else
+     //                           o.addYellowText(", since this variable has no value in my database");
                         }
 
                     } else
@@ -2125,13 +2129,15 @@ public class DbHelper extends SQLiteOpenHelper {
         c = db.rawQuery("SELECT DATA FROM sync", null);
         byte[] row;
         SyncReport syncReport = null;
+        int sesTot = 0;int inserts = 0;
         while (c.moveToNext()) {
             row = c.getBlob(0);
             if (row != null) {
                 Object o = Tools.bytesToObject(row);
                 if (o != null) {
                     SyncEntry[] ses = (SyncEntry[]) o;
-
+                    if (ses!=null)
+                        sesTot += ses.length;
                     //final AlertDialog uiBlockerWindow;
                     //Log.d("vortex","calling SYNCHRONISE WITH "+ses.length+" entries!");
                     /*if (ses !=null && ses.length>SMALL_SYNC) {
@@ -2159,19 +2165,21 @@ public class DbHelper extends SQLiteOpenHelper {
                            //if (uiBlockerWindow!=null)
                             //   uiBlockerWindow.setMessage(((SyncStatus)entry).getStatus());
 
-                            Log.d("vortex","Synkstatus: "+((SyncStatus)entry).getStatus());
+                           // Log.d("vortex","Synkstatus: "+((SyncStatus)entry).getStatus());
                         }
                     });
-                    if (syncReport != null && syncReport.hasChanges())
+                    if (syncReport != null && syncReport.hasChanges()) {
+                        Log.d("vortex","synk for this block done. Inserts done: "+syncReport.inserts);
+                        inserts+= syncReport.inserts;
                         retValue = true;
+                    }
                 } else
                     Log.e("vortex", "Object was null!!!");
             }
-
-
+            Log.d("vortex","in total "+sesTot+" syncobjects and "+inserts+" inserts");
         }
         c.close();
-        Log.d("vortex", "DELETING ALL ENTRIES!!");
+        Log.d("vortex", "Deleting all entries in table_sync");
         db.delete(TABLE_SYNC, null, null);
         return retValue;
     }

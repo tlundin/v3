@@ -446,10 +446,10 @@ public class VariableCache {
     }
 
     public void insert(String name, Map<String, String> keyHash, String newValue) {
-        Log.d("vortex", "In insert with " + keyHash.toString());
+        //Log.d("vortex", "In insert with " + keyHash.toString());
         Map<String, Variable> vars = newcache.get(keyHash);
         if (vars != null) {
-            Log.d("vortex", "finding " + name);
+            //Log.d("vortex", "finding " + name);
             Variable var = vars.get(name.toLowerCase());
             if (var != null) {
                 Log.d("vortex", "replacing value " + var.getValue() + " with " + newValue);

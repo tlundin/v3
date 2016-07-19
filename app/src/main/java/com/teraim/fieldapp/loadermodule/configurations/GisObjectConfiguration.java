@@ -147,7 +147,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				Map<String,String>keyChain = new HashMap<String,String>();
 				Map<String,String> attributes = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 				String mType = type.trim();
-				Log.d("vortex","myType: "+mType);
+				//Log.d("vortex","myType: "+mType);
 				if (mType.equalsIgnoreCase(GisConstants.POINT)) {
 					//Log.d("vortex","parsing point object.");
 					//coordinates
@@ -254,21 +254,18 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					o.addYellowText("Skipped "+skipped+" attributes in file "+getFileName());
 				}
 
-				Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
+				//Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
 				reader.endArray();
-				Log.d("vortex","PEEK: "+reader.peek());
+				//Log.d("vortex","PEEK: "+reader.peek());
 				reader.endObject();
 				//Properties
-				Log.d("vortex","PEEK: "+reader.peek());
+				//Log.d("vortex","PEEK: "+reader.peek());
 				reader.nextName();
 				reader.beginObject();
 				while(reader.hasNext()) {
-					Log.d("vortex","PEEK: "+reader.peek());
-					if (reader.peek()==JsonToken.NUMBER)
-						Log.d("vortex","NUMBER: "+reader.nextLong());
-					else {
+					//Log.d("vortex","PEEK: "+reader.peek());
+					if (reader.peek()!=JsonToken.NUMBER) {
 						String name = reader.nextName().toLowerCase();
-						Log.d("vortex","NAME: "+name);
 						attributes.put(name, this.getAttribute(reader));
 					}
 				}

@@ -742,7 +742,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private Block readBlockCreateCategoryDataSource(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//		o.addRow("Parsing block: block_set_value...");
 		String id=null,title=null,chart=null,expressions=null;
-		String[] categories=null;
+		String[] categories=null,colorNames=null;
 		parser.require(XmlPullParser.START_TAG, null,"block_create_category_data_source");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -759,6 +759,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				categories = createStringArray(readText("categories",parser));
 			} else if (name.equals("expressions")) {
 				expressions = readText("expressions",parser);
+			} else if (name.equals("category_colors")) {
+				colorNames = createStringArray(readText("category_colors",parser));
 			}
 
 			else
@@ -766,7 +768,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 		checkForNull("block_ID",id);
-		return new CreateCategoryDataSourceBlock(id,title,chart, categories, expressions);
+		return new CreateCategoryDataSourceBlock(id,title,chart, categories, expressions,colorNames);
 
 	}
 
@@ -796,7 +798,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		}
 		checkForNull("block_ID",id);
-		return new CreateCategoryDataSourceBlock(id,title,chart, categories, "dummy");
+		return new CreateCategoryDataSourceBlock(id,title,chart, categories, "dummy",null);
 
 	}
 
@@ -849,7 +851,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			}  
 			else if (name.equals("width")) {
 				w = readText("width",parser);
-				width = (w==null||w.length()==0)?-1:Integer.parseInt(w);
+				width = (w==null||w.length()==0)?-1:(w.equalsIgnoreCase("fill")?-2:Integer.parseInt(w));
 			}
 			else if (name.equals("display_values")) {
 				displayValues = !readText("display_values",parser).equals("false");

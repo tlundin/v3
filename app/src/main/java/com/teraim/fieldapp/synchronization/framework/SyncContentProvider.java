@@ -59,6 +59,7 @@ public class SyncContentProvider extends ContentProvider {
 	@Override
 	public boolean onCreate() {
 		Log.d("vortex","ON CREATE CALLED FOR SYNC CONTENT PROVIDER!!!");
+		currentCount=0;
 		return true;
 	}
 
@@ -117,7 +118,7 @@ public class SyncContentProvider extends ContentProvider {
 	public ContentProviderResult[] applyBatch(
 	        ArrayList<ContentProviderOperation> operations)
 	            throws OperationApplicationException {
-	        System.out.println("starting transaction");
+	        //System.out.println("starting transaction");
 			 if (db== null)
 				 db= dbHelper.getReadableDatabase();
 
@@ -132,15 +133,23 @@ public class SyncContentProvider extends ContentProvider {
 	        }
 	        db.setTransactionSuccessful();
 	        db.endTransaction();
-	        System.out.println("ending transaction");
+	        //System.out.println("ending transaction");
 	        return result;
 	    }
 
 
 
 	SQLiteDatabase db;
+	int currentCount=0;
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
+		int count = values.getAsInteger("count");
+		if (count!=currentCount) {
+			Log.e("vortex", "current count differ from count. count: " + count + " curr "+currentCount);
+			currentCount=count;
+		}
+		currentCount++;
+		values.remove("count");
 		//Log.d("vortex","In insert with values data = "+values.getAsByteArray("DATA"));
 		db.insert(DbHelper.TABLE_SYNC, null, values);
 		

@@ -507,7 +507,7 @@ public class Tools {
 
 		LoggerI o = gs.getLogger();
 		List<String>listValues = al.getListElements(variable.getBackingDataSet());
-		Log.d("nils","Found dynamic list definition for variable "+variable.getId());
+		Log.d("nils","Found dynamic list definition for variable "+variable.getId()+": "+listValues);
 
 		if (listValues!=null&&listValues.size()>0) {
 			String [] columnSelector = listValues.get(0).split("=");
@@ -541,9 +541,9 @@ public class Tools {
 								if (valx!=null) 										
 									keySet.put(keyPair[0], valx);
 								else {
-									Log.e("nils","The variable used for dynamic list "+variable.getLabel()+" is not returning a value");
+									Log.e("nils","The variable "+keyPair[1]+" used for dynamic list "+variable.getLabel()+" is not returning a value");
 									o.addRow("");
-									o.addRedText("The variable used for dynamic list "+variable.getLabel()+" is not returning a value");
+									o.addRedText("The variable "+keyPair[1]+" used for dynamic list "+variable.getLabel()+" is not returning a value");
 								}
 							} else {
 								Log.d("nils","Keypair error: "+keyPair);

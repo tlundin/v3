@@ -29,7 +29,7 @@ public class CreateCategoryDataSourceBlock extends Block {
 			Color.YELLOW,Color.BLACK,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW };
 	
-	public CreateCategoryDataSourceBlock(String id,String title,String chart, String[] categories, String expressions) {
+	public CreateCategoryDataSourceBlock(String id,String title,String chart, String[] categories, String expressions, String[] colorNames) {
 		super();
 		this.blockId = id;
 		series = new CategorySeries(title);
@@ -41,6 +41,16 @@ public class CreateCategoryDataSourceBlock extends Block {
 
 			myCategories = categories;
 			Log.d("vortex","categories ok");
+		}
+		int j=0;
+		if (colorNames!=null) {
+			for (String colorName:colorNames) {
+				try {
+					colors[j++] = Color.parseColor(colorName);
+				} catch (IllegalArgumentException e) {
+					//If this happens, use standard color for same;
+				}
+			}
 		}
 	}
 

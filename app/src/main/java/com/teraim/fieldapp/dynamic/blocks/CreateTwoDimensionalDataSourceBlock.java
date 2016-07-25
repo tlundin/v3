@@ -11,6 +11,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.log.LoggerI;
 
 import org.achartengine.model.CategorySeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CreateTwoDimensionalDataSourceBlock extends Block {
 	String[] myCategories =null,myVariableNames=null;
 
 	List<Variable> myVariables;
-
+	XYMultipleSeriesDataset dataset;
 	final int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW };

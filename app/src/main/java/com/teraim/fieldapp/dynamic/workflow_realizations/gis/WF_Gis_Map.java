@@ -88,7 +88,6 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	private final FrameLayout mapView;
 	private final Rect rect;
-	private final View nudgePopUp;
 	private PersistenceHelper globalPh;
 	private GisImageView gisImageView;
 	private final WF_Context myContext;
@@ -207,11 +206,11 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		riktTS = (TextSwitcher)avstRL.findViewById(R.id.riktTS);
 		LayoutInflater li = LayoutInflater.from(ctx);
 		gisObjectsPopUp = li.inflate(R.layout.gis_object_menu_pop,null);
-		nudgePopUp = li.inflate(R.layout.nudge_button_panel_pop,null);
+
 		layersPopup = li.inflate(R.layout.layers_menu_pop,null);
 
 		gisObjectMenu = (GisObjectsMenu)gisObjectsPopUp.findViewById(R.id.gisObjectsMenu);
-		nudgeMenu = (NudgeView)nudgePopUp.findViewById(R.id.gisNudgeButtonMenu);
+		nudgeMenu = (NudgeView)createMenuL.findViewById(R.id.gisNudgeButtonMenu);
 		nudgeMenu.setListener(new NudgeListener() {
 			@Override
 			public void onNudge(Direction d, int changeDistance) {
@@ -259,10 +258,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		});
 		gisObjectsPopUp.setVisibility(View.GONE);
 		layersPopup.setVisibility(View.GONE);
-		nudgePopUp.setVisibility(View.GONE);
 		mapView.addView(gisObjectsPopUp);
 		mapView.addView(layersPopup);
-		mapView.addView(nudgePopUp);
 		//LinearLayout filtersL = (LinearLayout)mapView.findViewById(R.id.FiltersL);
 		//filtersL.setVisibility(View.GONE);
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -727,11 +724,11 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		if (isVisible) {
 			createMenuL.setVisibility(View.VISIBLE);
-			nudgePopUp.setVisibility(View.VISIBLE);
+
 		}
 		else {
 			createMenuL.setVisibility(View.GONE);
-			nudgePopUp.setVisibility(View.GONE);
+
 		}
 
 		if (selectedT2==null) {
@@ -1142,12 +1139,12 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		if (myLayers==null||myLayers.isEmpty()||identifier==null)
 			return null;
 		for (GisLayer gl:myLayers) {
-			Log.d("vortex","ID for layer: "+gl.getId());
+			//Log.d("vortex","ID for layer: "+gl.getId());
 			if (gl.getId().equals(identifier)) {
-				Log.d("vortex","MATCH GL!!");
+			//	Log.d("vortex","MATCH GL!!");
 				return gl;
 			} else
-				Log.d("vortex","NO MATCH GL!!");
+				Log.d("vortex","Did not find layer "+identifier+" from GisMap");
 		}
 		return null;
 	}

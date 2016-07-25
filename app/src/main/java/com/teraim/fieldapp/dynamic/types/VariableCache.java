@@ -189,7 +189,7 @@ public class VariableCache {
                         else
                             v = new Variable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);
                         ret.put(varName.toLowerCase(), v);
-						Log.d("vorto","Added "+varName+" to cache with value n:"+variableValues.norm+" h: "+variableValues.hist);
+						//Log.d("vorto","Added "+varName+" to cache with value n:"+variableValues.norm+" h: "+variableValues.hist);
                     }
                 }
             } else
@@ -198,8 +198,8 @@ public class VariableCache {
 
         }
         long ctime = System.currentTimeMillis();
-        Log.d("vortex", "Generating all variables took: " + (ctime - time) + " ms");
-        Log.d("vortex", "Key: " + myKeyHash);
+        //Log.d("vortex", "Generating all variables took: " + (ctime - time) + " ms");
+        //Log.d("vortex", "Key: " + myKeyHash);
         //Log.d("vortex", "Variables found: "+(ret==null?"null":ret.keySet()));
         return ret;
     }

@@ -1953,10 +1953,10 @@ public class DbHelper extends SQLiteOpenHelper {
         int histC = 0;
         //		if (!key.equals(AR)) {
         String[] selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);
-        Log.d("vortex", "selection: " + selection);
-        Log.d("vortex", "selectionArgs: " + selectionArgs);
+//        Log.d("vortex", "selection: " + selection);
+//        Log.d("vortex", "selectionArgs: " + selectionArgs);
         Cursor c = db.query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
-        Log.d("vortex", "Got " + c.getCount() + " results in norm ");
+//        Log.d("vortex", "Got " + c.getCount() + " results in norm ");
         //Now also query the historical values. If any.
         Map<String, TmpVal> tmp = new HashMap<String, TmpVal>();
         while (c.moveToNext()) {
@@ -1971,14 +1971,14 @@ public class DbHelper extends SQLiteOpenHelper {
             selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);
             Cursor d = db.query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
             histC = d.getCount();
-            Log.d("vortex", "Got " + histC + " results in hist ");
+//            Log.d("vortex", "Got " + histC + " results in hist ");
             while (d.moveToNext())
                 getTmpVal(d.getString(0), tmp).hist = d.getString(1);
             d.close();
         }
 
 
-        Log.d("vortex", "Tmpval has " + tmp.values().size() );
+//        Log.d("vortex", "Tmpval has " + tmp.values().size() );
         /*
 			for (String v:tmp.keySet()) {
 					TmpVal tv = tmp.get(v);

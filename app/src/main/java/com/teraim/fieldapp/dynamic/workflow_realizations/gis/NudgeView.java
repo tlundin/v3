@@ -22,8 +22,8 @@ import com.teraim.fieldapp.dynamic.types.NudgeListener;
  */
 public class NudgeView extends View {
 
-    private static  int MARGIN_RIGHT = 10;
-    private static  int MARGIN_BOTTOM = 50 ;
+    private static  int MARGIN_RIGHT = 0;
+    private static  int MARGIN_BOTTOM = 0 ;
     private static int centralButtonR;
     private NudgeListener listener;
     private float Edge_Margin = 0;

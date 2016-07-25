@@ -173,7 +173,7 @@
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
-                 />
+                />
 
             <TextSwitcher
                 android:id="@+id/riktTS"
@@ -184,7 +184,7 @@
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
-                 />
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -193,14 +193,13 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:background="@drawable/object_menu_pop_bg"
-            android:minWidth="150dp"
             android:orientation="vertical"
             android:padding="5dp"
             android:visibility="gone" >
 
             <TextView
                 android:id="@+id/selectedT2"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="Large Text"
@@ -210,22 +209,26 @@
 
             <TextView
                 android:id="@+id/lengthT"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textStyle="bold"
                 android:textColor="@color/white" />
-            <Button
-                android:id="@+id/createBackB"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="&lt;--"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
+            <com.teraim.fieldapp.dynamic.workflow_realizations.gis.NudgeView
+                android:id="@+id/gisNudgeButtonMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+
+
+                />
             <Button
                 android:id="@+id/createOkB"
                 android:layout_width="match_parent"
@@ -233,7 +236,21 @@
                 android:text="OK"
                 android:textColor="@color/white"
                 android:textSize="20sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/createBackB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="&lt;--"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textStyle="bold" />
+
         </LinearLayout>
         <LinearLayout
             android:id="@+id/candidatesMenuL"

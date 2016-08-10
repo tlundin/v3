@@ -269,21 +269,28 @@ public class NudgeView extends View {
 
 
         setMeasuredDimension(width, height);
+
+
     }
 
-
+    boolean calculated=false;
 
     @Override
     protected void onSizeChanged(int ww, int hh, int oldw, int oldh) {
+        Log.d("vortex","on size changed...new: "+ww+","+hh+", old: "+oldw+","+oldh);
         this.w = ww-MARGIN_RIGHT;
         this.h = hh-MARGIN_BOTTOM;
-
         Edge_Margin = diameter /7;
-        rectF.set(w- diameter,h- diameter,w,h);
-        upArrow.offset(w-(diameter /2),(h- diameter)+Edge_Margin);
-        rightA.offset(w-Edge_Margin,h-(diameter)/2);
-        leftA.offset(w- diameter +Edge_Margin,h-(diameter)/2);
-        downA.offset(w- diameter /2,h-Edge_Margin);
+
+        if (!calculated) {
+            rectF.set(w - diameter, h - diameter, w, h);
+            upArrow.offset(w - (diameter / 2), (h - diameter) + Edge_Margin);
+            rightA.offset(w - Edge_Margin, h - (diameter) / 2);
+            leftA.offset(w - diameter + Edge_Margin, h - (diameter) / 2);
+            downA.offset(w - diameter / 2, h - Edge_Margin);
+        }
+        calculated = true;
+
         super.onSizeChanged(ww, hh, oldw, oldh);
     }
 

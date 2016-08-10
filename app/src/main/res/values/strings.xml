@@ -12,6 +12,7 @@
 	<string name="drawer_open">Open</string>
 	<string name="drawer_close">Close</string>
 	<string name="local_service_started">Bluetooth started</string>
+	<string name="debug_summary">Debug Log Information</string>
 	
 	<string name="u1">u1</string>
 	<string name="u2">u2</string>	
@@ -41,7 +42,7 @@
 	<string name="restart">Restart</string>
 	<string name="restartMessage">You need to restart for this change to take effect. Restart now?</string>	
 	<string name="app_bundle_name">Name of Application Bundle (change requires restart)</string>
-	<string name="developer_functions">Developerfunctions</string>
+	<string name="developer_functions">Developer Functions</string>
 	<string name="Sync_method">Sync Method</string>
 	<string name="Version_control">Version Control</string>
 	<string name="Automatic_backup">Backup</string>	

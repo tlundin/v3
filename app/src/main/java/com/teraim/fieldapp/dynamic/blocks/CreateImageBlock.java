@@ -91,7 +91,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 				if (fileName==null) {
 					Log.d("botox","Failed to find file using "+dynImgName+" as regexp pattern");
 				} else {
-					Log.d("botox","Find filename from pattern: "+fileName);
+					Log.d("botox","Filename now: "+fileName);
 					dynImgName=fileName;
 				}
 
@@ -249,6 +249,9 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 	@Override
 	public void onEvent(Event e) {
 		Log.d("vortex","Img was taken");
+		String fileName = this.figureOutFileToLoad(dynImgName);
+		if (fileName!=null)
+			dynImgName=fileName;
 		setImageFromFile(myContext,img);
 	}
 

@@ -306,6 +306,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 			//Regenerate list.
 			//list.clear();
 			updateEntryFields();
+				resetOnEvent();
 			draw();
 			}
 			else if (e.getType()==EventType.onSave) {
@@ -319,6 +320,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 							Log.d("vortex","main variable is null. Delete!");
 							get().remove(ef);
 							reSortAndFilter();
+							resetOnEvent();
 							draw();
 						}
 					}

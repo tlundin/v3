@@ -201,13 +201,15 @@ public class GisObjectsMenu extends View {
 						}
 						break;
 					case MotionEvent.ACTION_UP:
-						for (TabButton tb:tabButtonArray) {
-							if (tb.clickInside(event.getX(),event.getY())) {
-								Log.d("vortex", "Click inside tab button: " + tb.fullText);
-								currentPalette = tb.fullText;
-								userSelectedPalette=tb.fullText;
-								generateMenu();
-								GisObjectsMenu.this.invalidate();
+						if (tabButtonArray!=null) {
+							for (TabButton tb : tabButtonArray) {
+								if (tb.clickInside(event.getX(), event.getY())) {
+									Log.d("vortex", "Click inside tab button: " + tb.fullText);
+									currentPalette = tb.fullText;
+									userSelectedPalette = tb.fullText;
+									generateMenu();
+									GisObjectsMenu.this.invalidate();
+								}
 							}
 						}
 						if (oldB!=null) {
@@ -334,7 +336,7 @@ public class GisObjectsMenu extends View {
 
 
 
-		if (myPalettes.size()>1) {
+		if (myPalettes.size()>0) {
 			tabRowHeight = scale*30;
 			int totalWidth=0,fulltextBoundsWidth=0;
 			boolean aggressive = false;

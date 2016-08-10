@@ -73,8 +73,11 @@
     <dimen name="padding_large">16dp</dimen>
     <dimen name="padding_medium">8dp</dimen>
     <dimen name="padding_small">8dp</dimen>
-    <dimen name="text_size_huge">30sp</dimen>
-    <dimen name="text_size_medium">25sp</dimen>
+    <dimen name="text_size_huge">25sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_micro">10sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
     <dimen name="ui_elem_margin_bottom">10sp</dimen>
     <dimen name="ui_elem_margin_left">5sp</dimen>
     <dimen name="ui_elem_margin_right">5sp</dimen>
@@ -102,9 +105,10 @@
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="context">Context</string>
+    <string name="debug_summary">Debug Log Information</string>
     <string name="delete">Delete</string>
     <string name="description">Description</string>
-    <string name="developer_functions">Developerfunctions</string>
+    <string name="developer_functions">Developer Functions</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
     <string name="filters">Filters</string>
@@ -139,9 +143,9 @@
     
 </style>
     <style name="ConsoleStyle" parent="@android:style/Widget.TextView">
-    <item name="android:textSize">@dimen/text_size_medium</item>
+    <item name="android:textSize">@dimen/text_size_large</item>
     <item name="android:textColor">@color/white</item>
-    <item name="android:textStyle">bold</item>
+    <item name="android:textStyle">normal</item>
 </style>
     <style name="GreenStyle" parent="@android:style/Widget.TextView">
 <item name="android:textColor">@color/green</item>

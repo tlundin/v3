@@ -80,7 +80,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public String findCoordinatesInHistorical(String uid) {
         String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + GisConstants.GPS_Coord_Var_Name + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
-        Log.d("vortex","findCoordinatesInHistorical: \n"+query);
+        //Log.d("vortex","findCoordinatesInHistorical: \n"+query);
 
         Cursor resultSet = db.rawQuery(query, null);
         if (resultSet.moveToNext())
@@ -1759,12 +1759,12 @@ public class DbHelper extends SQLiteOpenHelper {
         valuez.clear();
         valuez.put(getDatabaseColumnName("år"), Constants.HISTORICAL_TOKEN_IN_DATABASE);
 
-        String keyVal = null;
+
         for (String key : keys.keySet()) {
-            keyVal = keys.get(key);
-            if (keyVal != null) {
+
+            if (keys.get(key) != null) {
                 if (realColumnNameToDB.get(key) != null)
-                    valuez.put(realColumnNameToDB.get(key), keyVal);
+                    valuez.put(realColumnNameToDB.get(key), keys.get(key));
                 else {
                     Log.e("vortex","Could not find key "+key+" in keychain for "+varId);
                     //Column not found. Do not insert!!

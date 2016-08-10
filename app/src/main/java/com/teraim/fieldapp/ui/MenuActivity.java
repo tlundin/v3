@@ -1,6 +1,7 @@
 package com.teraim.fieldapp.ui;
 
 import java.util.Map;
+import java.util.Properties;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -133,6 +134,8 @@ public class MenuActivity extends Activity   {
 
 
 		configureSynk();
+
+
 	}
 
 
@@ -299,7 +302,7 @@ public class MenuActivity extends Activity   {
 				break;
 
 			case SyncService.MSG_DEVICES_IN_SYNC:
-				Log.d("vortex","Oh glorious days!");
+				Log.d("vortex","***DEVICES IN SYNC***");
 				inSync = true;
 				syncActive=false;
 				syncError = false;
@@ -466,6 +469,7 @@ public class MenuActivity extends Activity   {
 							menuItem.setOnMenuItemClickListener(null);
 							animView.setOnClickListener(null);
 							animationRunning = false;
+							syncError = false;
 						}
 					});
 					animationRunning=true;

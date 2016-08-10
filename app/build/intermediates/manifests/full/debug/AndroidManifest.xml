@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="19" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -64,6 +64,13 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
+        </service>
+        <service
+            android:name="org.jumpmind.symmetric.android.SymmetricService"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="org.jumpmind.symmetric.android.SymmetricService" />
+            </intent-filter>
         </service>
         <service
             android:name="com.teraim.fieldapp.synchronization.framework.AuthenticatorService"

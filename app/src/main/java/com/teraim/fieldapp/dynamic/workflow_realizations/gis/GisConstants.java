@@ -16,7 +16,5 @@ public class GisConstants {
 	public static final String DefaultTag = "Def";
 	public static final String GPS_Coord_Var_Name = "gpscoord";
 	public static final String MULTI_POLYGON = "Multipolygon";
-
-
-
+	public static final String ObjectID ="OBJECTID";
 }

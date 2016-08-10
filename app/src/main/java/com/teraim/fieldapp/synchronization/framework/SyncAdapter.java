@@ -131,35 +131,34 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
 
-		int err=-1;
+		int err = -1;
 
-		Log.d("vortex","************onPerformSync ["+user+"]");
+		Log.d("vortex", "************onPerformSync [" + user + "]");
 
-		if(mClient==null) {
-			Log.e("vortex","Not ready so discarding call");
+		if (mClient == null) {
+			Log.e("vortex", "Not ready so discarding call");
 			return;
-		} 
-		if(busy) {
+		}
+		if (busy) {
 			Log.e("vortex", "Busy so discarding call");
-			err=SyncService.ERR_SYNC_BUSY;
+			err = SyncService.ERR_SYNC_BUSY;
 			return;
 		}
 		//Check for any change of username or team name. 
 		else if (!refreshUserAppAndTeam()) {
 			if (!internetSync) {
 				Log.e("vortex", "Not internet sync so discarding call");
-				err=SyncService.ERR_NOT_INTERNET_SYNC;
-			}
-			else {
-			Log.e("vortex", "Settings error prevents sync (missing user, team or appName");
-			err=SyncService.ERR_SETTINGS;
+				err = SyncService.ERR_NOT_INTERNET_SYNC;
+			} else {
+				Log.e("vortex", "Settings error prevents sync (missing user, team or appName");
+				err = SyncService.ERR_SETTINGS;
 			}
 		}
 		//If error, send it to UI thread.
 		Message msg;
-		if (err!=-1) {
-			msg= Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
-			msg.arg1=err;
+		if (err != -1) {
+			msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
+			msg.arg1 = err;
 
 			try {
 				mClient.send(msg);
@@ -170,8 +169,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			return;
 		}
 		//We are now running!!
-		busy=true;
-		Log.e("vortex","BUSY NOW TRUE");
+		busy = true;
+		Log.e("vortex", "BUSY NOW TRUE");
+		//dataPump();
+
 
 		//Get data entries to sync if any.
 		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, MaxSyncableRows+"");
@@ -229,6 +230,54 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.e("vortex","DATABASE CURSOR NULL IN SYNCADAPTER");
 
 
+	}
+
+	private void dataPump() {
+		URL url ;
+		URLConnection conn=null;
+		int orderNr = 0;
+
+
+		Log.d("vortex","In datapump");
+
+		//Send a Start Sync message to the other side.
+
+		//Send the SynkEntry[] array to server.
+		try {
+			url = new URL(Constants.SynkServerURI);
+			conn = url.openConnection();
+			conn.setConnectTimeout(10 * 1000);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setUseCaches(false);
+			conn.addRequestProperty("type", "DATA_PUMP");
+			conn.connect();
+
+		}  catch (StreamCorruptedException e) {
+		Log.e("vortex","Stream corrupted. Reason: "+e.getMessage()+" Timestamp: "+System.currentTimeMillis());
+
+	}
+	catch (SocketTimeoutException e) {
+		e.printStackTrace();
+		Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
+		msg.arg1=SyncService.ERR_SERVER_CONN_TIMEOUT;
+
+		return;
+	}
+
+	catch (IOException fe) {
+		fe.printStackTrace();
+		Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
+		msg.arg1=SyncService.ERR_SERVER_NOT_REACHABLE;
+
+		return;
+	}
+
+	catch (Exception ex) {
+		ex.printStackTrace();
+
+	}
+		busy = false;
 	}
 
 	private void sendMessage(Message msg) {
@@ -319,6 +368,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			conn.setDoInput(true);
 			conn.setDoOutput(true);
 			conn.setUseCaches(false);
+//			conn.addRequestProperty("type","TEAM_SYNK");
 
 			// send object
 			Log.d("vortex","creating outstream...");
@@ -337,6 +387,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			String trId=gh.getString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,LONG_TIME_AGO);
 			Log.d("vortex","LAST_SYNC_FROM_TEAM_TO_ME WAS "+trId);
 			objOut.writeObject(trId);
+
 			if (sa!=null && sa.length>0) {
 				Log.d("vortex","Writing SA[] Array.");
 				objOut.writeObject(sa);				

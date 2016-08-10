@@ -62,12 +62,14 @@ public class Geomatte {
 	}
 	
 	public static double lengthOfPath(List<Location> myDots) {
-		if (myDots==null || myDots.size()<2)
+		if (myDots==null || myDots.size()<2) {
+			Log.d("vortex","too few coordinates in lengthofpath...returning 0");
 			return 0;
-		
+		}
 		double length = 0;
 		
 		for (int i = 0 ; i < myDots.size()-1; i++) {
+			Log.d("vortex","mydots: "+myDots.get(i)+","+myDots.get(i+1));
 			length += sweDist(myDots.get(i),myDots.get(i+1));
 		}
 		return length;

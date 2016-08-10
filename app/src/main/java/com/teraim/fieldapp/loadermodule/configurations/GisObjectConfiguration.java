@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -29,7 +28,6 @@ import com.teraim.fieldapp.loadermodule.JSONConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
@@ -42,6 +40,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private String myType;
 	private boolean generatedUID = false;
 	private Table varTable;
+	private boolean isDebug = false;
 
 	public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
 		super(globalPh,ph, source,fileLocation, fileName, fileName);
@@ -56,6 +55,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			myType =( myType.substring(0,1).toUpperCase() + myType.substring(1));
 		}
 		varTable = t;
+		isDebug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
 	}
 
 	private static String fixedLength(String fileName) {
@@ -151,18 +151,13 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				if (mType.equalsIgnoreCase(GisConstants.POINT)) {
 					//Log.d("vortex","parsing point object.");
 					//coordinates
-					//Log.d("vortex","reading coords");
-					x = reader.nextDouble();
-					y = reader.nextDouble();
-					myLocation = new SweLocation(x, y);
-					myGisObjects.add(new GisObject(keyChain,Arrays.asList(new Location[] {myLocation}),attributes));
+					//Log.d("vortex","reading coords")
+					myGisObjects.add(new GisObject(keyChain,Arrays.asList(new Location[] {readLocation(reader)}),attributes));
 				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POINT)||(mType.equalsIgnoreCase(GisConstants.LINE_STRING.toString()))){
 					List<Location> myCoordinates = new ArrayList<Location>();
 					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 						reader.beginArray();
-						x = reader.nextDouble();
-						y = reader.nextDouble();
-						myCoordinates.add(new SweLocation(x, y));
+						myCoordinates.add(readLocation(reader));
 						reader.endArray();
 					}
 					myGisObjects.add(new GisObject(keyChain,myCoordinates,attributes));
@@ -177,11 +172,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 						myCoordinates = new ArrayList<Location>();
 						while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 							reader.beginArray();
-							x = reader.nextDouble();
-							y = reader.nextDouble();
-							if (!reader.peek().equals(JsonToken.END_ARRAY))
-								z = reader.nextDouble();
-							myCoordinates.add(new SweLocation(x, y));
+
+							myCoordinates.add(readLocation(reader));
 							reader.endArray();
 						}
 						polygons.put((proxyId)+"" , myCoordinates);
@@ -194,6 +186,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POLYGON)){
 					Log.d("vortex","MULTIPOLYGON!!");
+					o.addRow("");
+					o.addRedText("Unsupported Geo Type in parser: "+mType);
 					Set<GisPolygonObject> multiPoly 				= new HashSet<GisPolygonObject>();
 					Map<String,List<Location>> 	 onePolygonSet		= new HashMap<String,List<Location>>();
 					List<Location> myCoordinates=null;
@@ -214,13 +208,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 							reader.beginArray();
 
 							//Individual elements.
+							//TODO: SAVE THE LOCATIONS!!! NOW THEY ARE THROWN AWAY.
 							while (reader.peek() != JsonToken.END_ARRAY) {
 								reader.beginArray();
-								x = reader.nextDouble();
-								y = reader.nextDouble();
-								Log.d("vortex","Added "+x+","+y);
-								if (!reader.peek().equals(JsonToken.END_ARRAY))
-									z = reader.nextDouble();
+								readLocation(reader);
 								reader.endArray();
 							}
 							reader.endArray();
@@ -243,15 +234,23 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					Log.e("vortex","type not supported! "+type);
 					return new LoadResult(this,ErrorCode.ParseError);
 				}
-				int skipped=0;
+
+				List<String>skippies = new ArrayList<>();
 				while(reader.hasNext()) {
-					Log.d("vortex","skipping "+this.getAttribute(reader));
+					String skipped = this.getAttribute(reader);
+					if (skipped.length()>0)
+						skippies.add(skipped);
 					//this.getAttribute(reader);
-					skipped++;
+
 				}
-				if (skipped>0) {
+				if (skippies.size()>0 && isDebug) {
 					o.addRow("");
-					o.addYellowText("Skipped "+skipped+" attributes in file "+getFileName());
+					o.addRedText("");
+					o.addCriticalText("Skipped "+skippies.size()+" attributes in file "+getFileName()+":");
+					for (String skip:skippies) {
+						o.addCriticalText(skip);
+					}
+
 				}
 
 				//Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
@@ -278,7 +277,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				//Log.d("vortex","FixedGid: "+uuid);
 				String rutaId = attributes.remove(GisConstants.RutaID);
 
-
+				String objectId = attributes.remove(GisConstants.ObjectID);
 				if (uuid!=null) {
 					uuid = uuid.replace("{","").replace("}","");
 					//Log.d("vortex","FixedGid: "+uuid);
@@ -286,16 +285,27 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				}
 				else {
 					generatedUID=true;
+					Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
+					//return new LoadResult(this,ErrorCode.ParseError,"Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
 					keyChain.put("uid", UUID.randomUUID().toString());
+					attributes.put("GENERATEDUID","true");
 				}
 				//keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
 
-				//Tarfala hack. TODO: Remove.
-				if (rutaId==null)
-					Log.e("vortex","ingen ruta ID!!!!");
+
+				if (rutaId==null) {
+
+					Log.e("vortex", "ingen ruta ID!!!!");
+					return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
+				}
 				else
 					keyChain.put("ruta", rutaId);
 
+				if (objectId == null) {
+					Log.e("vortex", "ingen object ID!!!!");
+					return new LoadResult(this,ErrorCode.ParseError,"MISSING OBJECT ID");
+
+				}
 				keyChain.put(GisConstants.TYPE_COLUMN, myType);
 
 				//Add geotype to attributes so that the correct object can be used at export.
@@ -317,7 +327,20 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		}
 	}
 
-
+	private Location readLocation(JsonReader reader) {
+		double x = 0;
+		double y = 0;
+		try {
+			x = reader.nextDouble();
+			y = reader.nextDouble();
+		if (!reader.peek().equals(JsonToken.END_ARRAY)) {
+			double z = reader.nextDouble();
+		}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new SweLocation(x,y);
+	}
 
 
 	@Override
@@ -356,8 +379,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		Map<String, String> attr = go.getAttributes();
 
 		for (String key:attr.keySet()) {
-			String val = attr.get(key);
-			if (!myDb.fastHistoricalInsert(go.getKeyHash(),key,val)) {
+
+			if (!myDb.fastHistoricalInsert(go.getKeyHash(),key,attr.get(key))) {
 				o.addRow("");
 				o.addRedText("Row: "+counter+". Insert failed for "+key+". Hash: "+go.getKeyHash().toString());;
 			}

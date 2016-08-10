@@ -2,6 +2,7 @@ package com.teraim.fieldapp.utils;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +26,8 @@ public class GeoJSONExporter extends Exporter {
 	private StringWriter sw;
 	private JsonWriter writer;
 	private String author ="";
-
+	private List<String> coordLess = new ArrayList<>();
+	private Map<String,String> rutMap = new HashMap<>();
 	protected GeoJSONExporter(Context ctx) {
 		super(ctx);
 
@@ -63,9 +65,10 @@ public class GeoJSONExporter extends Exporter {
 				//gisobjects: A map between UID and variable key-value pairs.
 				HashMap<String, Map<String, Map<String, String>>> gisObjects=null;
 				
-				String uid=null,ruta=null,spy=null;
+
 				Map<String, String> gisObjM;
 				do {
+					String uid=null,spy=null;
 					currentHash = cp.getKeyColumnValues();
 					if (currentHash==null) {
 						o.addRow("");
@@ -74,14 +77,13 @@ public class GeoJSONExporter extends Exporter {
 						continue;
 					}
 					uid = currentHash.get("uid");
-					ruta = currentHash.get("ruta");
+					rutMap.put(uid,currentHash.get("ruta"));
 					spy = currentHash.get("spy");
 					if (spy!=null) {
 						Log.d("vortex","found spy!!");
 
 					}
 					Log.d("botox","CURRENT_HASH: "+currentHash);
-
 					if (uid==null) {
 						Log.e("vortex","missing uid!!!");
 						Log.e("vortex","keyhash: "+currentHash);
@@ -101,9 +103,11 @@ public class GeoJSONExporter extends Exporter {
 						if (gisObjM==null) { 
 							gisObjM = new LinkedHashMap<String,String>();
 							gisObjH.put(spy, gisObjM);
-							//gisObjM.put("Gistyp", currentHash.get(GisConstants.TYPE_COLUMN));
-							Log.d("vortex","keyhash: "+currentHash.toString());
+							if (spy == null)
+								gisObjM.put("GISTYP", currentHash.get(GisConstants.TYPE_COLUMN));
+							//Log.d("vortex","keyhash: "+currentHash.toString());
 						}
+
 						//Hack for multiple SPY1 variables.
 						List<String> row;
 						if (cp.getVariable()!=null) {
@@ -143,19 +147,19 @@ public class GeoJSONExporter extends Exporter {
 				//For each fixedGid (uid)...
 				if (gisObjects!=null) {
 					for (String keyUID:gisObjects.keySet()) {
-						Log.d("vortex", "Spy sets under " + keyUID);
+						//Log.d("vortex", "Spy sets under " + keyUID);
 						Map<String, Map<String, String>> gisObjH = gisObjects.get(keyUID);
 
 							//First do the default.
 							gisObjM = gisObjH.get(null);
 							String geoType = gisObjM.remove(GisConstants.Geo_Type);
 							if (geoType == null)
-								geoType = "point";
+								geoType = "Point";
 							String coordinates = getCoordinates(keyUID, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
 
 							if (coordinates == null) {
 								//Try to find the object from historical. If not possible, sound alert.
-
+/*
 								Log.e("vortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
 								o.addRow("");
 								o.addRedText("No GPS coordinates found for " + keyUID);
@@ -163,6 +167,8 @@ public class GeoJSONExporter extends Exporter {
 									o.addRow("");
 									o.addRedText("variable: " + mKey + ", value: " + gisObjM.get(mKey));
 								}
+*/
+								coordLess.add(keyUID);
 								coordinates = "0,0";
 							}
 
@@ -177,12 +183,12 @@ public class GeoJSONExporter extends Exporter {
 							String[] polygons = null;
 							boolean isPoly = false;
 							if (!geoType.equals("Polygon")) {
-								Log.d("volde", "POINT!!!");
+								//Log.d("volde", "POINT!!!");
 
 								polygons = new String[]{coordinates};
 							} else {
 								isPoly = true;
-								Log.d("volde", "POLYGON!!!");
+								//Log.d("volde", "POLYGON!!!");
 								polygons = coordinates.split("\\|");
 								writer.beginArray();
 							}
@@ -190,16 +196,17 @@ public class GeoJSONExporter extends Exporter {
 
 								String[] coords = polygon.split(",");
 
-								writer.beginArray();
+								if (isPoly)
+									writer.beginArray();
 								for (int i = 0; i < coords.length; i += 2) {
-									Log.d("vortex", "coord [" + i + "] :" + coords[i]);
+									//Log.d("vortex", "coord [" + i + "] :" + coords[i]);
 									writer.beginArray();
 									printCoord(writer, coords[i]);
 									printCoord(writer, coords[i + 1]);
 									writer.endArray();
 								}
-
-								writer.endArray();
+								if (isPoly)
+									writer.endArray();
 							}
 							if (isPoly)
 								writer.endArray();
@@ -209,14 +216,15 @@ public class GeoJSONExporter extends Exporter {
 							writer.beginObject();
 							//Add the UUID
 							write(GisConstants.FixedGid, keyUID);
-							if (ruta != null)
-								write("RUTA", ruta);
+							String ruta = rutMap.get(keyUID);
+							if (ruta!=null)
+								write("RUTA",ruta);
 							write("author", author);
 							//write("timestamp",cp.getVariable().timeStamp);
 							//write("author",cp.getKeyColumnValues().get("author"));
 							for (String mKey : gisObjM.keySet()) {
 								write(mKey, gisObjM.get(mKey));
-								Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
+								//Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
 							}
 							//Check if there are other spy than default.
 						if (gisObjH != null && !gisObjH.isEmpty()) {
@@ -224,17 +232,17 @@ public class GeoJSONExporter extends Exporter {
 							writer.beginArray();
 							for (String key : gisObjH.keySet()) {
 								if (key == null) {
-									Log.d("volde", "skipping null key");
+									//Log.d("volde", "skipping null key");
 									continue;
 								}
-								Log.d("volde", "found some extra under " + key);
+								//Log.d("volde", "found some extra under " + key);
 								gisObjM = gisObjH.get(key);
 								if (gisObjM != null) {
 									writer.beginObject();
 									write("SPY", key);
 									for (String mKey : gisObjM.keySet()) {
 										write(mKey, gisObjM.get(mKey));
-										Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
+										//Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
 									}
 									writer.endObject();
 								}
@@ -261,6 +269,13 @@ public class GeoJSONExporter extends Exporter {
 
 				Log.d("nils","finished writing JSON");
 				Log.d("nils", sw.toString());
+				if (!coordLess.isEmpty()&&globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH)) {
+					o.addRow("");
+					o.addRedText("No coordinates found for these objects:");
+					for (String keyUID:coordLess) {
+						o.addCriticalText(keyUID);
+					}
+				}
 				return new Report(sw.toString(),varC);
 			}else
 				Log.e("vortex","EMPTY!!!");

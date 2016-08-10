@@ -43,7 +43,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="dev_switch"
-            android:summary="Turns on debugging"
+            android:summary="@string/debug_summary"
             android:title="@string/developer_functions" />
 
         <ListPreference

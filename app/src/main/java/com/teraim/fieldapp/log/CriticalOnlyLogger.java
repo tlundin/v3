@@ -47,11 +47,13 @@ public class CriticalOnlyLogger implements LoggerI {
 			//}
 			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}
-		s = new SpannableString("\n"+text);
-		s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		myTxt.append(s);	 
-		if (log!=null) log.setText(myTxt);
-		//Log.d("vortex","hasRed true for "+this.toString());
+		if (text!=null && text.length()>0) {
+			s = new SpannableString("\n" + text);
+			s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			myTxt.append(s);
+			if (log != null) log.setText(myTxt);
+			//Log.d("vortex","hasRed true for "+this.toString());
+		}
 	}
 
 	@Override
@@ -74,7 +76,8 @@ public class CriticalOnlyLogger implements LoggerI {
 
 	@Override
 	public void addCriticalText(String text) {
-		this.addRow(text);
+		s = new SpannableString("\n"+text);
+		myTxt.append(s);
 	}
 
 	@Override

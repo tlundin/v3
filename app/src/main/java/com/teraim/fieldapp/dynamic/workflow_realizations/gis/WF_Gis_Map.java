@@ -874,8 +874,12 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	public void showLength(double lengthOfPath) {
 		if (lengthOfPath==0)
 			lengthT.setText("");
-		else
-			lengthT.setText(ctx.getString(R.string.length_) + new DecimalFormat("##.##").format(lengthOfPath));
+		else {
+			String l = ctx.getString(R.string.length_) +"\n"+ new DecimalFormat("##.##").format(lengthOfPath);
+			Log.d("vortex","L streng is "+l);
+			lengthT.setText(l);
+		}
+
 	}
 
 

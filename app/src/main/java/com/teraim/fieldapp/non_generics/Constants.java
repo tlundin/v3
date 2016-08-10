@@ -41,7 +41,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.436f;
+	public final static float VORTEX_VERSION = 4.443f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -84,7 +84,7 @@ public class Constants {
 	public static final String FALSE= "false";
 
 	//Static constants
-	public static final long MS_MONTH = 2629746000L;
+	public static final long MS_MONTH = 2_629_746_000L;
 
 	public static final int KEY_LENGTH = 10;
 	public static final String SLU_URL = "https://arbetsplats.slu.se/sites/srh/Landskapsanalys/Faltportal/default.aspx";
@@ -216,16 +216,14 @@ public class Constants {
 
 	public static final String BLUETOOTH_NAME = "vortex";
 
-
-	public static final String FIELD_PAD_VERSION = "1.0";
-
 	public static final boolean FreeVersion = false;
 
 	public static final String BACKUP_FILE_NAME = "backup";
 
 	//Backup if data older than 24h
-	public static final long BACKUP_FREQUENCY = 86400000;
+	public static final long BACKUP_FREQUENCY = 86_400_000;
 
+	//public static final String SynkServerURI = "http://86.147.254.215:8080/com.teraim.synkserv/SynkServ";
 	//public static final String SynkServerURI = "http://109.157.177.172:8080/com.teraim.synkserv/SynkServ";
 
 	//public static final String SynkServerURI = "http://130.211.51.77:8080/synkserv/SynkServ";

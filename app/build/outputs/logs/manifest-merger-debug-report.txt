@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:1:1-86:12
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:1:1-92:12
 	package
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:3:5-34
 		INJECTED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml
@@ -82,7 +82,7 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:26:5-79
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:26:22-77
 application
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:28:5-84:19
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:28:5-90:19
 	android:label
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:30:9-41
 	tools:ignore
@@ -151,23 +151,35 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:67:13-68:59
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:68:21-56
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:67:24-66
+service#org.jumpmind.symmetric.android.SymmetricService
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:71:9-75:19
+	android:enabled
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:71:81-103
+	android:name
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:71:18-80
+intent-filter#org.jumpmind.symmetric.android.SymmetricService
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:72:13-74:29
+action#org.jumpmind.symmetric.android.SymmetricService
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:73:17-90
+	android:name
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:73:25-87
 service#com.teraim.fieldapp.synchronization.framework.AuthenticatorService
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:71:3-81:15
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:77:3-87:15
 	android:process
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:74:13-36
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:80:13-36
 	android:exported
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:73:13-36
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:79:13-36
 	android:name
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:72:13-94
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:78:13-94
 intent-filter#android.accounts.AccountAuthenticator
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:75:9-77:25
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:81:9-83:25
 action#android.accounts.AccountAuthenticator
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:76:13-75
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:82:13-75
 	android:name
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:76:21-73
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:82:21-73
 meta-data#android.accounts.AccountAuthenticator
-ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:78:9-80:53
+ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:84:9-86:53
 	android:resource
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:80:13-50
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:86:13-50
 	android:name
-		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:79:13-65
+		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:85:13-65

@@ -68,6 +68,7 @@
     <string name="cancel">Avbryt</string>
     <string name="close">Stäng</string>
     <string name="context">Context</string>
+    <string name="debug_summary">Extra debug information i logg</string>
     <string name="delete">Ta bort</string>
     <string name="description">Beskrivning</string>
     <string name="developer_functions">Avlusningsfunktioner</string>

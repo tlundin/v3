@@ -203,8 +203,8 @@ public class ModuleLoader implements FileLoadedCb{
 							//module.setFrozenVersion(-1);
 							//module.setLoaded(false);
 							Log.d("vortex","Now retry load of modules");
-							o.addRow("");
-							o.addGreenText("Reload required for dependant "+res.errorMessage);
+							//o.addRow("");
+							//o.addGreenText("Reload required for dependant "+res.errorMessage);
 							//majorVersionChange=true;
 							reloadModule.load(this);
 							o.draw();
@@ -244,6 +244,7 @@ public class ModuleLoader implements FileLoadedCb{
 		} else if (errCode==ErrorCode.ParseError) {
 			o.addRow("");
 			o.addRedText("The file contains an error. Please check log for details");
+			debug.addCriticalText(res.errorMessage);
 		} else
 			o.addYellowText(" "+res.errCode.name());
 

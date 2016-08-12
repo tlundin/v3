@@ -89,6 +89,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
+
     //Helper class that wraps the Cursor.
     public class DBColumnPicker {
         Cursor c;
@@ -915,21 +916,17 @@ public class DbHelper extends SQLiteOpenHelper {
                 extendedSelArgs[extendedSelArgs.length-1]=newIdS;
 //                String stmt = "var = '"+name+"' AND id <> '"+newId+"' AND "+
 //                        getDatabaseColumnName("år")+" <> '"+Constants.HISTORICAL_TOKEN_IN_DATABASE+"'";
-                Log.d("vova","selection: "+s.selection);
-                Log.d("vova","selectionArgs: "+print(s.selectionArgs));
-                Log.d("vova","EXT selection: "+extendedSelection);
-                Log.d("vova","EXT selectionArgs: "+print(extendedSelArgs));
+                //Log.d("vova","selection: "+s.selection);
+                //Log.d("vova","selectionArgs: "+print(s.selectionArgs));
+                //Log.d("vova","EXT selection: "+extendedSelection);
+                //Log.d("vova","EXT selectionArgs: "+print(extendedSelArgs));
                 int aff =
                         db.delete(TABLE_VARIABLES, //table name
                                 extendedSelection,  // selections
                                 extendedSelArgs); //selections args
-                if (aff == 0) {
-                    Log.d("vova", "could not delete old value for " + name);
-                }
-                if (aff == 1)
-                    Log.d("vova","perfetto");
-                else
-                    Log.d("vova","oh no");
+                if (aff == 0)
+                    Log.e("vortex", "could not delete old value for " + name);
+
             }
         }, 0);
 

@@ -36,7 +36,8 @@ public class GisPolygonObject extends GisPathObject {
 			Map<String, List<Location>> polygons,
 			Map<String, String> attributes) {
 		super(keyChain,null,attributes);
-		this.polygons=polygons;	
+		this.polygons=polygons;
+		Log.d("vortex","polygons key "+polygons.keySet()+" cont: "+polygons.values());
 	}
 
 	public static Map<String, List<Location>> buildMap(String polygons,String coordType) {
@@ -66,13 +67,16 @@ public class GisPolygonObject extends GisPathObject {
 		if (polygons==null && polyString!=null)
 			polygons = buildMap(polyString,GisConstants.SWEREF);
 		//still null?
-		if (polygons==null)
+		if (polygons==null) {
 			return null;
-		
+		} else
+			Log.d("vortex","returning");
 		myCoordinates = polygons.get("Poly 1");
 		
 		if (myCoordinates==null)
 				Log.e("Vortex","No poly 1 found");
+		else
+			Log.d("vortex","coordies "+myCoordinates);
 		return myCoordinates;
 	}
 

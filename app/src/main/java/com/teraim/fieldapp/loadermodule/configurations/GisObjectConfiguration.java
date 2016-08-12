@@ -162,9 +162,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					}
 					myGisObjects.add(new GisObject(keyChain,myCoordinates,attributes));
 				}  else if (mType.equalsIgnoreCase(GisConstants.POLYGON)){
+					Log.d("vortex","parsing polygon object.");
 					Map<String,List<Location>> polygons = null;
 					List<Location> myCoordinates=null;
-					int proxyId = 0;
+					int proxyId = 1;
 					polygons = new HashMap<String,List<Location>>();
 					//First polygon is exterior ring. Following ones define holes.
 					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
@@ -176,13 +177,14 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 							myCoordinates.add(readLocation(reader));
 							reader.endArray();
 						}
-						polygons.put((proxyId)+"" , myCoordinates);
+						polygons.put("Poly "+(proxyId) , myCoordinates);
 						proxyId++;
 						reader.endArray();
 					}
 
-					if (!polygons.isEmpty())
-						myGisObjects.add(new GisPolygonObject(keyChain,polygons,attributes));
+					if (!polygons.isEmpty()) {
+						myGisObjects.add(new GisPolygonObject(keyChain, polygons, attributes));
+					}
 
 				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POLYGON)){
 					Log.d("vortex","MULTIPOLYGON!!");
@@ -285,7 +287,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				}
 				else {
 					generatedUID=true;
-					Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
+					//Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
 					//return new LoadResult(this,ErrorCode.ParseError,"Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
 					keyChain.put("uid", UUID.randomUUID().toString());
 					attributes.put("GENERATEDUID","true");

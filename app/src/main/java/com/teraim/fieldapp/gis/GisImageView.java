@@ -604,12 +604,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			candidates.clear();
 
 			for (GisLayer layerO:myMap.getLayers()) {
-				//String layerId = layerO.getId();
+				String layerId = layerO.getId();
 				//Log.d("vortex","drawing layer "+layerId);
 				//get all objects that should be drawn on this layer.
 				//Treat maplayers
 				if (!layerO.isVisible()) {
-					//Log.d("vortex","layer not visible...skipping "+layerId+" Obj: "+layerO.toString());
+					Log.d("vortex","layer not visible...skipping "+layerId+" Obj: "+layerO.toString());
 					continue;
 				}
 
@@ -898,7 +898,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			//objects being drawn cannot be cached.
 			List<Location> ll = go.getCoordinates();
+
 			if (p==null || beingDrawn && ll!=null) {
+
 				p = new Path();
 					boolean first = true;
 					int[] xy = new int[2];
@@ -917,7 +919,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						}
 						if (last)
 							drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
-					}
+			}
 
 
 
@@ -931,16 +933,20 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				}
 				else if (beingDrawn) {
+
 					canvas.drawPath(p, polyPaint);
 					//myMap.showLenthOfPath(new PathMeasure(p,false));
 
 				} else {
+
 					String color = colorShiftOnStatus(go.getStatus());
 					if (color==null)
 						color = go.getColor();
+
 					canvas.drawPath(p, createPaint(color,Paint.Style.STROKE,0));
 				}
-			}
+			} else
+				Log.d("vortex","only one");
 
 		}
 		//Check if label should be drawn.

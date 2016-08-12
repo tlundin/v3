@@ -41,6 +41,8 @@ import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
@@ -63,7 +65,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
  * @author Terje
  *
  */
-public  class ButtonBlock extends Block {
+public  class ButtonBlock extends Block  implements EventListener {
 	/**
 	 * 
 	 */
@@ -139,6 +141,12 @@ public  class ButtonBlock extends Block {
 	}
 
 
+	@Override
+	public void onEvent(Event e) {
+		if (button!=null)
+			button.setText(getText());
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -148,7 +156,7 @@ public  class ButtonBlock extends Block {
 
 
 	public WF_Widget create(final WF_Context myContext) {
-		
+		myContext.registerEventListener(this, Event.EventType.onSave);
 		gs = GlobalState.getInstance();
 		varCache = gs.getVariableCache();
 		o=gs.getLogger();
@@ -236,6 +244,8 @@ public  class ButtonBlock extends Block {
 				//button.setTextAppearance(ctx, R.style.WF_Text);
 				Log.d("nils","BUTTON TEXT:"+getText());
 				button.setText(getText());
+
+
 
 				button.setOnClickListener(new View.OnClickListener() {
 					boolean clickOngoing = false;
@@ -546,6 +556,7 @@ public  class ButtonBlock extends Block {
 					private void goBack() {
 
 						myContext.getActivity().getFragmentManager().popBackStackImmediate();
+						//myContext.reload();
 						if (syncRequired)
 							gs.sendEvent(MenuActivity.SYNC_REQUIRED);
 

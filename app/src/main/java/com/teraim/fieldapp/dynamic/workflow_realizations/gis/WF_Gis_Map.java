@@ -1147,9 +1147,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			if (gl.getId().equals(identifier)) {
 			//	Log.d("vortex","MATCH GL!!");
 				return gl;
-			} else
-				Log.d("vortex","Did not find layer "+identifier+" from GisMap");
+			}
 		}
+		Log.d("vortex", "Did not find layer " + identifier + " from GisMap.");
+
 		return null;
 	}
 

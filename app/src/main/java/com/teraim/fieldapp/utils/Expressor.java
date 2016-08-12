@@ -1608,40 +1608,55 @@ public class Expressor {
 				case getAppName:
 					return gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
 			case getStatusVariableValues:
+
 				if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
 					//Gets the status from all buttons on the page.
-					Cursor c = gs.getDb().getAllVariablesForKeyMatchingGroupPrefixAndNamePostfix(gs.getVariableCache().getContext().getContext(), Constants.STATUS_VARIABLES_GROUP_NAME,(String)evalArgs.get(0));
+					String statusVariableName = (String) evalArgs.get(0);
+					boolean  empty = true;
+					DbHelper.DBColumnPicker cp = null;
 					String combinedStatus = null;
 					boolean oneInitial = false;
-					if (c!=null) {
-						
-						while (c.moveToNext()) {
-							
-							String varNameS = c.getString(0);
-							String varValue = c.getString(1);
-							Log.d("vortex","VAR: "+varNameS+"\nVALUE: "+varValue);	
-							if(combinedStatus == null && varValue.equals(Constants.STATUS_AVSLUTAD_OK)) {
-								combinedStatus = Constants.STATUS_AVSLUTAD_OK;
-								continue;
-							}
-							else if (varValue.equals(Constants.STATUS_STARTAD_MED_FEL)) {
-								//Here we can exit. We know the value.
-								return 2;
-							}
-							else if (varValue.equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR)) {
-								//Continue and check that there is no error state down the line.
-								combinedStatus = Constants.STATUS_STARTAD_MEN_INTE_KLAR;
-								continue;
-							}
-							else if(varValue.equals(Constants.STATUS_INITIAL)) {
-								oneInitial = true;
-								continue;
-							}
+
+					if (statusVariableName!=null) {
+						if (!statusVariableName.startsWith(Constants.STATUS_VARIABLES_GROUP_NAME+":")) {
+							Log.d("vortex","missing group or is not a statusvariable. Try add group");
+							statusVariableName=Constants.STATUS_VARIABLES_GROUP_NAME+":"+statusVariableName;
 						}
-						
-							
-						
+						cp = gs.getDb().getLastVariableInstance(gs.getDb().createSelection(gs.getVariableCache().getContext().getContext(), statusVariableName));
+
+
+						if (cp != null) {
+
+							while (cp.next()) {
+								Log.d("statusvar", "picker return for " + (String) evalArgs.get(0) + " is\n" + cp.getKeyColumnValues());
+								empty = false;
+								String varValue = cp.getVariable().value;
+								Log.d("vortex", "VALUE: " + varValue);
+								if (combinedStatus == null && varValue.equals(Constants.STATUS_AVSLUTAD_OK)) {
+									combinedStatus = Constants.STATUS_AVSLUTAD_OK;
+									continue;
+								} else if (varValue.equals(Constants.STATUS_STARTAD_MED_FEL)) {
+									//Here we can exit. We know the value.
+									return 2;
+								} else if (varValue.equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR)) {
+									//Continue and check that there is no error state down the line.
+									combinedStatus = Constants.STATUS_STARTAD_MEN_INTE_KLAR;
+									continue;
+								} else if (varValue.equals(Constants.STATUS_INITIAL)) {
+									oneInitial = true;
+									continue;
+								}
+							}
+
+
+						}
 					}
+					if (cp==null || empty) {
+							o.addRow("");
+							o.addRedText("getStatusVariableValues finds no match with argument "+((String)evalArgs.get(0)));
+							Log.e("vortex","found no results in getStatusVariableValues for variable "+((String)evalArgs.get(0)));
+					}
+
 					if (combinedStatus != null) {
 						if (oneInitial && combinedStatus.equals(Constants.STATUS_AVSLUTAD_OK)) {
 							Log.d("vortex","found one that is not done!");
@@ -1652,7 +1667,10 @@ public class Expressor {
 					else
 						return 0;
 				}
+
 				break;
+
+
 			case getUserRole:
 				return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
 

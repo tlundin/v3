@@ -53,10 +53,10 @@ public class FileLoader extends Loader {
 			return new LoadResult(module,ErrorCode.IOError);
 		} catch (XmlPullParserException e) {
 			e.printStackTrace();
-			return new LoadResult(module,ErrorCode.ParseError);
+			return new LoadResult(module,ErrorCode.ParseError,"XML PULL PARSER EXCEPTION");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return new LoadResult(module,ErrorCode.ParseError);
+			return new LoadResult(module,ErrorCode.ParseError,"JSON PARSER EXCEPTION");
 		} catch (Dependant_Configuration_Missing e) {
 			return new LoadResult(module, ErrorCode.reloadDependant,e.getDependendant());
 		}

@@ -327,9 +327,8 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 			map = al.createProvytaKeyMap();
 			map.put("delyta", id+"");
 			gs.setDBContext(new DB_Context(null,map));
-			delyteKnappar[id].create(myContext);	
-			if(dys.add(id))
-				Log.e("vortex","KALLABALLA");
+			delyteKnappar[id].create(myContext);
+			dys.add(id);
 		}
 		smayteKnapp.create(myContext);
 		

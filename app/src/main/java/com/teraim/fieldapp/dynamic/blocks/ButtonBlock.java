@@ -447,7 +447,17 @@ public  class ButtonBlock extends Block  implements EventListener {
 									if (jRep.er == ExportReport.OK) {
 										msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
 										msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
+									if (statusVar != null && exportContext !=null) {
+										VariableConfiguration al = gs.getVariableConfiguration();
+										VariableCache varCache = gs.getVariableCache();
+										Variable statusVariable = varCache.getVariable(exportContext,statusVar);
+										if (statusVariable!=null) {
+											Log.d("nils","EXPORT STATUSVAR: "+statusVariable.getId()+" key: "+statusVariable.getKeyChain()+ "Value: "+statusVariable.getValue());
+											//set statusvariable to 3 = ready.
+											statusVariable.setValue("3");
+										}
 
+										}
 									} else {
 										if (jRep.er == ExportReport.NO_DATA)
 											msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";

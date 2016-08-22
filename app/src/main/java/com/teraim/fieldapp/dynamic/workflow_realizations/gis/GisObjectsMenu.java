@@ -128,20 +128,20 @@ public class GisObjectsMenu extends View {
 		notSelectedTabPaint.setPathEffect(corEffect);
 		headerTextP = new Paint();
 		headerTextP.setColor(Color.WHITE);
-		headerTextP.setTextSize(scale*10);
+		headerTextP.setTextSize(scale*15);
 		headerTextP.setStyle(Paint.Style.STROKE);
 		headerTextP.setTextAlign(Paint.Align.CENTER);
 
 		blackTextP = new Paint();
 		blackTextP.setColor(Color.BLACK);
-		blackTextP.setTextSize(scale*10);
+		blackTextP.setTextSize(scale*15);
 		blackTextP.setStyle(Paint.Style.STROKE);
 		blackTextP.setTextAlign(Paint.Align.CENTER);
 
 
 		whiteTextP = new Paint();
 		whiteTextP.setColor(Color.WHITE);
-		whiteTextP.setTextSize(scale*10);
+		whiteTextP.setTextSize(scale*15);
 		whiteTextP.setStyle(Paint.Style.STROKE);
 		whiteTextP.setTextAlign(Paint.Align.CENTER);
 

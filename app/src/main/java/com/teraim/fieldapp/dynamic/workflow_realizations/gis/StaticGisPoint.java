@@ -21,7 +21,7 @@ public class StaticGisPoint extends GisPointObject {
 			return null;
 		return myCoordinates.get(0);
 	}
-	
+	/*
 	@Override
 	public String toString() {
 		String res="";
@@ -29,7 +29,7 @@ public class StaticGisPoint extends GisPointObject {
 		res+="\nLabel: "+this.getLabel();
 		return res;
 	}
-
+*/
 
 
 	@Override

@@ -45,6 +45,7 @@ public abstract class GisPointObject extends GisObject {
 	@Override
 	public boolean isTouchedByClick(Location mapLocationForClick,double pxr,double pyr) {
 		Location myLocation = this.getLocation();
+		Log.d("vortex",this.getLabel()+" touched by click? ");
 		if (myLocation==null) {
 			Log.d("vortex","No location found for object "+this.getLabel());
 			return false;
@@ -68,10 +69,10 @@ public abstract class GisPointObject extends GisObject {
 		//Log.d("vortex","pxr pyr"+pxr+","+pyr);
 		//Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
 		if (distanceToClick<ClickThresholdInMeters) {
-			//Log.d("vortex","found friend!");
+			Log.d("vortex","YES");
 			return true;
 		}
-		//Log.d("vortex", "Dist x  y  tresh: "+xD+","+yD+","+touchThresh);
+		Log.d("vortex", "NO!: Dist x  y  tresh: "+xD+","+yD+","+distanceToClick+" thresh: "+ClickThresholdInMeters);
 		return false;
 	}
 	public Style getStyle() {

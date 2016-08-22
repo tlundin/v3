@@ -12,7 +12,15 @@
                     "endOffset": 209
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 56,
+                        "endLine": 7,
+                        "endColumn": 19,
+                        "endOffset": 210
+                    }
                 }
             },
             {
@@ -25,7 +33,15 @@
                     "endOffset": 356
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 215,
+                        "endLine": 12,
+                        "endColumn": 19,
+                        "endOffset": 357
+                    }
                 }
             },
             {
@@ -38,7 +54,15 @@
                     "endOffset": 502
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 502,
+                        "endLine": 22,
+                        "endColumn": 19,
+                        "endOffset": 643
+                    }
                 }
             },
             {
@@ -51,7 +75,15 @@
                     "endOffset": 642
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 362,
+                        "endLine": 17,
+                        "endColumn": 19,
+                        "endOffset": 497
+                    }
                 }
             },
             {
@@ -64,7 +96,15 @@
                     "endOffset": 785
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 4,
+                        "startOffset": 648,
+                        "endLine": 27,
+                        "endColumn": 19,
+                        "endOffset": 786
+                    }
                 }
             },
             {
@@ -77,7 +117,15 @@
                     "endOffset": 997
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 38,
+                        "startColumn": 4,
+                        "startOffset": 1223,
+                        "endLine": 42,
+                        "endColumn": 19,
+                        "endOffset": 1430
+                    }
                 }
             },
             {
@@ -90,7 +138,15 @@
                     "endOffset": 1147
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 43,
+                        "startColumn": 4,
+                        "startOffset": 1435,
+                        "endLine": 47,
+                        "endColumn": 19,
+                        "endOffset": 1580
+                    }
                 }
             },
             {
@@ -103,7 +159,15 @@
                     "endOffset": 1430
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 791,
+                        "endLine": 32,
+                        "endColumn": 19,
+                        "endOffset": 1069
+                    }
                 }
             },
             {
@@ -116,7 +180,15 @@
                     "endOffset": 1579
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\arrays.xml",
+                    "position": {
+                        "startLine": 33,
+                        "startColumn": 4,
+                        "startOffset": 1074,
+                        "endLine": 37,
+                        "endColumn": 19,
+                        "endOffset": 1218
+                    }
                 }
             },
             {
@@ -128,7 +200,14 @@
                     "endOffset": 1643
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 47,
+                        "startColumn": 1,
+                        "startOffset": 2164,
+                        "endColumn": 60,
+                        "endOffset": 2223
+                    }
                 }
             },
             {
@@ -140,7 +219,14 @@
                     "endOffset": 1726
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 54,
+                        "startColumn": 1,
+                        "startOffset": 2734,
+                        "endColumn": 79,
+                        "endOffset": 2812
+                    }
                 }
             },
             {
@@ -152,7 +238,14 @@
                     "endOffset": 1897
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 53,
+                        "startColumn": 1,
+                        "startOffset": 2566,
+                        "endColumn": 167,
+                        "endOffset": 2732
+                    }
                 }
             },
             {
@@ -164,7 +257,14 @@
                     "endOffset": 1964
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 48,
+                        "startColumn": 1,
+                        "startOffset": 2225,
+                        "endColumn": 63,
+                        "endOffset": 2287
+                    }
                 }
             },
             {
@@ -176,7 +276,14 @@
                     "endOffset": 2076
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 52,
+                        "startColumn": 1,
+                        "startOffset": 2457,
+                        "endColumn": 108,
+                        "endOffset": 2564
+                    }
                 }
             },
             {
@@ -188,7 +295,14 @@
                     "endOffset": 2130
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 36,
+                        "startColumn": 1,
+                        "startOffset": 1549,
+                        "endColumn": 50,
+                        "endOffset": 1598
+                    }
                 }
             },
             {
@@ -200,7 +314,14 @@
                     "endOffset": 2180
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 33,
+                        "startColumn": 1,
+                        "startOffset": 1424,
+                        "endColumn": 46,
+                        "endOffset": 1469
+                    }
                 }
             },
             {
@@ -212,7 +333,14 @@
                     "endOffset": 2230
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 37,
+                        "startColumn": 1,
+                        "startOffset": 1600,
+                        "endColumn": 46,
+                        "endOffset": 1645
+                    }
                 }
             },
             {
@@ -224,7 +352,14 @@
                     "endOffset": 2285
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 45,
+                        "startColumn": 1,
+                        "startOffset": 2054,
+                        "endColumn": 51,
+                        "endOffset": 2104
+                    }
                 }
             },
             {
@@ -236,7 +371,14 @@
                     "endOffset": 2322
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 34,
+                        "startColumn": 1,
+                        "startOffset": 1471,
+                        "endColumn": 33,
+                        "endOffset": 1503
+                    }
                 }
             },
             {
@@ -248,7 +390,14 @@
                     "endOffset": 2388
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 39,
+                        "startColumn": 1,
+                        "startOffset": 1705,
+                        "endColumn": 62,
+                        "endOffset": 1766
+                    }
                 }
             },
             {
@@ -260,7 +409,14 @@
                     "endOffset": 2435
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 35,
+                        "startColumn": 1,
+                        "startOffset": 1505,
+                        "endColumn": 43,
+                        "endOffset": 1547
+                    }
                 }
             },
             {
@@ -272,7 +428,14 @@
                     "endOffset": 2496
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 38,
+                        "startColumn": 1,
+                        "startOffset": 1647,
+                        "endColumn": 57,
+                        "endOffset": 1703
+                    }
                 }
             },
             {
@@ -284,7 +447,14 @@
                     "endOffset": 2557
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 46,
+                        "startColumn": 1,
+                        "startOffset": 2106,
+                        "endColumn": 57,
+                        "endOffset": 2162
+                    }
                 }
             },
             {
@@ -296,7 +466,14 @@
                     "endOffset": 2649
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 51,
+                        "startColumn": 1,
+                        "startOffset": 2368,
+                        "endColumn": 88,
+                        "endOffset": 2455
+                    }
                 }
             },
             {
@@ -308,7 +485,14 @@
                     "endOffset": 2730
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 43,
+                        "startColumn": 1,
+                        "startOffset": 1910,
+                        "endColumn": 77,
+                        "endOffset": 1986
+                    }
                 }
             },
             {
@@ -320,7 +504,14 @@
                     "endOffset": 2777
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 1,
+                        "startColumn": 4,
+                        "startOffset": 16,
+                        "endColumn": 46,
+                        "endOffset": 58
+                    }
                 }
             },
             {
@@ -332,7 +523,14 @@
                     "endOffset": 2828
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 63,
+                        "endColumn": 50,
+                        "endOffset": 109
+                    }
                 }
             },
             {
@@ -344,7 +542,14 @@
                     "endOffset": 2883
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 114,
+                        "endColumn": 54,
+                        "endOffset": 164
+                    }
                 }
             },
             {
@@ -356,7 +561,14 @@
                     "endOffset": 2930
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 61,
+                        "startColumn": 1,
+                        "startOffset": 3078,
+                        "endColumn": 43,
+                        "endOffset": 3120
+                    }
                 }
             },
             {
@@ -368,7 +580,14 @@
                     "endOffset": 2972
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 31,
+                        "startColumn": 1,
+                        "startOffset": 1382,
+                        "endColumn": 38,
+                        "endOffset": 1419
+                    }
                 }
             },
             {
@@ -380,7 +599,14 @@
                     "endOffset": 3012
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 21,
+                        "startColumn": 1,
+                        "startOffset": 950,
+                        "endColumn": 36,
+                        "endOffset": 985
+                    }
                 }
             },
             {
@@ -392,7 +618,14 @@
                     "endOffset": 3056
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 1,
+                        "startOffset": 1233,
+                        "endColumn": 40,
+                        "endOffset": 1272
+                    }
                 }
             },
             {
@@ -423,7 +656,14 @@
                     "endOffset": 3172
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 20,
+                        "startColumn": 1,
+                        "startOffset": 909,
+                        "endColumn": 39,
+                        "endOffset": 947
+                    }
                 }
             },
             {
@@ -435,7 +675,14 @@
                     "endOffset": 3224
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 1,
+                        "startOffset": 988,
+                        "endColumn": 48,
+                        "endOffset": 1035
+                    }
                 }
             },
             {
@@ -447,7 +694,14 @@
                     "endOffset": 3293
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 44,
+                        "startColumn": 1,
+                        "startOffset": 1988,
+                        "endColumn": 65,
+                        "endOffset": 2052
+                    }
                 }
             },
             {
@@ -459,7 +713,14 @@
                     "endOffset": 3340
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 1,
+                        "startOffset": 596,
+                        "endColumn": 43,
+                        "endOffset": 638
+                    }
                 }
             },
             {
@@ -471,7 +732,14 @@
                     "endOffset": 3386
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 1,
+                        "startOffset": 553,
+                        "endColumn": 42,
+                        "endOffset": 594
+                    }
                 }
             },
             {
@@ -483,7 +751,14 @@
                     "endOffset": 3429
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 60,
+                        "startColumn": 1,
+                        "startOffset": 3038,
+                        "endColumn": 39,
+                        "endOffset": 3076
+                    }
                 }
             },
             {
@@ -495,7 +770,14 @@
                     "endOffset": 3482
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 169,
+                        "endColumn": 52,
+                        "endOffset": 217
+                    }
                 }
             },
             {
@@ -507,7 +789,14 @@
                     "endOffset": 3523
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 59,
+                        "startColumn": 1,
+                        "startOffset": 3000,
+                        "endColumn": 37,
+                        "endOffset": 3036
+                    }
                 }
             },
             {
@@ -519,7 +808,14 @@
                     "endOffset": 3567
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 26,
+                        "startColumn": 1,
+                        "startOffset": 1191,
+                        "endColumn": 40,
+                        "endOffset": 1230
+                    }
                 }
             },
             {
@@ -531,7 +827,14 @@
                     "endOffset": 3639
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 1,
+                        "startOffset": 640,
+                        "endColumn": 68,
+                        "endOffset": 707
+                    }
                 }
             },
             {
@@ -543,7 +846,14 @@
                     "endOffset": 3676
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 1,
+                        "startOffset": 1275,
+                        "endColumn": 33,
+                        "endOffset": 1307
+                    }
                 }
             },
             {
@@ -555,7 +865,14 @@
                     "endOffset": 3732
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 225,
+                        "endColumn": 55,
+                        "endOffset": 276
+                    }
                 }
             },
             {
@@ -567,7 +884,14 @@
                     "endOffset": 3767
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 1,
+                        "startOffset": 875,
+                        "endColumn": 31,
+                        "endOffset": 905
+                    }
                 }
             },
             {
@@ -579,7 +903,14 @@
                     "endOffset": 3801
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 29,
+                        "startColumn": 1,
+                        "startOffset": 1313,
+                        "endColumn": 30,
+                        "endOffset": 1342
+                    }
                 }
             },
             {
@@ -591,7 +922,14 @@
                     "endOffset": 3848
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 1,
+                        "startOffset": 1039,
+                        "endColumn": 43,
+                        "endOffset": 1081
+                    }
                 }
             },
             {
@@ -603,7 +941,14 @@
                     "endOffset": 3907
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 1,
+                        "startOffset": 1085,
+                        "endColumn": 55,
+                        "endOffset": 1139
+                    }
                 }
             },
             {
@@ -615,7 +960,14 @@
                     "endOffset": 3971
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 57,
+                        "startColumn": 1,
+                        "startOffset": 2938,
+                        "endColumn": 60,
+                        "endOffset": 2997
+                    }
                 }
             },
             {
@@ -627,7 +979,14 @@
                     "endOffset": 4015
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 41,
+                        "startColumn": 1,
+                        "startOffset": 1770,
+                        "endColumn": 40,
+                        "endOffset": 1809
+                    }
                 }
             },
             {
@@ -639,7 +998,14 @@
                     "endOffset": 4117
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 42,
+                        "startColumn": 1,
+                        "startOffset": 1811,
+                        "endColumn": 98,
+                        "endOffset": 1908
+                    }
                 }
             },
             {
@@ -651,7 +1017,14 @@
                     "endOffset": 4197
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 50,
+                        "startColumn": 1,
+                        "startOffset": 2291,
+                        "endColumn": 76,
+                        "endOffset": 2366
+                    }
                 }
             },
             {
@@ -663,7 +1036,14 @@
                     "endOffset": 4236
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 1,
+                        "startOffset": 1346,
+                        "endColumn": 35,
+                        "endOffset": 1380
+                    }
                 }
             },
             {
@@ -675,7 +1055,14 @@
                     "endOffset": 4287
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 25,
+                        "startColumn": 1,
+                        "startOffset": 1143,
+                        "endColumn": 47,
+                        "endOffset": 1189
+                    }
                 }
             },
             {
@@ -687,7 +1074,14 @@
                     "endOffset": 4361
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 55,
+                        "startColumn": 1,
+                        "startOffset": 2814,
+                        "endColumn": 70,
+                        "endOffset": 2883
+                    }
                 }
             },
             {
@@ -699,7 +1093,14 @@
                     "endOffset": 4417
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 56,
+                        "startColumn": 1,
+                        "startOffset": 2885,
+                        "endColumn": 52,
+                        "endOffset": 2936
+                    }
                 }
             },
             {
@@ -711,7 +1112,14 @@
                     "endOffset": 4472
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 281,
+                        "endColumn": 54,
+                        "endOffset": 331
+                    }
                 }
             },
             {
@@ -723,7 +1131,14 @@
                     "endOffset": 4530
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 391,
+                        "endColumn": 57,
+                        "endOffset": 444
+                    }
                 }
             },
             {
@@ -735,7 +1150,14 @@
                     "endOffset": 4586
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 449,
+                        "endColumn": 55,
+                        "endOffset": 500
+                    }
                 }
             },
             {
@@ -747,7 +1169,14 @@
                     "endOffset": 4640
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 1,
+                        "startOffset": 502,
+                        "endColumn": 50,
+                        "endOffset": 551
+                    }
                 }
             },
             {
@@ -759,7 +1188,14 @@
                     "endOffset": 4695
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 336,
+                        "endColumn": 54,
+                        "endOffset": 386
+                    }
                 }
             },
             {
@@ -771,7 +1207,14 @@
                     "endOffset": 4729
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 16,
+                        "startColumn": 1,
+                        "startOffset": 780,
+                        "endColumn": 30,
+                        "endOffset": 809
+                    }
                 }
             },
             {
@@ -783,7 +1226,14 @@
                     "endOffset": 4763
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 1,
+                        "startOffset": 811,
+                        "endColumn": 30,
+                        "endOffset": 840
+                    }
                 }
             },
             {
@@ -795,7 +1245,14 @@
                     "endOffset": 4798
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 1,
+                        "startOffset": 843,
+                        "endColumn": 31,
+                        "endOffset": 873
+                    }
                 }
             }
         ]

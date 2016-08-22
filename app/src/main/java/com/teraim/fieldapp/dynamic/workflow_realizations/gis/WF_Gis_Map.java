@@ -227,21 +227,22 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 							switch (d) {
 								case UP:
-									north+=changeDistance;
+									sweloc.north+=changeDistance;
 									break;
 								case DOWN:
-									north-=changeDistance;
+									sweloc.north-=changeDistance;
 									break;
 								case LEFT:
-									east-=changeDistance;
+									sweloc.east-=changeDistance;
 									break;
 								case RIGHT:
-									east+=changeDistance;
+									sweloc.east+=changeDistance;
 									break;
 
 							}
-							gopCoordinates.remove(last);
-							gopCoordinates.add(new SweLocation(east,north));
+
+							//gopCoordinates.remove(last);
+							//gopCoordinates.add(new SweLocation(east,north));
 							gisImageView.redraw();
 						} else
 								Log.d("vortex","not sweloc!! "+last.getClass().getCanonicalName());

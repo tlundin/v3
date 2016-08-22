@@ -336,7 +336,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 		boolean notDone = true;
 		Set<Variable>blockVars;
-		boolean hasDrawer=false;
+
 		myContext.clearExecutedBlocks();
 		try {
 
@@ -739,12 +739,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				}
 				else if (b instanceof MenuHeaderBlock) {
 					((MenuHeaderBlock) b).create(myContext);
-					hasDrawer=true;
+					myContext.setHasMenu();
 				}
 
 				else if (b instanceof MenuEntryBlock) {
 					((MenuEntryBlock) b).create(myContext);
-					hasDrawer=true;
+					myContext.setHasMenu();
 				}
 				else if (b instanceof RoundChartBlock) {
 					((RoundChartBlock) b).create(myContext);
@@ -835,24 +835,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					myContext.drawRecursively(root);
 				//open menu if any
 
-				if (hasDrawer) {
+				if (myContext.hasMenu()) {
 					Log.d("vortex","Drawing menu");
 					gs.getDrawerMenu().openDrawer();
 				}
-				/*
-					Object mDrawerLayout;
-					if (hasDrawerMenu) {
-						mDrawerLayout = myContext.getDrawerMenu();
-						if (mDrawerLayout.isDrawerOpen(mDrawerList))
-							mDrawerLayout.closeDrawers();
-						mDrawerLayout.openDrawer(Gravity.LEFT);
-						} else {
-							mDrawerLayout.setEnabled(false);
-							Log.d("vortex","NO drawer menu!");
-						}
 
-					}
-				 */
 				//Send event that flow has executed.
 				Log.d("vortex","Registering WF EXECUTION");
 				myContext.registerEvent(new WF_Event_OnFlowExecuted("executor"));

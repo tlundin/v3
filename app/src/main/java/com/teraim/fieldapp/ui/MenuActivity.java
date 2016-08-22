@@ -1,5 +1,10 @@
 package com.teraim.fieldapp.ui;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,6 +52,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 /**
  * Parent class for Activities having a menu row.
@@ -562,6 +568,8 @@ public class MenuActivity extends Activity   {
 				}
 			});
 			Button print = (Button)dialog.findViewById(R.id.printdb);
+			Button printLog = (Button)dialog.findViewById(R.id.printlog);
+
 			print.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -569,6 +577,31 @@ public class MenuActivity extends Activity   {
 				}
 			});
 
+			printLog.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					printLog(log.getLogText());
+				}
+
+				private void printLog(CharSequence logText) {
+					if (logText==null || logText.length()==0)
+						return;
+					try {
+						String fileName = "log.txt";
+						File outputFile = new File(Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/backup/", fileName);
+						BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+						writer.write(logText.toString());
+						Toast.makeText(MenuActivity.this.getApplicationContext(),
+								"LOG successfully written to backup folder. Name: " + fileName,
+								Toast.LENGTH_LONG).show();
+						writer.close();
+					}
+					catch (IOException e) {
+						Log.e("Exception", "File write failed: " + e.toString());
+					}
+
+				}
+			});
 			break;
 
 		case 99:

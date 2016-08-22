@@ -70,7 +70,7 @@ public class Start extends MenuActivity {
 	// The account name
 	public static final String ACCOUNT = "FieldApp";
 
-	public static final long SYNC_INTERVAL = 20;
+	public static final long SYNC_INTERVAL = 120;
 	// Instance fields
 	// Account mAccount;
 

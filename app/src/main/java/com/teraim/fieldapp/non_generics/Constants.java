@@ -41,7 +41,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.444f;
+	public final static float VORTEX_VERSION = 4.508f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -166,7 +166,7 @@ public class Constants {
 	}
 
 	public static String getHour() {
-		return Integer.toString(Calendar.getInstance().get(Calendar.HOUR));
+		return Integer.toString(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
 	}
 
 	public static String getMinute() {

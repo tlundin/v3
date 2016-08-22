@@ -56,6 +56,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		}
 		varTable = t;
 		isDebug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
+
 	}
 
 	private static String fixedLength(String fileName) {
@@ -139,7 +140,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					o.addRow("");
 					o.addRedText("Type field expected (point, polygon..., but got null");
 					Log.e("vortex","type null!");
-					return new LoadResult(this,ErrorCode.ParseError);
+					return new LoadResult(this,ErrorCode.ParseError,"Type field expected (point, polygon..., but got null");
 				}
 				reader.nextName();
 				reader.beginArray();
@@ -162,7 +163,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					}
 					myGisObjects.add(new GisObject(keyChain,myCoordinates,attributes));
 				}  else if (mType.equalsIgnoreCase(GisConstants.POLYGON)){
-					Log.d("vortex","parsing polygon object.");
+					//Log.d("vortex","parsing polygon object.");
 					Map<String,List<Location>> polygons = null;
 					List<Location> myCoordinates=null;
 					int proxyId = 1;
@@ -234,7 +235,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					o.addRow("");
 					o.addRedText("Unsupported Geo Type in parser: "+type);
 					Log.e("vortex","type not supported! "+type);
-					return new LoadResult(this,ErrorCode.ParseError);
+					return new LoadResult(this,ErrorCode.ParseError,"Unsupported Geo Type in parser: "+type);
 				}
 
 				List<String>skippies = new ArrayList<>();
@@ -279,7 +280,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				//Log.d("vortex","FixedGid: "+uuid);
 				String rutaId = attributes.remove(GisConstants.RutaID);
 
-				String objectId = attributes.remove(GisConstants.ObjectID);
+				String objectId = attributes.get(GisConstants.ObjectID);
 				if (uuid!=null) {
 					uuid = uuid.replace("{","").replace("}","");
 					//Log.d("vortex","FixedGid: "+uuid);
@@ -288,7 +289,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				else {
 					generatedUID=true;
 					//Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
-					//return new LoadResult(this,ErrorCode.ParseError,"Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
+
 					keyChain.put("uid", UUID.randomUUID().toString());
 					attributes.put("GENERATEDUID","true");
 				}
@@ -321,7 +322,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				o.addRow("");
 				o.addRedText("Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString());
 				Log.e("vortex","Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString()+" peek: "+reader.peek());
-				return new LoadResult(this,ErrorCode.ParseError);
+				return new LoadResult(this,ErrorCode.ParseError,"Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString()+" peek: "+reader.peek());
 			}
 		} catch (MalformedJsonException je) {
 			Tools.printErrorToLog(o, je);
@@ -354,13 +355,15 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 	boolean firstCall = true;
 	Set<String> missingVariables=null;
+	Set<GisObject>dubletter = new HashSet<>();
+	Set<String>seenAlready=new HashSet<>();
 	@Override
 	public boolean freeze(int counter) throws IOException {
 
-		boolean debug =false;
+
 		if (firstCall) {
 			missingVariables=new HashSet<String>();
-			debug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
+
 			if (generatedUID) {
 				o.addRow("");
 				o.addYellowText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");
@@ -369,14 +372,28 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 			Log.d("vortex","Transaction begins");
 			firstCall = false;
 			Log.d("vortex","keyhash for first: "+myGisObjects.get(0).getKeyHash().toString());
+			dubletter.clear();
+
 		}
 
 		//Insert GIS variables into database
 		GisObject go = myGisObjects.get(counter);
+		String coordS = go.coordsToString();
+
 		if (!myDb.fastHistoricalInsert(go.getKeyHash(),
-				GisConstants.GPS_Coord_Var_Name,go.coordsToString())) {
+				GisConstants.GPS_Coord_Var_Name,coordS)) {
 			o.addRow("");
 			o.addRedText("Row: "+counter+". Insert failed for "+GisConstants.GPS_Coord_Var_Name+". Hash: "+go.getKeyHash().toString());
+
+
+		}
+		if (isDebug) {
+
+			boolean s = seenAlready.add(coordS);
+			if (!s) {
+				//Log.d("dubl","added "+coordS);
+				dubletter.add(go);
+			}
 		}
 		Map<String, String> attr = go.getAttributes();
 
@@ -386,7 +403,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				o.addRow("");
 				o.addRedText("Row: "+counter+". Insert failed for "+key+". Hash: "+go.getKeyHash().toString());;
 			}
-			if (debug) {
+			if (isDebug) {
 				if (varTable.getRowFromKey(key)==null) {
 					missingVariables.add(key);
 					Log.d("vortex","key missing: "+key);
@@ -397,8 +414,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		if (this.freezeSteps==(counter+1)) {
 			Log.d("vortex","Transaction ends");
 			myDb.endTransactionSuccess();
-			debug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
-			if (debug && !missingVariables.isEmpty()) {
+
+			if (isDebug && !missingVariables.isEmpty()) {
 				o.addRow("");
 				o.addRedText("VARIABLES MISSING IN VARIABLES CONFIGURATION FOR " + this.fileName + ":");
 
@@ -406,6 +423,16 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					o.addRow("");
 					o.addRedText(m);
 				}
+			}
+			if (isDebug && !dubletter.isEmpty()) {
+				o.addRow("");
+				o.addRedText("Filen "+fileName+"har dubletter: ");
+				for (GisObject g:dubletter) {
+					o.addCriticalText(g.getKeyHash().toString());
+				}
+			}
+			if (isDebug && dubletter.isEmpty()) {
+				Log.d("vortex",seenAlready.toString());
 			}
 		}
 

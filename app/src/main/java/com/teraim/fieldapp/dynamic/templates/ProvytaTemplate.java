@@ -291,21 +291,25 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		List<String> aboProvytor = new ArrayList<String>();
 		aboProvytor.add(NONE_SELECTED);
 		String[] opt = Tools.generateList(pyv);	 
-
-		for (String s:opt) {
-			try {
-				int id = Integer.parseInt(s);
-				if (id<=Constants.MAX_NILS)
-					nilsProvytor.add(s);
-				else if (id>=Constants.MIN_ABO && id<= Constants.MAX_ABO)
-					aboProvytor.add(s);
-				else {
+		if (opt!=null) {
+			for (String s : opt) {
+				try {
+					int id = Integer.parseInt(s);
+					if (id <= Constants.MAX_NILS)
+						nilsProvytor.add(s);
+					else if (id >= Constants.MIN_ABO && id <= Constants.MAX_ABO)
+						aboProvytor.add(s);
+					else {
+						o.addRow("");
+						o.addRedText("Hittade ProvyteID som inte tillhör Nils eller Äbo: " + s);
+					}
+				} catch (NumberFormatException e) {
 					o.addRow("");
-					o.addRedText("Hittade ProvyteID som inte tillhör Nils eller Äbo: "+s);
-				}    			
-			} catch (NumberFormatException e) {o.addRow("");o.addRedText("Provyta ID not a number: "+s);}
+					o.addRedText("Provyta ID not a number: " + s);
+				}
 
 
+			}
 		}
 
 		ArrayAdapter<String> nilsSpinnerA=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,nilsProvytor);

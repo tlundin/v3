@@ -8,6 +8,7 @@ import com.teraim.fieldapp.dynamic.types.SimpleChartDataSource;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.loadermodule.configurations.WorkFlowBundleConfiguration;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.Expressor;
 
@@ -46,9 +47,11 @@ public class CreateCategoryDataSourceBlock extends Block {
 		if (colorNames!=null) {
 			for (String colorName:colorNames) {
 				try {
-					colors[j++] = Color.parseColor(colorName);
+					int c = Color.parseColor(colorName.trim());
+
+					colors[j++] = c;
 				} catch (IllegalArgumentException e) {
-					//If this happens, use standard color for same;
+					WorkFlowBundleConfiguration.debugConsole.addCriticalText("Non existing color: "+colorName);
 				}
 			}
 		}

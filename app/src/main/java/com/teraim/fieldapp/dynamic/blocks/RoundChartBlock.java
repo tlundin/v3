@@ -66,7 +66,7 @@ public class RoundChartBlock extends ChartBlock  {
 			defaultRenderer.setChartTitleTextSize(dpMeasure(textSize + 10));
 			defaultRenderer.setLabelsTextSize(dpMeasure(textSize));
 			//defaultRenderer.setZoomButtonsVisible(true);
-			defaultRenderer.setDisplayValues(false);
+			defaultRenderer.setDisplayValues(displayValues);
 			defaultRenderer.setShowLegend(false);
 			defaultRenderer.setShowLabels(true);
 			defaultRenderer.setApplyBackgroundColor(true);

@@ -457,6 +457,8 @@ public class Tools {
 	{	
 		if (str==null||str.length()==0)
 			return false;
+		if (str.length()==1 && !Character.isDigit(str.charAt(0)))
+			return false;
 		int i=0;
 		for (char c : str.toCharArray())
 		{

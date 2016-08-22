@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
@@ -61,6 +62,7 @@ public class WF_Context {
 	private int mapLayer=0;
 	private List<String> contextVariables = null;
 	private boolean myEndIsNear=false;
+	private boolean hasMenu = false;
 	private Map<String,List<WF_ClickableField_Slider>> sliderGroupM=new HashMap<String, List<WF_ClickableField_Slider>>();
 	private Map<String,CoupledVariableGroupBlock> mySliderGroups = new HashMap<String, CoupledVariableGroupBlock>();
 	private Map<String,DataSource> chartGroupM = new HashMap<String, DataSource>();
@@ -137,6 +139,10 @@ public class WF_Context {
 		return null;
 	}	
 */
+
+	public void setHasMenu() {
+		hasMenu=true;
+	}
 	
 	public Filterable getFilterable(String id) {
 		Log.d("nils","Getfilterable called with id "+id);
@@ -222,6 +228,11 @@ public class WF_Context {
 		hasGPSTracker=false;
 		contextVariables=null;
 		myEndIsNear=false;
+		if (hasMenu) {
+			hasMenu = false;
+			Start.singleton.getDrawerMenu().clear();
+		}
+
 	}
 
 	public void emptyContainers() {
@@ -432,5 +443,9 @@ public class WF_Context {
 
 	public DataSource getChartDataSource(String chartName) {
 		return chartGroupM.get(chartName);
+	}
+
+	public boolean hasMenu() {
+		return hasMenu;
 	}
 }

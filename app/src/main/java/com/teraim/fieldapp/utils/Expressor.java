@@ -998,9 +998,6 @@ public class Expressor {
 		public Object eval()  {
 			//Log.d("vortex","In eval for convo");
 			Object arg1v = arg1.eval();
-			//			Log.e("vortex","I am literal? "+isLiteralOperator);
-			//			Log.e("vortex","arg1v: "+((arg1v==null)?"null":arg1v.toString()));
-			//			Log.e("vortex","arg2v: "+((arg2v==null)?"null":arg2v.toString()));
 
 
 			if (arg1v==null) {
@@ -1015,6 +1012,9 @@ public class Expressor {
 
 			Object arg2v = arg2.eval();
 
+			// Log.e("vortex","I am literal? "+isLiteralOperator);
+			Log.e("vortex","arg1v: "+((arg1v==null)?"null":arg1v.toString()));
+			Log.e("vortex","arg2v: "+((arg2v==null)?"null":arg2v.toString()));
 			if (arg2v==null) {
 				Log.e("vortex","Arg2 is null! Operator is "+operator.myToken.str);
 				String opS =operator.myToken.str;
@@ -1062,6 +1062,7 @@ public class Expressor {
 					arg1v = (arg1v instanceof Double || arg1v instanceof Integer) ? arg1v : Integer.parseInt((String)arg1v);
 					arg2v = (arg2v instanceof Double || arg2v instanceof Integer) ? arg2v : Integer.parseInt((String)arg2v);
 					isIntegerOperator = true;
+					//Log.d("vortex","arg1v "+arg1v+" arg2v "+arg2v+ )
 				}
 			}
 			//Requires Double arguments.

@@ -243,7 +243,9 @@ public class ModuleLoader implements FileLoadedCb{
 			o.addRedText("The Vortex version you use is too old to run this App version ["+res.errorMessage+"]. Please upgrade!");
 		} else if (errCode==ErrorCode.ParseError) {
 			o.addRow("");
-			o.addRedText("The file contains an error. Please check log for details");
+			o.addRedText("Error. Please check log for details");
+			Log.e("fall",res.errorMessage==null?"":res.errorMessage);
+			debug.addRedText(module.getFileName());
 			debug.addCriticalText(res.errorMessage);
 		} else
 			o.addYellowText(" "+res.errCode.name());

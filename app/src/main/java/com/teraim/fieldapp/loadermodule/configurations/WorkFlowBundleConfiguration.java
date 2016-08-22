@@ -850,7 +850,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			} 
 			else if (name.equals("height")) {
 				h = readText("height",parser);
-				height = (h==null||h.length()==0)?-1:Integer.parseInt(h);
+				height = (h==null||h.length()==0)?-1:(h.equalsIgnoreCase("fill")?-2:Integer.parseInt(h));
 			}  
 			else if (name.equals("width")) {
 				w = readText("width",parser);

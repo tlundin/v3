@@ -4,8 +4,8 @@ import android.util.Log;
 
 public class SweLocation implements Location {
 
-	public final double north;
-	public final double east;
+	public  double north;
+	public  double east;
 	
 	public SweLocation(double X,double Y) {
 		this.north=Y;

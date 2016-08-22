@@ -75,7 +75,7 @@ public class WebLoader extends Loader {
 
 		} catch (IOException e) {
 			if (e instanceof MalformedJsonException)
-				return new LoadResult(module,ErrorCode.ParseError);
+				return new LoadResult(module,ErrorCode.ParseError,"Malformed JSON: "+e.getMessage()+"\n Did you forget to add a version number of the first row?");
 			else if (e instanceof FileNotFoundException) {
 				return new LoadResult(module,ErrorCode.notFound);
 			}
@@ -87,10 +87,10 @@ public class WebLoader extends Loader {
 				return new LoadResult(module,ErrorCode.IOError,sw.toString());
 			}
 		} catch (XmlPullParserException e) {
-			return new LoadResult(module,ErrorCode.ParseError);
+			return new LoadResult(module,ErrorCode.ParseError,"Malformed XML");
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return new LoadResult(module,ErrorCode.ParseError);
+			return new LoadResult(module,ErrorCode.ParseError,"JSONException :"+e.getMessage());
 		} catch (Dependant_Configuration_Missing e) {
 			return new LoadResult(module, ErrorCode.reloadDependant,e.getDependendant());
 		}

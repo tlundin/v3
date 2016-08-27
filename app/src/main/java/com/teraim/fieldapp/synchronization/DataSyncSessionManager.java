@@ -210,8 +210,8 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 					Log.d("vortex","myBundleV "+myAppVersion+" msgVer "+sp.getAppVersion()+" swVer: "+mySoftwareVersion+" msgVer: "+sp.getSoftwareVersion());
 					StringBuilder versionText = new StringBuilder();
 
-					String debugTxt="My vortex version: "+mySoftwareVersion+
-							"\nOthers vortex version: "+sp.getSoftwareVersion()+
+					String debugTxt="My Field Pad version: "+mySoftwareVersion+
+							"\nOthers Field Pad version: "+sp.getSoftwareVersion()+
 							"\nMy App version: "+myAppVersion+
 							"\nOthers App version: "+sp.getAppVersion()+
 							"\nMy Time: "+Constants.getSweDate()+

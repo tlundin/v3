@@ -1,0 +1,159 @@
+package com.teraim.fieldapp.dynamic.workflow_realizations;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.widget.Button;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.dynamic.types.DB_Context;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.utils.Expressor;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Terje on 2016-08-24.
+ */
+
+
+
+public class WF_StatusButton extends WF_Button {
+
+
+    private final String statusVariableName;
+    private List<Expressor.EvalExpr> hash;
+    Variable statusVariable=null;
+
+    public static Button createInstance(int statusOrdinal, String text, Context ctx) {
+
+
+        //Enforce a state
+        Status s = getStatusFromOrdinal(statusOrdinal);
+
+        int layout = WF_StatusButton.getLayoutIdFromStatus(s);
+        final LayoutInflater inflater = (LayoutInflater)ctx.getSystemService
+                (Context.LAYOUT_INFLATER_SERVICE);
+
+        Button button = (Button)inflater.inflate(layout,null);
+        button.setText(text);
+        return button;
+    }
+
+    private static Status getStatusFromOrdinal(int statusOrdinal) {
+        Status s = Status.none;
+        switch (statusOrdinal) {
+            case 0:
+                s=Status.none;
+                break;
+            case 1:
+                s=Status.started;
+                break;
+            case 2:
+                s=Status.started_with_errors;
+                break;
+            case 3:
+                s=Status.ready;
+                break;
+        }
+        return s;
+    }
+
+    public boolean refreshStatus() {
+        if (hash==null) {
+            Log.e("vortex","hash null in statusrefresh...exit");
+            return false;
+        }
+        DB_Context statusContext = DB_Context.evaluate(hash);
+        statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
+        int statusI = 0;
+       if (statusVariable!=null) {
+           try {
+               String v = statusVariable.getValue();
+               statusI = (v == null) ? 0 : Integer.parseInt(v);
+               Log.d("gomorra", "statusvariable " + statusVariable.getId() + " has value " + statusI + " with hash " + statusVariable.getKeyChain());
+           } catch (NumberFormatException e) {
+               Log.e("vortex", "Parseerror in refresh status. This is not an integer: " + statusVariable.getValue());
+           }
+           ;
+           refreshButton(WF_StatusButton.getIdFromStatus(getStatusFromOrdinal(statusI)));
+       }
+       return (statusVariable!=null);
+
+    }
+
+    public enum Status {
+        none,
+        started,
+        started_with_errors,
+        ready
+    }
+
+    
+
+    public WF_StatusButton(String text, Button button, boolean isVisible, WF_Context myContext, String statusVariableS, List<Expressor.EvalExpr> rawStatusHash) {
+        super(text, button, isVisible, myContext);
+        this.statusVariableName = statusVariableS;
+        this.hash = rawStatusHash;
+    }
+
+    public void changeStatus(Status status) {
+        if (statusVariable!=null) {
+            Log.d("vortex", "Button status changes to " + status);
+            //Variable statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusVariableHash,statusVariableName);
+            statusVariable.setValue(status.ordinal() + "");
+            int id = getIdFromStatus(status);
+            refreshButton(id);
+        } else
+            Log.e("vortex","no status variable in changestatus!");
+    }
+
+    private void refreshButton(int id) {
+        Drawable image = ctx.getResources().getDrawable( id );
+        int h = image.getIntrinsicHeight();
+        int w = image.getIntrinsicWidth();
+        image.setBounds( 0, 0, w, h );
+        myButton.setCompoundDrawables(image,null,null,null);
+    }
+
+    private static int getIdFromStatus(Status status) {
+        int id=R.drawable.btn_icon_none;
+        switch (status) {
+            case none:
+                id = R.drawable.btn_icon_none;
+                break;
+            case started:
+                id = R.drawable.btn_icon_started;
+                break;
+            case started_with_errors:
+                id = R.drawable.btn_icon_started_with_errors;
+                break;
+            case ready:
+                id = R.drawable.btn_icon_ready;
+                break ;
+
+        }
+        return id;
+    }
+    private static int getLayoutIdFromStatus(Status status) {
+        int id=R.layout.button_status_none;
+        switch (status) {
+            case none:
+                id = R.layout.button_status_none;
+                break;
+            case started:
+                id = R.layout.button_status_started;
+                break;
+            case started_with_errors:
+                id = R.layout.button_status_started_with_errors;
+                break;
+            case ready:
+                id = R.layout.button_status_ready;
+                break ;
+        }
+        return id;
+    }
+}

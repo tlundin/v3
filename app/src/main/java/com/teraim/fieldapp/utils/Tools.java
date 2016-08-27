@@ -397,7 +397,7 @@ public class Tools {
 			return null;
 		Map<String,String> ret = new HashMap<String,String>();
 		if (fullHash == null) {
-			Log.e("vortex","COLUMN NOT EMPTY: "+columns);
+			Log.e("vortex","Hash null - so returning empty in cutkeymap. Columns: "+columns);
 
 		} else {
 			String[] keys = columns.split("\\|");

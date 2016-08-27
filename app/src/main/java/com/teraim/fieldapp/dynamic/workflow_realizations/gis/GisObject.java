@@ -96,7 +96,7 @@ public class GisObject {
 			return label;
 		if (foc.getLabelExpression()==null)
 			return null;
-		Log.d("vortex","In getLabel gisobject..analyzing: "+foc.getLabelExpression()+" with keychain "+keyChain);
+		//Log.d("vortex","In getLabel gisobject..analyzing: "+foc.getLabelExpression()+" with keychain "+keyChain);
 		label = Expressor.analyze(foc.getLabelExpression(),keyChain);
 		//@notation for id
 		if (label!=null && label.startsWith("@")) {

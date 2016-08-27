@@ -60,12 +60,13 @@ public class DB_Context implements Serializable {
 	 * The context may contain variables, so the evaluation might change over time. 
 	 * 
 	 */
-	
+
+
 	public static DB_Context evaluate(List<EvalExpr> eContext) {
 		
 		String err = null;
 		Map<String, String> keyHash = null;
-
+		boolean  hasWildCard = false;
 		LoggerI o = GlobalState.getInstance().getLogger();
 		//Log.d("vortex","In evaluate Context!!");
 
@@ -106,9 +107,14 @@ public class DB_Context implements Serializable {
 								} 
 								
 								for (char c:val.toCharArray()) {
-									if(!Character.isLetterOrDigit(c) && c!='-') {
-										err = "The literal "+val+" contains non alfabetic-nonnumeric characters. Did you forget braces? [ ] Full context is: "+cContext;
-										break;	
+									if(!Character.isLetterOrDigit(c) && c!='-' ) {
+										if (c == '?') {
+											Log.d("vortex","NOT NULL UNKNOWN PARAMETER in context");
+											hasWildCard=true;
+										} else {
+											err = "The literal " + val + " contains non alfabetic-nonnumeric characters. Did you forget braces? [ ] Full context is: " + cContext;
+											break;
+										}
 									}
 								}
 								if (err==null)
@@ -125,10 +131,15 @@ public class DB_Context implements Serializable {
 				o.addRedText(err);
 				return new DB_Context(err);
 			} else {
-				Log.d("vortex","DB_CONTEXT evaluate returns: "+keyHash);
+				Log.d("vortex","DB_CONTEXT evaluate returns: "+keyHash+ " for "+eContext+" isPartial "+hasWildCard);
+				if (hasWildCard) {
+					keyHash=GlobalState.getInstance().getDb().createNotNullSelection(keyHash);
+					Log.d("vortex","DB_CONTEXT ACTUALLY returns: "+keyHash+ " for "+eContext+" isPartial "+hasWildCard);
+				}
 				return new DB_Context(cContext,keyHash);
 			}
 		}
 	}
-	
+
+
 }

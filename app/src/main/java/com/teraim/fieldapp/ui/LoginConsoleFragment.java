@@ -84,7 +84,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//		"clacon.ttf");
 		//log.setTypeface(type);
 		log.setMovementMethod(new ScrollingMovementMethod());
-		versionTxt.setText("Vortex engine ver. "+Constants.VORTEX_VERSION);
+		versionTxt.setText("Field Pad ver. "+Constants.VORTEX_VERSION);
 		licenseTxt.setText(License);
 		//Create global state
 

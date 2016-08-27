@@ -240,7 +240,7 @@ public class ModuleLoader implements FileLoadedCb{
 			}
 		} else if (errCode==ErrorCode.Unsupported) {
 			o.addRow("");
-			o.addRedText("The Vortex version you use is too old to run this App version ["+res.errorMessage+"]. Please upgrade!");
+			o.addRedText("The version of FieldPad you use cannot run this App. Min version required: "+res.errorMessage+". ");
 		} else if (errCode==ErrorCode.ParseError) {
 			o.addRow("");
 			o.addRedText("Error. Please check log for details");

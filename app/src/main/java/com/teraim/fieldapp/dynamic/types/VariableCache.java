@@ -6,6 +6,7 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.Variable.DataType;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.TmpVal;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -65,16 +66,13 @@ public class VariableCache {
         currentCache = globalCache;
     }
 
-
-
-
-
     public void setCurrentContext(DB_Context context) {
         currentHash = context.getContext();
         currentCache = this.createOrGetCache(currentHash);
         Log.d("vortex", "currentCache is now based on " + context);
         myDbContext = context;
     }
+
 
     public DB_Context getContext() {
         return myDbContext;
@@ -93,10 +91,12 @@ public class VariableCache {
         }
         return ret;
     }
+
+
     public Map<String, Variable> createOrGetCache(Map<String, String> myKeyHash) {
         Map<String, Variable> ret = newcache.get(myKeyHash);
         Map<String, String> copy = null;
-        boolean yearWasRemoved=false;
+
         if (ret == null) {
             if (myKeyHash != null) {
                 Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
@@ -148,6 +148,8 @@ public class VariableCache {
         GlobalState gs = GlobalState.getInstance();
         long time = System.currentTimeMillis();
         Map<String, Variable> ret = null;
+
+
         Map<String, TmpVal> map = gs.getDb().preFetchValuesForAllMatchingKeyV(myKeyHash);
         if (map != null) {
             //Create variables.
@@ -173,16 +175,21 @@ public class VariableCache {
                         String rowKH = gs.getVariableConfiguration().getKeyChain(row);
                         int rowKHL = 0;
                         int myKeyhashSize = 0;
-
+                        String[] rowKHA=null;
                         if (myKeyHash != null)
                             myKeyhashSize = myKeyHash.keySet().size();
-                        if (rowKH != null && !rowKH.isEmpty())
-                            rowKHL = rowKH.split("\\|").length;
+                        if (rowKH != null && !rowKH.isEmpty()) {
+                            rowKHA = rowKH.split("\\|");
+                        }
+                        Log.d("gungo","myKSize: "+myKeyhashSize+" myKeyHash: "+myKeyHash.keySet()+"rowKH: "+rowKH);
 
-                        if (myKeyhashSize != rowKHL) {
-                            Log.e("vortex", "KEY MISSMATCH: IN ROW: " + rowKH + " IN DB: " + (myKeyHash == null ? "null" : myKeyHash.toString()));
-                            //gs.getDb().deleteVariable(varName,gs.getDb().createSelection(myKeyHash,varName), true);
-                            //Log.e("vortex","Deleted "+varName);
+                        if (rowKHA !=null && myKeyhashSize != rowKHA.length) {
+                            Log.d("part", "partiell nyckel. IN ROW: " + rowKH + " IN DB: " + (myKeyHash == null ? "null" : myKeyHash.toString()));
+                            Log.d("part","searching if there is one unique result on partial key");
+                            //Return any value in database that is unique for the given columns as primary key.
+                            //år|ruta|gistyp|uid "There exists exactly one combination where ruta = 2222, gistyp not null, uid not null
+                            myKeyHash = gs.getDb().createNotNullSelection(rowKHA,myKeyHash);
+
                         }
                         if (type == DataType.array)
                             v = new ArrayVariable(varName, header, row, myKeyHash, gs, vCol, variableValues.norm, true, variableValues.hist);

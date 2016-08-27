@@ -87,7 +87,101 @@ public class DbHelper extends SQLiteOpenHelper {
             return resultSet.getString(0);
         return null;
     }
+    public Map<String,String> createNotNullSelection(Map<String, String> myKeyHash) {
+        boolean first = true;
+        String query = "";
+        String cols = "";
+        String ar = null;String arval=null;
+        Map<String,String> newKeyHash = new HashMap<>();
+        for (String key:myKeyHash.keySet()) {
+            if (key.equalsIgnoreCase("ÅR")) {
+                ar=key;
+                arval=myKeyHash.get(key);
+                continue;
+            }
+            String value = myKeyHash.get(key);
+            if ("?".equals(value)) {
+                value = " NOT NULL";
 
+            } else
+                value = "= '"+value+"'";
+            if (first)  {
+                first=false;
+            } else {
+                query += " AND ";
+                cols+=",";
+            }
+            String col = getDatabaseColumnName(key);
+            cols +=col;
+            query+=col+" "+value;
+            Log.d("notnull","query now "+query);
+        }
+        //db.delete(TABLE_VARIABLES,"L4 = '?'",null);
+        //return myKeyHash;}
+
+        Cursor c = db.rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        if (c.moveToNext()) {
+            for (int i = 0;i < c.getColumnCount();i++) {
+                Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
+                newKeyHash.put(dbColumnNameToReal.get(c.getColumnName(i)),c.getString(i));
+            }
+
+        }
+        if (c.moveToNext()) {
+            Log.e("vortex","MORE THAN ONE RESULT!!!");
+        }
+        Log.d ("vortex","now after C with keyhash: "+newKeyHash);
+        if (!newKeyHash.isEmpty()) {
+            if (ar!=null)
+                newKeyHash.put(ar,arval);
+            return newKeyHash;
+        }
+        Log.e("vortex","failed to resolve unknown");
+        return null;
+    }
+
+    public Map<String,String> createNotNullSelection(String[] rowKHA, Map<String, String> myKeyHash) {
+
+        String query = "";
+        String cols = "";
+        boolean first=true;
+        //The new keyhash to return
+        Map<String,String> myNewKeyHash = new HashMap<>();
+        for (String key: rowKHA) {
+
+            String existingValue = myKeyHash.get(key);
+            if(existingValue==null) {
+                existingValue = "NOT NULL";
+            } else
+            existingValue = "= '"+existingValue+"'";
+            if (first)  {
+                first=false;
+            } else {
+                query += " AND ";
+                cols+=",";
+            }
+
+            String col = getDatabaseColumnName(key);
+            cols +=col;
+            query+=col+" "+existingValue;
+            Log.d("notnull","query now "+query);
+        }
+        Log.d("notnull","final query: "+query);
+
+        Cursor c = db.rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        if (c.moveToNext()) {
+            for (int i = 0;i < c.getColumnCount();i++) {
+                Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
+                myNewKeyHash.put(dbColumnNameToReal.get(c.getColumnName(i)),c.getString(i));
+            }
+
+        }
+        if (c.moveToNext()) {
+            Log.e("vortex","MORE THAN ONE RESULT!!!");
+        }
+        Log.d ("vortex","now after C with keyhash: "+myNewKeyHash);
+        return myNewKeyHash;
+    }
 
 
     //Helper class that wraps the Cursor.
@@ -919,8 +1013,8 @@ public class DbHelper extends SQLiteOpenHelper {
                 db.delete(TABLE_VARIABLES, //table name
                         extendedSelection,  // selections
                         extendedSelArgs); //selections args
-        if (aff == 0)
-            Log.e("vortex", "could not delete old value for " + name);
+        //if (aff == 0)
+        //    Log.e("vortex", "could not delete old value for " + name);
     }
     /*
         new Handler().postDelayed(new Runnable() {
@@ -1123,7 +1217,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Log.d("nils","created new selection: "+selection);
 
         ret.selectionArgs = createSelectionArgs(keySet, name);
-        //Log.d("nils","CREATE SELECTION RETURNS: "+ret.selection+" "+print(ret.selectionArgs));
+        Log.d("nils","CREATE SELECTION RETURNS: "+ret.selection+" "+print(ret.selectionArgs));
         return ret;
     }
 
@@ -1934,8 +2028,8 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public class TmpVal {
-        public String hist;
-        public String norm;
+        public String hist,norm;
+
     }
 
     public Map<String, TmpVal> preFetchValuesForAllMatchingKeyV(Map<String, String> keyChain) {
@@ -1963,8 +2057,14 @@ public class DbHelper extends SQLiteOpenHelper {
             //forget year.
             //columns.add(key);
             if (transMap.get(key) != null) {
-                selection.append(key + "=? ");
-                selectionArgs.add(transMap.get(key));
+
+                String columnValue = transMap.get(key);
+                if ("?".equals(columnValue))
+                    selection.append(key + " NOT NULL ");
+                else {
+                    selection.append(key + "=? ");
+                    selectionArgs.add(columnValue);
+                }
                 if (key.equals(AR)) {
                     arIndex = selectionArgs.size() - 1;
                     hist = Constants.HISTORICAL_TOKEN_IN_DATABASE.equals(selectionArgs.get(arIndex));

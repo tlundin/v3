@@ -632,7 +632,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						if (once)Log.d("vortex","Bag "+ " has "+bagOfObjects.size()+" members");
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
-							Log.d("vortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
+							//Log.d("vortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
 							//If not inside map, or if touched, skip.
 							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus()))
 								continue;
@@ -668,6 +668,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								String color = gop.getColor();
 								Style style = gop.getStyle();
 								PolyType polyType=gop.getShape();
+								String statusValue = gop.getStatus();
+								//Log.d("goya", "LBL: "+gop.getLabel()+" STAT: "+statusValue);
 
 								String statusColor = colorShiftOnStatus(gop.getStatus());
 								if (statusColor!=null)
@@ -698,6 +700,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 									}
 								}
 								int[] xy = gop.getTranslatedLocation();
+								if (xy == null && gop.getCoordinates()!=null && !gop.getCoordinates().isEmpty()) {
+									xy = new int[2];
+									translateMapToRealCoordinates(gop.getCoordinates().get(0),xy);
+								}
 								if (xy!=null) {
 
 									drawPoint(canvas,bitmap,radius,color,style,polyType,xy,adjustedScale);
@@ -874,6 +880,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 	 */
 	private String colorShiftOnStatus(String statusValue) {
+
 		String color=null;
 		if (statusValue!=null ) {
 
@@ -1011,7 +1018,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale) {
 
 		Rect r = new Rect();
-		if(once)Log.d("vortex","drawpoint");
+		//if(once)Log.d("vortex","drawpoint");
 		if (bitmap!=null) {
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);

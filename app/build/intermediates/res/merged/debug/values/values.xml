@@ -38,12 +38,12 @@
     <string-array name="versionArray">
         <item>Update only when the version of your App changes (default)</item>
         <item>Check version for each configuration file individually</item>
-        <item>Always load (slow!)</item>
+        <item>Forced load independent of version (slow!)</item>
     </string-array>
     <string-array name="versionValues">
         <item>Major</item>
         <item>Detailed</item>
-        <item>No control</item>
+        <item>Forced</item>
     </string-array>
     <color name="background">#FCFCFA</color>
     <color name="background_light">#fff3f3f3</color>

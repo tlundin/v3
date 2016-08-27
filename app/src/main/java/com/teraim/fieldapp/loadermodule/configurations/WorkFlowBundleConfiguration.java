@@ -1811,8 +1811,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private ButtonBlock readBlockButton(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_button...");
 		String label=null,onClick=null,myname=null,containerName=null,
-				target=null,type=null,id=null,statusVariable=null,exportContextS=null,
-				exportFormat=null,buttonContext=null;
+				target=null,type=null,id=null,statusVariable=null,
+				exportFormat=null,buttonContext=null,statusContext=null;
 		boolean isVisible = true, enabled=false,requestSync=false;
 		parser.require(XmlPullParser.START_TAG, null,"block_button");
 		while (parser.next() != XmlPullParser.END_TAG) {
@@ -1837,9 +1837,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("container_name")) {
 				containerName = readText("container_name",parser);		
 			}
-			else if (name.equals("export_context")) {
-				exportContextS = readText("export_context",parser);		
-			}
+
 			else if (name.equals("export_format")) {
 				exportFormat = readText("export_format",parser);		
 			}
@@ -1852,8 +1850,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("is_visible")) {
 				isVisible = readText("is_visible",parser).equals("true");
 			} 
-			else if (name.equals("button_context")) {
-				buttonContext = readText("button_context",parser);
+			else if (name.equals("context")) {
+				buttonContext = readText("context",parser);
+			}
+			else if (name.equals("status_context")) {
+				statusContext = readText("status_context",parser);
 			}
 			else if (name.equals("status_variable"))
 				statusVariable = readText("status_variable",parser);
@@ -1865,7 +1866,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		checkForNull("block_ID",id,"type",type,"name",myname,"label",label,"container_name",
 				containerName,"target",target);
 
-		return new ButtonBlock(id,label,onClick,myname,containerName,target,type,statusVariable,isVisible,exportContextS,exportFormat,enabled,buttonContext,requestSync);
+		return new ButtonBlock(id,label,onClick,myname,containerName,target,type,statusVariable,isVisible,exportFormat,enabled,buttonContext,statusContext,requestSync);
 	}
 
 

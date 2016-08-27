@@ -102,7 +102,7 @@ public class Table implements Serializable {
 			if (!keyParts.contains(key)&&key.trim().length()>0) {
 				//Log.d("nils","found new key part: "+key);
 				//Add to existing Database model.
-				keyParts.add(key);
+				keyParts.add(key.trim());
 			};
 		}
 		//no need to check this one again.

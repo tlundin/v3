@@ -218,6 +218,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					return;
 				GisObject gop = gisImageView.getGopBeingCreated();
 				if (gop != null) {
+					gop.clearCache();
 					List<Location> gopCoordinates = gop.getCoordinates();
 					if (gopCoordinates != null && !gopCoordinates.isEmpty()) {
 						Location last = gopCoordinates.get(gopCoordinates.size()-1);

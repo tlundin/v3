@@ -2175,7 +2175,7 @@ public class Expressor {
 			if (!s.isEmpty()&&s.peek() instanceof EvalExpr)
 				return (EvalExpr)s.pop();
 			else {
-				Log.e("vortex","returning null  in analyzeExpr."+s.peek().getClass().getSimpleName());
+				Log.e("vortex","returning null  in analyzeExpr.");
 				return null;
 			}
 		}

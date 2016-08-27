@@ -41,6 +41,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 	private boolean generatedUID = false;
 	private Table varTable;
 	private boolean isDebug = false;
+	private List<String>requiredAttributes = new ArrayList<>();
+
 
 	public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
 		super(globalPh,ph, source,fileLocation, fileName, fileName);
@@ -56,7 +58,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 		}
 		varTable = t;
 		isDebug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
-
+		requiredAttributes.clear();
+		if (isDebug) {
+			requiredAttributes.add(GisConstants.RutaID);
+			requiredAttributes.add(GisConstants.ObjectID);
+		}
 	}
 
 	private static String fixedLength(String fileName) {
@@ -297,7 +303,6 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
 				if (rutaId==null) {
-
 					Log.e("vortex", "ingen ruta ID!!!!");
 					return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
 				}

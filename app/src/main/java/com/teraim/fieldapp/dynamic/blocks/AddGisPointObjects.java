@@ -254,6 +254,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			lastCheckTimeStamp = thisCheck;
 		
 		if (this.getStatusVariable()!=null) {
+
 			statusVarS = GlobalState.getInstance().getDb().createSelection(currYearH, this.getStatusVariable().trim());
 			if (refresh) {
 				statusVarS.selection+=" and timestamp > ?";
@@ -363,17 +364,21 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 					Map <String,Pair<String,String>> statusVarM=null;
 					//Find status per UID for all geo objects. This is used to color the objects later on.
 					if (pickerStatusVars!=null) {
+						Log.d("gaya","start");
 						while (pickerStatusVars.next()) {
 							String value = pickerStatusVars.getVariable().value;
 							String name = pickerStatusVars.getVariable().name;
+							Log.d("vortex","STATUSVAR: "+name+" value: "+value);
 							//Store status var name & value for per uuid.
 							if (statusVarM == null)
 								statusVarM = new HashMap<String, Pair<String, String>>();
 							//ERRUR?
 							statusVarM.put(pickerStatusVars.getKeyColumnValues().get("uid"), new Pair(name, value));
-							Log.d("cleggo", "added statusvar with uid " + pickerStatusVars.getKeyColumnValues().get("uid"));
+							Log.d("gaya", "added statusvar with uid " + pickerStatusVars.getKeyColumnValues().get("uid"));
 						}
-					}
+						Log.d("gaya","end");
+					} else
+						Log.d("gaya","PICKERSTATUSVARS NULL FOR "+statusVariable);
 
 					Pair<String,String> statusVarP=null;
 					do {

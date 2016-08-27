@@ -38,12 +38,12 @@
     <string-array name="versionArray">
         <item>Uppdatera filer bara när Appens version ändras (default)</item>
         <item>Kontrollera version för enskilda filer varje uppstart</item>
-        <item>Strunta i versioner. Ladda alltid allt (långsamt)</item>
+        <item>Forcerad laddning oberoende av version (långsamt)</item>
     </string-array>
     <string-array name="versionValues">
         <item>Major</item>
-        <item>Detailed</item>
-        <item>No control</item>
+        <item>Detaljerad</item>
+        <item>Forcerad</item>
     </string-array>
     <string name="Automatic_backup">Säkerhetskopiering</string>
     <string name="Automatic_backup_s">Slå på eller av säkerthetskopiering</string>

@@ -260,11 +260,13 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						Variable statusVariable =null;
 						if (statusVar!=null)
 							statusVariable = varCache.getVariable(myContext.getKeyHash(),statusVar);
+						else
+						Log.e("vortex","statusvariable is null for "+statusVar+" with hash "+myContext.getKeyHash() );
 						if (statusVariable!=null && statusVariable.getValue()!=null && statusVariable.getValue().equals(Constants.STATUS_INITIAL)) {
 							statusVariable.setValue(Constants.STATUS_STARTAD_MEN_INTE_KLAR);
 
 						} else
-
+							Log.e("vortex","value not set...because "+statusVar+" with hash "+myContext.getKeyHash() +" with value "+statusVariable.getValue());
 						myContext.removeEventListener(this);
 					}
 

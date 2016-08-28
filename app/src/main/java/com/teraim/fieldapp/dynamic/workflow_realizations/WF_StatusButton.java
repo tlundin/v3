@@ -25,6 +25,7 @@ public class WF_StatusButton extends WF_Button {
 
 
     private final String statusVariableName;
+    private final WF_Context myContext;
     private List<Expressor.EvalExpr> hash;
     Variable statusVariable=null;
 
@@ -63,16 +64,20 @@ public class WF_StatusButton extends WF_Button {
     }
 
     public boolean refreshStatus() {
+        DB_Context statusContext;
         if (hash==null) {
-            Log.e("vortex","hash null in statusrefresh...exit");
-            return false;
-        }
-        DB_Context statusContext = DB_Context.evaluate(hash);
+            Log.d("vortex","hash null in statusrefresh...will try currenthash");
+            statusContext=myContext.getHash();
+        } else
+            statusContext = DB_Context.evaluate(hash);
         statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
         int statusI = 0;
        if (statusVariable!=null) {
            try {
                String v = statusVariable.getValue();
+               if (v == null) {
+                   statusVariable.setValue("0");
+               }
                statusI = (v == null) ? 0 : Integer.parseInt(v);
                Log.d("gomorra", "statusvariable " + statusVariable.getId() + " has value " + statusI + " with hash " + statusVariable.getKeyChain());
            } catch (NumberFormatException e) {
@@ -98,6 +103,8 @@ public class WF_StatusButton extends WF_Button {
         super(text, button, isVisible, myContext);
         this.statusVariableName = statusVariableS;
         this.hash = rawStatusHash;
+        this.myContext = myContext;
+
     }
 
     public void changeStatus(Status status) {

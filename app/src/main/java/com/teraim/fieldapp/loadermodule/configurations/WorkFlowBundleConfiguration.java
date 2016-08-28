@@ -1853,6 +1853,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("context")) {
 				buttonContext = readText("context",parser);
 			}
+			else if (name.equals("button_context")) {
+				buttonContext = readText("buton_context",parser);
+			}
 			else if (name.equals("status_context")) {
 				statusContext = readText("status_context",parser);
 			}

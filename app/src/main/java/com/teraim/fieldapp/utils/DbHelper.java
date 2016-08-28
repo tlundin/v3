@@ -137,6 +137,11 @@ public class DbHelper extends SQLiteOpenHelper {
             return newKeyHash;
         }
         Log.e("vortex","failed to resolve unknown");
+        LoggerI o = GlobalState.getInstance().getLogger();
+        if (o!=null) {
+            o.addRow("");
+            o.addRedText("Failed to resolve unknown in context "+myKeyHash);
+        }
         return null;
     }
 

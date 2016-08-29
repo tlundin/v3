@@ -138,6 +138,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		//Log.d("nils","In refreshoutputfield for variable "+variable.getId()+" with value "+variable.getValue());
 
 		if (value!=null&&!value.isEmpty()) {
+			ll.setVisibility(View.VISIBLE);
 			CombinedRangeAndListFilter filter = variable.getLimitFilter();
 			if (filter!=null)
 				filter.testRun();
@@ -189,6 +190,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			u.setText(variable.getPrintedUnit());				
 		}
 		else {
+			ll.setVisibility(View.GONE);
 			o.setText("");
 			u.setText("");
 		}	

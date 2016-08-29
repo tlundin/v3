@@ -742,6 +742,7 @@ EventGenerator {
 			w = spin ? new OutSpin(ll, opt, val) : new OutC(ll, format);
 			myOutputFields.put(var, w);
 			outputContainer.addView(ll);
+
 			// refreshInputFields();
 			refreshOutputField(var, w);
 

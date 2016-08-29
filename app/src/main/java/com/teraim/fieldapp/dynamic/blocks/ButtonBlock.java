@@ -200,7 +200,6 @@ public  class ButtonBlock extends Block  implements EventListener {
 			if (type == Type.action) {
 				button=null;
 				if (statusVar!=null) {
-
 					button = new WF_StatusButton(blockId, WF_StatusButton.createInstance(0, getText(), ctx), isVisible, myContext, statusVar,statusContextE);
 					if(((WF_StatusButton)button).refreshStatus()) {
 						Log.d("vortex","sucessfully created statusbutton "+(button instanceof WF_StatusButton));

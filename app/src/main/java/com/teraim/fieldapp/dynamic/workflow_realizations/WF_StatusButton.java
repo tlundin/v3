@@ -64,15 +64,18 @@ public class WF_StatusButton extends WF_Button {
     }
 
     public boolean refreshStatus() {
-        DB_Context statusContext;
+        DB_Context statusContext=null;
         if (hash==null) {
             Log.d("vortex","hash null in statusrefresh...will try currenthash");
             statusContext=myContext.getHash();
         } else
             statusContext = DB_Context.evaluate(hash);
-        statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
-        int statusI = 0;
+        if (statusContext!=null)
+            statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
+
        if (statusVariable!=null) {
+           int statusI = 0;
+
            try {
                String v = statusVariable.getValue();
                if (v == null) {

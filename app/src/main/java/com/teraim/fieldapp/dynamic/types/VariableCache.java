@@ -176,12 +176,13 @@ public class VariableCache {
                         int rowKHL = 0;
                         int myKeyhashSize = 0;
                         String[] rowKHA=null;
-                        if (myKeyHash != null)
+                        if (myKeyHash != null) {
                             myKeyhashSize = myKeyHash.keySet().size();
+                            Log.d("gungo","myKSize: "+myKeyhashSize+" myKeyHash: "+myKeyHash.keySet()+"rowKH: "+rowKH);
+                        }
                         if (rowKH != null && !rowKH.isEmpty()) {
                             rowKHA = rowKH.split("\\|");
                         }
-                        Log.d("gungo","myKSize: "+myKeyhashSize+" myKeyHash: "+myKeyHash.keySet()+"rowKH: "+rowKH);
 
                         if (rowKHA !=null && myKeyhashSize != rowKHA.length) {
                             Log.d("part", "partiell nyckel. IN ROW: " + rowKH + " IN DB: " + (myKeyHash == null ? "null" : myKeyHash.toString()));

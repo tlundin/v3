@@ -34,6 +34,8 @@ public class DB_Context implements Serializable {
 		this.contextS=c;
 		err = null;
 	}
+
+
 		
 	public Map<String, String> getContext() {
 		return keyHash;
@@ -45,8 +47,11 @@ public class DB_Context implements Serializable {
 			return err;
 		if (contextS!=null)
 			return contextS;
-		if (keyHash!=null)
-			return keyHash.toString();
+		if (keyHash!=null) {
+			String s = keyHash.toString();
+			s = s.replace("{","").replace("}","");
+			return s;
+		}
 		else 
 			return "NULL";
 	}

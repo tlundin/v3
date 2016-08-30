@@ -106,7 +106,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 	//Function used with buttons that need to attach customized actions after click
 	public ButtonBlock(String id,String lbl,String action, String name,String container,String target, String type, String statusVariableS,boolean isVisible,
 			OnclickExtra onclickExtra,DB_Context buttonContext, int dummy) {		
-		this(id,lbl,action,name,container,target,type,statusVariableS,isVisible,null,true,null,null,false);
+		this(id,lbl,action,name,container,target,type,statusVariableS,isVisible,null,true,null,buttonContext.toString(),false);
 		extraActionOnClick = onclickExtra;
 		this.buttonContextOld = buttonContext;
 	}

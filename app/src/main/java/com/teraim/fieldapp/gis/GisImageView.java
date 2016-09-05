@@ -559,8 +559,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	public void createOk() {
 		//if this is a path, close it.
-		if (newGisObj instanceof GisPolygonObject)
-			((GisPathObject)newGisObj).getPath().close();
+//		if (newGisObj instanceof GisPolygonObject) {
+//			Path p = createPathFromCoordinates(newGisObj.getCoordinates(), true);
+//			((GisPolygonObject) newGisObj).addPath(p);
+//		}
+		//	((GisPathObject)newGisObj).getPaths().get(0).close();
 		if (currentCreateBag!=null) {
 			Log.d("vortex","inserting new GIS object.");
 			GlobalState.getInstance().getDb().insertGisObject(newGisObj);
@@ -579,7 +582,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 
 	Drawable d1;
-	boolean once = true;
+
 	private List<GisObject> candidates = new ArrayList<GisObject>();
 
 	@Override
@@ -604,8 +607,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			for (GisLayer layerO:myMap.getLayers()) {
 				String layerId = layerO.getId();
 
-				if (once)
-					Log.d("vortex","drawing layer "+layerId);
+
 				//get all objects that should be drawn on this layer.
 				//Treat maplayers
 				if (!layerO.isVisible()) {
@@ -629,7 +631,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						Set<GisFilter> filters = filterMap!=null?filterMap.get(key):null;
 						Set<GisObject> bagOfObjects = bags.get(key);
 						Iterator<GisObject> iterator = bagOfObjects.iterator();
-						if (once)Log.d("vortex","Bag "+ " has "+bagOfObjects.size()+" members");
+
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
 							//Log.d("vortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
@@ -850,7 +852,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Reset any click done.
 		mapLocationForClick=null;
 		clickXY=null;
-		once = false;
+
 	}
 
 	private boolean isExcludedByStandardFilter(String status) {
@@ -900,85 +902,75 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private void drawGop(Canvas canvas, GisLayer layerO, GisObject go, boolean selected) {
 
 		boolean beingDrawn = false;
-		if (newGisObj !=null)
+		int[] xy;
+
+		if (newGisObj != null)
 			beingDrawn = go.equals(newGisObj);
 		//will only be called from here if selected.
-		GisPointObject gop=null;
+		GisPointObject gop = null;
 		//Only gets her for Gispoint, if it is selected.
 		if (go instanceof GisPointObject) {
-			gop = (GisPointObject)go;
-			if (gop.getTranslatedLocation()!=null) {
+			gop = (GisPointObject) go;
+			if (gop.getTranslatedLocation() != null) {
 				//Log.d("vortex","Calling drawpoint in dispatchdraw for "+go.getLabel());
-				drawPoint(canvas, null,gop.getRadius(), "red", Style.FILL, gop.getShape(), gop.getTranslatedLocation(),1);
+				drawPoint(canvas, null, gop.getRadius(), "red", Style.FILL, gop.getShape(), gop.getTranslatedLocation(), 1);
 			} else
-				Log.e("vortex","NOT calling drawpoint since translatedlocation was null");
+				Log.e("vortex", "NOT calling drawpoint since translatedlocation was null");
 
-		}
+		} else if (go instanceof GisPathObject) {
+			boolean singlePath = false,isPolygon = (go instanceof GisPolygonObject);
 
-		else if (go instanceof GisPathObject) {
+			GisPathObject gpo = (GisPathObject) go;
+			//Add glow effect if it is currently selected.
 
-			GisPathObject gpo = (GisPathObject)go;
-			//Add glow effect if it is currently being drawn.
-
-			boolean onlyOne =false;
-
-			Path p = gpo.getPath();
-
-			//objects being drawn cannot be cached.
-			List<Location> ll = go.getCoordinates();
-
-			if (p==null || beingDrawn && ll!=null) {
-
-				p = new Path();
-				boolean first = true;
-				int[] xy = new int[2];
-				boolean last = false;
-				for (int i=0;i<ll.size();i++) {
-					Location l=ll.get(i);
-					last = i==(ll.size()-1);
-					translateMapToRealCoordinates(l,xy);
-					if (xy==null)
-						continue;
-					if (first) {
-						p.moveTo(xy[0],xy[1]);
-						first =false;
-					} else
-						p.lineTo(xy[0],xy[1]);
-				}
-				if (last)
-					drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
-			}
-
-
-
-			if (!onlyOne) {
-				gpo.setPath(p);
-
-
-				if (selected) {
-					canvas.drawPath(p, paintBlur);
-					canvas.drawPath(p, paintSimple);
-
-				}
-				else if (beingDrawn) {
-
+			if (beingDrawn) {
+				Path p = createPathFromCoordinates(gpo.getCoordinates(),false);
+				if (p != null)
 					canvas.drawPath(p, polyPaint);
-					//myMap.showLenthOfPath(new PathMeasure(p,false));
+				xy = new int[2];
+				translateMapToRealCoordinates(gpo.getCoordinates().get(gpo.getCoordinates().size()-1),xy);
+				drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
+			} else {
+				if (go instanceof GisPolygonObject) {
+					//check if buffered paths already exists.
+					if (gpo.getPaths() == null) {
+						//no...create.
 
+						for (List<Location> ll : ((GisPolygonObject) gpo).getPolygons().values()) {
+							Path p = createPathFromCoordinates(ll,true);
+							if (p != null) {
+								gpo.addPath(p);
+							}
+						}
+						if (gpo.getPaths() != null && gpo.getPaths().size() == 1)
+							singlePath = true;
+					}
+				} else
+					singlePath = true;
+
+				if (singlePath) {
+
+					Path p = null;
+					if (gpo.getPaths() != null) {
+						p = gpo.getPaths().get(0);
+					} else {
+						Log.d("vortex", "ispoly?! "+isPolygon);
+						p = createPathFromCoordinates(gpo.getCoordinates(),isPolygon);
+					}
+					if (p!=null)
+						drawPath(p,selected,canvas,go);
 				} else {
-
-					String color = colorShiftOnStatus(go.getStatus());
-					if (color==null)
-						color = go.getColor();
-					if(once)Log.d("vortex","drawpath");
-					canvas.drawPath(p, createPaint(color,Paint.Style.STROKE,0));
+					List<Path> paths = gpo.getPaths();
+					if (paths != null) {
+						for (Path p : paths) {
+							drawPath(p,selected,canvas,go);
+						}
+					}
 				}
-			} else
-				Log.d("vortex","only one");
-
+			}
 		}
 		//Check if label should be drawn.
-		int[]xy;
+
 		if (!selected&&layerO!=null && layerO.showLabels() ) {
 			xy = new int[2];
 			translateMapToRealCoordinates(go.getLocation(),xy);
@@ -986,10 +978,48 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			drawGopLabel(canvas,xy,go.getLabel(),LabelOffset,bCursorPaint,vtnTxt);
 		}
 		//Check if directional line should be drawn.
-		if (riktLinjeStart!=null)
-			canvas.drawLine(riktLinjeStart[0], riktLinjeStart[1], riktLinjeEnd[0],riktLinjeEnd[1],fgPaintSel);//fgPaintSel
+		if (riktLinjeStart!=null) {
+			Log.d("vortex","drawing a million times?");
+			canvas.drawLine(riktLinjeStart[0], riktLinjeStart[1], riktLinjeEnd[0], riktLinjeEnd[1], fgPaintSel);//fgPaintSel
+		}
 
 	}
+
+	private void drawPath(Path p, boolean selected, Canvas canvas, GisObject go) {
+		if (selected) {
+			canvas.drawPath(p, paintBlur);
+			canvas.drawPath(p, paintSimple);
+		} else {
+			String color = colorShiftOnStatus(go.getStatus());
+			if (color == null)
+				color = go.getColor();
+			canvas.drawPath(p, createPaint(color, Paint.Style.STROKE, 0));
+		}
+	}
+
+
+	private Path createPathFromCoordinates(List<Location> ll, boolean isClosed) {
+		int[] xy=new int[2];
+		if (ll ==null)
+			return null;
+		boolean first = true;
+		Path p = new Path();
+		for (int i=0;i<ll.size();i++) {
+			Location l=ll.get(i);
+			translateMapToRealCoordinates(l,xy);
+			if (xy==null)
+				continue;
+			if (first) {
+				p.moveTo(xy[0],xy[1]);
+				first =false;
+			} else
+				p.lineTo(xy[0],xy[1]);
+		}
+		if (isClosed)
+			p.close();
+		return p;
+	}
+
 
 
 
@@ -1018,7 +1048,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale) {
 
 		Rect r = new Rect();
-		//if(once)Log.d("vortex","drawpoint");
+
 		if (bitmap!=null) {
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);

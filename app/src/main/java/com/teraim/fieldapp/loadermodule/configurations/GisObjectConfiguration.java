@@ -195,8 +195,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POLYGON)){
 					Log.d("vortex","MULTIPOLYGON!!");
-					o.addRow("");
-					o.addRedText("Unsupported Geo Type in parser: "+mType);
+					//o.addRow("");
+					//o.addRedText("Unsupported Geo Type in parser: "+mType);
 					Set<GisPolygonObject> multiPoly 				= new HashSet<GisPolygonObject>();
 					Map<String,List<Location>> 	 onePolygonSet		= new HashMap<String,List<Location>>();
 					List<Location> myCoordinates=null;
@@ -234,8 +234,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					//Log.d("vortex","kikko "+reader+"PEEK: "+reader.peek());
 					//reader.endArray();// ] Coordinates
 					//Log.d("vortex","kikko "+reader+"PEEK: "+reader.peek());
-					if (!onePolygonSet.isEmpty())
-						multiPoly.add(new GisPolygonObject(keyChain,onePolygonSet,attributes));
+					if (!onePolygonSet.isEmpty()) {
+						GisPolygonObject poly = new GisPolygonObject(keyChain, onePolygonSet, attributes);
+						multiPoly.add(poly);
+						myGisObjects.add(poly);
+					}
 
 				} else {
 					o.addRow("");
@@ -306,14 +309,18 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					Log.e("vortex", "ingen ruta ID!!!!");
 					return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
 				}
-				else
+				else {
+					//Log.d("vortex","RUTA ID: "+rutaId);
 					keyChain.put("ruta", rutaId);
+				}
 
 				if (objectId == null) {
 					Log.e("vortex", "ingen object ID!!!!");
 					return new LoadResult(this,ErrorCode.ParseError,"MISSING OBJECT ID");
 
-				}
+				} //else
+				//	Log.d("vortex","OBJECT ID: "+objectId);
+
 				keyChain.put(GisConstants.TYPE_COLUMN, myType);
 
 				//Add geotype to attributes so that the correct object can be used at export.

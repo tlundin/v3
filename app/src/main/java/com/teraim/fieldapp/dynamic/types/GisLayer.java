@@ -248,29 +248,51 @@ public class GisLayer {
 	}
 
 	public void markIfUseful(GisObject go, GisImageView gisImageView) {
-		int[] xy;
+		int[] xy= new int[2];
+		//assume not useful.
+		go.unmark();
 		//All dynamic objects are always in the map potentially.
 		if (go instanceof DynamicGisPoint) {
-
 			//Dynamic objects are always useful and do not have a cached value.
 			go.markAsUseful();
 		}
 		else if (go instanceof GisPointObject) {
 			GisPointObject gop = (GisPointObject)go;
-			xy = new int[2];
 			boolean inside = gisImageView.translateMapToRealCoordinates(gop.getLocation(),xy);
 			if (inside) {
+				//Log.d("vortex","Added point inside map");
 				go.markAsUseful();
 				gop.setTranslatedLocation(xy);
 			}
-			//else 
+			//else
 			//	Log.d("vortex","Removed object outside map");
 			return;
-		} 
+		}
+		else if (go instanceof GisPolygonObject) {
+			GisPolygonObject gpo = (GisPolygonObject) go;
+			boolean hasAtleastOneCornerInside = false;
+			List<int[]> corners = new ArrayList<int[]>();
+			if (gpo.getPolygons()==null) {
+				GlobalState.getInstance().getLogger().addRow("");
+				GlobalState.getInstance().getLogger().addRedText("POLY had *NULL* coordinates: "+go.getLabel());
+				go.markForDestruction();
+				return;
+			}
+			for (List<Location> ll:gpo.getPolygons().values()) {
+				for (Location location : ll) {
+					if (gisImageView.translateMapToRealCoordinates(location, xy)) {
+						go.markAsUseful();
+						return;
+					}
+				}
+			}
+			Log.d("polzz","removed "+gpo.getLabel());
+			Log.d("polzz",printCoordinates(gpo.getCoordinates()));
+
+		}
 		else if (go instanceof GisPathObject) {
 			GisPathObject gpo = (GisPathObject)go;
 			boolean hasAtleastOneCornerInside = false;
-			List<int[]> corners = new ArrayList<int[]>();
 			if (go.getCoordinates()==null) {
 				GlobalState.getInstance().getLogger().addRow("");
 				GlobalState.getInstance().getLogger().addRedText("Gis object had *NULL* coordinates: "+go.getLabel());
@@ -278,11 +300,14 @@ public class GisLayer {
 				return;
 			}
 			for (Location location:go.getCoordinates()) {
-				xy = new int[2];
-				if(gisImageView.translateMapToRealCoordinates(location,xy))
-					hasAtleastOneCornerInside = true;
-				corners.add(xy);
+				if(gisImageView.translateMapToRealCoordinates(location,xy)) {
+					go.markAsUseful();
+					return;
+				}
+
 			}
+
+			/*
 			if (hasAtleastOneCornerInside) {
 				go.markAsUseful();
 				Path p = new Path();
@@ -299,17 +324,24 @@ public class GisLayer {
 					p.close();
 				gpo.setPath(p);
 			}
-		} 
+			*/
+		}
+
 		else
 			Log.d("vortex","Gisobject "+go.getLabel()+" was not added");
 
 	}
 
-
-
-
-
-
+	private String printCoordinates(List<Location> coordinates) {
+		String s = "";
+		if (coordinates==null||coordinates.isEmpty())
+			return "EMPTY! Null: "+(coordinates==null);
+		for (Location l:coordinates) {
+			String st="["+l.getX()+","+l.getY()+"] ";
+			s+=st;
+		}
+		return s;
+	}
 
 
 }

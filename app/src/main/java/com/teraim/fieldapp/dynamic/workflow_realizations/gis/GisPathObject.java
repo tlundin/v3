@@ -1,7 +1,9 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import android.graphics.Path;
 
@@ -10,7 +12,7 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 
 public abstract class GisPathObject extends GisObject {
 
-	private Path myPath = null;
+	private List<Path> myPaths = null;
 	public GisPathObject(FullGisObjectConfiguration conf,
 			Map<String, String> keyChain, List<Location> myCoordinates,
 			String statusVarName, String statusValue) {
@@ -26,15 +28,20 @@ public abstract class GisPathObject extends GisObject {
 	}
 
 
-	public Path getPath() {
-		return myPath;
+	public List<Path> getPaths() {
+		return myPaths;
 	}
-	public void setPath(Path p) {
-		myPath = p;
+	public void addPath(Path p) {
+		if (myPaths==null)
+			myPaths = new ArrayList<>();
+		myPaths.add(p);
 	}
 
 	@Override
 	public void clearCache() {
-		myPath=null;
+		myPaths = null;
 	}
+
+
+
 }

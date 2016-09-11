@@ -60,7 +60,7 @@ public class CreateGisBlock extends Block {
 
 	private WF_Context myContext;
 	private LoggerI o;
-	private boolean hasSatNav;
+	private boolean hasSatNav,showTeam;
 	private WF_Gis_Map gis=null;
 	private List<EvalExpr> sourceE;
 	private int loadCount=0;
@@ -69,9 +69,9 @@ public class CreateGisBlock extends Block {
 	public boolean hasCarNavigation() {
 		return hasSatNav;
 	}
-
+	public boolean isTeamVisible() { return showTeam;}
 	public CreateGisBlock(String id,String name, 
-			String containerId,boolean isVisible,String source,String N,String E, String S,String W, boolean hasSatNav) {
+			String containerId,boolean isVisible,String source,String N,String E, String S,String W, boolean hasSatNav,boolean showTeam) {
 		super();
 
 		this.name = name;
@@ -85,6 +85,7 @@ public class CreateGisBlock extends Block {
 		this.S=S;
 		this.W=W;
 		this.hasSatNav=hasSatNav;
+		this.showTeam=showTeam;
 
 	}
 
@@ -169,8 +170,10 @@ public class CreateGisBlock extends Block {
 							mapLayers.add(mapLayer);
 						} else {
 							Log.e("vortex", "Picture not found. "+serverFileRootDir+picName);
-							o.addRow("");
-							o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+                            if (gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH)) {
+                                o.addRow("");
+                                o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+                            }
 							if (picName.equals(masterPicName)) {
 								aborted = true;
 								cb.abortExecution("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
@@ -263,9 +266,9 @@ public class CreateGisBlock extends Block {
 						avstRL.setVisibility(View.INVISIBLE);
 
 
-							for (GisLayer gl:mapLayers) {
+                        for (GisLayer gl:mapLayers) {
 								gis.addLayer(gl);
-							}
+                        }
 
 
 						cb.continueExecution();
@@ -344,7 +347,7 @@ public class CreateGisBlock extends Block {
 					@Override
 					public void onUpdate(Integer... args) {
 					}},
-					"No control").execute(meta);
+					"Forced").execute(meta);
 			} else {
 				Log.d("vortex","Found frozen metadata. Will use it");
 				PhotoMeta pm = (PhotoMeta)meta.getEssence();

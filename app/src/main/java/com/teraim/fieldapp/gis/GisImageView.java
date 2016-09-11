@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +72,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Geomatte;
+import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
 public class GisImageView extends GestureImageView implements TrackerListener {
@@ -359,9 +361,23 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		}
 		for (GisLayer layer :myMap.getLayers()) {
 
+			if (layer.getId().equals("Team")) {
+				layer.clear();
+				Set<GisObject>teamMembers = findMyTeam();
+				if (teamMembers==null || teamMembers.isEmpty())
+					Log.e("bortex","fucki mc wartface");
+				else {
+					Log.d("bortex", "found " + teamMembers.size()+" team members");
+					layer.addObjectBag("Team", teamMembers, false, this);
+				}
+
+			}
+
+
 			layer.filterLayer(this);
 
 		}
+
 
 	}
 
@@ -615,15 +631,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					continue;
 				}
 
-				//if (layerO.hasDynamic()) {
-				//Log.d("vortex","dynamic obj found in "+layer);
-				//	this.startDynamicRedraw();
-				//}
 				//only allow clicks if something is not already touched.
 				pXR = this.getImageWidth()/photoMetaData.getWidth();
 				pYR = this.getImageHeight()/photoMetaData.getHeight();
 				Map<String, Set<GisObject>> bags = layerO.getGisBags();
 				Map<String, Set<GisFilter>> filterMap = layerO.getFilters();
+
 
 				if (bags!=null && !bags.isEmpty()) {
 
@@ -634,7 +647,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
-							//Log.d("vortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
+							//Log.d("bortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
 							//If not inside map, or if touched, skip.
 							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus()))
 								continue;
@@ -642,11 +655,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								GisPointObject gop = (GisPointObject)go;
 
 								if (gop.isDynamic()) {
-									//Log.d("vortex","found dynamic object");
+									//Log.d("bortex","found dynamic object");
 									int[] xy = new int[2];
-									boolean inside = translateMapToRealCoordinates(go.getLocation(),xy);
+									boolean inside = translateMapToRealCoordinates(gop.getLocation(),xy);
 									if (!inside) {
-										//Log.d("vortex","outside!");
+										//Log.d("vortex","outside "+gop.getLocation().getX()+" "+gop.getLocation().getY());
 										if (gop.equals(userGop)) {
 											myMap.showCenterButton(false);
 											userGop=null;
@@ -654,9 +667,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 										//This object should not be drawn.
 										continue;
 									} else {
-										//Log.d("vortex","inside!");
+										//Log.d("bortex","inside!");
 										if (gop.isUser()) {
-											//Log.d("vortex","user!");
+											//Log.d("bortex","user!");
 											userGop = gop;
 											myMap.showCenterButton(true);
 										}
@@ -855,6 +868,101 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
+	private Set<GisObject> findMyTeam() {
+		Set<GisObject> ret = null;
+		final String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
+		final String user = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.USER_ID_KEY);
+		if(team ==null || team.length()==0) {
+			Log.d("vortex","no team but team is set to show. alarm!");
+			return null;
+		}
+		final Map<String,String> tmp = new HashMap<>();
+		tmp.put("år",Constants.getYear());
+		tmp.put("lag",team);
+
+		Map<String,Location> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
+		if (myTeam==null)
+			return null;
+		for (final String name:myTeam.keySet()) {
+			Location l = myTeam.get(name);
+			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
+				@Override
+				public float getRadius() {
+					return 0;
+				}
+
+				@Override
+				public String getColor() {
+					return "#76EE00";
+				}
+
+				@Override
+				public GisObjectType getGisPolyType() {
+					return GisObjectType.Point;
+				}
+
+				@Override
+				public Bitmap getIcon() {
+					return null;
+				}
+
+				@Override
+				public Style getStyle() {
+					return Style.FILL_AND_STROKE;
+				}
+
+				@Override
+				public PolyType getShape() {
+					return PolyType.circle;
+				}
+
+				@Override
+				public String getClickFlow() {
+					return null;
+				}
+
+				@Override
+				public DB_Context getObjectKeyHash() {
+					return new DB_Context("år=[getCurrentYear()], lag = [getTeamName()]",tmp );
+				}
+
+				@Override
+				public String getStatusVariable() {
+					return null;
+				}
+
+				@Override
+				public boolean isUser() {
+					return false;
+				}
+
+				@Override
+				public String getName() {
+					return name;
+				}
+
+				@Override
+				public String getRawLabel() {
+					return name;
+				}
+
+				@Override
+				public boolean isVisible() {
+					return true;
+				}
+
+				@Override
+				public List<Expressor.EvalExpr> getLabelExpression() {
+					return Expressor.preCompileExpression(name);
+				}
+			}, tmp, l, null, null);
+			if (ret ==null)
+				ret = new HashSet<>();
+			ret.add(member);
+		}
+		return ret;
+	}
+
 	private boolean isExcludedByStandardFilter(String status) {
 		if (status==null)
 			return false;
@@ -954,7 +1062,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					if (gpo.getPaths() != null) {
 						p = gpo.getPaths().get(0);
 					} else {
-						Log.d("vortex", "ispoly?! "+isPolygon);
+						//Log.d("vortex", "ispoly?! "+isPolygon);
 						p = createPathFromCoordinates(gpo.getCoordinates(),isPolygon);
 					}
 					if (p!=null)

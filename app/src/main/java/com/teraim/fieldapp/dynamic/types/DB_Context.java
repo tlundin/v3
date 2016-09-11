@@ -98,6 +98,7 @@ public class DB_Context implements Serializable {
 						//Log.d("nils","found pair: "+pair);
 						if (pair!=null&&!pair.isEmpty()) {
 							String[] kv = pair.split("=");
+
 							if (kv==null||kv.length<2) {
 								err = "Could not split context on equal sign (=) for context "+cContext;
 								break;

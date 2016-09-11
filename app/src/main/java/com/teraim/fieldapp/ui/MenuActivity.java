@@ -236,7 +236,8 @@ public class MenuActivity extends Activity   {
 					Log.d("vortex","ERR NOT INTERNET SYNC...");
 					//Send a config changed msg...reload!				
 					Log.d("vortex","Turning sync off.");
-					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);					
+					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+
 					break;
 				case SyncService.ERR_SETTINGS:
 					Log.d("vortex","ERR WRONG SETTINGS...");				
@@ -261,20 +262,22 @@ public class MenuActivity extends Activity   {
 				case SyncService.ERR_SERVER_NOT_REACHABLE:
 					Log.d("vortex","Synkserver is currently not reachable.");
 					toastMsg = "Me --> Sync Server. No route";
+					syncError=true;
 					break;
 				case SyncService.ERR_SERVER_CONN_TIMEOUT:
 					toastMsg = "Me-->Sync Server. Connection timeout";
+					//not an error really..just turn off sync.
 					break;
 				default:
 					Log.d("vortex","Any other error!");
 					toastMsg = "Me-->Sync Server. Connection failure.";
+					syncError=true;
 					break;
 				}
 				if (toastMsg !=null && toastMsg.length()>0) {
 					Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
 				}
 				syncActive=false;
-				syncError=true;				
 				break;
 
 
@@ -670,6 +673,10 @@ public class MenuActivity extends Activity   {
 				} else {
 					Log.d("vortex", "Trying to stop Internet sync");
 					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+					if (syncError) {
+						Log.d("vortex","Resetting sync error");
+						syncError=false;
+					}
 				}
 
 				refreshStatusRow();

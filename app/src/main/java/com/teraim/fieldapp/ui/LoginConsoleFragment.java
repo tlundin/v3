@@ -63,7 +63,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private TextView appTxt;
 	private float oldV = -1;
 	private Activity mActivity;
-	private final static String InitialBundleName = "Nils";
+	private final static String InitialBundleName = "Smabio";
 
 
 	@Override
@@ -293,13 +293,14 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (globalPh.get(PersistenceHelper.VERSION_CONTROL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.VERSION_CONTROL, "Major");
 		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.SYNC_METHOD, "Bluetooth");
+			globalPh.put(PersistenceHelper.SYNC_METHOD, "Internet");
 		if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.USER_ID_KEY, getRandomName());		
-		//if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-		//	globalPh.put(PersistenceHelper.LAG_ID_KEY, "Anonymous");
+		if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
+			globalPh.put(PersistenceHelper.LAG_ID_KEY, "TeamTeraim");
 		if (globalPh.get(PersistenceHelper.LOG_LEVEL).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.LOG_LEVEL, "critical");	
+			globalPh.put(PersistenceHelper.LOG_LEVEL, "critical");
+
 	
 
 		folder = new File(Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/"+Constants.CACHE_ROOT_DIR);

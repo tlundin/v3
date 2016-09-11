@@ -126,7 +126,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		}
 		String minVersion = parser.getAttributeValue(null, "minVortexVersion");
 		Log.d("vortex","Version field of workflow file contains "+newWorkflowVersion+" verscontrol: "+versionControl);
-		if (versionControl==null || !versionControl.equals("No control")) {
+		if (versionControl==null || !versionControl.equals("Forced")) {
 			if (minVersion!=null) {
 				try {
 					float verf = Float.parseFloat(minVersion);
@@ -572,7 +572,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				polyType = readText("poly_type",parser);
 			} else if (name.equals("is_visible")) {
 				isVisible = readText("is_visible",parser).equals("true");
-			} else if (name.equals("is_visible")) {
+			} else if (name.equals("is_user")) {
 				isUser = readText("is_user",parser).equals("true");
 			} else if (name.equalsIgnoreCase("name")) {
 				nName = readText("name",parser);
@@ -632,13 +632,13 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			} else if (name.equals("label")) {
 				label = readText("label",parser);
 			} else if (name.equals("show_labels")) {
-				showLabels = readText("show_labels",parser).equals("true");
+				showLabels = "true".equals(readText("show_labels", parser));
 			} else if (name.equals("is_visible")) {
-				isVisible = readText("is_visible",parser).equals("true");
+				isVisible = "true".equals(readText("is_visible", parser));
 			}else if (name.equalsIgnoreCase("name")) {
 				nName = readText("name",parser);
 			}else if (name.equalsIgnoreCase("has_widget")) {
-				hasWidget = readText("has_widget",parser).equals("true");
+				hasWidget = "true".equals(readText("has_widget", parser));
 			} 
 			else {
 				Log.e("vortex","Skipped "+name);
@@ -662,7 +662,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		o.addRow("Parsing block: block_add_gis_image_view...");
 		String id=null,nName=null,container=null,source=null;
 		String N=null,E=null,S=null,W=null;
-		boolean isVisible=true,hasSatNav=false;
+		boolean isVisible=true,hasSatNav=false,showTeam=false;
 
 		parser.require(XmlPullParser.START_TAG, null,"block_add_gis_image_view");
 		Log.d("vortex","In block block_add_gis_view!!");
@@ -693,16 +693,19 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				S = readText("BottomN",parser);
 			}else if (name.equals("car_navigation_on")) {			
 				hasSatNav = readText("car_navigation_on",parser).equals("true");
-			} 
+			} else if (name.equals("team")) {
+				showTeam = readText("team",parser).equals("true");
+				Log.d("bortex","showteam is now "+showTeam);
+			}
 			else {
 				Log.e("vortex","Skipped "+name);
 				skip(name,parser);
 			}
 		} 
 
+ 		checkForNull("block_ID",id,"name",nName,"container_name",container,"source",source);
 
-		checkForNull("block_ID",id,"name",nName,"container_name",container,"source",source);
-		return new CreateGisBlock(id,nName,container,isVisible,source,N,E,S,W,hasSatNav);
+		return new CreateGisBlock(id,nName,container,isVisible,source,N,E,S,W,hasSatNav,showTeam);
 
 	}
 

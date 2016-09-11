@@ -55,6 +55,12 @@ public class GisLayer {
 		
 	}
 
+
+	public void clear() {
+		if (myObjects!=null)
+			myObjects.clear();
+	}
+
 	//TODO: Potentially split incoming objects into two bags. one for static and one for changeable. 
 	//This would speed up CRUD for map objects.
 

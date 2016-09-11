@@ -41,7 +41,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		this.pb=pb;
 		this.tv=tv;
 		this.cb=cb;
-		this.versionControl=(versionControlS==null || !versionControlS.equals("No control"));
+		this.versionControl=(versionControlS==null || !versionControlS.equals("Forced"));
 	}
 
 

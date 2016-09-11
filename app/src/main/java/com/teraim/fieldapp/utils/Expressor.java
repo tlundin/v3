@@ -86,6 +86,8 @@ public class Expressor {
 		getStatusVariableValues(valueFunction,1),
 		getAppName(valueFunction,0),
 		getUserRole(valueFunction,0),
+		getTeamName(valueFunction,0),
+		getUserName(valueFunction,0),
 		sum(valueFunction,-1),
 		concatenate(valueFunction,-1),
 		getDelytaArea(valueFunction,1),
@@ -1606,8 +1608,8 @@ public class Expressor {
 					}
 				}
 				break;
-				case getAppName:
-					return gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
+			case getAppName:
+				return gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
 			case getStatusVariableValues:
 
 				if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
@@ -1675,6 +1677,11 @@ public class Expressor {
 			case getUserRole:
 				return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
 
+				case getUserName:
+					return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.USER_ID_KEY);
+
+				case getTeamName:
+					return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 			case photoExists:
 				if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
 					System.out.println("Arg 0: "+evalArgs.get(0).toString());

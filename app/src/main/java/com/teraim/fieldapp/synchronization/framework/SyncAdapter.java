@@ -311,14 +311,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		}
 		if (!list.isEmpty())
 			sendAwayBatch(list);
-		//Release
-		Message msg = Message.obtain(null, SyncService.MSG_SYNC_RELEASE_DB);
-		try {
-			mClient.send(msg);
-		} catch (RemoteException e) {
 
-			e.printStackTrace();
-		}
+		sendMessage(Message.obtain(null, SyncService.MSG_SYNC_RELEASE_DB));
 		long t = System.currentTimeMillis()-d;
 		
 		Log.d("vortex","time used was "+t);
@@ -411,7 +405,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ObjectInputStream objIn = new ObjectInputStream(conn.getInputStream());
 
 			reply = objIn.readObject();
-			Log.d("vortex","After read object. reply is "+(reply==null?"not":"")+" null");
+			Log.d("vortex","After read object. reply is "+(reply!=null?"not":"")+" null");
 
 			if (reply instanceof String ) {
 				String numberOfRows = (String) reply;

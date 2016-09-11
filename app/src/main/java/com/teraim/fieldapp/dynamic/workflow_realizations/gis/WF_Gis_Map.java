@@ -70,6 +70,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.gis.GisImageView;
+import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.Geomatte;
 import com.teraim.fieldapp.utils.PersistenceHelper;
@@ -626,6 +627,20 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			clearLayerCaches();
 		} else {
 			myLayers = new ArrayList<GisLayer>();
+			if (createGisBlock.isTeamVisible()) {
+				String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
+				if(team ==null || team.isEmpty()) {
+					o = GlobalState.getInstance().getLogger();
+					Log.d("vortex", "no team but team is set to show. alarm!");
+					o.addRow("");
+					o.addRedText("Team name missing. Cannot show team members.");
+				} else {
+					Log.d("bortex", "team is visible! Adding layer for team "+team);
+					final GisLayer teamLayer = new GisLayer(this, "Team", "Team", true, true, true);
+					myLayers.add(teamLayer);
+				}
+				//Add all team members to here.
+			}
 
 		}
 

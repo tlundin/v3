@@ -58,7 +58,7 @@ public class Tracker extends Service implements LocationListener {
 	private final Variable myX,myY;
 
 	private final Map<String,String>YearKeyHash = new HashMap<String,String>();
-	
+
 	public Tracker() {
 		YearKeyHash.put("år", Constants.getYear());
 		myX = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LAT);
@@ -163,7 +163,7 @@ public class Tracker extends Service implements LocationListener {
 				
 				Log.d("vortex","Distance between mesaurements in Tracker: (x,y) "+distx+","+disty);
 				myX.setValue(myL.getX()+"");
-				myY.setValue(myL.getY()+"");								
+				myY.setValue(myL.getY()+"");
 			} else {
 				myX.setValue(myL.getX()+"");
 				myY.setValue(myL.getY()+"");

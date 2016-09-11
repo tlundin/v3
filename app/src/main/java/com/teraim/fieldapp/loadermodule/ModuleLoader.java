@@ -63,7 +63,7 @@ public class ModuleLoader implements FileLoadedCb{
 			//Check if connection is slow. If so, use existing version IF versioncontrol is not set to "Always load".
 			if ((module.source == ConfigurationModule.Source.internet) &&
 					!Connectivity.isConnectedFast(ctx) &&
-					!module.versionControl.equals("No control")) {
+					!module.versionControl.equals("Forced")) {
 
 				new Handler().postDelayed(new Runnable() {
 					public void run() {

@@ -43,7 +43,7 @@
     <string-array name="versionValues">
         <item>Major</item>
         <item>Detaljerad</item>
-        <item>Forcerad</item>
+        <item>Forced</item>
     </string-array>
     <string name="Automatic_backup">Säkerhetskopiering</string>
     <string name="Automatic_backup_s">Slå på eller av säkerthetskopiering</string>

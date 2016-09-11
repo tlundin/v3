@@ -51,6 +51,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 
 	private static final long serialVersionUID = 7979886099817953005L;
+	private final String objectContextS;
 	private String nName,
 	target, coordType,locationVariables,imgSource,refreshRate;
 
@@ -136,6 +137,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		labelE = Expressor.preCompileExpression(label);
 		this.unevaluatedLabel=label;
 		objContextE = Expressor.preCompileExpression(objectContext);
+		this.objectContextS=objectContext;
 		//Set default icons for different kind of objects.
 	}
 
@@ -194,7 +196,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 		//Generate the context for these objects.
 		objectKeyHash = DB_Context.evaluate(objContextE);
-		Log.d("vortex","OBJ KEYHASH "+objectKeyHash.toString());
+		Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
 		//Use current year for statusvar.
 		Map<String, String> currYearH = Tools.copyKeyHash(objectKeyHash.getContext());
 		//TODO: FIX THIS.
@@ -287,7 +289,8 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		}
 		DataType t1 = al.getnumType(row);
 		if (t1==DataType.array) {
-			pickerLocation1 = GlobalState.getInstance().getDb().getLastVariableInstance(coordVar1S);
+			pickerLocation1 = //GlobalState.getInstance().getDb().getAllVariableInstances(coordVar1S);
+					GlobalState.getInstance().getDb().getLastVariableInstance(coordVar1S);
 			Log.e("vortex","called getLast.");
 		}
 		else
@@ -306,6 +309,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			Log.d("vortex","selection: "+coordVar2S.selection);
 			Log.d("vortex","sel args: "+print(coordVar2S.selectionArgs));
 			if (t2==DataType.array)
+				//pickerLocation2 = GlobalState.getInstance().getDb().getAllVariableInstances(coordVar2S);
 				pickerLocation2 = GlobalState.getInstance().getDb().getLastVariableInstance(coordVar2S);
 			else
 				pickerLocation2 = GlobalState.getInstance().getDb().getAllVariableInstances(coordVar2S);

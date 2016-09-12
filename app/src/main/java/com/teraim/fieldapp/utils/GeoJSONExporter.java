@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import android.content.Context;
 import android.util.JsonWriter;
@@ -81,6 +82,7 @@ public class GeoJSONExporter extends Exporter {
 
 					spy = currentHash.get("spy");
 
+
 					Log.d("botox","CURRENT_HASH: "+currentHash);
 					if (uid==null) {
 						Log.e("vortex","missing uid!!!");
@@ -99,7 +101,7 @@ public class GeoJSONExporter extends Exporter {
 						//Find correct "spy" for this uid. if spy doesnt exist, create.
 						gisObjM = gisObjH.get(spy);
 						if (gisObjM==null) { 
-							gisObjM = new LinkedHashMap<String,String>();
+							gisObjM = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 							gisObjH.put(spy, gisObjM);
 							if (spy == null)
 								gisObjM.put("GISTYP", currentHash.get(GisConstants.TYPE_COLUMN));
@@ -154,15 +156,13 @@ public class GeoJSONExporter extends Exporter {
 							String[] polygons = null;
 							if (coordinates == null) {
 								//Try to find the object from historical. If not possible, sound alert.
-/*
-								Log.e("vortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
-								o.addRow("");
-								o.addRedText("No GPS coordinates found for " + keyUID);
+
+								Log.e("fortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
+
 								for (String mKey : gisObjM.keySet()) {
-									o.addRow("");
-									o.addRedText("variable: " + mKey + ", value: " + gisObjM.get(mKey));
+									Log.d("fortex","variable: " + mKey + ", value: " + gisObjM.get(mKey));
 								}
-*/
+
 								coordLess.add(keyUID);
 								coordinates = "0,0";
 							}
@@ -188,7 +188,7 @@ public class GeoJSONExporter extends Exporter {
 								o.addRedText("Polygon is too short (only 1 value) for " + keyUID);
 								continue;
 							}
-						boolean isPoly=geoType.equals("Polygon");
+						boolean isPoly= "Polygon".equals(geoType) || "Linestring".equals(geoType);
 						//Beg of line.
 							writer.beginObject();
 							write("type", "Feature");

@@ -22,6 +22,7 @@ import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.expr.Aritmetic;
 import com.teraim.fieldapp.expr.Parser;
 import com.teraim.fieldapp.gis.Tracker;
@@ -77,6 +78,7 @@ public class GlobalState  {
 
 	private VariableCache myVariableCache;
 	private static Account mAccount;
+	private GisObject selectedGop;
 	
 	public static GlobalState getInstance() {
 
@@ -286,7 +288,7 @@ public class GlobalState  {
 	public LoggerI getLogger() {
 		return logger;
 	}
-/*
+
 	public void setCurrentWorkflowContext(WF_Context myContext) {
 		currentContext = myContext;
 	}
@@ -295,7 +297,7 @@ public class GlobalState  {
 		return currentContext;
 	}
 	
-*/
+
 	public void setDBContext(DB_Context context) {
 		myVariableCache.setCurrentContext(context);
 	}
@@ -317,6 +319,14 @@ public class GlobalState  {
 
 	public boolean isSlave() {
 		return globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW).equals("Client");
+	}
+
+	public GisObject getSelectedGop() {
+		return selectedGop;
+	}
+
+	public void setSelectedGop(GisObject go) {
+		selectedGop=go;
 	}
 	/*
 	public MessageHandler getHandler() {

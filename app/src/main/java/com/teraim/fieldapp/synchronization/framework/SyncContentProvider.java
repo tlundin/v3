@@ -144,6 +144,7 @@ public class SyncContentProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		int count = values.getAsInteger("count");
+		long ct = System.currentTimeMillis()/1000;
 		if (count!=currentCount) {
 			Log.e("vortex", "current count differ from count. count: " + count + " curr "+currentCount);
 			currentCount=count;
@@ -151,8 +152,14 @@ public class SyncContentProvider extends ContentProvider {
 		currentCount++;
 		values.remove("count");
 		//Log.d("vortex","In insert with values data = "+values.getAsByteArray("DATA"));
-		db.insert(DbHelper.TABLE_SYNC, null, values);
-		
+		if (db== null && dbHelper!=null)
+			db= dbHelper.getReadableDatabase();
+
+		if (db!=null)
+			db.insert(DbHelper.TABLE_SYNC, null, values);
+		else
+			Log.e("vortex","DB null in adapter...insert fail");
+		Log.d("vortex","insert done. time: "+(System.currentTimeMillis()-ct));
 		return uri;
 	}
 

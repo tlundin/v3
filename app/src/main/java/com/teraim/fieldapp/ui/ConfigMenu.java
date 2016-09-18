@@ -31,12 +31,12 @@ import com.teraim.fieldapp.utils.Tools;
 
 public class ConfigMenu extends PreferenceActivity {
 
-	public void onCreate(Bundle savedInstanceState) {			
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Display the fragment as the main content.
 		getFragmentManager().beginTransaction()
-		.replace(android.R.id.content, new SettingsFragment())
-		.commit();
+				.replace(android.R.id.content, new SettingsFragment())
+				.commit();
 		setTitle(R.string.settings);
 
 
@@ -54,7 +54,7 @@ public class ConfigMenu extends PreferenceActivity {
 			//			getPreferenceScreen().getSharedPreferences()
 			//			.registerOnSharedPreferenceChangeListener(this);
 			this.getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS)
-			.registerOnSharedPreferenceChangeListener(this);
+					.registerOnSharedPreferenceChangeListener(this);
 
 			//Create a filter that stops users from entering disallowed characters.
 			InputFilter filter = new InputFilter() {
@@ -78,7 +78,7 @@ public class ConfigMenu extends PreferenceActivity {
 							return sp;
 						} else {
 							return sb;
-						}           
+						}
 					}
 				}
 
@@ -117,49 +117,49 @@ public class ConfigMenu extends PreferenceActivity {
 				epref.setText(Constants.DEFAULT_EXT_BACKUP_DIR);
 			}
 			epref.setSummary(epref.getText());
-			
+
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
 
 
 			Preference button = (Preference)findPreference("reset_sync");
 			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				new AlertDialog.Builder(getActivity())
-						.setTitle("Reset Sync")
-						.setMessage("Pressing ok will erase all sync data. This is only required if this device is using a backup image.")
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setCancelable(false)
-						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
-								String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
-								Log.d("vortex","syncPValue is "+syncPValue);
-								if (bName!=null && syncPValue!=null) {
-									getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).edit().remove(PersistenceHelper.TIME_OF_LAST_SYNC).commit();
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					new AlertDialog.Builder(getActivity())
+							.setTitle("Reset Sync")
+							.setMessage("Pressing ok will erase all sync data. This is only required if this device is using a backup image.")
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setCancelable(false)
+							.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
+									String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
+									Log.d("vortex","syncPValue is "+syncPValue);
+									if (bName!=null && syncPValue!=null) {
+										getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).edit().remove(PersistenceHelper.TIME_OF_LAST_SYNC).commit();
 
-									if (GlobalState.getInstance()!=null)
-										GlobalState.getInstance().getDb().eraseSyncObjects();
+										if (GlobalState.getInstance()!=null)
+											GlobalState.getInstance().getDb().eraseSyncObjects();
 
-									Intent intent = new Intent();
-									intent.setAction(MenuActivity.REDRAW);
-									getActivity().sendBroadcast(intent);
+										Intent intent = new Intent();
+										intent.setAction(MenuActivity.REDRAW);
+										getActivity().sendBroadcast(intent);
+
+									}
+
 
 								}
+							} )
+							.setNegativeButton(R.string.cancel, new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
 
-
-							}
-						} )
-						.setNegativeButton(R.string.cancel, new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-
-							}
-						})
-						.show();
-				return true;
+								}
+							})
+							.show();
+					return true;
 				};
 			});
 
@@ -217,7 +217,7 @@ public class ConfigMenu extends PreferenceActivity {
 		@Override
 		public void onPause() {
 			this.getActivity().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
-			.unregisterOnSharedPreferenceChangeListener(this);
+					.unregisterOnSharedPreferenceChangeListener(this);
 			super.onPause();
 		}
 
@@ -231,7 +231,7 @@ public class ConfigMenu extends PreferenceActivity {
 		public void onResume() {
 			//this.getPreferenceManager().setSharedPreferencesName(phone);
 			this.getActivity().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
-			.registerOnSharedPreferenceChangeListener(this);			
+					.registerOnSharedPreferenceChangeListener(this);
 			//getPreferenceScreen().getSharedPreferences()
 			//.registerOnSharedPreferenceChangeListener(this);
 			super.onResume();
@@ -243,6 +243,7 @@ public class ConfigMenu extends PreferenceActivity {
 		public void onSharedPreferenceChanged(
 				SharedPreferences sharedPreferences, String key) {
 			Preference pref = findPreference(key);
+
 			GlobalState gs = GlobalState.getInstance();
 			Account mAccount = GlobalState.getmAccount(getActivity());
 			if (pref instanceof EditTextPreference) {
@@ -256,12 +257,12 @@ public class ConfigMenu extends PreferenceActivity {
 
 						etp.setText(new String(strA));
 
-						if (gs != null)  {
-							askForRestart();
 
-						}
+						askForRestart(pref);
+
+
 					}
-				} 
+				}
 				pref.setSummary(etp.getText());
 
 			}
@@ -269,10 +270,10 @@ public class ConfigMenu extends PreferenceActivity {
 				ListPreference letp = (ListPreference) pref;
 				pref.setSummary(letp.getEntry());
 				if (letp.getKey().equals(PersistenceHelper.DEVICE_COLOR_KEY_NEW)) {
-					if (letp.getValue().equals("Master")) 
+					if (letp.getValue().equals("Master"))
 						Log.d("nils","Changed to MASTER");
 
-					else if (letp.getValue().equals("Client")) 
+					else if (letp.getValue().equals("Client"))
 						Log.d("nils","Changed to CLIENT");
 					else if (letp.getValue().equals("Solo")) {
 						//Turn off sync if on
@@ -282,7 +283,7 @@ public class ConfigMenu extends PreferenceActivity {
 						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
 					}
 					if (gs != null)  {
-						askForRestart();
+						askForRestart(letp);
 
 					}
 
@@ -290,16 +291,13 @@ public class ConfigMenu extends PreferenceActivity {
 				} //change the sync state if user swapped method.
 				else if (letp.getKey().equals(PersistenceHelper.SYNC_METHOD)) {
 
-					if (!letp.getValue().equals("Internet")) {
-						Log.d("vortex","sync stopped");
-						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+					askForRestart(letp);
 
-					} 
 				}
-				
+
 				else if (letp.getKey().equals(PersistenceHelper.LOG_LEVEL)) {
 					if (gs != null)  {
-						askForRestart();
+						askForRestart(letp);
 
 					}
 				}
@@ -313,25 +311,25 @@ public class ConfigMenu extends PreferenceActivity {
 		}
 
 
-		private void askForRestart() {
-			new AlertDialog.Builder(getActivity())
-			.setTitle(R.string.restart)
-			.setMessage(R.string.restartMessage) 
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setCancelable(false)
-			.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					Tools.restart(getActivity());
-				}
+		private void askForRestart(final Preference letp) {
+					new AlertDialog.Builder(getActivity())
+							.setTitle(R.string.restart)
+							.setMessage(R.string.restartMessage)
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setCancelable(false)
+							.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									Tools.restart(getActivity());
+								}
 
-			})
-			.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			})
-			.show();
+							})
+							.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							})
+							.show();
 		}
 
 

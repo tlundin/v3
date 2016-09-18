@@ -78,7 +78,7 @@ public class Variable implements Serializable {
 	
 	protected boolean historyChecked = false;
 
-	private Long timeStamp=null;
+	protected Long timeStamp=null;
 
 	private VariableConfiguration al;
 
@@ -179,7 +179,7 @@ public class Variable implements Serializable {
 	}
 
 	public boolean setValue(String value) {
-		//Log.d("nils","In SetValue for variable "+this.getId()+" New val: "+value+" existing val: "+myValue+" unknown? "+unknown+" using default? "+usingDefault);
+		Log.d("nils","In SetValue for variable "+this.getId()+" New val: "+value+" existing val: "+myValue+" unknown? "+unknown+" using default? "+usingDefault);
 		//Null values are not allowed in db.
 		if (value==null)
 			return false;
@@ -245,7 +245,6 @@ public class Variable implements Serializable {
 	}
 	protected void insert(final String value,
 			final boolean isSynchronized) {
-		long mil = System.currentTimeMillis();
 		//Insert into database at some point in time.
 		this.isSynchronizedNext= isSynchronized;
 		//gs.getVariableCache().save(this);
@@ -264,6 +263,9 @@ public class Variable implements Serializable {
 	public void setValueNoSync(String value) {
 		myValue = value;
 		insert(value, false);
+		unknown=false;
+		//In the case the variable was previously displaying a default value different from the DB value.
+		usingDefault = false;
 	}
 
 
@@ -306,10 +308,12 @@ public class Variable implements Serializable {
 
 
 	public Variable(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted, String historicalValue) {
-		//Log.d("nils","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
+		Log.d("zaxx","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
 		this.gs=gs;
 		al=gs.getVariableConfiguration();
 		this.name = name;
+		if (name==null)
+			Log.e("zaxx","NULL NAME FOR "+label);
 		if (row!=null) {
 			myRow = row;
 			myType = al.getnumType(row);		
@@ -479,9 +483,10 @@ public class Variable implements Serializable {
 			//Log.d("vortex","cached Timestamp for "+this.getId()+" is "+timeStamp);
 			return timeStamp;
 		}
+			//Log.d("vortex","Timestamp for "+this.getId()+" name: "+name+" mySelection: "+mySelection.selection+" selArgs:"+Tools.printSelectionArgs(mySelection.selectionArgs));
 			String tmp = myDb.getValue(name, mySelection,Variable.timeStampS);
 			if (tmp!=null) {
-				Log.d("vortex","Timestamp for "+this.getId()+" is "+tmp);
+				//Log.d("vortex","Timestamp for "+this.getId()+" is "+tmp);
 				timeStamp = Long.parseLong(tmp);
 				return timeStamp;
 			}

@@ -14,6 +14,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,6 +40,8 @@ import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 
 
@@ -70,7 +74,7 @@ public class Start extends MenuActivity {
 	// The account name
 	public static final String ACCOUNT = "FieldApp";
 
-	public static final long SYNC_INTERVAL = 20;
+	public static final long SYNC_INTERVAL = 10;
 	// Instance fields
 	// Account mAccount;
 
@@ -86,6 +90,15 @@ public class Start extends MenuActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
+		// Setup handler for uncaught exceptions.
+		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
+		{
+			@Override
+			public void uncaughtException (Thread thread, Throwable e)
+			{
+				handleUncaughtException (thread, e);
+			}
+		});
 		Log.d("nils","in START onCreate");
 		singleton = this;
 		//This is the frame for all pages, defining the Action bar and Navigation menu.
@@ -115,6 +128,44 @@ public class Start extends MenuActivity {
 			// Ignore
 		}
 		super.onCreate(savedInstanceState);
+	}
+
+
+	public boolean isUIThread(){
+		return Looper.getMainLooper().getThread() == Thread.currentThread();
+	}
+
+	private void handleUncaughtException(Thread thread, Throwable e) {
+
+		e.printStackTrace(); // not all Android versions will print the stack trace automatically
+		Log.d("vortex","Getzz");
+		//invokeLogActivity();
+
+		if(isUIThread()) {
+			invokeLogActivity();
+			Log.d("vortex","Getzz");
+		}else{  //handle non UI thread throw uncaught exception
+
+			new Handler(Looper.getMainLooper()).post(new Runnable() {
+				@Override
+				public void run() {
+					Log.d("vortex","Getss");
+					invokeLogActivity();
+				}
+			});
+		}
+
+
+	}
+
+	private void invokeLogActivity(){
+		Intent intent = new Intent ();
+		intent.setAction ("com.teraim.fieldapp.SEND_LOG"); // see step 5.
+		intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application
+		Log.d("vortex","calling startactivity");
+		startActivity (intent);
+		Log.d("vortex","boom");
+		System.exit(1); // kill off the crashed app
 	}
 
 	@Override

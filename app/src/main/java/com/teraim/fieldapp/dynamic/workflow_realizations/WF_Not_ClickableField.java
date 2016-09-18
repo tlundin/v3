@@ -77,7 +77,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		myHeader = (TextView)getWidget().findViewById(R.id.editfieldtext);
 		outputContainer = (LinearLayout)getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
-		Log.d("vortex","TEXT: "+label+" COLOR: "+textColor);
+		Log.d("taxx","variable label: "+label+" variable ID: "+id);
 		textColorC = Color.parseColor(textColor);
 		//myheader can be null in case this is a Cell in a table.
 		if (myHeader !=null) {

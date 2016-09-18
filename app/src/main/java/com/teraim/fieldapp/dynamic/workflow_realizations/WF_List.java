@@ -1,6 +1,7 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -174,10 +175,25 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	//Return true if incremental.
 
 	public boolean prepareIncrementalDraw(Listable l) {
-		if (l==null)
+		if (l==null || l.getKey()==null) {
+			if (l.getKey()==null) {
+				o.addRow("");
+				o.addRedText("Empty EntryField detected with Label "+l.getLabel()+". This is normally due to a duplicate variable. Please check your configuration");
+			}
 			return false;
-		Log.e("zuzz","got here");
-		for (Listable li:list) {
+		}
+
+		//for (Listable li:list)
+		//Log.d("vortex","li label li key: "+li.getLabel()+" "+li.getKey());
+		Iterator<Listable> it = list.iterator();
+		while (it.hasNext()) {
+			Listable li = it.next();
+			if (li.getKey()==null) {
+				o.addRow("");
+				o.addRedText("Empty EntryField detected with Label "+li.getLabel()+". This is normally due to a duplicate variable. Please check your configuration");
+				it.remove();
+				continue;
+			}
 			if (li.getKey().equals(l.getKey())) {
 				li.refresh();
 				boolean isRemoved=false;

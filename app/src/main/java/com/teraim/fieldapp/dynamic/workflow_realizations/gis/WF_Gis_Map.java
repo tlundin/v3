@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -730,6 +731,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					areaT.setText(new DecimalFormat("##.##").format(area)+squareM);
 				}
 			}
+			GlobalState.getInstance().setSelectedGop(touchedGop);
 		}
 		else {
 
@@ -776,11 +778,28 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	@Override
 	public void onEvent(Event e) {
 
-		Log.d("vortex","In GIS_Map Event Handler");
+		Log.d("vortex", "In GIS_Map Event Handler");
 		if (e.getProvider().equals(Constants.SYNC_ID)) {
-			Log.d("Vortex","new sync event. Refreshing map.");
+			Log.d("Vortex", "new sync event. Refreshing map.");
 			myContext.refreshGisObjects();
-			Log.d("vortex","Issuing redraw of gisimageview!!");
+			Log.d("vortex", "Issuing redraw of gisimageview!!");
+			//refresh team layer.
+			GisLayer teamLayer = this.getLayerFromId("Team");
+			if (teamLayer != null) {
+				Log.d("bortex", "Refreshing team layer!");
+				//if team layer, refresh team positions.
+				teamLayer.clear();
+				Set<GisObject> teamMembers = gisImageView.findMyTeam();
+				if (teamMembers == null || teamMembers.isEmpty())
+					Log.e("bortex", "fucki mc wartface");
+				else {
+					Log.d("bortex", "found " + teamMembers.size() + " team members");
+					teamLayer.addObjectBag("Team", teamMembers, false, gisImageView);
+				}
+
+			}
+
+
 			gisImageView.redraw();
 
 		}

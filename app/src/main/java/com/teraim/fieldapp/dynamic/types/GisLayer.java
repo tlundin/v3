@@ -66,7 +66,9 @@ public class GisLayer {
 
 	public void addObjectBag(String key, Set<GisObject> myGisObjects, boolean dynamic, GisImageView gisView) {
 		boolean merge =  false;
+		Log.d("bortex","in add objbag with key "+key);
 		if (myObjects==null) {
+			Log.d("bortex","myObjects null...creating. Mygisobjects: "+myGisObjects+" dynamic: "+dynamic);
 			myObjects = new HashMap<String,Set<GisObject>>();
 
 		}
@@ -74,13 +76,13 @@ public class GisLayer {
 		Set<GisObject> existingBag = myObjects.get(key);
 		//If no objects found we add an empty set provided none exist.
 		if (myGisObjects == null && existingBag == null) {
-			Log.d("vortex","Added empty set to layer: "+getId()+" of type "+key);
+			Log.d("bortex","Added empty set to layer: "+getId()+" of type "+key);
 			myObjects.put(key, new HashSet<GisObject>());
 		} else {
 			//If bag already exists, we merge. If not, we create new.
 			if (existingBag!=null) {
 				merge = true;
-				Log.d("Vortex","Merging bag of type "+key);
+				Log.d("bortex","Merging bag of type "+key);
 				//First mark if this is a merge.
 				Iterator<GisObject> iterator = myGisObjects.iterator();
 				int c=0;
@@ -94,21 +96,23 @@ public class GisLayer {
 					} 
 					if (go.isUseful()) {
 						c++;
+						existingBag.add(go);
 					}
 				}
 				Log.d("vortex", "number of objects marked as useful: "+c);
-				existingBag.addAll(myGisObjects);
+
 			} else {
-				Log.d("Vortex","Adding a new bag of type "+key);
+				Log.d("bortex","Adding a new bag of type "+key);
 				myObjects.put(key, myGisObjects);
 			}
-			Log.d("vortex","added "+myGisObjects.size()+" objects to layer: "+getId()+" of type "+key);
+			Log.d("bortex","added "+myGisObjects.size()+" objects to layer: "+getId()+" of type "+key);
 		}
 		if (dynamic)
 			this.hasDynamic = true;
-		Set<GisObject> l = myObjects.get(key);
-		if (merge)
-			Log.d("vortex","CAPRIX Bag "+getId()+" now has "+l.size()+" members"+" bag obj: "+((Object)l.toString()));
+		if (merge) {
+			Set<GisObject> l = myObjects.get(key);
+			Log.d("bortex", "CAPRIX Bag " + getId() + " now has " + l.size() + " members" + " bag obj: " + ((Object) l.toString()));
+		}
 	}
 
 	public void addObjectFilter(String key, GisFilter f) {
@@ -211,7 +215,7 @@ public class GisLayer {
 	
 	/**
 	 * 
-	 * @param layer
+	 *
 	 * 
 	 * Will go through a layer and check if the gisobjects are inside the map. 
 	 * If inside, the object is marked as useful.
@@ -242,18 +246,18 @@ public class GisLayer {
 				
 
 			}
-			Log.d("vortex","Bag: "+key+" size: "+bag.size());
+			Log.d("bloon","Bag: "+key+" size: "+bag.size());
 			int c=0;
 			for (GisObject gob:bag) {
 				if (gob.isUseful())
 					c++;
 			}
-			Log.d("vortex","bag has "+c+" useful members");
+			Log.d("bloon","bag has "+c+" useful members");
 
 		}
 	}
 
-	public void markIfUseful(GisObject go, GisImageView gisImageView) {
+	public static void markIfUseful(GisObject go, GisImageView gisImageView) {
 		int[] xy= new int[2];
 		//assume not useful.
 		go.unmark();
@@ -271,13 +275,13 @@ public class GisLayer {
 				gop.setTranslatedLocation(xy);
 			}
 			//else
-			//	Log.d("vortex","Removed object outside map");
+			//	Log.e("bortex","Removed object outside map");
 			return;
 		}
 		else if (go instanceof GisPolygonObject) {
 			GisPolygonObject gpo = (GisPolygonObject) go;
-			boolean hasAtleastOneCornerInside = false;
-			List<int[]> corners = new ArrayList<int[]>();
+
+
 			if (gpo.getPolygons()==null) {
 				GlobalState.getInstance().getLogger().addRow("");
 				GlobalState.getInstance().getLogger().addRedText("POLY had *NULL* coordinates: "+go.getLabel());
@@ -287,13 +291,13 @@ public class GisLayer {
 			for (List<Location> ll:gpo.getPolygons().values()) {
 				for (Location location : ll) {
 					if (gisImageView.translateMapToRealCoordinates(location, xy)) {
-						go.markAsUseful();
+						gpo.markAsUseful();
 						return;
 					}
 				}
 			}
-			Log.d("polzz","removed "+gpo.getLabel());
-			Log.d("polzz",printCoordinates(gpo.getCoordinates()));
+			//Log.d("polzz","removed "+gpo.getLabel());
+			//Log.d("polzz",printCoordinates(gpo.getCoordinates()));
 
 		}
 		else if (go instanceof GisPathObject) {

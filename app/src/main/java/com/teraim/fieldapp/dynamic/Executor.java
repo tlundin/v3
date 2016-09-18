@@ -78,6 +78,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnFlowExecuted
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.gis.Tracker;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -303,8 +304,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		Log.d("vortex","in Executor run()");
 		
 		myContext.resetState();
-
 		DB_Context wfHash = DB_Context.evaluate(wf.getContext());
+		gs.setCurrentWorkflowContext(myContext);
 		gs.setDBContext(wfHash);
 		myContext.setHash(wfHash);
 		getFlow();
@@ -936,6 +937,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				bl.create(myContext, true);
 			}
 		}
+
 
 	}
 

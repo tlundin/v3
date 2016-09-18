@@ -194,7 +194,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					}
 
 				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POLYGON)){
-					Log.d("vortex","MULTIPOLYGON!!");
+					//Log.d("vortex","MULTIPOLYGON!!");
 					//o.addRow("");
 					//o.addRedText("Unsupported Geo Type in parser: "+mType);
 					Set<GisPolygonObject> multiPoly 				= new HashSet<GisPolygonObject>();
@@ -208,12 +208,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 						reader.beginArray();
 
 						//Always at least Exterior polygon and then holes.
-						Log.d("vortex","Exterior polygon");
-						boolean first=true;
+						//Log.d("vortex","Exterior polygon");
+						//boolean first=true;
 						while (reader.peek() == JsonToken.BEGIN_ARRAY) {
-							if (!first)
-								Log.d("vortex","Hole!");
-							first = false;
+							//if (!first)
+							//	Log.d("vortex","Hole!");
+							//first = false;
 							reader.beginArray();
 
 							//Individual elements.
@@ -224,7 +224,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 								reader.endArray();
 							}
 							reader.endArray();
-							Log.d("vortex","ProxyID: "+proxyId);
+							//Log.d("vortex","ProxyID: "+proxyId);
 							onePolygonSet.put((proxyId)+"" , myCoordinates);
 							proxyId++;
 

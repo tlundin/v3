@@ -25,6 +25,7 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -77,11 +78,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private boolean refreshUserAppAndTeam() {
 		gh = getContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
 		ph = getContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
-		app = gh.getString(PersistenceHelper.BUNDLE_NAME, null);
 		user = gh.getString(PersistenceHelper.USER_ID_KEY, null);
 		team = gh.getString(PersistenceHelper.LAG_ID_KEY, null);
 		internetSync = gh.getString(PersistenceHelper.SYNC_METHOD,"").equals("Internet");
-		Log.d("vortex","REFRESHED: app: "+app+" user: "+user+" team: "+team+" ! yay!");
+		Log.d("vortex","REFRESHED: user: "+user+" team: "+team+" ! yay!");
 		if (user == null || user.length()==0 ||
 				team == null || team.length()==0 || 
 				app==null || app.length() == 0) {
@@ -111,11 +111,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		mContentResolver = context.getContentResolver();
 
-
 	}
 
 	public void setClient(Messenger client) {
-		Log.d("vortex","mClient SET! ");
+		gh = getContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
+		app = gh.getString(PersistenceHelper.BUNDLE_NAME, null);
+		Log.d("vortex","mClient SET..my app is "+app);
 		mClient = client;
 	}
 
@@ -281,14 +282,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	private void sendMessage(Message msg) {
-		if(mClient!=null) {
-			try {
+			if (mClient != null) {
+				try {
 
-				mClient.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+					mClient.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					if (e instanceof DeadObjectException) {
+						Log.d("vortex","Dead object!!");
+						this.onSyncCanceled();
+					}
+				}
 			}
-		}
+
 	}
 
 	public void insertIntoDatabase() {
@@ -302,15 +308,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	            ArrayList<ContentProviderOperation>();
 		Iterator<ContentValues>it = rowsToInsert.iterator();
 		while (it.hasNext()) {
-			//Log.d("vortex", "inserting: "+i);
+			Log.d("vortex", "inserting: "+i);
 			i++;
-			list.add(ContentProviderOperation.newInsert(CONTENT_URI).withValues(it.next()).build());
-			sendAwayBatch(list);
-			list.clear();
+			mContentResolver.insert(CONTENT_URI,it.next());
+			//list.add(ContentPinsertroviderOperation.newInsert(CONTENT_URI).withValues(it.next()).build());
+			//sendAwayBatch(list);
+			//list.clear();
 
 		}
-		if (!list.isEmpty())
-			sendAwayBatch(list);
+		//if (!list.isEmpty())
+		//	sendAwayBatch(list);
 
 		sendMessage(Message.obtain(null, SyncService.MSG_SYNC_RELEASE_DB));
 		long t = System.currentTimeMillis()-d;
@@ -457,6 +464,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						ContentValues cv = new ContentValues();
 						cv.put("DATA", (byte[])reply);
 						cv.put("count",orderNr++);
+						//Log.d("vortex","Count: "+cv.get("count"));
 						ret.add(cv);
 						insertedRows++;
 					}

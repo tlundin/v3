@@ -94,7 +94,8 @@ public class MenuActivity extends Activity   {
 					Message msg = Message.obtain(null, SyncService.MSG_REGISTER_CLIENT);
 					msg.replyTo = mMessenger;
 					try {
-						mService.send(msg);
+						if (mService!=null)
+							mService.send(msg);
 					} catch (RemoteException e) {
 						e.printStackTrace();
 					}
@@ -171,11 +172,26 @@ public class MenuActivity extends Activity   {
 	protected void onStart() {
 		super.onStart();
 		//Bind to synk service
-		Intent myIntent = new Intent(MenuActivity.this, SyncService.class);
-		myIntent.setAction(MESSAGE_ACTION);
-		bindService(myIntent, mConnection,
-				Context.BIND_AUTO_CREATE);
+
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if("Internet".equals(getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.SYNC_METHOD,"")))
+		{
+
+			Intent myIntent = new Intent(MenuActivity.this, SyncService.class);
+			myIntent.setAction(MESSAGE_ACTION);
+			bindService(myIntent, mConnection,
+					Context.BIND_AUTO_CREATE);
+		} else {
+			if (mBound) {
+				unbindService(mConnection);
+				mBound = false;
+			}
+		}
+	};
 
 	/** Flag indicating whether we have called bind on the service. */
 	boolean mBound;
@@ -512,6 +528,8 @@ public class MenuActivity extends Activity   {
 			break;
 		case 1:			
 			if (gs!=null && gs.getVariableCache()!=null) {
+			Object moo=null;
+				moo.equals("moo");
 			new AlertDialog.Builder(this)
 			.setTitle("Context")
 			.setMessage(gs.getVariableCache().getContext().toString()) 

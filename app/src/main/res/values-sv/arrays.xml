@@ -14,7 +14,7 @@
     <string-array name="log_levels">
         <item>Av</item>
         <item>Normal</item>
-        <item>Kristiska</item>
+        <item>Kritiska</item>
     </string-array>
     <string-array name="log_level_values">
         <item>off</item>

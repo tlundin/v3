@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Service;
 import android.content.Context;
@@ -31,8 +32,9 @@ import com.teraim.fieldapp.utils.Geomatte;
 
 public class Tracker extends Service implements LocationListener {
 
-	List<TrackerListener> mListeners = null; 
-
+	List<TrackerListener> mListeners = null;
+	//Keep track of time between synchronised saves
+	Long oldT = null;
 	// flag for GPS status
 	boolean isGPSEnabled = false;
 
@@ -65,8 +67,8 @@ public class Tracker extends Service implements LocationListener {
 		myY = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LONG);
 
 	}
-	
-	
+
+
 
 	public enum ErrorCode {
 		GPS_VARS_MISSING,
@@ -78,55 +80,55 @@ public class Tracker extends Service implements LocationListener {
 
 	public ErrorCode startScan(Context ctx) {
 		//do we have variables?	
-		
-				if(myX==null||myY==null)
-					return ErrorCode.GPS_VARS_MISSING;
-				//does Globalstate exist?
-				GlobalState gs = GlobalState.getInstance();
-				if (gs==null)
-					return ErrorCode.UNSTABLE;
 
-				try {
-					locationManager = (LocationManager) ctx
-							.getSystemService(LOCATION_SERVICE);
+		if(myX==null||myY==null)
+			return ErrorCode.GPS_VARS_MISSING;
+		//does Globalstate exist?
+		GlobalState gs = GlobalState.getInstance();
+		if (gs==null)
+			return ErrorCode.UNSTABLE;
 
-					// getting GPS status
-					isGPSEnabled = locationManager
-							.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		try {
+			locationManager = (LocationManager) ctx
+					.getSystemService(LOCATION_SERVICE);
 
-					// getting network status
-					isNetworkEnabled = false; 
-					//locationManager
-					//		.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			// getting GPS status
+			isGPSEnabled = locationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-					if (!isGPSEnabled && !isNetworkEnabled) {
-						return ErrorCode.GPS_NOT_ENABLED;
-					} else {
-						this.canGetLocation = true;
-						// First get location from Network Provider
-						if (isNetworkEnabled) {
-							locationManager.requestLocationUpdates(
-									LocationManager.NETWORK_PROVIDER,
-									MIN_TIME_BW_UPDATES,
-									MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-							Log.d("Network", "Network");
-							if (locationManager != null) {
-								location = locationManager
-										.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-								if (location != null) {
-									latitude = location.getLatitude();
-									longitude = location.getLongitude();
-								}
-							}
+			// getting network status
+			isNetworkEnabled = false;
+			//locationManager
+			//		.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if (!isGPSEnabled && !isNetworkEnabled) {
+				return ErrorCode.GPS_NOT_ENABLED;
+			} else {
+				this.canGetLocation = true;
+				// First get location from Network Provider
+				if (isNetworkEnabled) {
+					locationManager.requestLocationUpdates(
+							LocationManager.NETWORK_PROVIDER,
+							MIN_TIME_BW_UPDATES,
+							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+					Log.d("Network", "Network");
+					if (locationManager != null) {
+						location = locationManager
+								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+						if (location != null) {
+							latitude = location.getLatitude();
+							longitude = location.getLongitude();
 						}
-						// if GPS Enabled get lat/long using GPS Services
-						if (isGPSEnabled) {
-							if (location == null) {
-								locationManager.requestLocationUpdates(
-										LocationManager.GPS_PROVIDER,
-										MIN_TIME_BW_UPDATES,
-										MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-								Log.d("GPS Enabled", "GPS Enabled");
+					}
+				}
+				// if GPS Enabled get lat/long using GPS Services
+				if (isGPSEnabled) {
+					if (location == null) {
+						locationManager.requestLocationUpdates(
+								LocationManager.GPS_PROVIDER,
+								MIN_TIME_BW_UPDATES,
+								MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+						Log.d("GPS Enabled", "GPS Enabled");
 								/*	                        if (locationManager != null) {
 	                            location = locationManager
 	                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -135,51 +137,63 @@ public class Tracker extends Service implements LocationListener {
 	                                longitude = location.getLongitude();
 	                            }
 	                        } */
-							}
-						}
 					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+			}
 
-				return ErrorCode.GPS_OK;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return ErrorCode.GPS_OK;
 	}
+
+
 	@Override
 	public void onLocationChanged(Location location) {
 		try {
-		//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
-		if (myX!=null) {
-			//Log.d("vortex","setting sweref location");
-			SweLocation myL = Geomatte.convertToSweRef(location.getLatitude(),location.getLongitude());
-			/*
-			String oldX = myX.getValue();
-			String oldY = myY.getValue();
-			if (oldX!=null&&oldY!=null) {
-				double oldXd = Double.parseDouble(oldX);
-				double oldYd = Double.parseDouble(oldY);
-				double distx = Math.abs(oldXd-myL.getX());
-				double disty = Math.abs(oldYd-myL.getY());
-				
-				Log.d("vortex","Distance between mesaurements in Tracker: (x,y) "+distx+","+disty);
-				myX.setValue(myL.getX()+"");
-				myY.setValue(myL.getY()+"");
-			} else {
-				myX.setValue(myL.getX()+"");
-				myY.setValue(myL.getY()+"");
+			//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
+			if (myX!=null) {
+				//Log.d("vortex","setting sweref location");
+				SweLocation myL = Geomatte.convertToSweRef(location.getLatitude(),location.getLongitude());
+
+				String oldX = myX.getValue();
+				String oldY = myY.getValue();
+
+
+				if (oldX!=null&&oldY!=null&&oldT!=null) {
+					long currT = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+					long timeDiff = currT - oldT;
+					Log.d("vortex","cuurT oldT time diff: "+currT+" "+oldT+" "+timeDiff);
+					double oldXd = Double.parseDouble(oldX);
+					double oldYd = Double.parseDouble(oldY);
+					double distx = Math.abs(oldXd - myL.getX());
+					double disty = Math.abs(oldYd - myL.getY());
+
+					//Log.d("vortex", "Distance between mesaurements in Tracker: (x,y) " + distx + "," + disty);
+					if (oldT==null || distx > 15 || disty > 15 || timeDiff > 60) {
+					//	Log.d("vortex","setting synced location");
+						myX.setValue(myL.getX() + "");
+						myY.setValue(myL.getY() + "");
+						oldT = myX.getTimeOfInsert();
+					} else {
+						myX.setValueNoSync(myL.getX() + "");
+						myY.setValueNoSync(myL.getY() + "");
+					}
+				} else {
+					myX.setValue(myL.getX() + "");
+					myY.setValue(myL.getY() + "");
+					oldT = myX.getTimeOfInsert();
+				}
+				sendMessage(GPS_State.newValueReceived);
+
 			}
-			*/
-			myX.setValue(myL.getX()+"");
-			myY.setValue(myL.getY()+"");
-			sendMessage(GPS_State.newValueReceived);
-			
-		}
 		}catch(Exception e) {
 			LoggerI o = GlobalState.getInstance().getLogger();
 			o.addRow("");
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);		
+			e.printStackTrace(pw);
 			o.addRedText(sw.toString());
 			e.printStackTrace();
 		}
@@ -189,37 +203,37 @@ public class Tracker extends Service implements LocationListener {
 
 	private void sendMessage(GPS_State newState) {
 		if (mListeners!=null) {
-			for (TrackerListener gl:mListeners) 
+			for (TrackerListener gl:mListeners)
 				gl.gpsStateChanged(newState);
 		}
 	}
-	
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
 
 
-	
+
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 
-		switch(status) 
-        {
+		switch(status)
+		{
 			case LocationProvider.OUT_OF_SERVICE:
-                System.out.println("GPS out of service");                        
-                break;
-            case LocationProvider.AVAILABLE:    
-            	sendMessage(GPS_State.ping);
-                //System.out.println("GPS Available");
-                break;
-            case LocationProvider.TEMPORARILY_UNAVAILABLE:
-            	 System.out.println("Temp unavailable!!");
-            	 break;
-            default:
-            	System.out.println("GPS __??? "+status);
-            	break;
-        }
+				System.out.println("GPS out of service");
+				break;
+			case LocationProvider.AVAILABLE:
+				sendMessage(GPS_State.ping);
+				//System.out.println("GPS Available");
+				break;
+			case LocationProvider.TEMPORARILY_UNAVAILABLE:
+				System.out.println("Temp unavailable!!");
+				break;
+			default:
+				System.out.println("GPS __??? "+status);
+				break;
+		}
                 /*
                  * GPS_EVENT_FIRST_FIX Event is called when GPS is locked            
                  
@@ -259,9 +273,9 @@ public class Tracker extends Service implements LocationListener {
 	public void stopUsingGPS(){
 		if(locationManager != null){
 			locationManager.removeUpdates(Tracker.this);
-		}       
+		}
 	}
-	
+
 	public void registerListener(TrackerListener tl) {
 		if (mListeners==null)
 			mListeners = new ArrayList<TrackerListener>();

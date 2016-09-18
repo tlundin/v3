@@ -471,6 +471,14 @@ public class Tools {
 		return true;
 	}
 
+	public static String printSelectionArgs(String[] selectionArgs) {
+		if (selectionArgs == null)
+			return "NULL";
+		String ret = "";
+		for (int i = 0; i < selectionArgs.length; i++)
+			ret += ("[" + i + "]: " + selectionArgs[i] + " ");
+		return ret;
+	}
 
 
 	public static boolean isVersionNumber(String str)
@@ -806,12 +814,15 @@ public class Tools {
 			@Override
 			public void loaded(Boolean result) {
 				if (logger!=null) {
-					Log.d("vortex","Cached "+fileName);
-					if (result) 
-						logger.addRow("Succesfully cached "+fileName);
+
+					if (result) {
+						logger.addRow("Succesfully cached " + fileName);
+						Log.d("vortex","Cached "+fileName);
+					}
 					else {
 						logger.addRow("");
 						logger.addRedText("Failed to cache "+fileName);
+						Log.e("vortex","Failed to cache "+fileName);
 					}
 				}
 			}

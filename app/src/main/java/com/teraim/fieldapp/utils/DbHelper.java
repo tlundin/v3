@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -1119,7 +1120,7 @@ public class DbHelper extends SQLiteOpenHelper {
     //This in effect creates an array of values for different timestamps.
     public void insertVariableSnap(ArrayVariable var, String newValue,
                                    boolean syncMePlease) {
-        //Log.d("vortex","I am in snap insert for variable "+var.getId());
+        Log.d("vortex","I am in snap insert for variable "+var.getId()+" that is synced: "+syncMePlease);
         String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
         ContentValues values = new ContentValues();
         createValueMap(var, newValue, values, timeStamp);
@@ -1250,7 +1251,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Log.d("nils","created new selection: "+selection);
 
         ret.selectionArgs = createSelectionArgs(keySet, name);
-        Log.d("nils","CREATE SELECTION RETURNS: "+ret.selection+" "+print(ret.selectionArgs));
+        //Log.d("nils","CREATE SELECTION RETURNS: "+ret.selection+" "+print(ret.selectionArgs));
         return ret;
     }
 
@@ -1376,284 +1377,303 @@ public class DbHelper extends SQLiteOpenHelper {
         //}
         Cursor c = null;
         SyncStatus syncStatus=new SyncStatus();
-
+        String myTeam = globalPh.get(PersistenceHelper.LAG_ID_KEY);
         for (SyncEntry s : ses) {
-            //Log.d("vortex", "SYNC:");
-            Log.d("plaz", "s.target :" + s.getTarget());
-            Log.d("plaz", "s.changes :" + s.getChange());
-            Log.d("plaz", "s.timestamp :" + s.getTimeStamp());
-            synC++;
-            if (s.isInsertArray()) {
-                java.util.Date date= new java.util.Date();
-                long current = date.getTime()/1000;
-                long incoming = Long.parseLong(s.getTimeStamp());
-                long diff = current - incoming;
-                Log.d("plaz","ARRAYOBJECT curr incom: "+current+" "+incoming);
-                if (diffMoreThanThreshold(diff)) {
-                    Log.d("plaz","discarding arrayobject...too oold");
-                    continue;
-                } else
-                    Log.d("plaz","not discarding!!");
+            try {
+                //Log.d("vortex", "SYNC:");
+               // Log.d("plaz", "s.target :" + s.getTarget());
+                //Log.d("plaz", "s.changes :" + s.getChange());
+                //Log.d("plaz", "s.timestamp :" + s.getTimeStamp());
 
-            }
-            if (synC % 10 == 0) {
-                String syncStatusS = synC + "/" + size;
-                if (ui != null)
-                    ui.setInfo(syncStatusS);
-                syncStatus.setStatus(syncStatusS);
-                syncListener.send(syncStatus);
-            }
-            if (s.isInsert() || s.isInsertArray()) {
-                keySet.clear();
-                cv.clear();
-
-                if (s.getKeys() == null || s.getValues() == null) {
-                    Log.e("vortex", "Synkmessage with " + s.getTarget() + " is invalid. Skipping");
-                    changes.faults++;
-                    continue;
-                }
-                String[] keys = s.getKeys().split("\\|");
-                String[] values = s.getValues().split("§");
-                String[] pair;
-
-                for (String keyPair : keys) {
-                    pair = keyPair.split("=");
-                    if (pair != null) {
-                        if (pair.length == 1) {
-                            String k = pair[0];
-                            pair = new String[2];
-                            pair[0] = k;
-                            pair[1] = "";
-                        }
-                        //Log.d("vortex", "wtf is this? Key:" + pair[0] + " Value: " + pair[1]);
-
-                        if (pair[0].equals("var")) {
-                            name = pair[1];
-                        } else {
-                            keySet.put(getDatabaseColumnName(pair[0]), pair[1]);
-                            keyHash.put(pair[0],pair[1]);
-                        }
-                        cv.put(getDatabaseColumnName(pair[0]), pair[1]);
-                    } else {
-                        changes.faults++;
-                        Log.e("vortex", "Something not good in synchronize (dbHelper). A valuepair was null ");
-                    }
-                }
-                String myValue=null;
-                for (String value : values) {
-                    pair = value.split("=");
-
-                    if (pair.length == 1) {
-                        String k = pair[0];
-                        pair = new String[2];
-                        pair[0] = k;
-                        pair[1] = "";
-                    } else {
-                        if (pair[0].equals("value"))
-                            myValue = pair[1];
-                    }
-
-                    //cv.put(pair[0],pair[1]);
-                    cv.put(getDatabaseColumnName(pair[0]), pair[1]);
+                synC++;
+                if (s.isInsertArray()) {
+                    java.util.Date date = new java.util.Date();
+                    long current = date.getTime() / 1000;
+                    long incoming = Long.parseLong(s.getTimeStamp());
+                    long diff = current - incoming;
+                    //Log.d("plaz", "ARRAYOBJECT curr incom: " + current + " " + incoming);
+                    if (diffMoreThanThreshold(diff)) {
+                        //Log.d("plaz", "discarding arrayobject...too oold");
+                        continue;
+                    } //else
+                       // Log.d("plaz", "not discarding!!");
 
                 }
-                //if (keySet == null)
-                //	Log.d("nils","Keyset was null");
-                //Log.d("sync","SYNC WITH PARAMETER NAMED "+name);
-                //    Log.d("vortex", "Keyset:  " + keySet.toString());
-
-                Selection sel = this.createSelection(keySet, name);
-//                Log.d("vortex", "Selection:  " + sel.selection);
-                if (sel.selectionArgs != null) {
-                    StringBuilder xor = new StringBuilder("");
-                    for (String sz : sel.selectionArgs) {
-                        xor.append(sz);
-                        xor.append(",");
-                    }
-                    //Log.d("sync", "Selection ARGS: " + xor);
+                if (synC % 10 == 0) {
+                    String syncStatusS = synC + "/" + size;
+                    if (ui != null)
+                        ui.setInfo(syncStatusS);
+                    syncStatus.setStatus(syncStatusS);
+                    syncListener.send(syncStatus);
                 }
 
-                c = getExistingVariableCursor(name, sel);
-                long rId = -1;
-                boolean hasValueAlready = c.moveToNext();
 
-                if (!hasValueAlready || s.isInsertArray()) {// || gs.getVariableConfiguration().getnumType(row).equals(DataType.array)) {
-                    //                  Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
-                    //                  Log.d("sync", "cv: "+cv);
-                    //now there should be ContentValues that can be inserted.
-                    rId = db.insert(TABLE_VARIABLES, // table
-                            null, //nullColumnHack
-                            cv
-                    );
-                    //Insert also in cache if not array.
-                    //
-                    if (!s.isInsertArray())
-                        gs.getVariableCache().insert(name,keyHash,myValue);
-                    changes.inserts++;
-                } else {
-                    long id = c.getLong(0);
-                    String timestamp = c.getString(1);
-                    String value = c.getString(2);
-                    String varName = c.getString(3);
-                    String author = c.getString(4);
-
-                    //Is the existing entry done by me?
-                    //Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
-                    if (isMe(author)) {
-                        if (varName.startsWith("STATUS:")) {
-                            //                          Log.d("vortex", "This is a status variable");
-                            String incomingValue = cv.getAsString("value");
-
-                            //                          Log.d("vortex", "my value: " + value + " incoming: " + incomingValue + " values: " + s.getValues());
-                            if (value != null && incomingValue != null  && !value.equals("0")) {
-                                //                               Log.e("vortex", "found potential conflict between import value and existing for " + varName);
-                                //&& !value.equals(incomingValue)
-                                List<String> row = GlobalState.getInstance().getVariableConfiguration().getCompleteVariableDefinition(varName);
-                                String assocWorkflow = GlobalState.getInstance().getVariableConfiguration().getAssociatedWorkflow(row);
-
-                                //                             Log.d("vortex", "Assoc workflow is " + assocWorkflow);
-                                if (assocWorkflow != null && !assocWorkflow.isEmpty()) {
-                                    //                                 Log.d("vortex", "conflict!");
-                                    String ks="";
-                                    if (keyHash!=null)
-                                        ks = keyHash.toString();
-                                    conflictFlows.add(assocWorkflow+" "+ks);
-                                    changes.conflicts++;
-                                }
-
-                            }
-                        }
-                    }
-
-                    //If this is a status variable, and the value is different than existing value, add a conflict.
-
-                    boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp()));
-                    if (timestamp != null && s.getTimeStamp() != null) {
-                        if (!existingTimestampIsMoreRecent) {
-                            //                       Log.d("sync", "REPLACING " + name);
-                            cv.put("id", id);
-                            rId = db.replace(TABLE_VARIABLES, // table
-                                    null, //nullColumnHack
-                                    cv
-                            );
-                            gs.getVariableCache().insert(name,keyHash,myValue);
-                            changes.inserts++;
-
-                            if (rId != id) {
-                                Log.e("sync", "CRY FOUL!!! New Id not equal to found! " + " ID: " + id + " RID: " + rId);
-
-                                Log.e("sync", "varname: "+varName+"value: "+value+" timestamp: "+timestamp+" author: "+author+" ");
-                                Log.e("sync","CV: "+cv);
-                            }
-                        } else {
-                            changes.refused++;
-                            //                        o.addRow("");
-                            //                        o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
-                            //                        Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
-                        }
-                    } else
-                        Log.e("sync", "A timestamp was null!!");
-                }
-                if (rId != -1)
-                    touchedVariables.add(name);
-
-                //Invalidate variables with this id in the cache..
-
-            } else {
-                if (s.isDelete()) {
+                if (s.isInsert() || s.isInsertArray()) {
                     keySet.clear();
-                    //                Log.d("sync", "Got Delete for: " + s.getTarget());
-                    String[] keys = s.getChange().split("\\|");
-                    String[] pair;
+                    cv.clear();
+                    String[] sKeys = null, sValues = null;
+                    if (s.getKeys() != null)
+                        sKeys = s.getKeys().split("\\|");
+                    if (s.getValues() != null)
+                        sValues = s.getValues().split("§");
 
-                    keyHash.clear();
-                    for (String keyPair : keys) {
+                    if (sKeys == null || sValues == null) {
+                        Log.e("vortex", "Synkmessage with " + s.getTarget() + " is invalid. Skipping. keys: " + s.getKeys() + " values: " + s.getValues());
+                        changes.faults++;
+                        continue;
+                    }
+
+                    String[] pair;
+                    for (String keyPair : sKeys) {
                         pair = keyPair.split("=");
+                        if (pair != null) {
+                            if (pair.length == 1) {
+                                String k = pair[0];
+                                pair = new String[2];
+                                pair[0] = k;
+                                pair[1] = "";
+                            }
+                            //Log.d("vortex", "wtf is this? Key:" + pair[0] + " Value: " + pair[1]);
+
+                            if (pair[0].equals("var")) {
+                                name = pair[1];
+                            } else {
+                                keySet.put(getDatabaseColumnName(pair[0]), pair[1]);
+                                keyHash.put(pair[0], pair[1]);
+                            }
+                            cv.put(getDatabaseColumnName(pair[0]), pair[1]);
+                        } else {
+                            changes.faults++;
+                            Log.e("vortex", "Something not good in synchronize (dbHelper). A valuepair was null ");
+                        }
+                    }
+                    String myValue = null;
+                    for (String value : sValues) {
+                        pair = value.split("=");
+
                         if (pair.length == 1) {
                             String k = pair[0];
                             pair = new String[2];
                             pair[0] = k;
                             pair[1] = "";
-                        }
-                        //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
-
-                        if (pair[0].equals("var")) {
-                            name = pair[1];
                         } else {
-                            keySet.put(getDatabaseColumnName(pair[0]), pair[1]);
-                            keyHash.put(pair[0],pair[1]);
+                            if (pair[0].equals("value"))
+                                myValue = pair[1];
                         }
 
+                        //cv.put(pair[0],pair[1]);
+                        cv.put(getDatabaseColumnName(pair[0]), pair[1]);
                     }
-                    //                Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
-                    //Log.d("sync","Keyset:  "+keySet.toString());
+                    //String team = cv.getAsString(DbHelper.LAG);
+
+
+                    //if (keySet == null)
+                    //	Log.d("nils","Keyset was null");
+                    //Log.d("sync","SYNC WITH PARAMETER NAMED "+name);
+                    //    Log.d("vortex", "Keyset:  " + keySet.toString());
 
                     Selection sel = this.createSelection(keySet, name);
-                    //Log.d("sync","Selection:  "+sel.selection);
-                    if (sel.selectionArgs != null) {
-                        String xor = "";
-                        for (String sz : sel.selectionArgs)
-                            xor += sz + ",";
-                        //                   Log.d("nils", "Selection ARGS: " + xor);
-                        //                   Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
-                        //Check timestamp. If timestamp is older, delete. Otherwise skip.
+                    //Log.d("vortex", "Selection:  " + sel.selection);
+                    //if (sel.selectionArgs != null) {
+                        //StringBuilder xor = new StringBuilder("");
+                        //for (String sz : sel.selectionArgs) {
+                        //    xor.append(sz);
+                        //    xor.append(",");
+                        //}
+                        //Log.d("sync", "Selection ARGS: " + xor);
+                    //}
 
-                        //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
-                        c = getExistingVariableCursor(s.getTarget(), sel);
-                        boolean hasValueAlready = c.moveToNext();
-                        boolean existingTimestampIsMoreRecent = true;
-                        String timestamp ="";
-                        if (hasValueAlready) {
+                    c = getExistingVariableCursor(name, sel);
+                    long rId = -1;
+                    boolean hasValueAlready = c.moveToNext();
 
-                            timestamp = c.getString(1);
-                            //String value = c.getString(2);
-                            //String varName = c.getString(3);
-                            //String author = c.getString(4);
-
-                            //Is the existing entry done by me?
-                            //                        Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
-                            //                        Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
-                            existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
-                        }
-                        else
-                            Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
-                        if (!existingTimestampIsMoreRecent) {
-                            //                        Log.d("sync", "Deleting " + name);
-                            this.deleteVariable(s.getTarget(), sel, false);
-                            vc.insert(name,keyHash,null);
-                            changes.deletes++;
-                        } else {
-                            changes.refused++;
-                            //                       Log.d("sync", "Did not delete...a newer entry exists in database.");
-                            //                       o.addRow("");
-                            //                       o.addYellowText("DB_DELETE REFUSED: " + name);
-                            //                       if (hasValueAlready)
-                            //                           o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp);
-                            //                       else
-                            //                           o.addYellowText(", since this variable has no value in my database");
-                        }
-
-                    } else
-                        Log.e("sync", "SelectionArgs null in Delete Sync. S: " + s.getTarget() + " K: " + s.getKeys());
-
-                } else if (s.isDeleteMany()) {
-                    String keyPairs = s.getChange();
-                    String pattern = s.getTarget();
-                    if (keyPairs != null) {
-                        Log.d("sync", "Got Erase Many sync message with keyPairs: " + keyPairs);
-                        int affectedRows = this.erase(keyPairs, pattern);
-                        resetCache=true;
-                        //Invalidate Cache...purposeless to invalidate only part.
-                        o.addRow("");
-                        o.addGreenText("DB_ERASE message executed in sync");
-                        changes.deletes += affectedRows;
-
+                    if (!hasValueAlready || s.isInsertArray()) {// || gs.getVariableConfiguration().getnumType(row).equals(DataType.array)) {
+                        //                  Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
+                        //                  Log.d("sync", "cv: "+cv);
+                        //now there should be ContentValues that can be inserted.
+                        rId = db.insert(TABLE_VARIABLES, // table
+                                null, //nullColumnHack
+                                cv
+                        );
+                        //Insert also in cache if not array.
+                        //
+                        if (!s.isInsertArray())
+                            gs.getVariableCache().insert(name, keyHash, myValue);
+                        changes.inserts++;
                     } else {
-                        o.addRow("");
-                        o.addRedText("DB_ERASE Failed. Message corrupt");
-                        changes.faults++;
+                        long id = c.getLong(0);
+                        String timestamp = c.getString(1);
+                        String value = c.getString(2);
+                        String varName = c.getString(3);
+                        String author = c.getString(4);
+
+                        //Is the existing entry done by me?
+                        //Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
+                        if (isMe(author)) {
+                            if (varName.startsWith("STATUS:")) {
+                                //                          Log.d("vortex", "This is a status variable");
+                                String incomingValue = cv.getAsString("value");
+
+                                //                          Log.d("vortex", "my value: " + value + " incoming: " + incomingValue + " values: " + s.getValues());
+                                if (value != null && incomingValue != null && !value.equals("0")) {
+                                    //                               Log.e("vortex", "found potential conflict between import value and existing for " + varName);
+                                    //&& !value.equals(incomingValue)
+                                    List<String> row = GlobalState.getInstance().getVariableConfiguration().getCompleteVariableDefinition(varName);
+                                    String assocWorkflow = GlobalState.getInstance().getVariableConfiguration().getAssociatedWorkflow(row);
+
+                                    //                             Log.d("vortex", "Assoc workflow is " + assocWorkflow);
+                                    if (assocWorkflow != null && !assocWorkflow.isEmpty()) {
+                                        //                                 Log.d("vortex", "conflict!");
+                                        String ks = "";
+                                        if (keyHash != null)
+                                            ks = keyHash.toString();
+                                        conflictFlows.add(assocWorkflow + " " + ks);
+                                        changes.conflicts++;
+                                    }
+
+                                }
+                            }
+                        }
+
+                        //If this is a status variable, and the value is different than existing value, add a conflict.
+
+                        boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp()));
+                        if (timestamp != null && s.getTimeStamp() != null) {
+                            if (!existingTimestampIsMoreRecent) {
+                                //                       Log.d("sync", "REPLACING " + name);
+                                cv.put("id", id);
+                                rId = db.replace(TABLE_VARIABLES, // table
+                                        null, //nullColumnHack
+                                        cv
+                                );
+                                gs.getVariableCache().insert(name, keyHash, myValue);
+                                changes.inserts++;
+
+                                if (rId != id) {
+                                    Log.e("sync", "CRY FOUL!!! New Id not equal to found! " + " ID: " + id + " RID: " + rId);
+
+                                    Log.e("sync", "varname: " + varName + "value: " + value + " timestamp: " + timestamp + " author: " + author + " ");
+                                    Log.e("sync", "CV: " + cv);
+                                }
+                            } else {
+                                changes.refused++;
+                                //                        o.addRow("");
+                                //                        o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                                //                        Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                            }
+                        } else
+                            Log.e("sync", "A timestamp was null!!");
+                    }
+                    if (rId != -1)
+                        touchedVariables.add(name);
+
+                    //Invalidate variables with this id in the cache..
+
+                } else {
+                    if (s.isDelete()) {
+                        keySet.clear();
+                        //                Log.d("sync", "Got Delete for: " + s.getTarget());
+                        String[] sChanges = null;
+                        if (s.getChange() != null)
+                            sChanges = s.getChange().split("\\|");
+
+                        if (sChanges == null) {
+                            Log.e("vortex", "no keys in Delete Syncentry");
+                            changes.faults++;
+                            continue;
+                        }
+                        String[] pair;
+
+                        keyHash.clear();
+                        for (String keyPair : sChanges) {
+                            pair = keyPair.split("=");
+                            if (pair.length == 1) {
+                                String k = pair[0];
+                                pair = new String[2];
+                                pair[0] = k;
+                                pair[1] = "";
+                            }
+                            //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
+
+                            if (pair[0].equals("var")) {
+                                name = pair[1];
+                            } else {
+                                keySet.put(getDatabaseColumnName(pair[0]), pair[1]);
+                                keyHash.put(pair[0], pair[1]);
+                            }
+
+                        }
+                        //                Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
+                        //Log.d("sync","Keyset:  "+keySet.toString());
+
+                        Selection sel = this.createSelection(keySet, name);
+                        //Log.d("sync","Selection:  "+sel.selection);
+                        if (sel.selectionArgs != null) {
+                            String xor = "";
+                            for (String sz : sel.selectionArgs)
+                                xor += sz + ",";
+                            //                   Log.d("nils", "Selection ARGS: " + xor);
+                            //                   Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
+                            //Check timestamp. If timestamp is older, delete. Otherwise skip.
+
+                            //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
+                            c = getExistingVariableCursor(s.getTarget(), sel);
+                            boolean hasValueAlready = c.moveToNext();
+                            boolean existingTimestampIsMoreRecent = true;
+                            String timestamp = "";
+                            if (hasValueAlready) {
+
+                                timestamp = c.getString(1);
+                                //String value = c.getString(2);
+                                //String varName = c.getString(3);
+                                //String author = c.getString(4);
+
+                                //Is the existing entry done by me?
+                                //                        Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
+                                //                        Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
+                                existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
+                            } else
+                                Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
+                            if (!existingTimestampIsMoreRecent) {
+                                //                        Log.d("sync", "Deleting " + name);
+                                this.deleteVariable(s.getTarget(), sel, false);
+                                vc.insert(name, keyHash, null);
+                                changes.deletes++;
+                            } else {
+                                changes.refused++;
+                                //                       Log.d("sync", "Did not delete...a newer entry exists in database.");
+                                //                       o.addRow("");
+                                //                       o.addYellowText("DB_DELETE REFUSED: " + name);
+                                //                       if (hasValueAlready)
+                                //                           o.addYellowText(" Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp);
+                                //                       else
+                                //                           o.addYellowText(", since this variable has no value in my database");
+                            }
+
+                        } else
+                            Log.e("sync", "SelectionArgs null in Delete Sync. S: " + s.getTarget() + " K: " + s.getKeys());
+
+                    } else if (s.isDeleteMany()) {
+                        String keyPairs = s.getChange();
+                        String pattern = s.getTarget();
+                        if (keyPairs != null) {
+                            Log.d("sync", "Got Erase Many sync message with keyPairs: " + keyPairs);
+                            int affectedRows = this.erase(keyPairs, pattern);
+                            resetCache = true;
+                            //Invalidate Cache...purposeless to invalidate only part.
+                            o.addRow("");
+                            o.addGreenText("DB_ERASE message executed in sync");
+                            changes.deletes += affectedRows;
+
+                        } else {
+                            o.addRow("");
+                            o.addRedText("DB_ERASE Failed. Message corrupt");
+                            changes.faults++;
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             if (c!=null)
                 c.close();
@@ -1685,6 +1705,8 @@ public class DbHelper extends SQLiteOpenHelper {
             vc.reset();
         return changes;
     }
+
+
 
     public boolean diffMoreThanThreshold(long time) {
         return (time/86400 > 0);
@@ -2316,7 +2338,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean scanSyncEntries() {
         boolean retValue = false;
         //SELECT Count(*) FROM tblName
-        Cursor c = db.rawQuery("SELECT Count(*) FROM " + TABLE_SYNC, null);
+        Cursor c = db.rawQuery("SELECT Count(*) FROM " + TABLE_SYNC , null);
         if (c.moveToFirst()) {
             Log.d("plaz", "SYNC HAS " + c.getInt(0) + " ROWS");
         }

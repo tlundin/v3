@@ -20,7 +20,8 @@ public abstract class WF_ListEntry extends WF_Widget implements Listable,Compara
 	List<String> keyRow =null;
 	String label = "";
 	protected Variable myVar = null;
-	
+	private String spec;
+
 	public abstract void refresh();
 //	public abstract void refreshInputFields();
 
@@ -30,12 +31,15 @@ public abstract class WF_ListEntry extends WF_Widget implements Listable,Compara
 
 	public void setKey(Variable var) {
 			myVar = var;
-			if (myVar!=null) {
-				keyRow = myVar.getBackingDataSet();		
-				//Log.d("nils","Calling setKeyRow for "+keyRow.toString());
-				label = al.getEntryLabel(keyRow);
-				//Log.d("vortex","Keyvar label: "+label);
-			}
+			keyRow = myVar.getBackingDataSet();
+			//Log.d("nils","Calling setKeyRow for "+keyRow.toString());
+			label = al.getEntryLabel(keyRow);
+			spec = myVar.getId();
+			//Log.d("vortex","Keyvar label: "+label);
+	}
+	@Override
+	public String toString() {
+		return "label: "+getLabel()+", ID: "+getId()+" myVar: "+myVar+" varID: "+spec;
 	}
 
 	@Override
@@ -48,8 +52,10 @@ public abstract class WF_ListEntry extends WF_Widget implements Listable,Compara
 
 	@Override
 	public String getKey() { 
-		if (myVar == null)
+		if (myVar == null) {
+			Log.d("taxx","id: "+getId()+" label: "+label);
 			return null;
+		}
 		else return myVar.getId();
 	}
 

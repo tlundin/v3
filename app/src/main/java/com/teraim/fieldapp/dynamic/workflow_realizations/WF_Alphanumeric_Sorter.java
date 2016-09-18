@@ -18,9 +18,9 @@ public class WF_Alphanumeric_Sorter implements Sorter {
 	//	for(Listable l:list)
 	//		Log.d("nils",l.getLabel()+",");
 		Collections.sort(list, WF_ListEntry.Comparators.Alphabetic);
-		Log.d("nils","After ALPHA Sort: ");
-		for(Listable l:list)
-			Log.d("nils",l.getLabel());
+		//Log.d("nils","After ALPHA Sort: ");
+		//for(Listable l:list)
+		//	Log.d("nils",l.toString());
 		return list;
 	}
 

@@ -113,9 +113,8 @@ public class DB_Context implements Serializable {
 								} 
 								
 								for (char c:val.toCharArray()) {
-									if(!Character.isLetterOrDigit(c) && c!='-' ) {
+									if(!Character.isLetterOrDigit(c) && c!='-' && c!='_') {
 										if (c == '?') {
-											Log.d("vortex","NOT NULL UNKNOWN PARAMETER in context");
 											hasWildCard=true;
 										} else {
 											err = "The literal " + val + " contains non alfabetic-nonnumeric characters. Did you forget braces? [ ] Full context is: " + cContext;

@@ -362,7 +362,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		for (GisLayer layer :myMap.getLayers()) {
 
 			if (layer.getId().equals("Team")) {
-				layer.clear();
 				Set<GisObject>teamMembers = findMyTeam();
 				if (teamMembers==null || teamMembers.isEmpty())
 					Log.e("bortex","fucki mc wartface");
@@ -623,7 +622,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			for (GisLayer layerO:myMap.getLayers()) {
 				String layerId = layerO.getId();
 
-
+				//Log.d("bortex","Drawing layer "+layerId);
 				//get all objects that should be drawn on this layer.
 				//Treat maplayers
 				if (!layerO.isVisible()) {
@@ -684,7 +683,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								Style style = gop.getStyle();
 								PolyType polyType=gop.getShape();
 								String statusValue = gop.getStatus();
-								//Log.d("goya", "LBL: "+gop.getLabel()+" STAT: "+statusValue);
+								//Log.d("bortex", "LBL: "+gop.getLabel()+" STAT: "+statusValue+" POLLY "+polyType.name());
 
 								String statusColor = colorShiftOnStatus(gop.getStatus());
 								if (statusColor!=null)
@@ -868,7 +867,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
-	private Set<GisObject> findMyTeam() {
+	final static String[] teamColors = new String[] {"#32CD32","#ffa500","#e56bda","#d2f031","#f0de31"};
+
+	public Set<GisObject> findMyTeam() {
+		Log.d("bortex","In findmyteam");
+
 		Set<GisObject> ret = null;
 		final String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 		final String user = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.USER_ID_KEY);
@@ -879,21 +882,30 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		final Map<String,String> tmp = new HashMap<>();
 		tmp.put("år",Constants.getYear());
 		tmp.put("lag",team);
-
+		int cc=0;
 		Map<String,Location> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
 		if (myTeam==null)
 			return null;
+
 		for (final String name:myTeam.keySet()) {
+
+			Log.d("bortex","Adding Team member "+name);
+
+			final int currentColor = cc;
+			cc++;
+			if (cc==team.length())
+				cc=0;
 			Location l = myTeam.get(name);
+			//Log.d("bortex","Location "+l);
 			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
 				@Override
 				public float getRadius() {
-					return 0;
+					return 4;
 				}
 
 				@Override
 				public String getColor() {
-					return "#76EE00";
+					return teamColors[currentColor];
 				}
 
 				@Override
@@ -956,6 +968,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					return Expressor.preCompileExpression(name);
 				}
 			}, tmp, l, null, null);
+
+			GisLayer.markIfUseful(member,this);
+
 			if (ret ==null)
 				ret = new HashSet<>();
 			ret.add(member);
@@ -1062,8 +1077,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					if (gpo.getPaths() != null) {
 						p = gpo.getPaths().get(0);
 					} else {
-						//Log.d("vortex", "ispoly?! "+isPolygon);
 						p = createPathFromCoordinates(gpo.getCoordinates(),isPolygon);
+						gpo.addPath(p);
 					}
 					if (p!=null)
 						drawPath(p,selected,canvas,go);
@@ -1125,6 +1140,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		}
 		if (isClosed)
 			p.close();
+
 		return p;
 	}
 
@@ -1155,24 +1171,24 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale) {
 
-		Rect r = new Rect();
-
+		Rect r;
+		//Log.d("bortex","in drawpoint type "+type.name()+" bitmap: "+bitmap);
 		if (bitmap!=null) {
+			r = new Rect();
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);
 			canvas.drawBitmap(bitmap, null, r, null);
 		} //circular?
 
 		else if (type == PolyType.circle) {
-			//Log.d("vortex","x,y,r"+xy[0]+","+xy[1]+","+radius);
+			//Log.d("bortex","x,y,r"+xy[0]+","+xy[1]+","+radius);
 			canvas.drawCircle(xy[0], xy[1],radius, createPaint(color,style));
 		}
 		//no...square.
 		else if (type == PolyType.rect) {
 			//Log.d("vortex","rect!");
 			int diam = (int)(radius/2);
-			r.set(xy[0]-diam, xy[1]-diam, xy[0]+diam, xy[1]+diam);
-			canvas.drawRect(r, createPaint(color,style));
+			canvas.drawRect(xy[0]-diam, xy[1]-diam, xy[0]+diam, xy[1]+diam, createPaint(color,style));
 		}
 		else if (type == PolyType.triangle) {
 			drawTriangle(canvas,color,style,radius,xy[0], xy[1]);

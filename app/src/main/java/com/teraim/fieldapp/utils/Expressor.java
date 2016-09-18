@@ -25,6 +25,9 @@ import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Variable.DataType;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.loadermodule.configurations.WorkFlowBundleConfiguration;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -84,6 +87,8 @@ public class Expressor {
 		getCurrentWeekNumber(valueFunction,0),
 		getSweDate(valueFunction,0),
 		getStatusVariableValues(valueFunction,1),
+		getGISobjectLength(valueFunction,0),
+		getGISobjectArea(valueFunction,0),
 		getAppName(valueFunction,0),
 		getUserRole(valueFunction,0),
 		getTeamName(valueFunction,0),
@@ -1672,15 +1677,29 @@ public class Expressor {
 				}
 
 				break;
+				case getGISobjectLength:
+
+				case getGISobjectArea:
+					Log.d("vortex","getArea called");
+					GisObject touchedGop = gs.getSelectedGop();
+					if (touchedGop!=null) {
+
+						if ("getGISobjectLength".equals(getType().name()))
+							return Geomatte.getCircumference(touchedGop.getCoordinates());
+						else
+							return Geomatte.getArea(touchedGop.getCoordinates());
+					} else
+						Log.d("zappa","no gop");
+				return null;
 
 
 			case getUserRole:
 				return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
 
-				case getUserName:
+			case getUserName:
 					return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.USER_ID_KEY);
 
-				case getTeamName:
+			case getTeamName:
 					return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 			case photoExists:
 				if (checkPreconditions(evalArgs,1,No_Null_Literal)) {

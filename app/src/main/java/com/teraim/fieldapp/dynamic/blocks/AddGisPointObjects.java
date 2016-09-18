@@ -169,6 +169,10 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			}
 			if (refresh) {
 				Log.d("vortex","This is a refreshcall!");
+				if (dynamic) {
+					//Dynamic objects are refreshed by themselves.
+					return;
+				}
 			}
 		}
 

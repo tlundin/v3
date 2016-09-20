@@ -50,7 +50,7 @@ public class GisMultiPointObject extends GisPathObject {
 		if (this.getWorkflow()==null)
 			return false;
 		//Only linestrings can be touched.
-		Log.d("vortex", "in istouch for linestr "+this.getLabel());
+		//Log.d("vortex", "in istouch for linestr "+this.getLabel());
 		if (!isLineString()) {
 			Log.e("vortex", "this is no linestring...exiting.");
 			return false;
@@ -66,7 +66,7 @@ public class GisMultiPointObject extends GisPathObject {
 			Location B = Geomatte.subtract(myCoordinates.get(i+1),mapLocationForClick);
 			//double dist = Geomatte.pointToLineDistance(A, B, origo);
 			double dist2 = Geomatte.pointToLineDistance3(A, B, origo,pxr,pyr);
-			Log.d("vortex"," Distance N: "+dist2);
+			//Log.d("vortex"," Distance N: "+dist2);
 			if (dist2<distanceToClick) 
 				distanceToClick=dist2;
 			

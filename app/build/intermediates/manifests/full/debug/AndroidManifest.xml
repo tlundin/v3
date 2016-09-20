@@ -24,9 +24,8 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -79,13 +78,6 @@
                 android:resource="@xml/syncadapter" />
         </service>
         <service
-            android:name="org.jumpmind.symmetric.android.SymmetricService"
-            android:enabled="true" >
-            <intent-filter>
-                <action android:name="org.jumpmind.symmetric.android.SymmetricService" />
-            </intent-filter>
-        </service>
-        <service
             android:name="com.teraim.fieldapp.synchronization.framework.AuthenticatorService"
             android:exported="true"
             android:process=":auth" >
@@ -97,8 +89,6 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-
-        <activity android:name="com.teraim.fieldapp.SEND_LOG" />
     </application>
 
 </manifest>

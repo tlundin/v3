@@ -228,8 +228,24 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	double pXR,pYR;
 	private WF_Gis_Map myMap;
 	private boolean allowZoom;
+	private IntBuffer intBuffer = new IntBuffer();
 
+	private class IntBuffer {
 
+		private int[][] mBuffer = new int[500][2];
+		private int c=0;
+
+		public int[] getIntBuf() {
+			if (c<mBuffer.length)
+				return mBuffer[c++];
+			Log.d("vortex","Ran out of int arrays..");
+			return new int[2];
+		}
+
+		public void clear() {
+			c=0;
+		}
+	}
 
 	/**
 	 *
@@ -243,6 +259,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		if (pm== null) {
 			Log.e("vortex","Photometadata was null for "+wf_Gis_Map.getName());
 		}
+		rectBuffer.clear();
 		mapLocationForClick=null;
 		this.photoMetaData=pm;
 		pXR = this.getImageWidth()/pm.getWidth();
@@ -522,7 +539,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				case Point:
 					ret = new StaticGisPoint(gisTypeToCreate,keyHash,mapLocationForClick, null,null);
-					int[] xy = new int[2];
+					int[] xy = intBuffer.getIntBuf();
 					translateMapToRealCoordinates(mapLocationForClick,xy);
 					((StaticGisPoint)ret).setTranslatedLocation(xy);
 					break;
@@ -655,7 +672,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 								if (gop.isDynamic()) {
 									//Log.d("bortex","found dynamic object");
-									int[] xy = new int[2];
+									int[] xy = intBuffer.getIntBuf();;
 									boolean inside = translateMapToRealCoordinates(gop.getLocation(),xy);
 									if (!inside) {
 										//Log.d("vortex","outside "+gop.getLocation().getX()+" "+gop.getLocation().getY());
@@ -715,8 +732,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								}
 								int[] xy = gop.getTranslatedLocation();
 								if (xy == null && gop.getCoordinates()!=null && !gop.getCoordinates().isEmpty()) {
-									xy = new int[2];
+									xy = intBuffer.getIntBuf();
 									translateMapToRealCoordinates(gop.getCoordinates().get(0),xy);
+									gop.setTranslatedLocation(xy);
+									xy = gop.getTranslatedLocation();
 								}
 								if (xy!=null) {
 
@@ -745,7 +764,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 								boolean s = candidates.add(go);
-								if (!s) {
+								/*if (!s) {
 
 									Log.d("pex", go.getLabel()+" exists: "+candidates.contains(go)+" loc "+go.getCoordinates()+" gid: "+go.getKeyHash());
 									for (GisObject g:candidates)
@@ -754,6 +773,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								}
 								else
 									Log.d("pex","cand added: "+go.getLabel());
+								*/
 							}
 						}
 					}
@@ -775,7 +795,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					});
 					List<GisObject> candies = new ArrayList<GisObject>();
 					for (GisObject go : candidates) {
-						Log.d("vortex","candidate: "+go.getLabel()+" id: "+go.getId());
+						//Log.d("vortex","candidate: "+go.getLabel()+" id: "+go.getId());
 						candies.add(go);
 						candMenuVisible = true;
 					}
@@ -814,7 +834,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						//Create a line from user to object.
 						double mX = Double.parseDouble(myX.getValue());
 						double mY = Double.parseDouble(myY.getValue());
-						riktLinjeStart = new int[2];riktLinjeEnd = new int[2];
+						riktLinjeStart = intBuffer.getIntBuf();riktLinjeEnd = intBuffer.getIntBuf();
 						translateMapToRealCoordinates(new SweLocation(mX,mY),riktLinjeStart);
 						translateMapToRealCoordinates(touchedGop.getLocation(),riktLinjeEnd);
 					}
@@ -864,7 +884,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Reset any click done.
 		mapLocationForClick=null;
 		clickXY=null;
-
+		//Reuse same int arrays next call.
+		intBuffer.clear();
 	}
 
 	final static String[] teamColors = new String[] {"#32CD32","#ffa500","#e56bda","#d2f031","#f0de31"};
@@ -1050,7 +1071,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				Path p = createPathFromCoordinates(gpo.getCoordinates(),false);
 				if (p != null)
 					canvas.drawPath(p, polyPaint);
-				xy = new int[2];
+				xy = intBuffer.getIntBuf();
 				translateMapToRealCoordinates(gpo.getCoordinates().get(gpo.getCoordinates().size()-1),xy);
 				drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
 			} else {
@@ -1095,7 +1116,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Check if label should be drawn.
 
 		if (!selected&&layerO!=null && layerO.showLabels() ) {
-			xy = new int[2];
+			xy = intBuffer.getIntBuf();
 			translateMapToRealCoordinates(go.getLocation(),xy);
 			//Log.d("vortex","Calling drawlabel in drawgop for "+go.getLabel()+". I am a path? "+(go instanceof GisPathObject)+" Iam point? "+(go instanceof GisPointObject));
 			drawGopLabel(canvas,xy,go.getLabel(),LabelOffset,bCursorPaint,vtnTxt);
@@ -1122,11 +1143,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 	private Path createPathFromCoordinates(List<Location> ll, boolean isClosed) {
-		int[] xy=new int[2];
+		int[] xy=intBuffer.getIntBuf();
 		if (ll ==null)
 			return null;
 		boolean first = true;
 		Path p = new Path();
+
 		for (int i=0;i<ll.size();i++) {
 			Location l=ll.get(i);
 			translateMapToRealCoordinates(l,xy);
@@ -1157,8 +1179,15 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	 * @param bgPaint
 	 * @param txtPaint
 	 */
+	private Map<int[],Rect> rectBuffer = new HashMap<int[],Rect>();
+
 	private void drawGopLabel(Canvas canvas, int[] xy, String mLabel, float offSet, Paint bgPaint, Paint txtPaint) {
-		Rect bounds = new Rect();
+		Rect bounds = rectBuffer.get(xy);
+		if (bounds== null) {
+			bounds = new Rect();
+			rectBuffer.put(xy,bounds);
+		}
+
 		txtPaint.getTextBounds(mLabel, 0, mLabel.length(), bounds);
 		int textH = bounds.height()/2;
 		bounds.offset((int)xy[0]-bounds.width()/2,(int)xy[1]-(bounds.height()/2+(int)offSet));
@@ -1441,7 +1470,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private void centerOn(GisObject gisObject) {
 
 		if (gisObject!=null) {
-			int[] xy = new int[2];
+			int[] xy = intBuffer.getIntBuf();
 			boolean inside = translateMapToRealCoordinates(gisObject.getLocation(),xy);
 			if (inside) {
 //					Log.d("vortex","X Y USER "+xy[0]+","+xy[1]);

@@ -308,7 +308,7 @@ public class Variable implements Serializable {
 
 
 	public Variable(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted, String historicalValue) {
-		Log.d("zaxx","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
+		//Log.d("zaxx","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
 		this.gs=gs;
 		al=gs.getVariableConfiguration();
 		this.name = name;

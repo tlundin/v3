@@ -257,8 +257,10 @@ public class GisLayer {
 		}
 	}
 
+	private static int[] xy= new int[2];
+
 	public static void markIfUseful(GisObject go, GisImageView gisImageView) {
-		int[] xy= new int[2];
+
 		//assume not useful.
 		go.unmark();
 		//All dynamic objects are always in the map potentially.
@@ -337,8 +339,8 @@ public class GisLayer {
 			*/
 		}
 
-		else
-			Log.d("vortex","Gisobject "+go.getLabel()+" was not added");
+		//else
+		//	Log.d("vortex","Gisobject "+go.getLabel()+" was not added");
 
 	}
 

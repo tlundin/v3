@@ -19,7 +19,7 @@ public abstract class GisPointObject extends GisObject {
 	protected FullGisObjectConfiguration poc; 
 
 	
-	private int[] xy=null;
+	private int[] xy=new int[2];
 	
 	public GisPointObject(FullGisObjectConfiguration poc,Map<String, String> keyChain,List<Location> myCoordinates, String statusVar, String statusVal) {
 		super(poc,keyChain,myCoordinates,statusVar,statusVal);
@@ -45,9 +45,9 @@ public abstract class GisPointObject extends GisObject {
 	@Override
 	public boolean isTouchedByClick(Location mapLocationForClick,double pxr,double pyr) {
 		Location myLocation = this.getLocation();
-		Log.d("vortex",this.getLabel()+" touched by click? ");
+		//Log.d("vortex",this.getLabel()+" touched by click? ");
 		if (myLocation==null) {
-			Log.d("vortex","No location found for object "+this.getLabel());
+		//	Log.d("vortex","No location found for object "+this.getLabel());
 			return false;
 		}
 		if (this.getWorkflow()==null)
@@ -69,10 +69,10 @@ public abstract class GisPointObject extends GisObject {
 		//Log.d("vortex","pxr pyr"+pxr+","+pyr);
 		//Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
 		if (distanceToClick<ClickThresholdInMeters) {
-			Log.d("vortex","YES");
+			//Log.d("vortex","Touched by click...");
 			return true;
 		}
-		Log.d("vortex", "NO!: Dist x  y  tresh: "+xD+","+yD+","+distanceToClick+" thresh: "+ClickThresholdInMeters);
+		//Log.d("vortex", "NO!: Dist x  y  tresh: "+xD+","+yD+","+distanceToClick+" thresh: "+ClickThresholdInMeters);
 		return false;
 	}
 	public Style getStyle() {
@@ -99,11 +99,12 @@ public abstract class GisPointObject extends GisObject {
 		return xy;
 	}
 	public void setTranslatedLocation(int[] xy) {
-		this.xy=xy;
+		this.xy[0]=xy[0];
+		this.xy[1]=xy[1];
 	}
 
 	@Override
-	public void clearCache() {xy=null;};
+	public void clearCache() {xy=new int[2];};
 
 }
 

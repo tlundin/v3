@@ -241,12 +241,13 @@ public class Tools {
 
 	}
 
+
 	//Scales an image region to a size that can be displayed.
 	public static Bitmap getScaledImageRegionOld(Context ctx,String fileName, Rect r) {
-		BitmapRegionDecoder decoder = null; 
+		BitmapRegionDecoder decoder = null;
 
 
-		try { 
+		try {
 
 			decoder = BitmapRegionDecoder.newInstance(fileName, true);
 			final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -254,7 +255,7 @@ public class Tools {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return null;
-		}  
+		}
 		Log.d("vortex","w h "+decoder.getWidth()+","+decoder.getHeight());
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds=true;
@@ -274,7 +275,7 @@ public class Tools {
 		//now create real bitmap using insampleSize
 		options.inJustDecodeBounds = false;
 		Log.d("vortex","stime: "+System.currentTimeMillis()/1000);
-		piece = decoder.decodeRegion(r,options);			
+		piece = decoder.decodeRegion(r,options);
 		Log.d("vortex","ptime: "+System.currentTimeMillis()/1000);
 		Log.d("vortex","piece w: b: "+piece.getWidth()+","+piece.getRowBytes());
 		return piece;
@@ -285,11 +286,11 @@ public class Tools {
 		//Picture is in landscape & should be approx half the screen width, and 1/5th of the height.
 		//First get the ration between h and w of the pic.
 		final BitmapFactory.Options options = new BitmapFactory.Options();
-		if (fileName == null) {			
+		if (fileName == null) {
 			return null;
 		}
 		options.inJustDecodeBounds=true;
-		BitmapFactory.decodeFile(fileName,options);		
+		BitmapFactory.decodeFile(fileName,options);
 
 		//there is a picture..
 		int realW = options.outWidth;

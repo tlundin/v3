@@ -189,13 +189,15 @@ public class Tracker extends Service implements LocationListener {
 
 			}
 		}catch(Exception e) {
-			LoggerI o = GlobalState.getInstance().getLogger();
-			o.addRow("");
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			o.addRedText(sw.toString());
 			e.printStackTrace();
+			if (GlobalState.getInstance()!=null && GlobalState.getInstance().getLogger()!=null) {
+				StringWriter sw = new StringWriter();
+				PrintWriter pw = new PrintWriter(sw);
+				e.printStackTrace(pw);
+				LoggerI o = GlobalState.getInstance().getLogger();
+				o.addRedText(sw.toString());
+				o.addRow("");
+			}
 		}
 	}
 

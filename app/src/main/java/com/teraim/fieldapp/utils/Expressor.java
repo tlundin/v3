@@ -906,16 +906,16 @@ public class Expressor {
 				}
 				
 				value = v.getValue();
-				Log.d("vortex","Atom variable ["+v.getId()+"] Type "+v.getType()+" Value: "+value);
+				//Log.d("vortex","Atom variable ["+v.getId()+"] Type "+v.getType()+" Value: "+value);
 				if (Tools.isNumeric(value)) {
-					Log.d("vortex","numeric");
+				//	Log.d("vortex","numeric");
 					if (v.getType()== Variable.DataType.decimal || value.contains("."))
 						return Double.parseDouble(value);
 					else
 						return Integer.parseInt(value);
 				}
 				if (v.getType()==Variable.DataType.bool) {
-					Log.d("vortex","bool");
+				//	Log.d("vortex","bool");
 					if (value.equalsIgnoreCase("false")) {
 						//Log.d("vortex","Returning false");
 						return false;
@@ -929,16 +929,16 @@ public class Expressor {
 						return null;
 					}
 				}
-				Log.d("vortex","literal");
+				//Log.d("vortex","literal");
 				if (value.isEmpty()) {
 					Log.e("vortex","empty literal...returning null");
 					return null;
 				}
 				return value;
 			case number:
-				Log.d("vortex","this is a numeric atom");
+				//Log.d("vortex","this is a numeric atom");
 				if (myToken !=null && myToken.str!=null) {
-					System.out.println("Numeric value: "+myToken.str);
+				//	System.out.println("Numeric value: "+myToken.str);
 					if (myToken.str.contains("."))
 						return Double.parseDouble(myToken.str);
 					else
@@ -2343,13 +2343,13 @@ public class Expressor {
 		}
 
 
-		if (varId.equalsIgnoreCase("objectid")) {
-			Log.d("fish","Current keyChain: "+currentKeyChain);
+		//if (varId.equalsIgnoreCase("objectid")) {
+			//Log.d("fish","Current keyChain: "+currentKeyChain);
 			Variable v  = gs.getVariableCache().getVariable(currentKeyChain,varId);
-			Log.d("fish","var: "+v);
-			if (v!=null)
-				Log.d("fish","value: "+v.getValue()+" histVal: "+v.getHistoricalValue());
-		}
+			//Log.d("fish","var: "+v);
+			//if (v!=null)
+			//	Log.d("fish","value: "+v.getValue()+" histVal: "+v.getHistoricalValue());
+		//}
 		return gs.getVariableCache().getVariable(currentKeyChain,varId);
 
 	}

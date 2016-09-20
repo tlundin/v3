@@ -96,9 +96,10 @@ public class VariableCache {
     public Map<String, Variable> createOrGetCache(Map<String, String> myKeyHash) {
         Map<String, Variable> ret = newcache.get(myKeyHash);
         Map<String, String> copy = null;
-
+        long t = System.currentTimeMillis();
         if (ret == null) {
             if (myKeyHash != null) {
+
                 Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
                 copy = copyKeyHash(myKeyHash);
 
@@ -117,11 +118,12 @@ public class VariableCache {
 
 
             newcache.put(copy, ret);
-
+            Log.d("vortex","time: "+(System.currentTimeMillis()-t)+" variables created: "+ret.size());
         } else {
             //Log.d("vortex", "Returning existing cache for " + myKeyHash+" : "+ret);
 
         }
+
         return ret;
     }
 
@@ -144,7 +146,7 @@ public class VariableCache {
     }
 
     Map<String, Variable> createAllVariablesForKey(Map<String, String> myKeyHash) {
-        Log.d("vorto","adding hash "+myKeyHash);
+        //Log.d("vorto","adding hash "+myKeyHash);
         GlobalState gs = GlobalState.getInstance();
         long time = System.currentTimeMillis();
         Map<String, Variable> ret = null;
@@ -178,7 +180,7 @@ public class VariableCache {
                         String[] rowKHA=null;
                         if (myKeyHash != null) {
                             myKeyhashSize = myKeyHash.keySet().size();
-                            Log.d("gungo","myKSize: "+myKeyhashSize+" myKeyHash: "+myKeyHash.keySet()+"rowKH: "+rowKH);
+                            //Log.d("gungo","myKSize: "+myKeyhashSize+" myKeyHash: "+myKeyHash.keySet()+"rowKH: "+rowKH);
                         }
                         if (rowKH != null && !rowKH.isEmpty()) {
                             rowKHA = rowKH.split("\\|");

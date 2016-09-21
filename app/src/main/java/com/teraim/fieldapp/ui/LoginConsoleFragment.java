@@ -90,7 +90,47 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 		globalPh = new PersistenceHelper(mActivity.getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
-		
+
+		debugConsole = Start.singleton.getLogger();
+
+		//Send a signal that init starts
+
+		//First time vortex runs? Then create global folders.
+		if (this.initIfFirstTime()) {
+			if (!Connectivity.isConnected(getActivity())) {
+				showErrorMsg("You need a network connection first time you start the program. Vortex requires configuration files to run.");
+				return view;
+			} else {
+				this.initialize();
+			}
+		}
+		//First time this application runs? Then create config folder.
+		if (!new File(Constants.VORTEX_ROOT_DIR+bundleName).isDirectory()) {
+			Log.d("vortex","First time execution!");
+			debugConsole.addRow("");
+			debugConsole.addPurpleText("First time execution of App "+bundleName);
+		} //else
+		//	Log.d("vortex","This application has been executed before.");
+
+		//TODO: Move this code into above in next release.
+		File folder = new File(Constants.VORTEX_ROOT_DIR+bundleName);
+//		if(!folder.mkdirs())
+//			Log.d("NILS","Failed to create App root folder");
+		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/config");
+//		if(!folder.mkdirs())
+//			Log.("NILS","Failed to create config folder");
+		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/cache");
+//		if(!folder.mkdirs())
+//			Log.e("NILS","Failed to create cache folder");
+
+
+
+		//write down version..quickly! :)
+		globalPh.put(PersistenceHelper.CURRENT_VERSION_OF_PROGRAM, Constants.VORTEX_VERSION);
+
+
+
+
 		bundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = InitialBundleName;
@@ -141,42 +181,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//		.execute(bgUrl.toLowerCase());
 
 
-		debugConsole = Start.singleton.getLogger();
-
-		//Send a signal that init starts
-
-		//First time vortex runs? Then create global folders.
-		if (this.initIfFirstTime()) {
-			if (!Connectivity.isConnected(getActivity())) {
-				showErrorMsg("You need a network connection first time you start the program. Vortex requires configuration files to run.");
-				return view;
-			} else {
-				this.initialize();
-			}
-		}
-		//First time this application runs? Then create config folder.
-		if (!new File(Constants.VORTEX_ROOT_DIR+bundleName).isDirectory()) {
-			Log.d("vortex","First time execution!");
-			debugConsole.addRow("");
-			debugConsole.addPurpleText("First time execution of App "+bundleName);
-		} //else 
-		//	Log.d("vortex","This application has been executed before.");
-
-		//TODO: Move this code into above in next release.
-		File folder = new File(Constants.VORTEX_ROOT_DIR+bundleName);
-//		if(!folder.mkdirs())
-//			Log.d("NILS","Failed to create App root folder");
-		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/config");
-//		if(!folder.mkdirs())
-//			Log.("NILS","Failed to create config folder");
-		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/cache");
-//		if(!folder.mkdirs())
-//			Log.e("NILS","Failed to create cache folder");
-
-
-
-		//write down version..quickly! :)
-		globalPh.put(PersistenceHelper.CURRENT_VERSION_OF_PROGRAM, Constants.VORTEX_VERSION);
 
 		//create module descriptors for all known configuration files.
 		//Log.d("vortex","Creating Configuration and ModuleLoader");
@@ -288,8 +292,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			globalPh.put(PersistenceHelper.SERVER_URL, "www.teraim.com");
 		if (globalPh.get(PersistenceHelper.BUNDLE_NAME).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.BUNDLE_NAME, InitialBundleName);
-		if (globalPh.get(PersistenceHelper.DEVELOPER_SWITCH).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.DEVELOPER_SWITCH, false);
 		if (globalPh.get(PersistenceHelper.VERSION_CONTROL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.VERSION_CONTROL, "Major");
 		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals(PersistenceHelper.UNDEFINED))

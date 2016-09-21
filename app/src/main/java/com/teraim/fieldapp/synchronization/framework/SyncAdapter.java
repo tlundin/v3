@@ -125,7 +125,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	//Never sync more than 1000 at a time.
 	final int MaxSyncableRows = 1000;
 	private List<ContentValues> rowsToInsert=null;
-	private String potentiallyTimeStampToUseIfInsertDoesNotFail;
+
 
 
 	@Override
@@ -169,13 +169,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 			return;
 		}
+		//Check if there are unprocessed rows in sync table.
+		if (syncDataAlreadyExists()) {
+
+			//if so, set busy true and begin processing.
+			busy=true;
+			Log.d("vortex","sync data exists...");
+			sendMessage(Message.obtain(null, SyncService.MSG_SYNC_RELEASE_DB));
+			return;
+		}
+
 		//We are now running!!
 		busy = true;
 		Log.e("vortex", "BUSY NOW TRUE");
-		//dataPump();
 
+		//We dont know this timestamp.
+		gh.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null).apply();
 
 		//Get data entries to sync if any.
+
 		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, MaxSyncableRows+"");
 		SyncEntry[] sa =null;
 		StringBuilder targets=new StringBuilder("");
@@ -227,10 +239,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			if (msg!=null)
 				sendMessage(msg);
 	
-		} else 
-			Log.e("vortex","DATABASE CURSOR NULL IN SYNCADAPTER");
+		} else {
+			Log.e("vortex", "DATABASE CURSOR NULL IN SYNCADAPTER");
+			busy=false;
+		}
 
 
+	}
+
+	private boolean syncDataAlreadyExists() {
+		Cursor c = mContentResolver.query(CONTENT_URI, null, "syncquery", null, null);
+		if (c.moveToFirst()) {
+			int icount = c.getInt(0);
+			if (icount > 0) {
+				Log.d("vortex", "sync table has entries: " + icount);
+				return true;
+			}
+			return false;
+		}
+		Log.e("vortex","cursor empty in syncDataAlreadyexist()");
+		return false;
 	}
 
 	private void dataPump() {
@@ -308,7 +336,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	            ArrayList<ContentProviderOperation>();
 		Iterator<ContentValues>it = rowsToInsert.iterator();
 		while (it.hasNext()) {
-			Log.d("vortex", "inserting: "+i);
+			if (i%10==0)
+				Log.d("vortex", "inserting: "+i);
 			i++;
 			mContentResolver.insert(CONTENT_URI,it.next());
 			//list.add(ContentPinsertroviderOperation.newInsert(CONTENT_URI).withValues(it.next()).build());
@@ -340,12 +369,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void updateCounters() {
 		Log.d("vortex","In Sync UpdateCounters");
 		//Here it is safe to update the timestamp for syncentries received from server.
-		if (potentiallyTimeStampToUseIfInsertDoesNotFail!=null) {
+		String potentialStamp = gh.getString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null);
+		if (potentialStamp!=null) {
 			gh.edit().putString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,
-					potentiallyTimeStampToUseIfInsertDoesNotFail).apply();
-			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentiallyTimeStampToUseIfInsertDoesNotFail);
-		}
+					potentialStamp).apply();
+			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentialStamp);
+		} else
+			Log.e("vortex","potentialStamp was null in updatecounters!");
 		busy = false;
+		//update ui here.....
 	}
 
 
@@ -435,14 +467,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				int insertedRows=0;
 
 
-				potentiallyTimeStampToUseIfInsertDoesNotFail=null;
+
 
 				while (true) {
 					reply = objIn.readObject();
 					if (reply instanceof String) {
 						Log.d("vortex","received timestamp for next cycle: "+reply);
 						//This should be the Timestamp of the last entry arriving.
-						potentiallyTimeStampToUseIfInsertDoesNotFail = (String) reply;
+						gh.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(String)reply).apply();
 						Log.d("vortex","Inserted rows: "+insertedRows);
 						objIn.close();
 						objOut.close();
@@ -450,8 +482,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Log.d("vortex","Both devices in sync!!!");
 							busy = false;
 							return Message.obtain(null, SyncService.MSG_DEVICES_IN_SYNC);
-						} else
+						} else {
+							Log.d("vortex","Insert into DB begins");
 							return Message.obtain(null, SyncService.MSG_SYNC_REQUEST_DB_LOCK);
+						}
 					}
 
 					else if (reply instanceof SyncFailed) {

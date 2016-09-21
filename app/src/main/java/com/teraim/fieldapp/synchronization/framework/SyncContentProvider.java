@@ -90,14 +90,20 @@ public class SyncContentProvider extends ContentProvider {
 			} else
 				if (dbHelper == null) 
 					dbHelper = new DatabaseHelper(getContext(),bundleName);
-
-			
-			//Timestamp key includes team name, since change of team name should lead to resync from zero.
-			String timestamp = ph.getString(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+teamName,"0");
-			Log.d("vortex","Timestamp for last sync in Query is "+timestamp);
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
-			Cursor c = db.query(DbHelper.TABLE_AUDIT,null,
-					"timestamp > ?",new String[] {timestamp},null,null,"timestamp asc",null);
+			Cursor c = null;
+			if(selection!=null && selection.equals("syncquery")) {
+				String count = "SELECT count(*) FROM "+DbHelper.TABLE_SYNC;
+				c = db.rawQuery(count, null);
+			} else {
+				//Timestamp key includes team name, since change of team name should lead to resync from zero.
+				String timestamp = ph.getString(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + teamName, "0");
+				Log.d("vortex", "Timestamp for last sync in Query is " + timestamp);
+
+				c = db.query(DbHelper.TABLE_AUDIT, null,
+						"timestamp > ?", new String[]{timestamp}, null, null, "timestamp asc", null);
+
+			}
 			return c;
 		}
 	}
@@ -144,7 +150,7 @@ public class SyncContentProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		int count = values.getAsInteger("count");
-		long ct = System.currentTimeMillis()/1000;
+		//long ct = System.currentTimeMillis()/1000;
 		if (count!=currentCount) {
 			Log.e("vortex", "current count differ from count. count: " + count + " curr "+currentCount);
 			currentCount=count;
@@ -159,7 +165,7 @@ public class SyncContentProvider extends ContentProvider {
 			db.insert(DbHelper.TABLE_SYNC, null, values);
 		else
 			Log.e("vortex","DB null in adapter...insert fail");
-		Log.d("vortex","insert done. time: "+(System.currentTimeMillis()-ct));
+		//Log.d("vortex","insert done. time: "+(System.currentTimeMillis()-ct));
 		return uri;
 	}
 

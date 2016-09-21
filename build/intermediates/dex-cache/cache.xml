@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        is-multidex="false"
+        jar="D:\Terje\Projects\Vortex\app\libs\achartengine-1.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="21.1.2"
+        sha1="559920bf08a6250aa3d5544cd5856c5f1282ad8c">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\achartengine-1.2.0_59d757ef09ec770f9779a46f4200ae8c50365bc7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Apps\adt\sdk\extras\android\m2repository\com\android\support\support-v4\19.0.0\support-v4-19.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="21.1.2"
+        sha1="afee690af14bd2c32d400cdf78e746fd45c386fa">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\support-v4-19.0.0_dd0409ddd1a3a3ddd69da7239f5e981ee1933e4f.jar" />
+    </item>
+
+</items>

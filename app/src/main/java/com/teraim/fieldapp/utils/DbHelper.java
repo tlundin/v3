@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -193,23 +195,33 @@ public class DbHelper extends SQLiteOpenHelper {
         return myNewKeyHash;
     }
 
-    public Map<String,Location> getTeamMembers(String team, String user) {
-        HashMap<String, Location> ret = null;
+    public class LocationAndTimeStamp {
+        public boolean old;
+        public Location location;
+        public LocationAndTimeStamp(boolean isOld,Location loc) {
+            location=loc;
+            old = isOld;
+        }
+    }
+
+    public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
+        HashMap<String, LocationAndTimeStamp> ret = null;
 
         Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and lag = '"+team+"' and author <> '"+user+"' group by author", null);
         Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and lag = '"+team+"' and author <> '"+user+"' group by author", null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
-
+            boolean isOld=false;
             String teamMemberName = qx.getString(0);
+
             if ((System.currentTimeMillis()/1000 - timeStamp) > 3600) {
                 Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis()/1000 - timeStamp));
-                continue;
+               isOld = true;
             }
             if (ret==null)
-                ret = new HashMap<String, Location>();
+                ret = new HashMap<String, LocationAndTimeStamp>();
             Log.d("bortex","Adding one for "+teamMemberName);
-            ret.put(teamMemberName,new SweLocation(qx.getString(1),qy.getString(1)));
+            ret.put(teamMemberName,new LocationAndTimeStamp(isOld,new SweLocation(qx.getString(1),qy.getString(1))));
         }
         qx.close();
         qy.close();
@@ -2332,23 +2344,30 @@ public class DbHelper extends SQLiteOpenHelper {
      *
      * @return true if any changes done to this Apps database by any of the sync entries
      */
-    //Less than 100 entries is considered small
-    final static int SMALL_SYNC = 100;
 
-    public boolean scanSyncEntries() {
-        boolean retValue = false;
-        //SELECT Count(*) FROM tblName
+
+
+
+
+    public int getSyncRowsLeft() {
         Cursor c = db.rawQuery("SELECT Count(*) FROM " + TABLE_SYNC , null);
-        if (c.moveToFirst()) {
-            Log.d("plaz", "SYNC HAS " + c.getInt(0) + " ROWS");
-        }
-        c.close();
-        c = db.rawQuery("SELECT DATA FROM sync", null);
+        if (c.moveToFirst())
+            return c.getInt(0);
+        Log.e("vortex","fiasko");
+        return 0;
+    }
+
+    public boolean scanSyncEntries(int maxR) {
+
+
+        Cursor c = db.rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc limit "+maxR, null);
         byte[] row;
-        SyncReport syncReport = null;
-        int sesTot = 0;int inserts = 0;
-        while (c.moveToNext()) {
-            row = c.getBlob(0);
+        int sesTot = 0;int inserts = 0; int count = 0;
+        int id=-1;
+
+        while (c.moveToNext() ) {
+           row = c.getBlob(1);
+            id = c.getInt(0);
             if (row != null) {
                 Object o = Tools.bytesToObject(row);
                 if (o != null) {
@@ -2357,25 +2376,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         sesTot += ses.length;
                     //final AlertDialog uiBlockerWindow;
                     Log.d("plaz","calling SYNCHRONISE WITH "+ses.length+" entries!");
-                    /*if (ses !=null && ses.length>SMALL_SYNC) {
-                        //Provide Locking UI.
-                        uiBlockerWindow = new AlertDialog.Builder(ctx)
-                                .setTitle("Synchronizing")
-                                .setMessage("")
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .setCancelable(false)
-                                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        GlobalState.getInstance().sendEvent(MenuActivity.REDRAW);
-                                    }
-                                })
-                                .show();
-                    } else
-                        uiBlockerWindow=null;
-                        */
-                    syncReport = this.synchronise(ses, null, GlobalState.getInstance().getLogger(), new SyncStatusListener() {
+                     final SyncReport syncReport = this.synchronise(ses, null, GlobalState.getInstance().getLogger(), new SyncStatusListener() {
 
                         @Override
                         public void send(Object entry) {
@@ -2388,17 +2389,21 @@ public class DbHelper extends SQLiteOpenHelper {
                     if (syncReport != null && syncReport.hasChanges()) {
                         Log.d("plaz","synk for this block done. Inserts done: "+syncReport.inserts);
                         inserts+= syncReport.inserts;
-                        retValue = true;
                     }
                 } else
                     Log.e("vortex", "Object was null!!!");
             }
-            Log.d("plaz","in total "+sesTot+" syncobjects and "+inserts+" inserts");
+
+            count++;
         }
         c.close();
-        Log.d("plaz", "Deleting all entries in table_sync");
-        db.delete(TABLE_SYNC, null, null);
-        return retValue;
+        Log.d("plaz","in total "+sesTot+" syncobjects and "+inserts+" inserts");
+        Log.d("plaz", "Deleting entries in table_sync with id less than or equal to "+id);
+        if (id != -1)
+            if (db.delete(TABLE_SYNC, "id <=" + id, null) == 0)
+                Log.e("vortex","failed to delete curent row in sync table!!");
+
+        return count != maxR;
     }
 
     public void persistQueue(Queue<Variable> dbQueue) {

@@ -51,6 +51,7 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
+import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -155,6 +156,8 @@ public class MenuActivity extends Activity   {
 
 		//Stop listening for bluetooth events.
 		this.unregisterReceiver(brr);
+		if (sThread!=null)
+			sThread.interrupt();
 		super.onDestroy();
 
 	}
@@ -231,8 +234,12 @@ public class MenuActivity extends Activity   {
 	AlertDialog uiLock=null;
 	Message reply=null;
 	private boolean inSync;
+	Thread sThread = null;
 	class IncomingHandler extends Handler {
 
+
+		int z_totalSynced = 0;
+		int z_totalToSync = 0;
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -335,41 +342,75 @@ public class MenuActivity extends Activity   {
 
 			case SyncService.MSG_SYNC_RELEASE_DB:
 				Log.d("vortex","MSG -->SYNC RELEASE DB LOCK");
-				if (uiLock != null)
-					uiLock.cancel();
-				uiLock=null;
 				//Check if something needs to be saved. If so, do it on its own thread.
-				Thread thread = new Thread() {
-					@Override
-					public void run() {
 
-						if (GlobalState.getInstance().getDb().scanSyncEntries()) {
-							Log.d("vortex","Changes made by sync. Requesting page redraw.");
-							gs.sendEvent(Executor.REDRAW_PAGE);
-						}
-						reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-						syncError=false;
-						syncActive=false;
-						try {
-							mService.send(reply);
-							runOnUiThread(new Runnable() {
-								@Override
-								public void run() {
-									refreshStatusRow();
+				if (sThread==null) {
+					sThread = new Thread() {
+						@Override
+						public void run() {
+
+
+							DbHelper db = null;
+							if (GlobalState.getInstance() != null)
+								db = GlobalState.getInstance().getDb();
+							if (db == null)
+								Log.e("vortex", "DB NULL IN THREAD");
+							else {
+								boolean done = false;
+								z_totalSynced=0;
+								z_totalToSync = db.getSyncRowsLeft();
+								Log.d("vortex","total rows to sync is: "+z_totalToSync);
+								int increment = 25;
+
+								while (!this.isInterrupted() && !done) {
+									done = db.scanSyncEntries(increment);
+									if (!done) {
+										z_totalSynced+=increment;
+										runOnUiThread(new Runnable() {
+											@Override
+											public void run() {
+												mnu[0].setTitle(z_totalSynced+"/"+z_totalToSync);
+											}
+										});
+									}
+									else {
+										Log.d("vortex", "End reached for sync. Sending msg safely_stored");
+										if (uiLock != null)
+											uiLock.cancel();
+										uiLock = null;
+
+										reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+										syncError = false;
+										syncActive = false;
+
+										try {
+											runOnUiThread(new Runnable() {
+												@Override
+												public void run() {
+													mnu[0].setTitle(z_totalToSync+"/"+z_totalToSync);
+												}
+											});
+											sThread = null;
+											mService.send(reply);
+										} catch (RemoteException e) {
+											e.printStackTrace();
+											syncError = true;
+											syncActive = false;
+											sThread = null;
+										}
+									}
 								}
-							});
-
-						} catch (RemoteException e) {
-							e.printStackTrace();
-							syncError=true;syncActive=false;
+							}
 						}
-					}
+					};
+					sThread.setPriority(Thread.MIN_PRIORITY);
+					sThread.start();
+				} else {
+					Log.e("vortex","Extra call made to SYNC RELEASE DB LOCK");
+				}
+				syncActive = false;
+				syncError = false;
 
-				};
-
-				thread.start();
-				syncActive=true;
-				syncError=false;
 				break;
 			}
 			Log.d("Vortex","Refreshing status row. status is se: "+syncError+" sA: "+syncActive);
@@ -500,9 +541,10 @@ public class MenuActivity extends Activity   {
 					animationRunning=true;
 				}
 				return;
-			} else 
+			} else {
 				ret = R.drawable.syncon;
-
+				Log.d("vortex","icon set to syncon!");
+			}
 		}
 		animationRunning = false;
 		animView.clearAnimation();
@@ -511,7 +553,7 @@ public class MenuActivity extends Activity   {
 		animView.setOnClickListener(null);
 		menuItem.setIcon(ret);
 		menuItem.setVisible(true);
-		//Log.d("vortex","Exiting setsyncstate");
+		Log.d("vortex","Exiting setsyncstate");
 	}
 
 
@@ -528,8 +570,8 @@ public class MenuActivity extends Activity   {
 			break;
 		case 1:			
 			if (gs!=null && gs.getVariableCache()!=null) {
-			//Object moo=null;
-			//	moo.equals("moo");
+			Object moo=null;
+				moo.equals("moo");
 			new AlertDialog.Builder(this)
 			.setTitle("Context")
 			.setMessage(gs.getVariableCache().getContext().toString()) 

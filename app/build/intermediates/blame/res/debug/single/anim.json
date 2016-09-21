@@ -12,24 +12,8 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\rotate.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_show.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\popup_show.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\push_up_out.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\push_up_out.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_hide_bottom.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\popup_hide_bottom.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\push_up_out.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\push_up_out.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_show_bottom.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\popup_show_bottom.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_hide_bottom.xml",
@@ -40,19 +24,7 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\popup_show.xml"
     },
     {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_hide.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\popup_hide.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\rotate.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\rotate.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\anim\\popup_hide.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\anim\\popup_hide.xml"
-    },
-    {
-        "merged": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\build\\intermediates\\res\\merged\\debug\\anim\\push_up_in.xml",
-        "source": "C:\\Users\\tlundin\\StudioProjects\\v3\\app\\src\\main\\res\\anim\\push_up_in.xml"
     }
 ]

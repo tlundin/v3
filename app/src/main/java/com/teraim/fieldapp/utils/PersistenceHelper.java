@@ -61,7 +61,8 @@ public class PersistenceHelper {
 	public static final String TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME = "time_last_sync_from_team";
 	public static final String PARTNER_NAME = "my_partner";
 	public static final String LOG_LEVEL = "log_levels";
-	
+	public static final String PotentiallyTimeStampToUseIfInsertDoesNotFail="potential_timestamp";
+
 	SharedPreferences sp;
 
 	ArrayList<String> delta = new ArrayList<String>();

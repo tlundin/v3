@@ -791,7 +791,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 				teamLayer.clear();
 				Set<GisObject> teamMembers = gisImageView.findMyTeam();
 				if (teamMembers == null || teamMembers.isEmpty())
-					Log.e("bortex", "fucki mc wartface");
+					Log.e("bortex", "No team members found on this map after Sync Event");
 				else {
 					Log.d("bortex", "found " + teamMembers.size() + " team members");
 					teamLayer.addObjectBag("Team", teamMembers, false, gisImageView);

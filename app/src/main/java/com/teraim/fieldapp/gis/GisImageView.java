@@ -70,6 +70,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfig
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Geomatte;
 import com.teraim.fieldapp.utils.PersistenceHelper;
@@ -888,7 +889,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		intBuffer.clear();
 	}
 
-	final static String[] teamColors = new String[] {"#32CD32","#ffa500","#e56bda","#d2f031","#f0de31"};
+	final static String isFresh = "#7CFC00";
+	final static String isOld = "#D3D3D3";
+
 
 	public Set<GisObject> findMyTeam() {
 		Log.d("bortex","In findmyteam");
@@ -904,7 +907,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		tmp.put("år",Constants.getYear());
 		tmp.put("lag",team);
 		int cc=0;
-		Map<String,Location> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
+		Map<String,DbHelper.LocationAndTimeStamp> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
 		if (myTeam==null)
 			return null;
 
@@ -912,11 +915,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			Log.d("bortex","Adding Team member "+name);
 
-			final int currentColor = cc;
-			cc++;
-			if (cc==team.length())
-				cc=0;
-			Location l = myTeam.get(name);
+			final DbHelper.LocationAndTimeStamp l = myTeam.get(name);
 			//Log.d("bortex","Location "+l);
 			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
 				@Override
@@ -926,7 +925,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public String getColor() {
-					return teamColors[currentColor];
+					return l.old?isOld:isFresh;
 				}
 
 				@Override
@@ -988,7 +987,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				public List<Expressor.EvalExpr> getLabelExpression() {
 					return Expressor.preCompileExpression(name);
 				}
-			}, tmp, l, null, null);
+			}, tmp, l.location, null, null);
 
 			GisLayer.markIfUseful(member,this);
 

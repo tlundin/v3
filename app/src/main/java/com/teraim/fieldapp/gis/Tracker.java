@@ -164,7 +164,7 @@ public class Tracker extends Service implements LocationListener {
 				if (oldX!=null&&oldY!=null&&oldT!=null) {
 					long currT = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 					long timeDiff = currT - oldT;
-					Log.d("vortex","cuurT oldT time diff: "+currT+" "+oldT+" "+timeDiff);
+					//Log.d("vortex","cuurT oldT time diff: "+currT+" "+oldT+" "+timeDiff);
 					double oldXd = Double.parseDouble(oldX);
 					double oldYd = Double.parseDouble(oldY);
 					double distx = Math.abs(oldXd - myL.getX());

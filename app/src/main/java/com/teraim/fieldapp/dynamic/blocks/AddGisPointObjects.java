@@ -200,12 +200,12 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 		//Generate the context for these objects.
 		objectKeyHash = DB_Context.evaluate(objContextE);
-		Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
+		//Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
 		//Use current year for statusvar.
 		Map<String, String> currYearH = Tools.copyKeyHash(objectKeyHash.getContext());
 		//TODO: FIX THIS.
 		currYearH.put("år",Constants.getYear());
-		Log.d("vortex","Curryear HASH "+currYearH.toString());
+		//Log.d("vortex","Curryear HASH "+currYearH.toString());
 
 		if (objectKeyHash==null) {
 			Log.e("vortex","keychain  null!!");
@@ -219,7 +219,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			return;
 		}
 
-		Log.d("vortex","In onCreate for AddGisP for ["+nName+"], Obj_type: "+myType+" with keychain: "+objectKeyHash);
+		//Log.d("vortex","In onCreate for AddGisP for ["+nName+"], Obj_type: "+myType+" with keychain: "+objectKeyHash);
 		//Call to the database to get the objects.
 
 		//Either one or two location variables. 
@@ -240,7 +240,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		boolean twoVars = (locationVarArray.length==2);
 		if (twoVars)
 			locationVar2 = locationVarArray[1].trim();
-		Log.d("vortex","Twovars is "+twoVars+" gisvars are: "+(twoVars?" ["+locationVarArray[0]+","+locationVarArray[1]:locationVarArray[0])+"]");
+		//Log.d("vortex","Twovars is "+twoVars+" gisvars are: "+(twoVars?" ["+locationVarArray[0]+","+locationVarArray[1]:locationVarArray[0])+"]");
 		if(twoVars && myType.equals(GisObjectType.Multipoint)) {
 			Log.e("vortex","Multivar on multipoint!");
 			o.addRow("");
@@ -468,6 +468,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			//Add bag to layer.
 			myLayer=myContext.getCurrentGis().getLayerFromId(target);
 			if (myLayer!=null) {
+
 				myLayer.addObjectBag(nName,myGisObjects,dynamic,myContext.getCurrentGis().getGis());
 
 			} else {

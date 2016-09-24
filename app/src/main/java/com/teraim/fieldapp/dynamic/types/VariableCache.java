@@ -420,7 +420,24 @@ public class VariableCache {
         }
     }
 
+    //Delete all variables with the given hash with sync
 
+    public void deleteAll(Map<String, String> keyChain) {
+        Log.d("vortex","In delete all variables!");
+        Map<String, Variable> varMap = newcache.remove(keyChain);
+        if (varMap==null)
+            varMap = createAllVariablesForKey(keyChain);
+        else {
+            Log.d("vortex", "Already have cached!");
+        }
+
+        for (Variable v:varMap.values()) {
+            Log.d("vortex","deleting "+v.getLabel());
+            v.deleteValue();
+        }
+
+
+    }
     //Find all variables in cache with a given keyhash that belongs to the given group.
     public List<Variable> findVariablesBelongingToGroup(Map<String, String> keyChain, String groupName) {
         Log.d("vortex", "In FindVariablesBelongingToGroup");

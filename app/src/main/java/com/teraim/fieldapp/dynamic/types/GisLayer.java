@@ -22,7 +22,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.gis.GisImageView;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 /**
- * 
+ *
  * A Layer holds the GIS Objects drawn in GisImageView, created by block_add_gis_layer.
  * Each GIS Layer may hold reference to any GIS Object type. 
  * Each GIS Layer may be visible or hidden, controlled by user.
@@ -38,11 +38,11 @@ public class GisLayer {
 	private boolean showLabels;
 	private Map<String, Set<GisFilter>> myFilters;
 	private boolean defaultVisible;
-	
+
 
 
 	public GisLayer(WF_Gis_Map myGis, String name, String label, boolean isVisible,
-			boolean hasWidget, boolean showLabels) {
+					boolean hasWidget, boolean showLabels) {
 		super();
 		this.name = name;
 		this.label = label;
@@ -52,39 +52,49 @@ public class GisLayer {
 		//If no user set value exist, use default.
 		//Else, set isvisible if stored value is 1.
 		defaultVisible = isVisible;
-		
+
 	}
 
 
 	public void clear() {
-		if (myObjects!=null)
-			myObjects.clear();
+		myObjects=null;
 	}
 
 	//TODO: Potentially split incoming objects into two bags. one for static and one for changeable. 
 	//This would speed up CRUD for map objects.
 
 	public void addObjectBag(String key, Set<GisObject> myGisObjects, boolean dynamic, GisImageView gisView) {
-		boolean merge =  false;
-		Log.d("bortex","in add objbag with key "+key);
-		if (myObjects==null) {
-			Log.d("bortex","myObjects null...creating. Mygisobjects: "+myGisObjects+" dynamic: "+dynamic);
-			myObjects = new HashMap<String,Set<GisObject>>();
+		boolean merge = false;
+		Log.d("bortex", "in add objbag with key " + key);
+		if (myObjects == null) {
+			Log.d("bortex", "myObjects null...creating. Mygisobjects: " + myGisObjects + " dynamic: " + dynamic);
+			myObjects = new HashMap<String, Set<GisObject>>();
 
 		}
-		
+
 		Set<GisObject> existingBag = myObjects.get(key);
 		//If no objects found we add an empty set provided none exist.
 		if (myGisObjects == null && existingBag == null) {
-			Log.d("bortex","Added empty set to layer: "+getId()+" of type "+key);
+			Log.d("bortex", "Added empty set to layer: " + getId() + " of type " + key);
 			myObjects.put(key, new HashSet<GisObject>());
 		} else {
+			Iterator<GisObject> iterator = myGisObjects.iterator();
+			Log.d("bortex", "Adding a new bag of type " + key);
+			myObjects.put(key, myGisObjects);
+			this.hasDynamic = dynamic;
+		}
+	}
 			//If bag already exists, we merge. If not, we create new.
-			if (existingBag!=null) {
+			/*
+			if (existingBag!=null)
+
+
+
+			{
 				merge = true;
 				Log.d("bortex","Merging bag of type "+key);
 				//First mark if this is a merge.
-				Iterator<GisObject> iterator = myGisObjects.iterator();
+
 				int c=0;
 				while (iterator.hasNext()) {
 					GisObject go = iterator.next();
@@ -104,20 +114,26 @@ public class GisLayer {
 			} else {
 				Log.d("bortex","Adding a new bag of type "+key);
 				myObjects.put(key, myGisObjects);
+				while (iterator.hasNext()) {
+					GisObject go = iterator.next();
+					markIfUseful(go,gisView);
+				}
 			}
 			Log.d("bortex","added "+myGisObjects.size()+" objects to layer: "+getId()+" of type "+key);
-		}
-		if (dynamic)
-			this.hasDynamic = true;
-		if (merge) {
-			Set<GisObject> l = myObjects.get(key);
-			Log.d("bortex", "CAPRIX Bag " + getId() + " now has " + l.size() + " members" + " bag obj: " + ((Object) l.toString()));
-		}
-	}
+			}
+		*/
+
+			/*
+			if (merge) {
+				Set<GisObject> l = myObjects.get(key);
+				Log.d("bortex", "CAPRIX Bag " + getId() + " now has " + l.size() + " members" + " bag obj: " + ((Object) l.toString()));
+			}
+			*/
+
 
 	public void addObjectFilter(String key, GisFilter f) {
 		Set<GisFilter> setOfFilters = myFilters.get(key);
-		if (setOfFilters==null) 
+		if (setOfFilters==null)
 			setOfFilters = new HashSet<GisFilter>();
 
 		setOfFilters.add(f);
@@ -156,7 +172,7 @@ public class GisLayer {
 			return null;
 		for (String k:myObjects.keySet()) {
 			Set<GisObject> gos = myObjects.get(k);
-			for (GisObject g:gos) 
+			for (GisObject g:gos)
 				if (go.equals(g))
 					return gos;
 
@@ -211,12 +227,12 @@ public class GisLayer {
 		return hasWidget;
 	}
 
-	
-	
+
+
 	/**
-	 * 
 	 *
-	 * 
+	 *
+	 *
 	 * Will go through a layer and check if the gisobjects are inside the map. 
 	 * If inside, the object is marked as useful.
 	 * As a sideeffect, calcualte all the local coordinates.
@@ -235,7 +251,7 @@ public class GisLayer {
 			Set<GisObject> bag = gops.get(key);
 
 			Iterator<GisObject> iterator = bag.iterator();
-			
+
 
 			while (iterator.hasNext()) {
 				GisObject go = iterator.next();
@@ -243,7 +259,7 @@ public class GisLayer {
 				markIfUseful(go,gisImageView);
 				if (go.isDefect())
 					iterator.remove();
-				
+
 
 			}
 			Log.d("bloon","Bag: "+key+" size: "+bag.size());

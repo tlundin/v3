@@ -35,7 +35,8 @@ public class SyncService extends Service {
 	public static final int MSG_DATA_SAFELY_STORED = 5;
 	public static final int MSG_DATABASE_LOCK_GRANTED = 6;
 	public static final int MSG_SYNC_STARTED = 7;
-	public static final int MSG_DEVICES_IN_SYNC = 8;
+	public static final int MSG_DEVICE_IN_SYNC = 8;
+	public static final int MSG_USER_STOPPED_SYNC = 9;
 	
 	
 	
@@ -46,6 +47,8 @@ public class SyncService extends Service {
 	public static final int ERR_UNKNOWN = 0;
 	public static final int ERR_SERVER_NOT_REACHABLE = 6;
 	public static final int ERR_SERVER_CONN_TIMEOUT = 7;
+	public static final int MSG_USER_STARTED_SYNC = 7;
+
 	public static final int REFRESH = 8;
 	
 
@@ -72,6 +75,13 @@ public class SyncService extends Service {
                 	Log.d("vortex","received MSG_ERROR in SyncService");
                 	sSyncAdapter.releaseLock();
                 	break;
+				case MSG_USER_STOPPED_SYNC:
+					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");
+					sSyncAdapter.releaseLock();
+					break;
+				case MSG_USER_STARTED_SYNC:
+					sSyncAdapter.onPerformSync(null,null,null,null,null);
+					break;
                 default:
                     super.handleMessage(msg);
             }

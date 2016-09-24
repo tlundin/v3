@@ -176,7 +176,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 
 	public boolean prepareIncrementalDraw(Listable l) {
 		if (l==null || l.getKey()==null) {
-			if (l.getKey()==null) {
+			if (l!=null) {
 				o.addRow("");
 				o.addRedText("Empty EntryField detected with Label "+l.getLabel()+". This is normally due to a duplicate variable. Please check your configuration");
 			}

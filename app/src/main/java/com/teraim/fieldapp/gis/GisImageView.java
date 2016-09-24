@@ -654,20 +654,21 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				Map<String, Set<GisObject>> bags = layerO.getGisBags();
 				Map<String, Set<GisFilter>> filterMap = layerO.getFilters();
 
-
 				if (bags!=null && !bags.isEmpty()) {
 
 					for (String key:bags.keySet()) {
 						Set<GisFilter> filters = filterMap!=null?filterMap.get(key):null;
 						Set<GisObject> bagOfObjects = bags.get(key);
 						Iterator<GisObject> iterator = bagOfObjects.iterator();
-
+						//Log.d("vortex","bag "+key+" has "+bagOfObjects.size()+" members");
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
 							//Log.d("bortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
 							//If not inside map, or if touched, skip.
-							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus()))
+							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus())) {
+	//							Log.d("bortex",go.getLabel()+" is thown. useful?" + go.isUseful());
 								continue;
+							}
 							if (go instanceof GisPointObject) {
 								GisPointObject gop = (GisPointObject)go;
 
@@ -739,7 +740,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 									xy = gop.getTranslatedLocation();
 								}
 								if (xy!=null) {
-
+									//Log.d("vortex","drawing "+gop.getLabel());
 									drawPoint(canvas,bitmap,radius,color,style,polyType,xy,adjustedScale);
 									if (layerO!=null && layerO.showLabels()) {
 										drawGopLabel(canvas,xy,go.getLabel(),LabelOffset,bCursorPaint,txtPaint);
@@ -1528,7 +1529,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	public void deleteSelectedGop() {
 		if (touchedGop!=null) {
-			GlobalState.getInstance().getDb().deleteAllVariablesUsingKey(touchedGop.getKeyHash());
+			//GlobalState.getInstance().getDb().deleteAllVariablesUsingKey(touchedGop.getKeyHash());
+			GlobalState.getInstance().getVariableCache().deleteAll(touchedGop.getKeyHash());
 			touchedBag.remove(touchedGop);
 			//Dont need to keep track of the bag anymore.
 			invalidate();
@@ -1541,25 +1543,26 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 
 	public void describeSelectedGop() {
-		String hash = "*null*";
-		if (touchedGop.getKeyHash()!=null)
-			hash = touchedGop.getKeyHash().toString();
-		new AlertDialog.Builder(ctx)
-				.setTitle("GIS OBJECT DESCRIPTION")
-				.setMessage("Type: "+touchedGop.getId()+"\nLabel: "+touchedGop.getLabel()+
-						"\nSweref: "+touchedGop.getLocation().getX()+","+touchedGop.getLocation().getY()+
-						"\nAttached workflow: "+touchedGop.getWorkflow()+
-						"\nKeyHash: "+hash+
-						"\nPolygon type: "+touchedGop.getGisPolyType().name())
-				.setIcon(android.R.drawable.ic_menu_info_details)
-				.setCancelable(true)
-				.setNeutralButton("Ok",new Dialog.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+		if (touchedGop != null && touchedGop.getKeyHash() != null) {
+			String hash = touchedGop.getKeyHash().toString();
+			new AlertDialog.Builder(ctx)
+					.setTitle("GIS OBJECT DESCRIPTION")
+					.setMessage("Type: " + touchedGop.getId() + "\nLabel: " + touchedGop.getLabel() +
+							"\nSweref: " + touchedGop.getLocation().getX() + "," + touchedGop.getLocation().getY() +
+							"\nAttached workflow: " + touchedGop.getWorkflow() +
+							"\nKeyHash: " + hash +
+							"\nPolygon type: " + touchedGop.getGisPolyType().name())
+					.setIcon(android.R.drawable.ic_menu_info_details)
+					.setCancelable(true)
+					.setNeutralButton("Ok", new Dialog.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-					}
-				} )
-				.show();
+						}
+					})
+					.show();
+		} else
+			Log.e("vortex","Touchedgop null in describeSelectedGop");
 	}
 
 	long mostRecentGPSValueTimeStamp=-1;

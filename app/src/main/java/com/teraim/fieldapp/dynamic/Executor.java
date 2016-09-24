@@ -64,6 +64,7 @@ import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
+import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -934,9 +935,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			AddGisPointObjects bl;
 			if (b instanceof AddGisPointObjects) {
 				bl = ((AddGisPointObjects) b);
-				bl.create(myContext, true);
+				bl.create(myContext, false);
 			}
 		}
+		for (GisLayer layer :myContext.getCurrentGis().getLayers())
+			layer.filterLayer(myContext.getCurrentGis().getGis());
 
 
 	}

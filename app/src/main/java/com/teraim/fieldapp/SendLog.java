@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.teraim.fieldapp.utils.PersistenceHelper;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,6 +57,9 @@ public class SendLog extends Activity {
 
         });
 
+
+
+
     }
 
 
@@ -92,10 +97,15 @@ public class SendLog extends Activity {
             reader = new InputStreamReader(process.getInputStream());
 
             // write output stream
+            Intent myIntent = getIntent();
             writer = new FileWriter(file);
             writer.write ("Android version: " +  Build.VERSION.SDK_INT + "\n");
             writer.write ("Device: " + model + "\n");
             writer.write ("App version: " + (info == null ? "(null)" : info.versionCode) + "\n");
+            writer.write ("Vortex Version: " + myIntent.getStringExtra("program_version")+ "\n");
+            writer.write ("App name: " + myIntent.getStringExtra("app_name")+ "\n");
+            writer.write ("User name: " + myIntent.getStringExtra("user_name")+ "\n");
+            writer.write ("Team name: " + myIntent.getStringExtra("team_name")+ "\n");
 
             char[] buffer = new char[10000];
             do

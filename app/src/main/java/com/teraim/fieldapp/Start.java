@@ -35,6 +35,7 @@ import com.teraim.fieldapp.log.CriticalOnlyLogger;
 import com.teraim.fieldapp.log.DummyLogger;
 import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
@@ -138,18 +139,18 @@ public class Start extends MenuActivity {
 	private void handleUncaughtException(Thread thread, Throwable e) {
 
 		e.printStackTrace(); // not all Android versions will print the stack trace automatically
-		Log.d("vortex","Getzz");
+
 		//invokeLogActivity();
 
 		if(isUIThread()) {
 			invokeLogActivity();
-			Log.d("vortex","Getzz");
+
 		}else{  //handle non UI thread throw uncaught exception
 
 			new Handler(Looper.getMainLooper()).post(new Runnable() {
 				@Override
 				public void run() {
-					Log.d("vortex","Getss");
+
 					invokeLogActivity();
 				}
 			});
@@ -160,11 +161,16 @@ public class Start extends MenuActivity {
 
 	private void invokeLogActivity(){
 		Intent intent = new Intent ();
+		if (globalPh!=null) {
+			intent.putExtra("program_version", Constants.VORTEX_VERSION);
+			intent.putExtra("app_name",globalPh.get(PersistenceHelper.BUNDLE_NAME));
+			intent.putExtra("user_name",globalPh.get(PersistenceHelper.USER_ID_KEY));
+			intent.putExtra("team_name",globalPh.get(PersistenceHelper.LAG_ID_KEY));
+		}
 		intent.setAction ("com.teraim.fieldapp.SEND_LOG"); // see step 5.
 		intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application
-		Log.d("vortex","calling startactivity");
+		Log.d("vortex","Sending log file. Starting SendLog.");
 		startActivity (intent);
-		Log.d("vortex","boom");
 		System.exit(1); // kill off the crashed app
 	}
 
@@ -292,6 +298,7 @@ public class Start extends MenuActivity {
 			Bundle args = new Bundle();
 			args.putString("workflow_name", wf.getName());
 			args.putString("status_variable", statusVar);
+
 
 			if (template==null) {
 				emptyFragmentToExecute = wf.createFragment("EmptyTemplate");

@@ -4,9 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Map;
-import java.util.Properties;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -32,7 +29,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -46,14 +42,13 @@ import android.widget.Toast;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
-import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
-import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
-import com.teraim.fieldapp.utils.Tools;
+
+import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
 
 /**
  * Parent class for Activities having a menu row.
@@ -74,12 +69,21 @@ public class MenuActivity extends Activity   {
 	public final static String REDRAW = "com.teraim.fieldapp.menu_redraw";
 	public static final String INITDONE = "com.teraim.fieldapp.init_done";
 	public static final String INITSTARTS = "com.teraim.fieldapp.init_done";
-	public static final String INITFAILED = "com.teraim.fieldapp.init_done_but_failed";	
+	public static final String INITFAILED = "com.teraim.fieldapp.init_done_but_failed";
 	public static final String SYNC_REQUIRED = "com.teraim.fieldapp.sync_required";
 
+	public class Control {
+		public volatile boolean flag = false;
+		public boolean error=false;
+	}
+	final Control control = new Control();
+	public class MThread extends Thread {
+		public void stopMe() {};
+	}
+	MThread t;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);	
+		super.onCreate(savedInstanceState);
 		me = this;
 
 		globalPh = new PersistenceHelper(getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
@@ -109,21 +113,21 @@ public class MenuActivity extends Activity   {
 					initfailed=true;
 				}
 				else if (intent.getAction().equals(SYNC_REQUIRED)) {
-					 new AlertDialog.Builder(MenuActivity.this)
-						.setTitle("Synchronize")
-						.setMessage("The action you just performed mandates a synchronisation. Please synchronise with your partner before continuing.") 
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setCancelable(false)
-						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					new AlertDialog.Builder(MenuActivity.this)
+							.setTitle("Synchronize")
+							.setMessage("The action you just performed mandates a synchronisation. Please synchronise with your partner before continuing.")
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setCancelable(false)
+							.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								uiLock=null;			
-							}
-						})
-						.show();
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									uiLock=null;
+								}
+							})
+							.show();
 				}
-					
+
 
 				me.refreshStatusRow();
 			}
@@ -132,8 +136,8 @@ public class MenuActivity extends Activity   {
 		};
 		//Listen for bluetooth events.
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(INITDONE);		
-		filter.addAction(INITSTARTS);	
+		filter.addAction(INITDONE);
+		filter.addAction(INITSTARTS);
 		filter.addAction(REDRAW);
 		filter.addAction(INITFAILED);
 
@@ -156,8 +160,15 @@ public class MenuActivity extends Activity   {
 
 		//Stop listening for bluetooth events.
 		this.unregisterReceiver(brr);
-		if (sThread!=null)
-			sThread.interrupt();
+
+		// Unbind from the service
+		if (mBound) {
+			unbindService(mConnection);
+			mBound = false;
+		}
+
+		if (t!=null)
+			t.stopMe();
 		super.onDestroy();
 
 	}
@@ -165,11 +176,7 @@ public class MenuActivity extends Activity   {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		// Unbind from the service
-		if (mBound) {
-			unbindService(mConnection);
-			mBound = false;
-		}
+
 	}
 	@Override
 	protected void onStart() {
@@ -228,86 +235,89 @@ public class MenuActivity extends Activity   {
 
 
 	Messenger mService = null;
-	boolean syncActive=false, syncError = false;
+	boolean syncActive=false, syncError = false, syncDbInsert=false;
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler());
 	AlertDialog uiLock=null;
 	Message reply=null;
 	private boolean inSync;
 	Thread sThread = null;
+	private volatile int z_totalSynced = 0;
+	private volatile int z_totalToSync = 0;
+
+
 	class IncomingHandler extends Handler {
 
 
-		int z_totalSynced = 0;
-		int z_totalToSync = 0;
+
 
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 
-			case SyncService.MSG_SYNC_STARTED:
-				Log.d("vortex","MSG -->SYNC STARTED");
-				syncActive = true;
-				syncError=false;
-				break;
-
-			case SyncService.MSG_SYNC_ERROR_STATE:
-				String toastMsg = "";
-				Log.d("vortex","MSG -->SYNC ERROR STATE");
-				switch(msg.arg1) {
-				case SyncService.ERR_NOT_INTERNET_SYNC:				
-					Log.d("vortex","ERR NOT INTERNET SYNC...");
-					//Send a config changed msg...reload!				
-					Log.d("vortex","Turning sync off.");
-					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
-
+				case SyncService.MSG_SYNC_STARTED:
+					Log.d("vortex","MSG -->SYNC STARTED");
+					syncActive = true;
+					syncError=false;
 					break;
-				case SyncService.ERR_SETTINGS:
-					Log.d("vortex","ERR WRONG SETTINGS...");				
-					if (uiLock == null) {
-						uiLock = new AlertDialog.Builder(MenuActivity.this)
-						.setTitle("Synchronize")
-						.setMessage("Please enter a team and a user name under Settings.") 
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setCancelable(false)
-						.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								uiLock=null;			
+				case SyncService.MSG_SYNC_ERROR_STATE:
+					String toastMsg = "";
+					Log.d("vortex","MSG -->SYNC ERROR STATE");
+					switch(msg.arg1) {
+						case SyncService.ERR_NOT_INTERNET_SYNC:
+							Log.d("vortex","ERR NOT INTERNET SYNC...");
+							//Send a config changed msg...reload!
+							Log.d("vortex","Turning sync off.");
+							ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+
+							break;
+						case SyncService.ERR_SETTINGS:
+							Log.d("vortex","ERR WRONG SETTINGS...");
+							if (uiLock == null) {
+								uiLock = new AlertDialog.Builder(MenuActivity.this)
+										.setTitle("Synchronize")
+										.setMessage("Please enter a team and a user name under Settings.")
+										.setIcon(android.R.drawable.ic_dialog_alert)
+										.setCancelable(false)
+										.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+
+											@Override
+											public void onClick(DialogInterface dialog, int which) {
+												uiLock=null;
+											}
+										})
+										.show();
 							}
-						})
-						.show();
+
+							break;
+
+						case SyncService.ERR_SERVER_NOT_REACHABLE:
+							Log.d("vortex","Synkserver is currently not reachable.");
+							toastMsg = "Me --> Sync Server. No route";
+							syncError=true;
+							break;
+						case SyncService.ERR_SERVER_CONN_TIMEOUT:
+							toastMsg = "Me-->Sync Server. Connection timeout";
+							//not an error really..just turn off sync.
+							break;
+						default:
+							Log.d("vortex","Any other error!");
+							toastMsg = "Me-->Sync Server. Connection failure.";
+							syncError=true;
+							break;
 					}
-
+					if (toastMsg !=null && toastMsg.length()>0) {
+						Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
+					}
+					syncActive=false;
 					break;
 
-				case SyncService.ERR_SERVER_NOT_REACHABLE:
-					Log.d("vortex","Synkserver is currently not reachable.");
-					toastMsg = "Me --> Sync Server. No route";
-					syncError=true;
-					break;
-				case SyncService.ERR_SERVER_CONN_TIMEOUT:
-					toastMsg = "Me-->Sync Server. Connection timeout";
-					//not an error really..just turn off sync.
-					break;
-				default:
-					Log.d("vortex","Any other error!");
-					toastMsg = "Me-->Sync Server. Connection failure.";
-					syncError=true;
-					break;
-				}
-				if (toastMsg !=null && toastMsg.length()>0) {
-					Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
-				}
-				syncActive=false;
-				break;
 
 
-
-			case SyncService.MSG_SYNC_REQUEST_DB_LOCK:
-				Log.d("vortex","MSG -->SYNC REQUEST DB LOCK");
-				inSync = false;
+				case SyncService.MSG_SYNC_REQUEST_DB_LOCK:
+					Log.d("vortex","MSG -->SYNC REQUEST DB LOCK");
+					inSync = false;
 				/*
 				uiLock = new AlertDialog.Builder(MenuActivity.this)
 				.setTitle("Synchronizing")
@@ -323,95 +333,128 @@ public class MenuActivity extends Activity   {
 				})
 				.show();
 				 */
-				reply = Message.obtain(null, SyncService.MSG_DATABASE_LOCK_GRANTED);
-				try {
-					mService.send(reply);
-				} catch (RemoteException e) {
-					e.printStackTrace();
+					reply = Message.obtain(null, SyncService.MSG_DATABASE_LOCK_GRANTED);
+					try {
+						mService.send(reply);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+						syncActive=false;
+						syncError=true;
+					}
+					break;
+
+				case SyncService.MSG_DEVICE_IN_SYNC:
+					Log.d("vortex","***DEVICES IN SYNC***");
+					inSync = true;
 					syncActive=false;
-					syncError=true;
-				}
-				break;
+					syncError = false;
+					break;
 
-			case SyncService.MSG_DEVICES_IN_SYNC:
-				Log.d("vortex","***DEVICES IN SYNC***");
-				inSync = true;
-				syncActive=false;
-				syncError = false;
-				break;
+				case SyncService.MSG_SYNC_RELEASE_DB:
+					if (GlobalState.getInstance()!=null) {
+						Log.d("vortex", "MSG -->SYNC RELEASE DB LOCK");
+						//Check if something needs to be saved. If so, do it on its own thread.
+						if (!syncDbInsert) {
+							syncDbInsert = true;
+							control.flag = false;
+							z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
+							setSyncState(mnu[0]);
+							z_totalSynced = 0;
+							Log.d("vortex", "total rows to sync is: " + z_totalToSync);
+							if (t == null) {
+								t = new MThread() {
+									final int increment = 5;
 
-			case SyncService.MSG_SYNC_RELEASE_DB:
-				Log.d("vortex","MSG -->SYNC RELEASE DB LOCK");
-				//Check if something needs to be saved. If so, do it on its own thread.
+									@Override
+									public void stopMe() {
+										control.flag = true;
 
-				if (sThread==null) {
-					sThread = new Thread() {
-						@Override
-						public void run() {
-
-
-							DbHelper db = null;
-							if (GlobalState.getInstance() != null)
-								db = GlobalState.getInstance().getDb();
-							if (db == null)
-								Log.e("vortex", "DB NULL IN THREAD");
-							else {
-								boolean done = false;
-								z_totalSynced=0;
-								z_totalToSync = db.getSyncRowsLeft();
-								Log.d("vortex","total rows to sync is: "+z_totalToSync);
-								int increment = 25;
-
-								while (!this.isInterrupted() && !done) {
-									done = db.scanSyncEntries(increment);
-									if (!done) {
-										z_totalSynced+=increment;
-										runOnUiThread(new Runnable() {
-											@Override
-											public void run() {
-												mnu[0].setTitle(z_totalSynced+"/"+z_totalToSync);
-											}
-										});
+										this.interrupt();
 									}
-									else {
-										Log.d("vortex", "End reached for sync. Sending msg safely_stored");
-										if (uiLock != null)
-											uiLock.cancel();
-										uiLock = null;
 
-										reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-										syncError = false;
-										syncActive = false;
+									@Override
+									public void run() {
 
-										try {
+										while (!control.flag) {
+											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment);
+											Log.d("vortex", "done scanning syncs...threaddone is " + control.flag + " this is thread " + this.getId());
+											if (control.error) {
+												Log.d("vortex", "Uppsan...exiting");
+												syncError = true;
+												syncActive = false;
+												syncDbInsert = false;
+												break;
+											}
+											if (!control.flag && !threadDone) {
+												z_totalSynced += increment;
+											} else {
+
+												gs.sendEvent(REDRAW_PAGE);
+												Log.d("vortex", "End reached for sync. Sending msg safely_stored");
+												if (uiLock != null)
+													uiLock.cancel();
+												control.flag = true;
+												uiLock = null;
+
+												reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+												syncError = false;
+												syncActive = false;
+
+												try {
+
+
+													mService.send(reply);
+												} catch (RemoteException e) {
+													e.printStackTrace();
+													syncError = true;
+													syncActive = false;
+													syncDbInsert = false;
+
+												}
+
+											}
+											if (!control.error) {
+												runOnUiThread(new Runnable() {
+													@Override
+													public void run() {
+														setSyncState(mnu[0]);
+													}
+												});
+											}
+
+
+										}
+										Log.d("vortex", "I escaped infite");
+
+										syncDbInsert = false;
+										t = null;
+										if (!control.error) {
 											runOnUiThread(new Runnable() {
 												@Override
 												public void run() {
-													mnu[0].setTitle(z_totalToSync+"/"+z_totalToSync);
+													refreshStatusRow();
 												}
 											});
-											sThread = null;
-											mService.send(reply);
-										} catch (RemoteException e) {
-											e.printStackTrace();
-											syncError = true;
-											syncActive = false;
-											sThread = null;
 										}
 									}
-								}
-							}
-						}
-					};
-					sThread.setPriority(Thread.MIN_PRIORITY);
-					sThread.start();
-				} else {
-					Log.e("vortex","Extra call made to SYNC RELEASE DB LOCK");
-				}
-				syncActive = false;
-				syncError = false;
+								};
 
-				break;
+								t.setPriority(Thread.MIN_PRIORITY);
+								t.start();
+
+							} else
+								Log.e("vortex", "EXTRA CALL ON THREADSTART");
+
+						} else {
+							Log.e("vortex", "Extra call made to SYNC RELEASE DB LOCK");
+						}
+						syncActive = false;
+						syncError = false;
+					} else {
+						syncActive=false;
+						syncError=true;
+					}
+					break;
 			}
 			Log.d("Vortex","Refreshing status row. status is se: "+syncError+" sA: "+syncActive);
 			refreshStatusRow();
@@ -456,7 +499,7 @@ public class MenuActivity extends Activity   {
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		animView = (ImageView)inflater.inflate(R.layout.refresh_load_icon, null);
 
-		for(int c=0;c<mnu.length;c++) 
+		for(int c=0;c<mnu.length;c++)
 			mnu[c]=menu.add(0,c,c,"");
 
 
@@ -481,14 +524,14 @@ public class MenuActivity extends Activity   {
 				mnu[mnu.length - 1].setVisible(true);
 				mnu[mnu.length - 1].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 			}
-		} else 	if (GlobalState.getInstance()!=null && initdone) { 
+		} else 	if (GlobalState.getInstance()!=null && initdone) {
 			gs = GlobalState.getInstance();
-			if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE") || gs.isSolo()) 
+			if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE") || gs.isSolo())
 				mnu[0].setVisible(false);
-			else 
+			else
 				setSyncState(mnu[0]);
 
-			mnu[1].setVisible(true);		
+			mnu[1].setVisible(true);
 			mnu[2].setVisible(!globalPh.get(PersistenceHelper.LOG_LEVEL).equals("off"));
 			if (debugLogger.hasRed()) {
 				mnu[2].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -502,11 +545,13 @@ public class MenuActivity extends Activity   {
 
 	private void setSyncState(final MenuItem menuItem) {
 		//Log.d("vortex","Entering setsyncstate");
-		menuItem.setTitle(gs.getDb().getNumberOfUnsyncedEntries()+"");
+		String title=null;
 		boolean internetSync = globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet");
 		Integer ret = R.drawable.syncoff;
-		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth"))
+		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth")) {
 			ret = R.drawable.bt;
+			title = gs.getDb().getNumberOfUnsyncedEntries()+"";
+		}
 		else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE"))
 			ret = null;
 
@@ -514,7 +559,7 @@ public class MenuActivity extends Activity   {
 			if (syncError) {
 				//menuItem.setTitle("!ERROR!");
 				ret = R.drawable.syncerr;
-			} 
+			}
 			else if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY))
 				ret = R.drawable.syncoff;
 			else if (inSync) {
@@ -531,7 +576,7 @@ public class MenuActivity extends Activity   {
 						@Override
 						public void onClick(View v) {
 							animView.clearAnimation();
-							menuItem.setActionView(null); 
+							menuItem.setActionView(null);
 							menuItem.setOnMenuItemClickListener(null);
 							animView.setOnClickListener(null);
 							animationRunning = false;
@@ -541,17 +586,25 @@ public class MenuActivity extends Activity   {
 					animationRunning=true;
 				}
 				return;
-			} else {
+			}
+			else if (syncDbInsert) {
+				title = (z_totalSynced+"/"+z_totalToSync);
+				ret = R.drawable.dbase;
+			}
+			else {
 				ret = R.drawable.syncon;
 				Log.d("vortex","icon set to syncon!");
 			}
 		}
+		if ( title == null)
+			title = gs.getDb().getNumberOfUnsyncedEntries()+"";
 		animationRunning = false;
 		animView.clearAnimation();
-		menuItem.setActionView(null); 
+		menuItem.setActionView(null);
 		menuItem.setOnMenuItemClickListener(null);
 		animView.setOnClickListener(null);
 		menuItem.setIcon(ret);
+		menuItem.setTitle(title);
 		menuItem.setVisible(true);
 		Log.d("vortex","Exiting setsyncstate");
 	}
@@ -565,115 +618,115 @@ public class MenuActivity extends Activity   {
 			selection = 99;
 
 		switch (selection) {
-		case 0:
-			toggleSyncOnOff();
-			break;
-		case 1:			
-			if (gs!=null && gs.getVariableCache()!=null) {
-			Object moo=null;
-				moo.equals("moo");
-			new AlertDialog.Builder(this)
-			.setTitle("Context")
-			.setMessage(gs.getVariableCache().getContext().toString()) 
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.setCancelable(false)
-			.setNeutralButton("Ok",new Dialog.OnClickListener() {				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+			case 0:
+				toggleSyncOnOff();
+				break;
+			case 1:
+				if (gs!=null && gs.getVariableCache()!=null) {
+					Object moo=null;
+					moo.equals("moo");
+					new AlertDialog.Builder(this)
+							.setTitle("Context")
+							.setMessage(gs.getVariableCache().getContext().toString())
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setCancelable(false)
+							.setNeutralButton("Ok",new Dialog.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
 
+								}
+							} )
+							.show();
 				}
-			} )
-			.show();
-			}
-			break;
+				break;
 
-		case 2:
-			mnu[2].setIcon(null);
-			final Dialog dialog = new Dialog(this);
-			dialog.setContentView(R.layout.log_dialog_popup);
-			dialog.setTitle("Session Log");
-			final TextView tv=(TextView)dialog.findViewById(R.id.logger);
-			final ScrollView sv=(ScrollView)dialog.findViewById(R.id.logScroll);
-			Typeface type=Typeface.createFromAsset(getAssets(),
-					"clacon.ttf");
-			tv.setTypeface(type);
-			final LoggerI log = Start.singleton.getLogger();
-			log.setOutputView(tv);
-			//trigger redraw.
-			log.draw();
-			Button close=(Button)dialog.findViewById(R.id.log_close);
-			dialog.show();
-			close.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-					log.setOutputView(null);
-				}
-			});
-			Button clear = (Button)dialog.findViewById(R.id.log_clear);
-			clear.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					log.clear();
-					gs.getVariableCache().printCache();
-				}
-			});
-			Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);
-			scrollD.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					sv.post(new Runnable() {
-						@Override
-						public void run() {
-							sv.fullScroll(ScrollView.FOCUS_DOWN);
+			case 2:
+				mnu[2].setIcon(null);
+				final Dialog dialog = new Dialog(this);
+				dialog.setContentView(R.layout.log_dialog_popup);
+				dialog.setTitle("Session Log");
+				final TextView tv=(TextView)dialog.findViewById(R.id.logger);
+				final ScrollView sv=(ScrollView)dialog.findViewById(R.id.logScroll);
+				Typeface type=Typeface.createFromAsset(getAssets(),
+						"clacon.ttf");
+				tv.setTypeface(type);
+				final LoggerI log = Start.singleton.getLogger();
+				log.setOutputView(tv);
+				//trigger redraw.
+				log.draw();
+				Button close=(Button)dialog.findViewById(R.id.log_close);
+				dialog.show();
+				close.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						dialog.dismiss();
+						log.setOutputView(null);
+					}
+				});
+				Button clear = (Button)dialog.findViewById(R.id.log_clear);
+				clear.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						log.clear();
+						gs.getVariableCache().printCache();
+					}
+				});
+				Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);
+				scrollD.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						sv.post(new Runnable() {
+							@Override
+							public void run() {
+								sv.fullScroll(ScrollView.FOCUS_DOWN);
+							}
+						});
+					}
+				});
+				Button print = (Button)dialog.findViewById(R.id.printdb);
+				Button printLog = (Button)dialog.findViewById(R.id.printlog);
+
+				print.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						gs.getBackupManager().backupDatabase("dump");
+					}
+				});
+
+				printLog.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						printLog(log.getLogText());
+					}
+
+					private void printLog(CharSequence logText) {
+						if (logText==null || logText.length()==0)
+							return;
+						try {
+							String fileName = "log.txt";
+							File outputFile = new File(Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/backup/", fileName);
+							BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+							writer.write(logText.toString());
+							Toast.makeText(MenuActivity.this.getApplicationContext(),
+									"LOG successfully written to backup folder. Name: " + fileName,
+									Toast.LENGTH_LONG).show();
+							writer.close();
 						}
-					});
-				}
-			});
-			Button print = (Button)dialog.findViewById(R.id.printdb);
-			Button printLog = (Button)dialog.findViewById(R.id.printlog);
+						catch (IOException e) {
+							Log.e("Exception", "File write failed: " + e.toString());
+						}
 
-			print.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					gs.getBackupManager().backupDatabase("dump");
-				}
-			});
-
-			printLog.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					printLog(log.getLogText());
-				}
-
-				private void printLog(CharSequence logText) {
-					if (logText==null || logText.length()==0)
-						return;
-					try {
-						String fileName = "log.txt";
-						File outputFile = new File(Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/backup/", fileName);
-						BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-						writer.write(logText.toString());
-						Toast.makeText(MenuActivity.this.getApplicationContext(),
-								"LOG successfully written to backup folder. Name: " + fileName,
-								Toast.LENGTH_LONG).show();
-						writer.close();
 					}
-					catch (IOException e) {
-						Log.e("Exception", "File write failed: " + e.toString());
-					}
+				});
+				break;
 
-				}
-			});
-			break;
-
-		case 99:
-			//close drawer menu if open
-			if (Start.singleton.getDrawerMenu()!=null)
-				Start.singleton.getDrawerMenu().closeDrawer();
-			Intent intent = new Intent(getBaseContext(),ConfigMenu.class);
-			startActivity(intent);
-			return true;
+			case 99:
+				//close drawer menu if open
+				if (Start.singleton.getDrawerMenu()!=null)
+					Start.singleton.getDrawerMenu().closeDrawer();
+				Intent intent = new Intent(getBaseContext(),ConfigMenu.class);
+				startActivity(intent);
+				return true;
 		}
 		return false;
 	}
@@ -698,18 +751,18 @@ public class MenuActivity extends Activity   {
 					String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
 					if (user==null || user.length()==0 || team==null || team.length()==0) {
 						new AlertDialog.Builder(this)
-						.setTitle("Sync cannot start")
-						.setMessage("Missing team ["+team+"] or user name ["+user+"]. Please add under the Settings menu") 
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setCancelable(false)
-						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								syncError=false;
-								syncActive=false;
-							}
-						})
-						.show();
+								.setTitle("Sync cannot start")
+								.setMessage("Missing team ["+team+"] or user name ["+user+"]. Please add under the Settings menu")
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.setCancelable(false)
+								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										syncError=false;
+										syncActive=false;
+									}
+								})
+								.show();
 					}
 
 					/*
@@ -729,7 +782,13 @@ public class MenuActivity extends Activity   {
 						.show();
 					}
 					 */
-					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);		
+					if (!isSynkServiceRunning()) {
+						Log.d("vortex", "The service is not bound yet...try that first before starting it.");
+						this.onResume();
+
+					}
+
+					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);
 				} else {
 					Log.d("vortex", "Trying to stop Internet sync");
 					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
@@ -737,10 +796,25 @@ public class MenuActivity extends Activity   {
 						Log.d("vortex","Resetting sync error");
 						syncError=false;
 					}
+					if (syncDbInsert){
+
+						t.stopMe();
+						Log.e("vortex","control flag is now true");
+					}
+					reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
+					try {
+						mService.send(reply);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+						syncActive=false;
+						syncError=true;
+					}
+
+
+
 				}
 
 				refreshStatusRow();
-
 
 			}
 		}
@@ -805,18 +879,18 @@ public class MenuActivity extends Activity   {
 
 
 	/**
-	 * 
+	 *
 	 * @author Terje
 	 *
-	 * Helper class that allows other threads to interact with the UI main thread. 
+	 * Helper class that allows other threads to interact with the UI main thread.
 	 * Caller must override onClose for specific actions to happen when aborting sync.
 	 */
 
 	public class UIProvider {
 
-		public static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6; 
+		public static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6;
 		private String row1="",row2="";
-		private AlertDialog uiBlockerWindow=null;  
+		private AlertDialog uiBlockerWindow=null;
 		public static final int Destroy_Sync = 1;
 
 		Handler mHandler= new Handler(Looper.getMainLooper()) {
@@ -825,47 +899,47 @@ public class MenuActivity extends Activity   {
 			private void oneButton() {
 				dismiss();
 				uiBlockerWindow =  new AlertDialog.Builder(mContext)
-				.setTitle("Synchronizing")
-				.setMessage("Receiving data..standby") 
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setCancelable(false)
-				.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+						.setTitle("Synchronizing")
+						.setMessage("Receiving data..standby")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setCancelable(false)
+						.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
 
-						onClose();
-					}
-				})
-				.show();
+								onClose();
+							}
+						})
+						.show();
 				twoButton=false;
 			}
 
 			private void twoButton(final ConfirmCallBack cb) {
 				dismiss();
 				uiBlockerWindow =  new AlertDialog.Builder(mContext)
-				.setTitle("Synchronizing")
-				.setMessage("Receiving data..standby") 
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setCancelable(false)
-				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+						.setTitle("Synchronizing")
+						.setMessage("Receiving data..standby")
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setCancelable(false)
+						.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//onClose must be overridden. 
-						onClose();				
-					}
-				})
-				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								//onClose must be overridden.
+								onClose();
+							}
+						})
+						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
 
-						cb.confirm();
+								cb.confirm();
 
-					}
-				})
-				.show();
+							}
+						})
+						.show();
 				twoButton=true;
 			}
 
@@ -879,37 +953,37 @@ public class MenuActivity extends Activity   {
 			public void handleMessage(Message msg) {
 
 				switch (msg.what) {
-				case LOCK:
-					oneButton();
-					Log.d("vortex","I get here?");
-					break;
-				case UNLOCK:
-					uiBlockerWindow.cancel();
-					break;
-				case ALERT:
-					if (twoButton)
+					case LOCK:
 						oneButton();
-					row1 = (String)msg.obj;
-					row2="";
-					uiBlockerWindow.setMessage(row1+"\n"+row2);
+						Log.d("vortex","I get here?");
+						break;
+					case UNLOCK:
+						uiBlockerWindow.cancel();
+						break;
+					case ALERT:
+						if (twoButton)
+							oneButton();
+						row1 = (String)msg.obj;
+						row2="";
+						uiBlockerWindow.setMessage(row1+"\n"+row2);
 
 
 
-					break;
-				case UPDATE:
-					row1 = (String)msg.obj;
-					uiBlockerWindow.setMessage(row1+"\n"+row2);
-					break;
-				case UPDATE_SUB:
-					row2 = (String)msg.obj;
-					uiBlockerWindow.setMessage(row1+"\n"+row2);
-					break;
+						break;
+					case UPDATE:
+						row1 = (String)msg.obj;
+						uiBlockerWindow.setMessage(row1+"\n"+row2);
+						break;
+					case UPDATE_SUB:
+						row2 = (String)msg.obj;
+						uiBlockerWindow.setMessage(row1+"\n"+row2);
+						break;
 
-				case CONFIRM:
-					if (!twoButton)
-						twoButton((ConfirmCallBack)msg.obj);
+					case CONFIRM:
+						if (!twoButton)
+							twoButton((ConfirmCallBack)msg.obj);
 
-					break;
+						break;
 
 				}
 
@@ -936,7 +1010,7 @@ public class MenuActivity extends Activity   {
 		}
 
 		/**
-		 * 
+		 *
 		 * @param msg
 		 * Shows message and switched to one button dialog.
 		 */
@@ -965,7 +1039,7 @@ public class MenuActivity extends Activity   {
 		}
 
 		/**
-		 * 
+		 *
 		 * @param msg
 		 * Shows message and switched to two button dialog. Callback if positive ok is pressed. Otherwise onClose.
 		 */
@@ -975,12 +1049,12 @@ public class MenuActivity extends Activity   {
 		}
 
 		/**
-		 * 
+		 *
 		 * @param msg
 		 * Does not change dialog type.
 		 */
 		public void update(String msg) {
-			mHandler.obtainMessage(UPDATE,msg).sendToTarget();			
+			mHandler.obtainMessage(UPDATE,msg).sendToTarget();
 
 
 		}

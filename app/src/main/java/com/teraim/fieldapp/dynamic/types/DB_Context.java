@@ -136,7 +136,7 @@ public class DB_Context implements Serializable {
 				o.addRedText(err);
 				return new DB_Context(err);
 			} else {
-				Log.d("vortex","DB_CONTEXT evaluate returns: "+keyHash+ " for "+eContext+" isPartial "+hasWildCard);
+				//Log.d("vortex","DB_CONTEXT evaluate returns: "+keyHash+ " for "+eContext+" isPartial "+hasWildCard);
 				if (hasWildCard) {
 					keyHash=GlobalState.getInstance().getDb().createNotNullSelection(keyHash);
 					Log.d("vortex","DB_CONTEXT ACTUALLY returns: "+keyHash+ " for "+eContext+" isPartial "+hasWildCard);

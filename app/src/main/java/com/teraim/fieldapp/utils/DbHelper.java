@@ -216,7 +216,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             if ((System.currentTimeMillis()/1000 - timeStamp) > 3600) {
                 Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis()/1000 - timeStamp));
-               isOld = true;
+                isOld = true;
             }
             if (ret==null)
                 ret = new HashMap<String, LocationAndTimeStamp>();
@@ -226,7 +226,7 @@ public class DbHelper extends SQLiteOpenHelper {
         qx.close();
         qy.close();
 
-       return ret;
+        return ret;
 
     }
 
@@ -1390,10 +1390,11 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor c = null;
         SyncStatus syncStatus=new SyncStatus();
         String myTeam = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-        for (SyncEntry s : ses) {
-            try {
+        try {
+            for (SyncEntry s : ses) {
+
                 //Log.d("vortex", "SYNC:");
-               // Log.d("plaz", "s.target :" + s.getTarget());
+                // Log.d("plaz", "s.target :" + s.getTarget());
                 //Log.d("plaz", "s.changes :" + s.getChange());
                 //Log.d("plaz", "s.timestamp :" + s.getTimeStamp());
 
@@ -1408,7 +1409,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         //Log.d("plaz", "discarding arrayobject...too oold");
                         continue;
                     } //else
-                       // Log.d("plaz", "not discarding!!");
+                    // Log.d("plaz", "not discarding!!");
 
                 }
                 if (synC % 10 == 0) {
@@ -1416,7 +1417,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     if (ui != null)
                         ui.setInfo(syncStatusS);
                     syncStatus.setStatus(syncStatusS);
-                    syncListener.send(syncStatus);
+                    if (syncListener != null)
+                        syncListener.send(syncStatus);
                 }
 
 
@@ -1487,12 +1489,12 @@ public class DbHelper extends SQLiteOpenHelper {
                     Selection sel = this.createSelection(keySet, name);
                     //Log.d("vortex", "Selection:  " + sel.selection);
                     //if (sel.selectionArgs != null) {
-                        //StringBuilder xor = new StringBuilder("");
-                        //for (String sz : sel.selectionArgs) {
-                        //    xor.append(sz);
-                        //    xor.append(",");
-                        //}
-                        //Log.d("sync", "Selection ARGS: " + xor);
+                    //StringBuilder xor = new StringBuilder("");
+                    //for (String sz : sel.selectionArgs) {
+                    //    xor.append(sz);
+                    //    xor.append(",");
+                    //}
+                    //Log.d("sync", "Selection ARGS: " + xor);
                     //}
 
                     c = getExistingVariableCursor(name, sel);
@@ -1584,7 +1586,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 } else {
                     if (s.isDelete()) {
                         keySet.clear();
-                        //                Log.d("sync", "Got Delete for: " + s.getTarget());
+                                    Log.d("sync", "Got Delete for: " + s.getTarget());
                         String[] sChanges = null;
                         if (s.getChange() != null)
                             sChanges = s.getChange().split("\\|");
@@ -1615,8 +1617,8 @@ public class DbHelper extends SQLiteOpenHelper {
                             }
 
                         }
-                        //                Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
-                        //Log.d("sync","Keyset:  "+keySet.toString());
+                                        Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
+                        Log.d("sync","Keyset:  "+keySet.toString());
 
                         Selection sel = this.createSelection(keySet, name);
                         //Log.d("sync","Selection:  "+sel.selection);
@@ -1624,8 +1626,8 @@ public class DbHelper extends SQLiteOpenHelper {
                             String xor = "";
                             for (String sz : sel.selectionArgs)
                                 xor += sz + ",";
-                            //                   Log.d("nils", "Selection ARGS: " + xor);
-                            //                   Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
+                                               Log.d("nils", "Selection ARGS: " + xor);
+                                               Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
                             //Check timestamp. If timestamp is older, delete. Otherwise skip.
 
                             //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
@@ -1647,13 +1649,13 @@ public class DbHelper extends SQLiteOpenHelper {
                             } else
                                 Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
                             if (!existingTimestampIsMoreRecent) {
-                                //                        Log.d("sync", "Deleting " + name);
+                                                       Log.d("sync", "Deleting " + name);
                                 this.deleteVariable(s.getTarget(), sel, false);
                                 vc.insert(name, keyHash, null);
                                 changes.deletes++;
                             } else {
                                 changes.refused++;
-                                //                       Log.d("sync", "Did not delete...a newer entry exists in database.");
+                                                       Log.d("sync", "Did not delete...a newer entry exists in database.");
                                 //                       o.addRow("");
                                 //                       o.addYellowText("DB_DELETE REFUSED: " + name);
                                 //                       if (hasValueAlready)
@@ -1684,37 +1686,44 @@ public class DbHelper extends SQLiteOpenHelper {
                         }
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+
+                if (c!=null)
+                    c.close();
             }
-            if (c!=null)
-                c.close();
+                //Log.d("vortex", "Touched variables: "+touchedVariables.toString());
+                if (ui != null)
+                    ui.setInfo(synC + "/" + size);
+                //Log.d("sync","UNLOCK!");
+                endTransactionSuccess();
+
+                //Add instructions in log if conflicts.
+                if (changes.conflicts > 0) {
+                    o.addRow("");
+                    o.addRedText("You *may* have sync conflicts in the following workflow(s): ");
+                    int i = 1;
+                    for (String flow : conflictFlows) {
+                        o.addRow("");
+                        o.addRedText(i + ".: " + flow);
+                        i++;
+                    }
+
+                    o.addRedText("Verify that the values are correct. If not, make corrections and resynchronise!");
+                }
+                if (resetCache)
+                    vc.reset();
+
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         //Invalidate all variables touched.
         // for (String varName : touchedVariables)
         //    vc.invalidateOnName(varName);
 
-        //Log.d("vortex", "Touched variables: "+touchedVariables.toString());
-        if (ui != null)
-            ui.setInfo(synC + "/" + size);
-        //Log.d("sync","UNLOCK!");
-        endTransactionSuccess();
 
-        //Add instructions in log if conflicts.
-        if (changes.conflicts > 0) {
-            o.addRow("");
-            o.addRedText("You *may* have sync conflicts in the following workflow(s): ");
-            int i = 1;
-            for (String flow : conflictFlows) {
-                o.addRow("");
-                o.addRedText(i + ".: " + flow);
-                i++;
-            }
 
-            o.addRedText("Verify that the values are correct. If not, make corrections and resynchronise!");
-        }
-        if (resetCache)
-            vc.reset();
         return changes;
     }
 
@@ -1896,6 +1905,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public int deleteAllVariablesUsingKey(Map<String, String> keyHash) {
         if (keyHash == null)
             return -1;
+
+
         String queryP = "";
         String[] valA = new String[keyHash.keySet().size()];
         Iterator<String> it = keyHash.keySet().iterator();
@@ -2357,52 +2368,70 @@ public class DbHelper extends SQLiteOpenHelper {
         return 0;
     }
 
-    public boolean scanSyncEntries(int maxR) {
+    public boolean scanSyncEntries(MenuActivity.Control control, int maxR) {
 
 
         Cursor c = db.rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc limit "+maxR, null);
         byte[] row;
         int sesTot = 0;int inserts = 0; int count = 0;
         int id=-1;
+        try {
+            while (!control.flag && c.moveToNext()) {
 
-        while (c.moveToNext() ) {
-           row = c.getBlob(1);
-            id = c.getInt(0);
-            if (row != null) {
-                Object o = Tools.bytesToObject(row);
-                if (o != null) {
-                    SyncEntry[] ses = (SyncEntry[]) o;
-                    if (ses!=null)
-                        sesTot += ses.length;
-                    //final AlertDialog uiBlockerWindow;
-                    Log.d("plaz","calling SYNCHRONISE WITH "+ses.length+" entries!");
-                     final SyncReport syncReport = this.synchronise(ses, null, GlobalState.getInstance().getLogger(), new SyncStatusListener() {
+                row = c.getBlob(1);
+                id = c.getInt(0);
+                if (row != null) {
+                    Object o = Tools.bytesToObject(row);
+                    if (o != null) {
+                        SyncEntry[] ses = (SyncEntry[]) o;
+                        if (ses != null) {
+                            sesTot += ses.length;
 
-                        @Override
-                        public void send(Object entry) {
-                            //if (uiBlockerWindow!=null)
-                            //   uiBlockerWindow.setMessage(((SyncStatus)entry).getStatus());
+                            int st = 0;
+                            Log.d("plaz", "calling SYNCHRONISE WITH " + ses.length + " entries!");
+                            while (!control.flag && st < ses.length) {
 
-                            // Log.d("vortex","Synkstatus: "+((SyncStatus)entry).getStatus());
+                                //final AlertDialog uiBlockerWindow;
+
+                                SyncEntry[] ses2;
+
+
+                                //Log.d("vortex","ses l"+ses.length+" st "+st);
+                                ses2 = Arrays.copyOfRange(ses, st, Math.min(st + 10, ses.length));
+                                st += 10;
+
+                                if (GlobalState.getInstance()==null) {
+                                    control.error=true;
+                                    break;
+                                }
+                                final SyncReport syncReport = this.synchronise(ses2, null, GlobalState.getInstance().getLogger(), null);
+                                if (syncReport != null && syncReport.hasChanges()) {
+                                    //Log.d("plaz", "Inserts done: " + syncReport.inserts);
+                                    inserts += syncReport.inserts;
+                                }
+                            }
+                            //Log.d("vortex","isdone is "+control.flag);
                         }
-                    });
-                    if (syncReport != null && syncReport.hasChanges()) {
-                        Log.d("plaz","synk for this block done. Inserts done: "+syncReport.inserts);
-                        inserts+= syncReport.inserts;
-                    }
-                } else
-                    Log.e("vortex", "Object was null!!!");
+                    } else
+                        Log.e("vortex", "Object was null!!!");
+                }
+
+                count++;
+
             }
 
-            count++;
+            c.close();
+            Log.d("plaz", "in total " + sesTot + " syncobjects and " + inserts + " inserts");
+            Log.d("plaz", "Deleting entries in table_sync with id less than or equal to " + id);
+            if (id != -1 && !control.error)
+                if (db.delete(TABLE_SYNC, "id <=" + id, null) == 0)
+                    Log.e("vortex", "failed to delete curent row in sync table!!");
+        }catch (IllegalStateException e) {
+            e.printStackTrace();
+            Log.d("vortex","Database closed?");
+            Log.d("vortex","Control flag is : "+control.flag);
+            control.error=true;
         }
-        c.close();
-        Log.d("plaz","in total "+sesTot+" syncobjects and "+inserts+" inserts");
-        Log.d("plaz", "Deleting entries in table_sync with id less than or equal to "+id);
-        if (id != -1)
-            if (db.delete(TABLE_SYNC, "id <=" + id, null) == 0)
-                Log.e("vortex","failed to delete curent row in sync table!!");
-
         return count != maxR;
     }
 

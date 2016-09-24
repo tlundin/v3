@@ -28,6 +28,7 @@ public class WF_StatusButton extends WF_Button {
     private final WF_Context myContext;
     private List<Expressor.EvalExpr> hash;
     Variable statusVariable=null;
+    private Status myStatus=Status.none;
 
     public static Button createInstance(int statusOrdinal, String text, Context ctx) {
 
@@ -41,6 +42,7 @@ public class WF_StatusButton extends WF_Button {
 
         Button button = (Button)inflater.inflate(layout,null);
         button.setText(text);
+
         return button;
     }
 
@@ -59,6 +61,7 @@ public class WF_StatusButton extends WF_Button {
             case 3:
                 s=Status.ready;
                 break;
+
         }
         return s;
     }
@@ -71,7 +74,7 @@ public class WF_StatusButton extends WF_Button {
         } else
             statusContext = DB_Context.evaluate(hash);
         if (statusContext!=null)
-            statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
+            setStatusVariable(statusContext);
 
        if (statusVariable!=null) {
            int statusI = 0;
@@ -87,10 +90,20 @@ public class WF_StatusButton extends WF_Button {
                Log.e("vortex", "Parseerror in refresh status. This is not an integer: " + statusVariable.getValue());
            }
            ;
-           refreshButton(WF_StatusButton.getIdFromStatus(getStatusFromOrdinal(statusI)));
+           myStatus = getStatusFromOrdinal(statusI);
+           refreshButton(WF_StatusButton.getIdFromStatus(myStatus));
        }
        return (statusVariable!=null);
 
+    }
+
+
+    private void setStatusVariable(DB_Context statusContext) {
+        statusVariable = GlobalState.getInstance().getVariableCache().getVariable(statusContext.getContext(),statusVariableName);
+    }
+
+    public Status getStatus() {
+        return myStatus;
     }
 
     public enum Status {

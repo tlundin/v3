@@ -395,47 +395,75 @@ public  class ButtonBlock extends Block  implements EventListener {
 							} else if (onClick.equals("export")) {
 								Map<String, String> exportContext = null;
 								String msg = null;
-								if (buttonContext!=null) {
+								if (buttonContext != null) {
 									exportContext = buttonContext.getContext();
 								} else {
-									Log.e("export","Export failed...no context");
+									Log.e("export", "Export failed...no context");
 								}
 								//msg is  null if no errors.
 								if (msg == null) {
+									boolean done = false;
+									WF_StatusButton statusButton = null;
+									if (button instanceof WF_StatusButton) {
+										statusButton = ((WF_StatusButton) button);
+										WF_StatusButton.Status status = statusButton.getStatus();
+										if (status == WF_StatusButton.Status.ready) {
+											final WF_StatusButton tmpSB = statusButton;
+											new AlertDialog.Builder(ctx)
+													.setTitle("Reset")
+													.setMessage("Are you sure you want to reset this button? Status will change back to neutral.")
+													.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+														public void onClick(DialogInterface dialog, int which) {
+															tmpSB.changeStatus(WF_StatusButton.Status.none);
+														}
+													})
+													.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+														@Override
+														public void onClick(DialogInterface dialog, int which) {
 
-									exportFileName = getTarget();
-									if (exportFormat == null)
-										exportFormat = "csv";
-									exportFormat = exportFormat.toLowerCase();
-									Exporter exporter = Exporter.getInstance(ctx, exportFormat);
-									Report jRep = gs.getDb().export(exportContext, exporter, exportFileName);
-									if (jRep.er == ExportReport.OK) {
-										msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
-										msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
-										if (button instanceof WF_StatusButton)
-											((WF_StatusButton)button).changeStatus(WF_StatusButton.Status.ready);
-									} else {
-										if (jRep.er == ExportReport.NO_DATA)
-											msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
-										else
-											msg = "Export failed. Reason: " + jRep.er.name();
+														}
+													})
+													.setIcon(android.R.drawable.ic_dialog_alert)
+													.show();
 
-
+											done = true;
+										}
 									}
-									//Context was broken
+									if (!done) {
+										exportFileName = getTarget();
+										if (exportFormat == null)
+											exportFormat = "csv";
+										exportFormat = exportFormat.toLowerCase();
+										Exporter exporter = Exporter.getInstance(ctx, exportFormat);
+										Report jRep = gs.getDb().export(exportContext, exporter, exportFileName);
+										if (jRep.er == ExportReport.OK) {
+											msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
+											msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
+
+										} else {
+											if (jRep.er == ExportReport.NO_DATA)
+												msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
+											else
+												msg = "Export failed. Reason: " + jRep.er.name();
 
 
+										}
+										if (statusButton!=null) {
+											statusButton.changeStatus(WF_StatusButton.Status.ready);
+										}
+
+										new AlertDialog.Builder(ctx)
+												.setTitle("Export done")
+												.setMessage(msg)
+												.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog, int which) {
+													}
+												})
+												.setIcon(android.R.drawable.ic_dialog_alert)
+												.show();
+									}
 								}
 
-								new AlertDialog.Builder(ctx)
-								.setTitle("Export done")
-								.setMessage(msg)
-								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
-									}
-								})
-								.setIcon(android.R.drawable.ic_dialog_alert)
-								.show();
 							} else if (onClick.equals("Start_Camera")) {
 								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 								File file = new File(Constants.PIC_ROOT_DIR,getTarget());

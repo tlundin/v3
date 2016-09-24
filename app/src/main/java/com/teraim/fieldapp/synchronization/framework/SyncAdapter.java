@@ -7,7 +7,6 @@ import java.io.StreamCorruptedException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,9 +30,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.Start;
-import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
@@ -129,8 +125,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
 	@Override
-	public void onPerformSync(Account account, Bundle extras, String authority,
-			ContentProviderClient provider, SyncResult syncResult) {
+	public void onPerformSync(Account accountz, Bundle extrasz, String authorityz,
+			ContentProviderClient providerz, SyncResult syncResultz) {
 
 		int err = -1;
 
@@ -183,8 +179,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		busy = true;
 		Log.e("vortex", "BUSY NOW TRUE");
 
-		//We dont know this timestamp.
-		gh.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null).apply();
 
 		//Get data entries to sync if any.
 
@@ -369,7 +363,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	public void updateCounters() {
 		Log.d("vortex","In Sync UpdateCounters");
 		//Here it is safe to update the timestamp for syncentries received from server.
-		String potentialStamp = gh.getString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null);
+
+		String potentialStamp = ph.getString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null);
 		if (potentialStamp!=null) {
 			gh.edit().putString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,
 					potentialStamp).apply();
@@ -474,14 +469,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					if (reply instanceof String) {
 						Log.d("vortex","received timestamp for next cycle: "+reply);
 						//This should be the Timestamp of the last entry arriving.
-						gh.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(String)reply).apply();
+						ph.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(String)reply).apply();
 						Log.d("vortex","Inserted rows: "+insertedRows);
 						objIn.close();
 						objOut.close();
-						if (insertedRows == 0 && sa == null ) {
-							Log.d("vortex","Both devices in sync!!!");
+						if (insertedRows == 0 ) {
+							Log.d("vortex","In sync with server!!!");
 							busy = false;
-							return Message.obtain(null, SyncService.MSG_DEVICES_IN_SYNC);
+							return Message.obtain(null, SyncService.MSG_DEVICE_IN_SYNC);
 						} else {
 							Log.d("vortex","Insert into DB begins");
 							return Message.obtain(null, SyncService.MSG_SYNC_REQUEST_DB_LOCK);

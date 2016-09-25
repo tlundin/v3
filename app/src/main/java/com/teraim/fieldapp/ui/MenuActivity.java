@@ -789,6 +789,17 @@ public class MenuActivity extends Activity   {
 					}
 
 					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);
+					if (isSynkServiceRunning()) {
+						Log.d("vortex","sync service is running...sending msg");
+						reply = Message.obtain(null, SyncService.MSG_USER_STARTED_SYNC);
+						try {
+							mService.send(reply);
+						} catch (RemoteException e) {
+							e.printStackTrace();
+							syncActive = false;
+							syncError = true;
+						}
+					}
 				} else {
 					Log.d("vortex", "Trying to stop Internet sync");
 					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);

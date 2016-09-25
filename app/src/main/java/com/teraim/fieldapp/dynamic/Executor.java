@@ -935,7 +935,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			AddGisPointObjects bl;
 			if (b instanceof AddGisPointObjects) {
 				bl = ((AddGisPointObjects) b);
-				bl.create(myContext, false);
+				bl.create(myContext, true);
 			}
 		}
 		for (GisLayer layer :myContext.getCurrentGis().getLayers())

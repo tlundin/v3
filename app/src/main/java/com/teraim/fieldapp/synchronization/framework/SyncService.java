@@ -80,7 +80,7 @@ public class SyncService extends Service {
 					sSyncAdapter.releaseLock();
 					break;
 				case MSG_USER_STARTED_SYNC:
-					sSyncAdapter.onPerformSync(null,null,null,null,null);
+					//sSyncAdapter.onPerformSync(null,null,null,null,null);
 					break;
                 default:
                     super.handleMessage(msg);

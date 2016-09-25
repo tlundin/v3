@@ -169,10 +169,13 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			}
 			if (refresh) {
 				Log.d("vortex","This is a refreshcall!");
-				if (dynamic) {
+				if (dynamic || this.onClick==null) {
 					//Dynamic objects are refreshed by themselves.
+					//Objects with no workflow cannot be changed by sync. Thus, no need to refresh.
+					Log.d("vortex","No need to refresh "+this.getName());
 					return;
 				}
+
 			}
 		}
 
@@ -262,26 +265,27 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		if (this.getStatusVariable()!=null) {
 
 			statusVarS = GlobalState.getInstance().getDb().createSelection(currYearH, this.getStatusVariable().trim());
+			/*
 			if (refresh) {
 				statusVarS.selection+=" and timestamp > ?";
 				String[] s =Arrays.copyOf(statusVarS.selectionArgs, statusVarS.selectionArgs.length+1);
 				s[statusVarS.selectionArgs.length] = lastCheckTimeStamp;
 				statusVarS.selectionArgs = s;
 			}
-			
+			*/
 			pickerStatusVars = GlobalState.getInstance().getDb().getAllVariableInstances(statusVarS);
 		}
 
 
 		coordVar1S = GlobalState.getInstance().getDb().createSelection(objectKeyHash.getContext(), locationVar1);
 		//If this is a refresh, dont fetch anything that has already been fetched.
-		if (refresh) {
+		/*if (refresh) {
 			coordVar1S.selection+=" and timestamp > ?";
 			String[] s =Arrays.copyOf(coordVar1S.selectionArgs, coordVar1S.selectionArgs.length+1);
 			s[coordVar1S.selectionArgs.length] = lastCheckTimeStamp;
 			coordVar1S.selectionArgs = s;
 		}
-		
+		*/
 		Log.d("vortex","selection: "+coordVar1S.selection);
 		Log.d("vortex","sel args: "+print(coordVar1S.selectionArgs));
 		List<String> row = al.getCompleteVariableDefinition(locationVar1);
@@ -304,12 +308,13 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 			DataType t2 = al.getnumType(al.getCompleteVariableDefinition(locationVar2));
 			coordVar2S = GlobalState.getInstance().getDb().createSelection(objectKeyHash.getContext(), locationVar2);
-			if (refresh) {
+			/*if (refresh) {
 				coordVar2S.selection+=" and timestamp > ?";
 				String[] s =Arrays.copyOf(coordVar2S.selectionArgs, coordVar2S.selectionArgs.length+1);
 				s[coordVar2S.selectionArgs.length] = lastCheckTimeStamp;
 				coordVar2S.selectionArgs = s;
 			}
+			*/
 			Log.d("vortex","selection: "+coordVar2S.selection);
 			Log.d("vortex","sel args: "+print(coordVar2S.selectionArgs));
 			if (t2==DataType.array)

@@ -623,8 +623,8 @@ public class MenuActivity extends Activity   {
 				break;
 			case 1:
 				if (gs!=null && gs.getVariableCache()!=null) {
-					Object moo=null;
-					moo.equals("moo");
+					//Object moo=null;
+					//moo.equals("moo");
 					new AlertDialog.Builder(this)
 							.setTitle("Context")
 							.setMessage(gs.getVariableCache().getContext().toString())

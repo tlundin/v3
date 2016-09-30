@@ -22,6 +22,7 @@ public class ArrayVariable extends Variable {
 	protected void insert(String value, boolean isSynchronized) {
 		this.isSynchronizedNext= isSynchronized;
 		myDb.insertVariableSnap(this,value, isSynchronized);
+
 		timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 	}
 

@@ -203,7 +203,11 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 		//Generate the context for these objects.
 		objectKeyHash = DB_Context.evaluate(objContextE);
-		//Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
+		if (objectKeyHash==null) {
+			Log.e("buu","objkeyhash is null for "+this.getBlockId());
+			return;
+		}
+		Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
 		//Use current year for statusvar.
 		Map<String, String> currYearH = Tools.copyKeyHash(objectKeyHash.getContext());
 		//TODO: FIX THIS.

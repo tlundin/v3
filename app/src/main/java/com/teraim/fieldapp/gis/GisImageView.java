@@ -221,7 +221,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		paintBlur.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
 
 
-		if (GlobalState.getInstance()!=null&&GlobalState.getInstance().getTracker()!=null)
+		if (GlobalState.getInstance()!=null)
 			GlobalState.getInstance().getTracker().registerListener(this);
 
 
@@ -356,14 +356,15 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	public void editSelectedGop() {
 		//Cancel any ongoing creation
-		newGisObj=touchedGop;
-		currentCreateBag=touchedBag;
-		cancelGisObjectCreation();
-		//start new.
-		this.startGisObjectCreation(touchedGop.getFullConfiguration());
-		myMap.setVisibleCreate(true,newGisObj.getLabel());
+		if (touchedGop!=null) {
+			newGisObj = touchedGop;
+			currentCreateBag = touchedBag;
+			cancelGisObjectCreation();
+			//start new.
+			startGisObjectCreation(touchedGop.getFullConfiguration());
+			myMap.setVisibleCreate(true, newGisObj.getLabel());
 
-
+		}
 
 	}
 
@@ -814,15 +815,16 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			if (touchedGop!=null) {
 				Log.d("vortex", "Gop selected now has Keychain: " + touchedGop.getKeyHash());
 				//Find the layer and bag touched.
-				for (GisLayer layer : myMap.getLayers()) {
-					touchedBag = layer.getBagContainingGo(touchedGop);
-					if (touchedBag != null) {
-						Log.d("vortex", "setting touchedlayer");
-						touchedLayer = layer;
-						break;
+				if (touchedBag==null) {
+					for (GisLayer layer : myMap.getLayers()) {
+						touchedBag = layer.getBagContainingGo(touchedGop);
+						if (touchedBag != null) {
+							Log.d("vortex", "setting touchedlayer");
+							touchedLayer = layer;
+							break;
+						}
 					}
 				}
-
 				if (touchedBag != null) {
 					//if longclick, open the actionbar menu.
 					if (!clickWasShort)
@@ -844,6 +846,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					//	Log.d("vortex","TOUCHEDLAYER WAS NULL. TouchedBag was: "+touchedBag);
 
 					drawGop(canvas,touchedLayer,touchedGop,true);
+					//Check if directional line should be drawn.
+					if (riktLinjeStart!=null) {
+						Log.d("vortex","drawing a million times?");
+						canvas.drawLine(riktLinjeStart[0], riktLinjeStart[1], riktLinjeEnd[0], riktLinjeEnd[1], fgPaintSel);//fgPaintSel
+					}
 				} else {
 					Log.e("vortex", "The touched object does not belong to a bag.");
 					touchedGop = null;
@@ -898,6 +905,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		Log.d("bortex","In findmyteam");
 
 		Set<GisObject> ret = null;
+
 		final String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 		final String user = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.USER_ID_KEY);
 		if(team ==null || team.length()==0) {
@@ -1121,11 +1129,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			//Log.d("vortex","Calling drawlabel in drawgop for "+go.getLabel()+". I am a path? "+(go instanceof GisPathObject)+" Iam point? "+(go instanceof GisPointObject));
 			drawGopLabel(canvas,xy,go.getLabel(),LabelOffset,bCursorPaint,vtnTxt);
 		}
-		//Check if directional line should be drawn.
-		if (riktLinjeStart!=null) {
-			Log.d("vortex","drawing a million times?");
-			canvas.drawLine(riktLinjeStart[0], riktLinjeStart[1], riktLinjeEnd[0], riktLinjeEnd[1], fgPaintSel);//fgPaintSel
-		}
+
 
 	}
 
@@ -1284,7 +1288,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 		//Check preconditions for GPS to work
-
+		Log.d("wolf","In display distance an direction");
 		if (myX==null||myY==null||GlobalState.getInstance()==null) {
 			myMap.setAvstTxt("Config");
 			myMap.setRiktTxt("fault!");
@@ -1340,6 +1344,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			int rikt = (int)(Geomatte.getRikt2(mY, mX, gY, gX)*57.2957795);
 			myMap.setAvstTxt(currentDistance>9999?(currentDistance/1000+"km"):(currentDistance+"m"));
 			myMap.setRiktTxt(rikt+Deg);
+			Log.d("wolf","update drawn");
 
 
 		}
@@ -1419,6 +1424,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				Map<String, String> keyHash = gop.getKeyHash();
 				if (keyHash!=null)
 					keyHash.put(VariableConfiguration.KEY_YEAR,Constants.getYear());
+				Log.d("buu","wfclick keyhash is "+keyHash+" for "+gop.getLabel());
 				Variable statusVariable = GlobalState.getInstance().getVariableCache().getVariable(keyHash,gop.getStatusVariableId());
 				if (statusVariable!=null) {
 					String valS = statusVariable.getValue();
@@ -1571,8 +1577,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Log.d("vortex","Got GPS STATECHANGE");
 		if (newState==GPS_State.newValueReceived||newState==GPS_State.ping) {
 			mostRecentGPSValueTimeStamp = System.currentTimeMillis();
-			if (currentDistance!=null && currentDistance<20)
-				displayDistanceAndDirectionL();
+			displayDistanceAndDirectionL();
 		}
 		this.postInvalidate();
 

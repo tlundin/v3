@@ -187,11 +187,19 @@ public class VariableCache {
                         }
 
                         if (rowKHA !=null && myKeyhashSize != rowKHA.length) {
+
                             Log.d("part", "partiell nyckel. IN ROW: " + rowKH + " IN DB: " + (myKeyHash == null ? "null" : myKeyHash.toString()));
                             Log.d("part","searching if there is one unique result on partial key");
+                            if (myKeyHash == null) {
+                                Log.e("vortex","Keyhash null for "+varName+" Dropping");
+                                //gs.getDb().deleteVariable(varName,gs.getDb().createSelection(null, varName),false);
+                                continue;
+                            } else
+                                myKeyHash = gs.getDb().createNotNullSelection(rowKHA,myKeyHash);
+
                             //Return any value in database that is unique for the given columns as primary key.
                             //år|ruta|gistyp|uid "There exists exactly one combination where ruta = 2222, gistyp not null, uid not null
-                            myKeyHash = gs.getDb().createNotNullSelection(rowKHA,myKeyHash);
+
 
                         }
                         if (type == DataType.array)

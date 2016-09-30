@@ -233,7 +233,7 @@ public class Variable implements Serializable {
 	public void revert() {
 		unknown=true;
 		myValue=null;
-		Log.d("zzzz","myValue in revert! "+myValue);
+
 	}
 	boolean isSynchronizedNext = false;
 

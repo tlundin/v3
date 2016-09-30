@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
@@ -47,6 +48,10 @@ public class DefaultNoScrollTemplate extends Executor {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d("nils","I'm in the onCreateView method for defaultNoScroll");
+		if (GlobalState.getInstance()==null) {
+			Log.e("Vortex", "globalstate is null...exiting");
+			return null;
+		}
 		if (view == null) {
 		view = inflater.inflate(R.layout.template_wf_default_no_scroll, container, false);	
 		

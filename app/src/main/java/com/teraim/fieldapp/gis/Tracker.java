@@ -4,8 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Service;
@@ -32,7 +34,7 @@ import com.teraim.fieldapp.utils.Geomatte;
 
 public class Tracker extends Service implements LocationListener {
 
-	List<TrackerListener> mListeners = null;
+	Set<TrackerListener> mListeners = null;
 	//Keep track of time between synchronised saves
 	Long oldT = null;
 	// flag for GPS status
@@ -280,7 +282,7 @@ public class Tracker extends Service implements LocationListener {
 
 	public void registerListener(TrackerListener tl) {
 		if (mListeners==null)
-			mListeners = new ArrayList<TrackerListener>();
+			mListeners = new HashSet<>();
 		mListeners.add(tl);
 	}
 

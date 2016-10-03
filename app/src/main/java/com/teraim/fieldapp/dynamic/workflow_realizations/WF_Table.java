@@ -34,6 +34,7 @@ public class WF_Table extends WF_List  {
 	//protected final List<Listable> tableRows = new  ArrayList<Listable>(); //Instantiated in constructor
 	protected final List<Filter> myFilters=new ArrayList<Filter>();
 	protected final List<Sorter> mySorters=new ArrayList<Sorter>();
+	private final View headerCell;
 	protected List<? extends Listable> filteredList;
 
 	protected WF_Context myContext;
@@ -71,10 +72,10 @@ public class WF_Table extends WF_List  {
 		//Add the header.
 		headerRow = new WF_Table_Row(this,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
 		//Add a first empty cell 
-		headerRow.addNoClickHeaderCell(label, null, null);
+		headerCell = headerRow.addNoClickHeaderCell(label, null, null);
 		tableView.addView(headerRow.getWidget());
 		//
-		tableView.setStretchAllColumns (false);
+		//tableView.setStretchAllColumns (false);
 		addSorter(new WF_Alphanumeric_Sorter());
 
 	}
@@ -151,7 +152,7 @@ public class WF_Table extends WF_List  {
 	}
 
 	public void addColumns(List<String> labels,
-			List<String> columnKeyL, String type, String width,String backgroundColor, String textColor) {
+			List<String> columnKeyL, String type, String widthS,String backgroundColor, String textColor) {
 
 		boolean useColumKeyAsHeader = labels==null;
 		
@@ -169,6 +170,13 @@ public class WF_Table extends WF_List  {
 			return;
 		}
 		String k,l;
+		int width = -1;
+		if (widthS!=null) try {
+			Log.d("baloba","seting with "+width);
+			width = Integer.parseInt(widthS);
+
+		} catch (NumberFormatException e) {};
+
 		for (int i=0;i<columnKeyL.size();i++) {
 			
 			k = columnKeyL.get(i);
@@ -177,6 +185,10 @@ public class WF_Table extends WF_List  {
 			addColumn(l,k,type,width,backgroundColor,textColor);
 			numberOfColumns++;
 			
+		}
+		if (headerCell!=null) {
+			Log.d("baloba","Headercell!!!");
+			headerCell.setMinimumWidth(width);
 		}
 		//for (String s:columnKeys)
 		//	Log.d("vortex","my columns: "+s);
@@ -202,7 +214,7 @@ public class WF_Table extends WF_List  {
 	private List<String> columnKeys = new ArrayList<String>();
 
 	
-	public void addColumn(String header, String colKey, String type, String width,String backgroundColor, String textColor) {
+	public void addColumn(String header, String colKey, String type, int width,String backgroundColor, String textColor) {
 		//Copy the key and add the variator.
 		Map<String, String> colHash = Tools.copyKeyHash(myContext.getKeyHash());
 		colHash.put(myVariator, colKey);
@@ -310,7 +322,7 @@ public class WF_Table extends WF_List  {
 							else {
 								String result = Expressor.analyze(expressionE, vars);
 								if (result==null || !Tools.isNumeric(result)) {
-									Log.e("vortex", "couldnt use " + result + " for " + aggF + ". Not numeric");
+									//Log.e("vortex", "couldnt use " + result + " for " + aggF + ". Not numeric");
 									continue;
 								}
 								//Numeric result.

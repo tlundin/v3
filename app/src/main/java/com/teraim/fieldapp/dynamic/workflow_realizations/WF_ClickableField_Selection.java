@@ -21,6 +21,8 @@ public class WF_ClickableField_Selection extends WF_ClickableField {
 
 	}
 
+
+
 	@Override
 	public LinearLayout getFieldLayout() {
 		//LayoutInflater.from(context.getContext()).inflate(R.layout.clickable_field_normal,null)
@@ -31,11 +33,10 @@ public class WF_ClickableField_Selection extends WF_ClickableField {
 		return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_selection_element,null);
 	}
 
-
-
-
-
-
+	@Override
+	protected boolean shouldHideOutputView() {
+		return true;
+	}
 
 
 }

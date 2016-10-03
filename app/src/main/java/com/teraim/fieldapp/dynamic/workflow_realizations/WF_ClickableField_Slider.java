@@ -71,6 +71,11 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	}
 
 	@Override
+	protected boolean shouldHideOutputView() {
+		return true;
+	}
+
+	@Override
 	public void onEvent(Event e) {
 		if (!e.getProvider().equals(getId())) {
 			Log.d("nils","In onEvent for WF_ClickableField_Slider_OnSave. Provider: "+e.getProvider());

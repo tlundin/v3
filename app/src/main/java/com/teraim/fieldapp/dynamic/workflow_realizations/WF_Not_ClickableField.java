@@ -77,7 +77,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		myHeader = (TextView)getWidget().findViewById(R.id.editfieldtext);
 		outputContainer = (LinearLayout)getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
-		Log.d("taxx","variable label: "+label+" variable ID: "+id);
+		//Log.d("taxx","variable label: "+label+" variable ID: "+id);
 		textColorC = Color.parseColor(textColor);
 		//myheader can be null in case this is a Cell in a table.
 		if (myHeader !=null) {
@@ -190,7 +190,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			u.setText(variable.getPrintedUnit());				
 		}
 		else {
-			ll.setVisibility(View.GONE);
+			if (shouldHideOutputView())
+				ll.setVisibility(View.GONE);
 			o.setText("");
 			u.setText("");
 		}	
@@ -198,6 +199,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		if (showAuthor)
 			setBackgroundColor(variable);
 	}
+
+	protected abstract boolean shouldHideOutputView();
 
 	private enum Role {None,Mix,Master,Slave};
 

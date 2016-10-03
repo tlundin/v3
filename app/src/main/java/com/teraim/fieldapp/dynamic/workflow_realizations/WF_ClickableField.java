@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -85,7 +86,7 @@ EventGenerator {
 	// Just set the value on click.
 	private boolean singleBoolean = false;
 
-	//private Drawable originalBackground;
+	private Drawable originalBackground=null;
 	protected View longClickedRow;
 	protected boolean iAmOpen = false;
 	private Spinner firstSpinner = null;
@@ -107,7 +108,7 @@ EventGenerator {
 			// Inflate a menu resource providing context menu items
 			MenuInflater inflater = mode.getMenuInflater();
 			inflater.inflate(R.menu.tagpopmenu, menu);
-
+			setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 			return true;
 		}
 
@@ -157,10 +158,12 @@ EventGenerator {
 			case R.id.menu_goto:
 				if (row != null) {
 					String url = al.getUrl(row);
-					Intent browse = new Intent(Intent.ACTION_VIEW,
-							Uri.parse(url));
-					browse.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					gs.getContext().startActivity(browse);
+					if (url!=null) {
+						Intent browse = new Intent(Intent.ACTION_VIEW,
+								Uri.parse(url));
+						browse.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						gs.getContext().startActivity(browse);
+					}
 				}
 				return true;
 			case R.id.menu_delete:
@@ -226,12 +229,13 @@ EventGenerator {
 		// Called when the user exits the action mode
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+			Log.d("hox","ondestroy! for "+getLabel());
 			mActionMode = null;
-			longClickedRow.setBackgroundColor(backgroundColor);
+			revertBackgroundColor();
 		}
 	};
 
-	ActionMode mActionMode;
+	private ActionMode mActionMode;
 
 	public WF_ClickableField(final String label, final String descriptionT,
 							 WF_Context context, String id, View view, boolean isVisible, String textColor, final String backgroundColor) {
@@ -264,8 +268,8 @@ EventGenerator {
 					return false;
 				}
 
-				longClickedRow = v;
-				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
+
+
 
 				// Start the CAB using the ActionMode.Callback defined above
 				mActionMode = ((Activity) myContext.getContext())
@@ -285,8 +289,9 @@ EventGenerator {
 					return;
 				}
 
-				//originalBackground = v.getBackground();
-				v.setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
+
+				setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
+
 				// special case. No dialog.
 
 				if (singleBoolean) {
@@ -303,7 +308,7 @@ EventGenerator {
 					save();
 					refresh();
 					//v.setBackgroundDrawable(originalBackground);
-					v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
+					revertBackgroundColor();
 				} else {
 					// On click, create dialog
 					AlertDialog.Builder alert = new AlertDialog.Builder(v
@@ -324,7 +329,7 @@ EventGenerator {
 									.getParent());
 							if (x != null)
 								x.removeView(inputContainer);
-							v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
+							revertBackgroundColor();
 							//v.setBackgroundDrawable(originalBackground);
 						}
 					});
@@ -337,7 +342,8 @@ EventGenerator {
 									.getParent());
 							if (x != null)
 								x.removeView(inputContainer);
-							v.setBackgroundColor(WF_ClickableField.this.backgroundColor);
+							revertBackgroundColor();
+
 							//v.setBackgroundDrawable(originalBackground);
 						}
 					});
@@ -362,7 +368,31 @@ EventGenerator {
 		});
 
 	}
-	
+
+	private void setBackgroundColor(int color) {
+		if (originalBackground==null)
+			originalBackground = getWidget().getBackground();
+		getWidget().setBackgroundColor(color);
+	}
+
+
+	@SuppressLint("NewApi")
+	private void revertBackgroundColor() {
+		if (originalBackground!=null) {
+			getWidget().setBackgroundColor(backgroundColor);
+			int sdk = android.os.Build.VERSION.SDK_INT;
+			if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+				getWidget().setBackgroundDrawable(originalBackground);
+			} else {
+				getWidget().setBackground(originalBackground);
+			}
+			originalBackground=null;
+		} else
+			getWidget().setBackgroundColor(backgroundColor);
+
+	}
+
+
 	// @Override
 	public void addVariable(final Variable var, boolean displayOut,
 			String format, boolean isVisible, boolean showHistorical) {
@@ -742,6 +772,7 @@ EventGenerator {
 			w = spin ? new OutSpin(ll, opt, val) : new OutC(ll, format);
 			myOutputFields.put(var, w);
 			outputContainer.addView(ll);
+
 
 			// refreshInputFields();
 			refreshOutputField(var, w);

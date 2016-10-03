@@ -901,7 +901,7 @@ public class Expressor {
 				Variable v=Expressor.getVariable(myToken.str);
 
 				if (v!=null && v.getValue() == null || v==null) {
-					System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
+					//System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
 					return null;
 				}
 				

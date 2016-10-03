@@ -80,9 +80,13 @@ WF_Not_ClickableField implements EventListener {
 		return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_selection_element,null);
 	}
 
+		@Override
+		protected boolean shouldHideOutputView() {
+			return true;
+		}
 
 
-	@Override
+		@Override
 	public void onEvent(Event e) {
 		Log.d("nils","In ADDNUMBER event targetListId: "+targetList.getId()+" e.getProvider: "+e.getProvider()+
 				"type of event: "+e.getType().name());

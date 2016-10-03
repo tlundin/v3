@@ -115,7 +115,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		return this.getLabel().compareTo(other.getLabel());
 	}
 
-	public void addNoClickHeaderCell(String label, String backgroundColor, String textColor) {
+	public View addNoClickHeaderCell(String label, String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.headerT);
 		tv.setText(label);
@@ -124,6 +124,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
 		if (textColor!=null)
 			tv.setTextColor(Color.parseColor(textColor));
+		return emptyCell;
 	}
 
 	int headerIndex=1;
@@ -134,6 +135,11 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		TextView headerT = (TextView)headerC.findViewById(R.id.headerT);
 		headerT.setText(label);
 		((TableRow)this.getWidget()).addView(headerC);
+		if (backgroundColor!=null)
+			headerC.setBackgroundColor(Color.parseColor(backgroundColor));
+		if (textColor!=null)
+			headerT.setTextColor(Color.parseColor(textColor));
+		//If no column selected, selectedIndex is -1
 
 		headerC.setOnClickListener(new OnClickListener() {
 			//headerIndex is a counter that is starting at 1.
@@ -148,18 +154,14 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			}
 
 		});
-		if (backgroundColor!=null)
-			headerC.setBackgroundColor(Color.parseColor(backgroundColor));
-		if (textColor!=null)
-			headerT.setTextColor(Color.parseColor(textColor));
-		//If no column selected, selectedIndex is -1
+
 
 		headerIndex++;
 	}
 
 
 	//Add a Vortex Cell.
-	public void addCell(String colHeader, String colKey, Map<String,String> columnKeyHash, String type, String width) {
+	public void addCell(String colHeader, String colKey, Map<String,String> columnKeyHash, String type, int width) {
 
 		if (myColumns==null)
 			myColumns = new ArrayList<WF_Cell>();
@@ -171,11 +173,11 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 			else {
 				widget = new WF_Cell_Widget(columnKeyHash, getLabel(), al.getDescription(myRow),
 						myContext, this.getId() + colKey, true);
-				int widthI = 50;
-				if (width!=null) try {
-					widthI = Integer.parseInt(width);
-				} catch (NumberFormatException e) {};
-				widget.getWidget().setMinimumWidth(widthI);
+
+			if (width!=-1)
+				widget.getWidget().setMinimumWidth(width);
+
+
 			}
 			
 			

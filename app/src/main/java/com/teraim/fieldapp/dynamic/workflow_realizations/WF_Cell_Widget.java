@@ -23,6 +23,8 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 		myHash = columnKeyHash;
 	}
 
+
+
 	@Override
 	public LinearLayout getFieldLayout() {
 		//LayoutInflater.from(context.getContext()).inflate(R.layout.clickable_field_normal,null)
@@ -32,6 +34,12 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 
 		return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_output_field_selection_element,null);
 	}
+
+	@Override
+	protected boolean shouldHideOutputView() {
+		return false;
+	}
+
 	int i=0;
 	public void addVariable(final String varId, boolean displayOut,String format,boolean isVisible,boolean showHistorical, String prefetchValue) {	
 		Variable var = GlobalState.getInstance().getVariableCache().getCheckedVariable(myHash, varId, prefetchValue, prefetchValue!=null);

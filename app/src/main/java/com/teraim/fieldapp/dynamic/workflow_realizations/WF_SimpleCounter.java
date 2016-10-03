@@ -43,7 +43,10 @@ public class WF_SimpleCounter extends WF_Not_ClickableField {
 	}
 
 
-
+	@Override
+	protected boolean shouldHideOutputView() {
+		return true;
+	}
 
 
 }

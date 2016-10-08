@@ -36,6 +36,7 @@ import com.teraim.fieldapp.synchronization.SyncReport;
 import com.teraim.fieldapp.synchronization.SyncStatus;
 import com.teraim.fieldapp.synchronization.SyncStatusListener;
 import com.teraim.fieldapp.synchronization.VariableRowEntry;
+import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
@@ -448,7 +449,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		 */
 
     //Export a specific context with a specific Exporter.
-    public Report export(Map<String, String> context, Exporter exporter, String exportFileName) {
+    public Report export(Map<String, String> context, Exporter exporter, String exportFileName, ExportDialog eDialog) {
         //Check LagID.
         if (exporter == null)
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
@@ -1655,7 +1656,7 @@ public class DbHelper extends SQLiteOpenHelper {
                                 changes.deletes++;
                             } else {
                                 changes.refused++;
-                                                       Log.d("sync", "Did not delete...a newer entry exists in database.");
+                                                       Log.d("sync", "Did not delete.");
                                 //                       o.addRow("");
                                 //                       o.addYellowText("DB_DELETE REFUSED: " + name);
                                 //                       if (hasValueAlready)
@@ -1717,6 +1718,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         //Invalidate all variables touched.
         // for (String varName : touchedVariables)
@@ -2431,6 +2433,7 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.d("vortex","Database closed?");
             Log.d("vortex","Control flag is : "+control.flag);
             control.error=true;
+            throw e;
         }
         return count != maxR;
     }

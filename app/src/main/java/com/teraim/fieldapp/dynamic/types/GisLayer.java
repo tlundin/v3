@@ -189,7 +189,7 @@ public class GisLayer {
 	}
 
 	public boolean isVisible() {
-		int v = GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId());
+		int v = (GlobalState.getInstance()!=null?GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId()):-1);
 		//Log.d("vortex","Layer "+getId()+" has visibility set to "+v+" default is "+defaultVisible);
 		if (v==-1)
 			return defaultVisible;

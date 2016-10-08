@@ -76,6 +76,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	private String unevaluatedLabel;
 	private String thisCheck,lastCheckTimeStamp;
 	private String palette;
+	private String creator;
 
 	public AddGisPointObjects(String id, String nName, String label,
 			String target, String objectContext,String coordType, String locationVars, 
@@ -97,6 +98,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		this.isUser=isUser;
 		this.createAllowed=createAllowed;
 		this.palette = palette;
+		this.creator = "";
 		myType = type;
 
 		if (coordType==null||coordType=="")
@@ -447,6 +449,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 								break;
 						} else {
 							String myTypeS = myType.toString();
+							this.creator = storedVar1.creator;
 							if (myTypeS.equalsIgnoreCase(GisObjectType.Point.toString())) {
 								if (!dynamic)
 									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value),statusVarP.first,statusVarP.second));
@@ -639,7 +642,9 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 	
 	
-
+	public String getCreator() {
+		return creator;
+	}
 
 
 

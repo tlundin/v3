@@ -67,7 +67,7 @@ public class ModuleLoader implements FileLoadedCb{
 
 				new Handler().postDelayed(new Runnable() {
 					public void run() {
-						Log.d("vortex","slow connection for module: "+module.getLabel());
+						//Log.d("vortex","slow connection for module: "+module.getLabel());
 						onFileLoaded(new LoadResult(module,ErrorCode.slowConnection));
 					}
 				},0);

@@ -230,6 +230,29 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private WF_Gis_Map myMap;
 	private boolean allowZoom;
 	private IntBuffer intBuffer = new IntBuffer();
+	private PathBuffer pathBuffer = new PathBuffer();
+
+
+	private class PathBuffer {
+		private Path[] mBuffer = new Path[500];
+		private int c=0;
+
+		public PathBuffer() {
+			for (int i = 0; i<mBuffer.length;i++)
+				mBuffer[i]= new Path();
+		}
+
+		public Path getPath() {
+			if (c<mBuffer.length)
+				return mBuffer[c++];
+			Log.d("vortex","Ran out of path objects: "+(c++));
+			return new Path();
+		}
+
+		public void reset() {
+			c=0;
+		}
+	}
 
 	private class IntBuffer {
 
@@ -243,7 +266,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			return new int[2];
 		}
 
-		public void clear() {
+		public void reset() {
 			c=0;
 		}
 	}
@@ -638,7 +661,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			//Log.d("ergo","clearing candidates list");
 			candidates.clear();
 
-			for (GisLayer layerO:myMap.getLayers()) {
+			for (int layerCount= myMap.getLayers().size()-1; layerCount>=0;layerCount--) {
+				GisLayer layerO = myMap.getLayers().get(layerCount);
 				String layerId = layerO.getId();
 
 				//Log.d("bortex","Drawing layer "+layerId);
@@ -893,8 +917,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Reset any click done.
 		mapLocationForClick=null;
 		clickXY=null;
-		//Reuse same int arrays next call.
-		intBuffer.clear();
+		//Reuse same int arrays and paths next call.
+		intBuffer.reset();
+		pathBuffer.reset();
 	}
 
 	final static String isFresh = "#7CFC00";
@@ -985,6 +1010,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				@Override
 				public String getRawLabel() {
 					return name;
+				}
+
+				@Override
+				public String getCreator() {
+					return "";
 				}
 
 				@Override
@@ -1234,7 +1264,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	public void drawTriangle(Canvas canvas, String color, Style style,
 							 float radius, int x, int y) {
 		Paint paint = this.createPaint(color, style);
-		Path path = new Path();
+		Path path = pathBuffer.getPath();
+		path.reset();
 		path.setFillType(FillType.EVEN_ODD);
 
 		path.moveTo(x,y-radius);
@@ -1286,6 +1317,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private void displayDistanceAndDirectionL() {
 
+		if (touchedGop==null) {
+			handler=null;
+			Log.e("vortex","Touched GOP null in dispDistAndDir. Will exit");
+			return;
+		}
 
 		//Check preconditions for GPS to work
 		Log.d("wolf","In display distance an direction");
@@ -1295,11 +1331,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			handler=null;
 			return;
 		}
-		if (touchedGop==null) {
-			handler=null;
-			Log.e("vortex","Touched GOP null in dispDistAndDir. Will exit");
-			return;
-		}
+
 
 		if (!GlobalState.getInstance().getTracker().isGPSEnabled) {
 			myMap.setAvstTxt("GPS OFF");
@@ -1557,7 +1589,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							"\nSweref: " + touchedGop.getLocation().getX() + "," + touchedGop.getLocation().getY() +
 							"\nAttached workflow: " + touchedGop.getWorkflow() +
 							"\nKeyHash: " + hash +
-							"\nPolygon type: " + touchedGop.getGisPolyType().name())
+							"\nPolygon type: " + touchedGop.getGisPolyType().name() +
+							"\nCreator: " + touchedGop.getFullConfiguration().getCreator()
+					)
 					.setIcon(android.R.drawable.ic_menu_info_details)
 					.setCancelable(true)
 					.setNeutralButton("Ok", new Dialog.OnClickListener() {

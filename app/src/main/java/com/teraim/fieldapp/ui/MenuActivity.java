@@ -409,7 +409,8 @@ public class MenuActivity extends Activity   {
 													syncError = true;
 													syncActive = false;
 													syncDbInsert = false;
-
+													Object fuck=null;
+													fuck.equals(fuck);
 												}
 
 											}

@@ -7,6 +7,7 @@ package com.teraim.fieldapp.non_generics;
  * For now, persistence implemented via SharedPreferences only.
  */
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.66f;
+	public final static float VORTEX_VERSION = 4.70f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();

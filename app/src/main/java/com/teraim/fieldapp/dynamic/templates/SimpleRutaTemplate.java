@@ -357,7 +357,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		String lagID = gs.getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
 		String exportFileName = typPrefix+lagID+"_ruta_"+currentRuta+"_"+dS+(isKlar?"_KLAR":"");
-		Report jRep = gs.getDb().export(al.createRutaKeyMap(),Exporter.getInstance(this.getActivity(),"JSON"),exportFileName);
+		Report jRep = gs.getDb().export(al.createRutaKeyMap(),Exporter.getInstance(this.getActivity(),"JSON"),exportFileName, eDialog);
 		String msg, btnText;
 		if (jRep.er == ExportReport.OK) {
 			msg = "Export OK.\nFilnamn: "+exportFileName+"\n"+jRep.noOfVars+" variabler exporterade";

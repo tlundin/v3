@@ -51,6 +51,8 @@ public abstract class Exporter {
 		if (diff > Constants.MS_MONTH)
 			return null;
 		}
+		return new CSVExporter(ctx);
+		/*
 		if (type==null||type.equalsIgnoreCase("csv"))
 			return new CSVExporter(ctx);
 		else
@@ -60,6 +62,7 @@ public abstract class Exporter {
 				if (type.equalsIgnoreCase("geojson"))
 					return new GeoJSONExporter(ctx);
 		return null;
+		*/
 	}
 	protected Exporter(Context ctx) {
 		this.gs=GlobalState.getInstance();

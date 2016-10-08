@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
@@ -132,6 +133,8 @@ public class GlobalState  {
 		myBackupManager = new BackupManager(this);
 		
 		myBackupManager.startBackupIfTimeAndNeed();
+
+		Log.d("fennox","my ID is "+getMyId());
 		
 		sendEvent(MenuActivity.REDRAW);
 	}
@@ -575,7 +578,10 @@ public class GlobalState  {
 	}
 
 	
-	
+	public String getMyId() {
+		return Settings.Secure.getString(getContext().getContentResolver(),
+				Settings.Secure.ANDROID_ID);
+	}
 
 
 

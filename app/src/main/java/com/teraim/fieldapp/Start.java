@@ -40,6 +40,7 @@ import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -92,7 +93,7 @@ public class Start extends MenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Setup handler for uncaught exceptions.
-		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
+	/*	Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
 			public void uncaughtException (Thread thread, Throwable e)
@@ -100,6 +101,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
+		*/
 		Log.d("nils","in START onCreate");
 		singleton = this;
 		//This is the frame for all pages, defining the Action bar and Navigation menu.
@@ -274,6 +276,10 @@ public class Start extends MenuActivity {
 			return;
 		}
 		GlobalState gs = GlobalState.getInstance();
+		if (gs == null) {
+			Log.e("vortex","Global State is null in change pange. App needs to restart");
+			Tools.restart(this);
+		}
 		String label = wf.getLabel();
 		String template = wf.getTemplate();
 

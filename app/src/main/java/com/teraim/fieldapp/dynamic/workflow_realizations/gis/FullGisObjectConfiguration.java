@@ -34,6 +34,7 @@ public interface FullGisObjectConfiguration extends GisObjectBaseAttributes {
 	public boolean isUser();
 	public String getName();
 	public String getRawLabel();
+	public String getCreator();
 	
 	
 }

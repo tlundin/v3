@@ -438,12 +438,13 @@ public class VariableCache {
         else {
             Log.d("vortex", "Already have cached!");
         }
-
-        for (Variable v:varMap.values()) {
-            Log.d("vortex","deleting "+v.getLabel());
-            v.deleteValue();
-        }
-
+        if (varMap!=null && varMap.values()!=null && !varMap.values().isEmpty()) {
+            for (Variable v : varMap.values()) {
+                Log.d("vortex", "deleting " + v.getLabel());
+                v.deleteValue();
+            }
+        } else
+            Log.d("vortex","nothing to delete in Delete all");
 
     }
     //Find all variables in cache with a given keyhash that belongs to the given group.

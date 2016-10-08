@@ -45,6 +45,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ToggleButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
 import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.Exporter;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
@@ -73,6 +74,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 6454431627090793561L;
+	private final String exportMethod;
 	String onClick,name,containerId;
 	private Boolean validationResult = true;
 	Type type;
@@ -135,6 +137,8 @@ public  class ButtonBlock extends Block  implements EventListener {
 		Log.d("blorg","button "+textE+" statusVar: "+statusVar+" status_context: "+statusContextS);
 		this.syncRequired = requestSync;
 		//Log.d("vortex","syncRequired is "+syncRequired);
+		//if export, what kind of delivery method
+		this.exportMethod = "email";
 	}
 
 
@@ -431,11 +435,19 @@ public  class ButtonBlock extends Block  implements EventListener {
 									}
 									if (!done) {
 										exportFileName = getTarget();
+
 										if (exportFormat == null)
 											exportFormat = "csv";
 										exportFormat = exportFormat.toLowerCase();
 										Exporter exporter = Exporter.getInstance(ctx, exportFormat);
-										Report jRep = gs.getDb().export(exportContext, exporter, exportFileName);
+
+										//Run export in new thread. Create UI to update user on progress.
+										ExportDialog eDialog = new ExportDialog();
+										eDialog.show(((Activity)ctx).getFragmentManager(), "exportdialog");
+
+
+
+										Report jRep = gs.getDb().export(exportContext, exporter, exportFileName, eDialog);
 										if (jRep.er == ExportReport.OK) {
 											msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
 											msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";

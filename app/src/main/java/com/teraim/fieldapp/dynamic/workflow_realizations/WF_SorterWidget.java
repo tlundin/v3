@@ -96,7 +96,7 @@ public class WF_SorterWidget extends WF_Widget {
 
 					//Wildcard? Do not add any filter.
 					if(!ch.equals("*")) {
-						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.exact);
+						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
 						//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
 						targetList.addFilter(existing);
 					}
@@ -118,8 +118,19 @@ public class WF_SorterWidget extends WF_Widget {
 					Button b;
 					
 					for(List<String>row:rows) {
-						if (row.size()>cIndex)
-							txts.add(row.get(cIndex));
+						if (row.size()>cIndex) {
+							String sortFacets = row.get(cIndex);
+							if (sortFacets!=null) {
+								String facets[] = sortFacets.split(";");
+								if (facets.length>0) {
+									for (String facet:facets) {
+										Log.d("vortex","Adding facet "+facet);
+										txts.add(facet);
+									}
+								}
+							}
+
+						}
 						else {
 							o.addRow("");
 							o.addRedText("SorterWidget: column to sort on ["+displayField+"] was found in column# "+(cIndex+1)+" but the current row only contains "+row.size()+" elements");

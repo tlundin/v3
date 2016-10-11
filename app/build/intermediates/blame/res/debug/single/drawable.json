@@ -4,24 +4,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_object_menu_button.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bt.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bt.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_minus_menu_button_pressed.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_minus_menu_button_pressed.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_icon_divider.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_icon_divider.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\vortex_small.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\vortex_small.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\plus_selector.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\plus_selector.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_plus_menu_button.png",
@@ -32,20 +20,8 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\validate_list_selector.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\inset_toggle.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\inset_toggle.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\case_no_pic.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\case_no_pic.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\my_location.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\my_location.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\border.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\border.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\syncactive.png",
@@ -56,24 +32,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\swipe.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_menu_button.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_menu_button.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_minus_menu_button.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_minus_menu_button.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\transparent_object_menu_pop_bg.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\transparent_object_menu_pop_bg.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\syncerr.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\syncerr.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_none.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_none.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\syncerr.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\syncerr.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\minus_selector.xml",
@@ -84,48 +52,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bgpic.jpg"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\syncoff.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\syncoff.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\cell_shapez.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\cell_shapez.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_ready.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_ready.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\insync.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\insync.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\poly.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\poly.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\zoom.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\zoom.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\profil.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\profil.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\stroke_bg.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\stroke_bg.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_menu_goto.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\ic_menu_goto.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\fixpunkt.png",
@@ -148,32 +84,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started_with_errors.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\car.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\car.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ruta_listview_bg_key.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\ruta_listview_bg_key.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\border_black.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\border_black.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_plus_menu_button_pressed.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_plus_menu_button_pressed.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\cell_shape.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\cell_shape.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\teraim_small_w.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\teraim_small_w.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon_man.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\icon_man.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\header_cell_shape.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\header_cell_shape.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frontpic.jpg",
@@ -182,5 +102,93 @@
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\teraim_small.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\teraim_small.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bt.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bt.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\vortex_small.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\vortex_small.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\plus_selector.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\plus_selector.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\inset_toggle.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\inset_toggle.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\case_no_pic.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\case_no_pic.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\checkmark.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\checkmark.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\border.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\border.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_menu_button.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_menu_button.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\transparent_object_menu_pop_bg.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\transparent_object_menu_pop_bg.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\syncoff.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\syncoff.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\cell_shapez.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\cell_shapez.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\insync.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\insync.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\zoom.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\zoom.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\profil.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\profil.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\stroke_bg.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\stroke_bg.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_menu_goto.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\ic_menu_goto.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\car.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\car.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ruta_listview_bg_key.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\ruta_listview_bg_key.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\cell_shape.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\cell_shape.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\icon_man.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\icon_man.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\header_cell_shape.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\header_cell_shape.xml"
     }
 ]

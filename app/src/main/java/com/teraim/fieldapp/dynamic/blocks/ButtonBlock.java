@@ -11,12 +11,14 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -53,6 +55,7 @@ import com.teraim.fieldapp.utils.Exporter.Report;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 import java.io.File;
 import java.util.List;
@@ -74,7 +77,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 6454431627090793561L;
-	private final String exportMethod;
+	private String exportMethod="file";
+	private String exportFormat = "csv";
+	private String exportFileName = null;
+
 	String onClick,name,containerId;
 	private Boolean validationResult = true;
 	Type type;
@@ -88,8 +94,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 	private GlobalState gs;
 	private PopupWindow mpopup=null;
 
-	private String exportFormat;
-	private String exportFileName = null;
+	private String targetMailAdress=null;
+
+
 	private boolean enabled;
 
 	private DB_Context buttonContextOld=null,buttonContext=null;
@@ -108,12 +115,12 @@ public  class ButtonBlock extends Block  implements EventListener {
 	//Function used with buttons that need to attach customized actions after click
 	public ButtonBlock(String id,String lbl,String action, String name,String container,String target, String type, String statusVariableS,boolean isVisible,
 			OnclickExtra onclickExtra,DB_Context buttonContext, int dummy) {		
-		this(id,lbl,action,name,container,target,type,statusVariableS,isVisible,null,true,null,buttonContext.toString(),false);
+		this(id,lbl,action,name,container,target,type,statusVariableS,isVisible,null,null,true,null,buttonContext.toString(),false);
 		extraActionOnClick = onclickExtra;
 		this.buttonContextOld = buttonContext;
 	}
 
-	public ButtonBlock(String id,String lbl,String action, String name,String container,String target, String type, String statusVariableS,boolean isVisible,String exportFormat,boolean enabled, String buttonContextS, String statusContextS,boolean requestSync) {
+	public ButtonBlock(String id,String lbl,String action, String name,String container,String target, String type, String statusVariableS,boolean isVisible,String exportFormat,String exportMethod, boolean enabled, String buttonContextS, String statusContextS,boolean requestSync) {
 		Log.d("NILS","In NEW for Button "+name+" with context: "+buttonContextS);
 		this.blockId=id;
 		this.textE = Expressor.preCompileExpression(lbl);
@@ -129,7 +136,8 @@ public  class ButtonBlock extends Block  implements EventListener {
 		this.enabled=enabled;
 
 
-		this.exportFormat = exportFormat;
+
+
 		this.buttonContextE=Expressor.preCompileExpression(buttonContextS);
 		this.statusContextE=Expressor.preCompileExpression(statusContextS);
 		if (statusVar!=null && statusContextE==null)
@@ -138,7 +146,22 @@ public  class ButtonBlock extends Block  implements EventListener {
 		this.syncRequired = requestSync;
 		//Log.d("vortex","syncRequired is "+syncRequired);
 		//if export, what kind of delivery method
-		this.exportMethod = "email";
+		//exportMethod = "mailto:terje.lundin@gmail.com";
+		if (exportMethod!=null) {
+			this.exportMethod = exportMethod;
+			if (exportMethod.startsWith("mailto:") && exportMethod.contains("@") && exportMethod.length()>7) {
+				targetMailAdress = exportMethod.substring(7,exportMethod.length());
+				Log.d("vortex","Target mail address is : "+targetMailAdress);
+			}
+		}
+
+
+		if (exportFormat != null) {
+			this.exportFormat = exportFormat;
+
+		}
+
+
 	}
 
 
@@ -397,85 +420,117 @@ public  class ButtonBlock extends Block  implements EventListener {
 								}
 
 							} else if (onClick.equals("export")) {
-								Map<String, String> exportContext = null;
-								String msg = null;
-								if (buttonContext != null) {
-									exportContext = buttonContext.getContext();
-								} else {
+
+								if (buttonContext == null) {
 									Log.e("export", "Export failed...no context");
-								}
-								//msg is  null if no errors.
-								if (msg == null) {
-									boolean done = false;
-									WF_StatusButton statusButton = null;
-									if (button instanceof WF_StatusButton) {
-										statusButton = ((WF_StatusButton) button);
-										WF_StatusButton.Status status = statusButton.getStatus();
-										if (status == WF_StatusButton.Status.ready) {
-											final WF_StatusButton tmpSB = statusButton;
-											new AlertDialog.Builder(ctx)
-													.setTitle("Reset")
-													.setMessage("Are you sure you want to reset this button? Status will change back to neutral.")
-													.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-														public void onClick(DialogInterface dialog, int which) {
-															tmpSB.changeStatus(WF_StatusButton.Status.none);
+								} else {
+
+										boolean done = false;
+
+										if (button instanceof WF_StatusButton) {
+											WF_StatusButton statusButton = ((WF_StatusButton) button);
+											WF_StatusButton.Status status = statusButton.getStatus();
+											if (status == WF_StatusButton.Status.ready) {
+												final WF_StatusButton tmpSB = statusButton;
+												new AlertDialog.Builder(ctx)
+														.setTitle("Reset")
+														.setMessage("Are you sure you want to reset this button? Status will change back to neutral.")
+														.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+															public void onClick(DialogInterface dialog, int which) {
+																tmpSB.changeStatus(WF_StatusButton.Status.none);
+															}
+														})
+														.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+															@Override
+															public void onClick(DialogInterface dialog, int which) {
+
+															}
+														})
+														.setIcon(android.R.drawable.ic_dialog_alert)
+														.show();
+
+												done = true;
+											}
+										}
+										if (!done) {
+											exportFileName = getTarget();
+
+											final Exporter exporter = Exporter.getInstance(ctx, exportFormat.toLowerCase());
+
+											//Run export in new thread. Create UI to update user on progress.
+
+											exporter.getDialog().show(((Activity) ctx).getFragmentManager(), "exportdialog");
+
+
+											Thread t = new Thread() {
+												String msg="";
+
+												@Override
+												public void run() {
+													Report jRep = gs.getDb().export(buttonContext.getContext(), exporter, exportFileName);
+													ExportReport exportResult = jRep.getReport();
+													if (exportResult == ExportReport.OK) {
+														msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
+														msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " \non your device";
+
+
+														if (exportMethod.equalsIgnoreCase("file")) {
+															//nothing more to do...file is already on disk.
+															} else if (exportMethod.startsWith("mail")) {
+															if (targetMailAdress==null) {
+																((Activity) ctx).runOnUiThread(new Runnable() {
+																	@Override
+																	public void run() {
+																		exporter.getDialog().setCheckSend(false);
+																		exporter.getDialog().setSendStatus("Configuration error");
+																		msg+="\nForwarding to "+exportMethod+" failed."+"\nPlease check your configuration.";
+																	}
+
+																});
+
+															} else {
+																Tools.sendMail((Activity)ctx,exportFileName + "." + exporter.getType(),targetMailAdress);
+																((Activity) ctx).runOnUiThread(new Runnable() {
+																	@Override
+																	public void run() {
+																		exporter.getDialog().setCheckSend(true);
+																		exporter.getDialog().setSendStatus("OK");
+																		msg+="\nFile forwarded to "+targetMailAdress+".";
+																	}
+
+																});
+															}
+
+
+
 														}
-													})
-													.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-														@Override
-														public void onClick(DialogInterface dialog, int which) {
 
-														}
-													})
-													.setIcon(android.R.drawable.ic_dialog_alert)
-													.show();
-
-											done = true;
-										}
-									}
-									if (!done) {
-										exportFileName = getTarget();
-
-										if (exportFormat == null)
-											exportFormat = "csv";
-										exportFormat = exportFormat.toLowerCase();
-										Exporter exporter = Exporter.getInstance(ctx, exportFormat);
-
-										//Run export in new thread. Create UI to update user on progress.
-										ExportDialog eDialog = new ExportDialog();
-										eDialog.show(((Activity)ctx).getFragmentManager(), "exportdialog");
+													} else {
+														if (exportResult == ExportReport.NO_DATA)
+															msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
+														else
+															msg = "Export failed. Reason: " + exportResult;
 
 
-
-										Report jRep = gs.getDb().export(exportContext, exporter, exportFileName, eDialog);
-										if (jRep.er == ExportReport.OK) {
-											msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
-											msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " on your device";
-
-										} else {
-											if (jRep.er == ExportReport.NO_DATA)
-												msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
-											else
-												msg = "Export failed. Reason: " + jRep.er.name();
-
-
-										}
-										if (statusButton!=null) {
-											statusButton.changeStatus(WF_StatusButton.Status.ready);
-										}
-
-										new AlertDialog.Builder(ctx)
-												.setTitle("Export done")
-												.setMessage(msg)
-												.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-													public void onClick(DialogInterface dialog, int which) {
 													}
-												})
-												.setIcon(android.R.drawable.ic_dialog_alert)
-												.show();
-									}
-								}
+													if (button instanceof WF_StatusButton)  {
+														((WF_StatusButton)button).changeStatus(WF_StatusButton.Status.ready);
+													}
+													((Activity) ctx).runOnUiThread(new Runnable() {
+														@Override
+														public void run() {
+															{
+																exporter.getDialog().setOutCome(msg);
+															}
+														}
+													});
+												}
+											};
+											t.start();
 
+										}
+
+								}
 							} else if (onClick.equals("Start_Camera")) {
 								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 								File file = new File(Constants.PIC_ROOT_DIR,getTarget());

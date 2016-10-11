@@ -284,6 +284,10 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_header.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\export_dialog.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\export_dialog.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_pop.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\status_pop.xml"
     },

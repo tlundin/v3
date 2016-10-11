@@ -5,6 +5,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.teraim.fieldapp.R;
 
@@ -15,29 +19,96 @@ import com.teraim.fieldapp.R;
 public class ExportDialog extends DialogFragment {
 
     AlertDialog.Builder builder;
+    TextView progressTextView,sendTextView,backupTextView,outcome,backupHeader,sendHeader;
+    ImageView checkGenerate,checkSend,checkBackup;
+    Button closeButton;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Exporting...please standby")
-                .setPositiveButton(R.string.ok
-                        , new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // FIRE ZE MISSILES!
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-        // Create the AlertDialog object and return it
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        View view = getActivity().getLayoutInflater().inflate(R.layout.export_dialog, null);
+        builder.setView(view);
+        progressTextView = (TextView)view.findViewById(R.id.progress);
+        sendTextView = (TextView)view.findViewById(R.id.send);
+        backupTextView = (TextView)view.findViewById(R.id.backup);
+
+        backupHeader= (TextView)view.findViewById(R.id.backupHeader);
+
+        sendHeader= (TextView)view.findViewById(R.id.sendHeader);
+
+        checkGenerate = (ImageView)view.findViewById(R.id.checkGenerate);
+        checkSend = (ImageView)view.findViewById(R.id.checkSend);
+        checkBackup= (ImageView)view.findViewById(R.id.checkBackup);
+
+
+        checkSend.setVisibility(View.GONE);
+        checkBackup.setVisibility(View.GONE);
+
+        outcome = (TextView)view.findViewById(R.id.outcome);
+
+        closeButton = (Button)view.findViewById(R.id.closeButton);
+
+        closeButton.setVisibility(View.GONE);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExportDialog.this.dismiss();
+            }
+        });
 
         return builder.create();
+
     }
 
-    public void setMessage(String msg) {
-        builder.setMessage(msg);
+    public void setGenerateStatus(String msg) {
+        if (progressTextView !=null)
+            progressTextView.setText(msg);
+    }
+
+    public void setSendStatus(String msg) {
+        if (sendTextView !=null)
+            sendTextView.setText(msg);
+    }
+
+    public void setBackupStatus(String msg) {
+        if (backupTextView !=null)
+            backupTextView.setText(msg);
+    }
+
+
+    public void setCheckGenerate(boolean success) {
+        checkBackup.setVisibility(View.VISIBLE);
+        backupHeader.setEnabled(true);
+        if (success)
+            checkGenerate.setImageResource(R.drawable.checkmark);
+        else
+            checkGenerate.setImageResource(R.drawable.warning);
+
+    }
+
+    public void setCheckBackup(boolean success) {
+        sendHeader.setEnabled(true);
+        if (success)
+            checkBackup.setImageResource(R.drawable.checkmark);
+        else
+            checkBackup.setImageResource(R.drawable.warning);
+    }
+
+    public void setCheckSend(boolean success) {
+        checkSend.setVisibility(View.VISIBLE);
+
+        if (success)
+            checkSend.setImageResource(R.drawable.checkmark);
+        else
+            checkSend.setImageResource(R.drawable.warning);
+    }
+
+    public void setOutCome(String msg) {
+       if (outcome!=null)
+           outcome.setText(msg);
+       closeButton.setVisibility(View.VISIBLE);
     }
 }

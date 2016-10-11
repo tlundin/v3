@@ -150,24 +150,24 @@ public class BackupManager {
 		return dir;
 	}
 
-	public boolean backupExportData(String exportFileName, String data) {
+	public String backupExportData(String exportFileName, String data) {
 
 		File dir = createOrFindBackupStorageDir();
 		
 		if (exportFileName==null) {
 			Log.e("vortex","no filename!!");
-			return false;
+			return "no filename";
 		}
 		if (data==null) {
 			Log.e("vortex","no data sent to backup!");
-			return false;
+			return "no data";
 		}
 		
 		if (dir == null) {
 			Log.e("vortex","failed to create export folder!!");
-			return false;
+			return "failed to create folder";
 		}
-		
+		String ret = "OK";
 		File file = new File(dir, exportFileName);
 		BufferedWriter outWriter=null;
 		try { 
@@ -177,20 +177,22 @@ public class BackupManager {
 			outWriter.write(data);
 			outWriter.close();
 		}catch(Exception e){
+			ret = e.getMessage();
 			System.out.println("Could not write backup file! Filename: "+exportFileName);
+
 			e.printStackTrace();
 			try {
 				if (outWriter!=null)
 					outWriter.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
+				ret = e1.getMessage();
 				e1.printStackTrace();
 			}
-			return false;
+			return ret;
 		}
 		Log.d("vortex","file succesfully written to backup: "+exportFileName);
 
-		return true;
+		return ret;
 
 
 	}

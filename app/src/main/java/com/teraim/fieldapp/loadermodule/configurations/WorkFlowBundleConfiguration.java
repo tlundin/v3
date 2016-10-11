@@ -1814,7 +1814,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private ButtonBlock readBlockButton(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_button...");
 		String label=null,onClick=null,myname=null,containerName=null,
-				target=null,type=null,id=null,statusVariable=null,
+				target=null,type=null,id=null,statusVariable=null,exportMethod=null,
 				exportFormat=null,buttonContext=null,statusContext=null;
 		boolean isVisible = true, enabled=false,requestSync=false;
 		parser.require(XmlPullParser.START_TAG, null,"block_button");
@@ -1856,6 +1856,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			else if (name.equals("context")) {
 				buttonContext = readText("context",parser);
 			}
+			else if (name.equals("export_method")) {
+				exportMethod = readText("export_method",parser);
+			}
 			else if (name.equals("button_context")) {
 				buttonContext = readText("button_context",parser);
 			}
@@ -1872,7 +1875,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		checkForNull("block_ID",id,"type",type,"name",myname,"label",label,"container_name",
 				containerName,"target",target);
 
-		return new ButtonBlock(id,label,onClick,myname,containerName,target,type,statusVariable,isVisible,exportFormat,enabled,buttonContext,statusContext,requestSync);
+		return new ButtonBlock(id,label,onClick,myname,containerName,target,type,statusVariable,isVisible,exportFormat,exportMethod,enabled,buttonContext,statusContext,requestSync);
 	}
 
 

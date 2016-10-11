@@ -33,7 +33,7 @@ public class CSVExporter extends Exporter {
 		try {
 			if (cp.moveToFirst()) {
 				Map<String,String> currentKeys = cp.getKeyColumnValues();
-				Log.d("nils","Current keys: "+currentKeys.toString());
+				//eDialog.setExportProgress("Current keys: "+currentKeys.toString());
 
 				Log.d("vortex","Exporting csv");
 
@@ -73,6 +73,8 @@ public class CSVExporter extends Exporter {
 						sw.append(System.getProperty("line.separator"));
 						varC++;
 					}
+
+					eDialog.setGenerateStatus(varC+"");
 				} while (cp.next());
 			}
 		} catch (Exception e) {

@@ -19,6 +19,7 @@ public class PersistenceHelper {
 	public static final String UNDEFINED = "";
 	public static final String USER_ID_KEY = "user_id";
 	public static final String LAG_ID_KEY = "lag_id";
+	public static final String EXPORT_EMAIL_KEY = "export_email_key";
 	public static final String MITTPUNKT_KEY = "mittpunkt";
 	public static final String DEVICE_COLOR_KEY_NEW = "device_type";
 	public static final String SHOW_AUTHOR_KEY = "show_author";
@@ -62,6 +63,7 @@ public class PersistenceHelper {
 	public static final String PARTNER_NAME = "my_partner";
 	public static final String LOG_LEVEL = "log_levels";
 	public static final String PotentiallyTimeStampToUseIfInsertDoesNotFail="potential_timestamp";
+
 
 	SharedPreferences sp;
 

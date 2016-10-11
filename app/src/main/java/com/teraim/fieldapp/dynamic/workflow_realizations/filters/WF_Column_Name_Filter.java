@@ -19,7 +19,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 
 	public enum FilterType{
 		exact,
-		prefix
+		sets, prefix
 	}
 
 	public WF_Column_Name_Filter(String id,String filterCh,String columnToMatch,FilterType type) {
@@ -81,8 +81,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 					break;
 				}
 			}
-		} else {
-			if (filterType == FilterType.exact) {
+		} else if (filterType == FilterType.exact) {
 				match = true;
 				if (myPrefix.length()!=key.length()) {
 					match = false;
@@ -95,7 +94,36 @@ public class WF_Column_Name_Filter extends WF_Filter {
 						}
 					}
 				}
+		}
+		else if (filterType == FilterType.sets) {
+			//check if the key is one of the facets in the cell.
+			if (key == null || key.isEmpty()) {
+				match = false;
+			} else {
+				String[] facets = key.split(";");
+				for (String facet:facets) {
+					match=true;
+					if (facet.length()!=myPrefix.length()) {
+						continue;
+					}
+					for (int i = 0; i<facet.length();i++) {
+						if (Character.toLowerCase(facet.charAt(i))!=Character.toLowerCase(myPrefix.charAt(i))) {
+							match = false;
+							break;
+						} else
+							continue;
+					}
+					if (match) {
+						Log.d("vortex","found match for key "+key+" and myPrefix: "+myPrefix);
+						break;
+					} else
+						Log.d("vortex","found NO match for key "+key+" and myPrefix: "+myPrefix);
+
+				}
 			}
+
+
+
 		}
 		return match;
 	}

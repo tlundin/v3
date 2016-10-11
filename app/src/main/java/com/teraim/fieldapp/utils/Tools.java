@@ -41,6 +41,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -54,10 +55,26 @@ import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Numerable.Type;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 
 public class Tools {
 
+
+	public static void sendMail(Activity ctx,String filename,String email) {
+		String fullName = Constants.EXPORT_FILES_DIR+"/"+filename;
+		Log.d("vortex","full name is "+fullName);
+		if (fullName == null || email==null)
+			return;
+
+		Intent intent = new Intent (Intent.ACTION_SEND);
+		intent.setType ("plain/text");
+		intent.putExtra (Intent.EXTRA_EMAIL, new String[] {email});
+		intent.putExtra (Intent.EXTRA_SUBJECT, "MyApp log file");
+		intent.putExtra (Intent.EXTRA_STREAM, Uri.parse ("file://" + fullName));
+		intent.putExtra (Intent.EXTRA_TEXT, "Log file attached."); // do this so some email clients don't complain about empty body.
+		ctx.startActivity (intent);
+	}
 
 	public enum Unit {
 		percentage,

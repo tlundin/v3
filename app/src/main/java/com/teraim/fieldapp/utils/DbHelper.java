@@ -449,7 +449,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		 */
 
     //Export a specific context with a specific Exporter.
-    public Report export(Map<String, String> context, Exporter exporter, String exportFileName, ExportDialog eDialog) {
+    public Report export(Map<String, String> context, final Exporter exporter, String exportFileName) {
         //Check LagID.
         if (exporter == null)
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
@@ -502,7 +502,7 @@ public class DbHelper extends SQLiteOpenHelper {
             //Wrap the cursor in an object that understand how to pick it!
             Report r = exporter.writeVariables(new DBColumnPicker(c));
             if (r != null && r.noOfVars > 0) {
-                Report res;
+                final Report res;
                 if (Tools.writeToFile(Constants.EXPORT_FILES_DIR + exportFileName + "." + exporter.getType(), r.result)) {
                     Log.d("nils", "Exported file succesfully");
                     c.close();
@@ -513,15 +513,47 @@ public class DbHelper extends SQLiteOpenHelper {
                     GlobalState.getInstance().getLogger().addRow("EXPORT FILENAME: [" + Constants.EXPORT_FILES_DIR + exportFileName + "." + exporter.getType() + "]");
                     res = new Report(ExportReport.FILE_WRITE_ERROR);
                 }
-                GlobalState.getInstance().getBackupManager().backupExportData(exportFileName + "." + exporter.getType(), r.result);
+                final Activity act = (Activity) exporter.getContext();
+                act.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (res.getReport()==ExportReport.OK) {
+                            exporter.getDialog().setCheckGenerate(true);
+                        } else {
+                            exporter.getDialog().setCheckGenerate(false);
+                            exporter.getDialog().setGenerateStatus(res.getReport().name());
+                        }
+                    }
+                });
+
+                final String ret = GlobalState.getInstance().getBackupManager().backupExportData(exportFileName + "." + exporter.getType(), r.result);
+
+                act.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        exporter.getDialog().setCheckBackup(ret.equals("OK"));
+                        exporter.getDialog().setBackupStatus(ret);
+                    }
+                });
+
                 return res;
             } else
                 c.close();
-            return new Report(ExportReport.NO_DATA);
-        } else {
-            Log.e("nils", "NO Variables found in db for context " + context);
-            return new Report(ExportReport.NO_DATA);
+
         }
+
+        ((Activity) ctx).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                exporter.getDialog().setCheckGenerate(false);
+                exporter.getDialog().setGenerateStatus("!No Data to export!");
+            }
+        });
+
+        return new Report(ExportReport.NO_DATA);
     }
 
     /*

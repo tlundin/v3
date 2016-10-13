@@ -205,22 +205,17 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 		//Generate the context for these objects.
 		objectKeyHash = DB_Context.evaluate(objContextE);
-		if (objectKeyHash==null) {
-			Log.e("buu","objkeyhash is null for "+this.getBlockId());
+		//Use current year for statusvar.
+		//Log.d("vortex","Curryear HASH "+currYearH.toString());
+		if (objectKeyHash==null || !objectKeyHash.isOk()) {
+			Log.e("vortex","keychain  null or faulty: "+objectKeyHash);
 			return;
 		}
 		Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
-		//Use current year for statusvar.
 		Map<String, String> currYearH = Tools.copyKeyHash(objectKeyHash.getContext());
 		//TODO: FIX THIS.
 		currYearH.put("år",Constants.getYear());
-		//Log.d("vortex","Curryear HASH "+currYearH.toString());
 
-		if (objectKeyHash==null) {
-			Log.e("vortex","keychain  null!!");
-			o.addRow("");
-			o.addYellowText("Missing object context in AddGisPointObjects. Potential error if variables have keychain");
-		}
 		if (locationVariables==null || locationVariables.isEmpty()) {
 			Log.e("vortex","Missing GPS Location variable(s)!");
 			o.addRow("");

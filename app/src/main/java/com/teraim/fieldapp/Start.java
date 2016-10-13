@@ -282,6 +282,12 @@ public class Start extends MenuActivity {
 			Log.e("vortex","Global State is null in change pange. App needs to restart");
 			Tools.restart(this);
 		}
+
+		if (isFinishing()) {
+			Log.d("vortex","This activity is finishing! Cannot continue");
+			return;
+		}
+
 		String label = wf.getLabel();
 		String template = wf.getTemplate();
 
@@ -355,6 +361,7 @@ public class Start extends MenuActivity {
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d("vortex","IN ONACTIVITY RESULT");
 		Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
 		if (f!=null)
 			((Executor)f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start",EventType.onActivityResult));

@@ -48,7 +48,7 @@ public abstract class Exporter {
 	protected PersistenceHelper globalPh;
 	protected static Exporter instance;
 	protected final ExportDialog eDialog;
-	private Context ctx;
+	protected Context ctx;
 
 	public static Exporter getInstance(Context ctx, String type) {
 

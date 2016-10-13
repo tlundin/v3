@@ -33,7 +33,7 @@ public class WF_SorterWidget extends WF_Widget {
 	WF_Filter existing;
 	WF_List targetList;
 
-	public WF_SorterWidget(String name,WF_Context ctx, String type, final WF_List targetList,final ViewGroup container,final String selectionField, final String displayField,String selectionPattern,boolean isVisible) {
+	public WF_SorterWidget(String name,WF_Context ctx, final String type, final WF_List targetList,final ViewGroup container,final String selectionField, final String displayField,String selectionPattern,boolean isVisible) {
 		super(name,new LinearLayout(ctx.getContext()),isVisible,ctx);
 		LinearLayout buttonPanel;
 		o = GlobalState.getInstance().getLogger();
@@ -84,26 +84,26 @@ public class WF_SorterWidget extends WF_Widget {
 				Log.d("nils","Added button "+c);
 			}
 
-		} else if (type.equals("column")) {
-			final OnClickListener dl = new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					String ch = ((Button)v).getText().toString();
-					Log.d("Strand","User pressed "+ch);
-					//This shall apply a new Alpha filter on target.
-					//First, remove any existing alpha filter.
-					targetList.removeFilter(existing);
+		} else if (type.equals("column") ) {
+				final OnClickListener dl = new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						String ch = ((Button)v).getText().toString();
+						Log.d("Strand","User pressed "+ch);
+						//This shall apply a new Alpha filter on target.
+						//First, remove any existing alpha filter.
+						targetList.removeFilter(existing);
 
-					//Wildcard? Do not add any filter.
-					if(!ch.equals("*")) {
-						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
-						//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
-						targetList.addFilter(existing);
+						//Wildcard? Do not add any filter.
+						if(!ch.equals("*")) {
+							existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
+							//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
+							targetList.addFilter(existing);
+						}
+						//running the filters will trigger redraw.
+						targetList.draw();
 					}
-					//running the filters will trigger redraw.
-					targetList.draw();
-				}
-			};
+				};
 			//Generate buttons from artlista. 
 			//Pick fields that are of type Familj
 			VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();

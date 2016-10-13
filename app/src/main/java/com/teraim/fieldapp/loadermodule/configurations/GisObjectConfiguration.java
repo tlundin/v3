@@ -307,7 +307,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 				if (rutaId==null) {
 					Log.e("vortex", "ingen ruta ID!!!!");
-					return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
+					//return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
 				}
 				else {
 					//Log.d("vortex","RUTA ID: "+rutaId);

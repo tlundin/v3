@@ -907,7 +907,7 @@ public class Expressor {
 				
 				value = v.getValue();
 				//Log.d("vortex","Atom variable ["+v.getId()+"] Type "+v.getType()+" Value: "+value);
-				if (Tools.isNumeric(value)) {
+				if (v.getType()!= DataType.text && Tools.isNumeric(value)) {
 				//	Log.d("vortex","numeric");
 					if (v.getType()== Variable.DataType.decimal || value.contains("."))
 						return Double.parseDouble(value);

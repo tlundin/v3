@@ -49,6 +49,7 @@ import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.ui.MenuActivity;
+import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.Exporter;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
@@ -146,12 +147,22 @@ public  class ButtonBlock extends Block  implements EventListener {
 		this.syncRequired = requestSync;
 		//Log.d("vortex","syncRequired is "+syncRequired);
 		//if export, what kind of delivery method
-		//exportMethod = "mailto:terje.lundin@gmail.com";
+
 		if (exportMethod!=null) {
 			this.exportMethod = exportMethod;
-			if (exportMethod.startsWith("mailto:") && exportMethod.contains("@") && exportMethod.length()>7) {
-				targetMailAdress = exportMethod.substring(7,exportMethod.length());
-				Log.d("vortex","Target mail address is : "+targetMailAdress);
+			if (exportMethod.startsWith("mailto:")) {
+				targetMailAdress="";
+				if (exportMethod.length() > 7) {
+
+					if (exportMethod.contains("@")) {
+						targetMailAdress = exportMethod.substring(7, exportMethod.length());
+						Log.d("vortex", "Target mail address is : " + targetMailAdress);
+					} else {
+						//config error
+						targetMailAdress = null;
+					}
+				}
+
 			}
 		}
 
@@ -471,10 +482,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 													ExportReport exportResult = jRep.getReport();
 													if (exportResult == ExportReport.OK) {
 														msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
-														msg += "You can find this file under " + Constants.EXPORT_FILES_DIR + " \non your device";
+														msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
 
 
-														if (exportMethod.equalsIgnoreCase("file")) {
+														if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
 															//nothing more to do...file is already on disk.
 															} else if (exportMethod.startsWith("mail")) {
 															if (targetMailAdress==null) {
@@ -495,7 +506,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 																	public void run() {
 																		exporter.getDialog().setCheckSend(true);
 																		exporter.getDialog().setSendStatus("OK");
-																		msg+="\nFile forwarded to "+targetMailAdress+".";
+																		if (!targetMailAdress.isEmpty())
+																			msg+="\nFile forwarded to "+targetMailAdress+".";
+																		else
+																			msg+="\nFile forwarded by mail.";
 																	}
 
 																});
@@ -540,7 +554,20 @@ public  class ButtonBlock extends Block  implements EventListener {
 								((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
 
 
-							} else if (onClick.equals("backup")) {
+							} else if (onClick.equals("barcode")) {
+								myContext.registerEventListener(new BarcodeReader(myContext,getTarget()), Event.EventType.onActivityResult);
+								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+								File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
+								Uri outputFileUri = Uri.fromFile(file);
+								intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+								//				intent.putExtra(Strand.KEY_PIC_NAME, name);
+								((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+
+							}
+
+
+
+							else if (onClick.equals("backup")) {
 								boolean success = GlobalState.getInstance().getBackupManager().backupDatabase();
 								new AlertDialog.Builder(ctx)
 								.setTitle("Backup "+(success?"succesful":"failed"))

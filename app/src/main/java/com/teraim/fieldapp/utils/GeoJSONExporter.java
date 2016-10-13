@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -29,6 +30,9 @@ public class GeoJSONExporter extends Exporter {
 	private List<String> coordLess = new ArrayList<>();
 	private Map<String,String> rutMap = new HashMap<>();
 	private Map<String,String> authorMap = new HashMap<>();
+	private int varC=0;
+
+
 	protected GeoJSONExporter(Context ctx) {
 		super(ctx);
 
@@ -36,7 +40,7 @@ public class GeoJSONExporter extends Exporter {
 
 	@Override
 	public Report writeVariables(DBColumnPicker cp) {
-		int varC=0;
+
 		LoggerI o = GlobalState.getInstance().getLogger();
 		sw = new StringWriter();
 		writer = new JsonWriter(sw);	
@@ -141,6 +145,13 @@ public class GeoJSONExporter extends Exporter {
 							o.addRedText("Variable was null!");
 						}
 					}
+					((Activity)ctx).runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							eDialog.setGenerateStatus(varC+"");
+						}
+					});
+
 				} while (cp.next());
 				Log.d("vortex","now inserting into json.");
 				//For each fixedGid (uid)...

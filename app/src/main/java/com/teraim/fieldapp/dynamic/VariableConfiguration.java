@@ -35,11 +35,13 @@ public class VariableConfiguration implements Serializable {
 	public static String Col_Variable_Scope = "Scope";
 	public static String Col_Variable_Limits = "Limits";
 	public static String Col_Variable_Dynamic_Limits = "D_Limits";
+	public static String Col_Group_Label = "Label";
+	public static String Col_Group_Description = "Group Description";
 
 	public final static String KEY_YEAR = "år";
 
-	public static final List<String>requiredColumns=Arrays.asList(Col_Variable_Keys,Col_Functional_Group,Col_Variable_Name,Col_Variable_Label,Type,"Unit","List Values","Description",Col_Variable_Scope,Col_Variable_Limits,Col_Variable_Dynamic_Limits);
-	private static int KEY_CHAIN=0,FUNCTIONAL_GROUP=1,VARIABLE_NAME=2,VARIABLE_LABEL=3,TYPE=4,UNIT=5,LIST_VALUES=6,DESCRIPTION=7,SCOPE=8,LIMIT=9,D_LIMIT=10;
+	public static final List<String>requiredColumns=Arrays.asList(Col_Variable_Keys,Col_Functional_Group,Col_Variable_Name,Col_Variable_Label,Type,"Unit","List Values","Description",Col_Variable_Scope,Col_Variable_Limits,Col_Variable_Dynamic_Limits,Col_Group_Label,Col_Group_Description);
+	private static int KEY_CHAIN=0,FUNCTIONAL_GROUP=1,VARIABLE_NAME=2,VARIABLE_LABEL=3,TYPE=4,UNIT=5,LIST_VALUES=6,DESCRIPTION=7,SCOPE=8,LIMIT=9,D_LIMIT=10,GROUP_LABEL=11, GROUP_DESCRIPTION = 12;
 
 	public enum Scope {
 		local_sync,
@@ -116,6 +118,20 @@ public class VariableConfiguration implements Serializable {
 		return row.get(fromNameToColumn.get(requiredColumns.get(DESCRIPTION)));
 	}
 
+
+	public String getGroupDescription(List<String> row) {
+		Integer col = fromNameToColumn.get(Col_Group_Description);
+		if (col!=null)
+			return row.get(col);
+		return null;
+	}
+
+	public String getGroupLabel(List<String> row) {
+		Integer col = fromNameToColumn.get(Col_Group_Label);
+		if (col!=null)
+			return row.get(col);
+		return null;
+	}
 	/*
 	public boolean isLocal(List<String>row) {
 		

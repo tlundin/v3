@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -66,7 +67,12 @@ public class JSONExporter extends Exporter {
 					//close NewKey.
 					writer.endObject();
 
-
+					((Activity)ctx).runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							eDialog.setGenerateStatus(varC+"");
+						}
+					});
 				} while (more);				
 				//Close Elements
 				writer.endArray();

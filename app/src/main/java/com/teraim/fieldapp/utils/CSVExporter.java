@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -73,8 +74,12 @@ public class CSVExporter extends Exporter {
 						sw.append(System.getProperty("line.separator"));
 						varC++;
 					}
-
-					eDialog.setGenerateStatus(varC+"");
+					((Activity)ctx).runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							eDialog.setGenerateStatus(varC+"");
+						}
+					});
 				} while (cp.next());
 			}
 		} catch (Exception e) {

@@ -154,6 +154,7 @@ EventGenerator {
 			Iterator<Variable> it = myVars.keySet().iterator();
 			if (it.hasNext())
 				row = it.next().getBackingDataSet();
+
 			switch (item.getItemId()) {
 			case R.id.menu_goto:
 				if (row != null) {
@@ -207,9 +208,24 @@ EventGenerator {
 				return true;
 			case R.id.menu_info:
 				if (row != null) {
+					String msg =
+							"V_Label: "+al.getVarLabel(row)+"\n" +
+							"V_Desc : "+al.getVariableDescription(row)+"\n";
+					int i = 1;
+
+					while (row!=null)  {
+						msg +=
+								" G_Label"+i+": "+al.getGroupLabel(row)+"\n"+
+								" G_Desc "+i+":  "+al.getGroupDescription(row)+"\n";
+						i++;
+						row = (it.hasNext()?it.next().getBackingDataSet():null);
+					} ;
+
+
+
 					new AlertDialog.Builder(myContext.getContext())
 					.setTitle(gs.getString(R.string.description))
-					.setMessage(al.getVariableDescription(row))
+					.setMessage(msg)
 					.setPositiveButton(android.R.string.yes,
 							new DialogInterface.OnClickListener() {
 						public void onClick(

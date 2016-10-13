@@ -63,16 +63,16 @@ public class Tools {
 
 	public static void sendMail(Activity ctx,String filename,String email) {
 		String fullName = Constants.EXPORT_FILES_DIR+"/"+filename;
-		Log.d("vortex","full name is "+fullName);
+
 		if (fullName == null || email==null)
 			return;
 
 		Intent intent = new Intent (Intent.ACTION_SEND);
 		intent.setType ("plain/text");
 		intent.putExtra (Intent.EXTRA_EMAIL, new String[] {email});
-		intent.putExtra (Intent.EXTRA_SUBJECT, "MyApp log file");
+		intent.putExtra (Intent.EXTRA_SUBJECT, "Export file "+Constants.getSweDate());
 		intent.putExtra (Intent.EXTRA_STREAM, Uri.parse ("file://" + fullName));
-		intent.putExtra (Intent.EXTRA_TEXT, "Log file attached."); // do this so some email clients don't complain about empty body.
+		intent.putExtra (Intent.EXTRA_TEXT, "Export data attached."); // do this so some email clients don't complain about empty body.
 		ctx.startActivity (intent);
 	}
 

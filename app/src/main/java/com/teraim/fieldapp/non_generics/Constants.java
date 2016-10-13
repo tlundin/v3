@@ -42,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 4.71f;
+	public final static float VORTEX_VERSION = 4.79f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -59,6 +59,7 @@ public class Constants {
 	public static final String GIS_FILE_DIR = "/gisdata/";
 	//Folder for backup on SD card.
 	public static final String DEFAULT_EXT_BACKUP_DIR = "/mnt/external_sdcard/vortex/backup";
+	public static final String TEMP_BARCODE_IMG_NAME = "tmpbar" ;
 	//public static String NILS_BASE_DIR = "/nils";
 	public static String UNDEFINED = "undefined";
 

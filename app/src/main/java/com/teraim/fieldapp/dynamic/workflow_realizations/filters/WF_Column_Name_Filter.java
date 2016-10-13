@@ -42,10 +42,12 @@ public class WF_Column_Name_Filter extends WF_Filter {
 				continue;
 			if (!match(key)) {
 				it.remove();
-				//if (!key.isEmpty())
-				//	Log.d("nils", "filter removes element " + key + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+				if (!key.isEmpty())
+				  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+
 			}
 			else {
+				Log.d("filterz", "filter KEEPS element " + l.getKey()+" Label: "+l.getLabel()+" column: "+key);// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 				//Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
 				totMatch = true;
 			}
@@ -102,8 +104,11 @@ public class WF_Column_Name_Filter extends WF_Filter {
 			} else {
 				String[] facets = key.split(";");
 				for (String facet:facets) {
+
 					match=true;
 					if (facet.length()!=myPrefix.length()) {
+						//Log.d("vortex","found NO match for key"+key+" facet "+facet+" and myPrefix: "+myPrefix);
+						match = false;
 						continue;
 					}
 					for (int i = 0; i<facet.length();i++) {
@@ -114,10 +119,8 @@ public class WF_Column_Name_Filter extends WF_Filter {
 							continue;
 					}
 					if (match) {
-						Log.d("vortex","found match for key "+key+" and myPrefix: "+myPrefix);
 						break;
-					} else
-						Log.d("vortex","found NO match for key "+key+" and myPrefix: "+myPrefix);
+					}
 
 				}
 			}

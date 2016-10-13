@@ -176,6 +176,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				public void onReceive(Context ctx, Intent intent) {
 					Log.d("vortex","GETS HERE:::::: "+this.toString()+"  P: "+Executor.this.toString());
 					if (intent.getAction().equals(REDRAW_PAGE)) {
+						gs.setDBContext(myContext.getHash());
 						Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
 						myContext.registerEvent(new WF_Event_OnSave(Constants.SYNC_ID));
 

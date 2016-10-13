@@ -93,7 +93,7 @@
         android:layout_marginTop="25dp"
         android:id="@+id/sendHeader"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:enabled="false"
+        android:visibility="gone"
         android:layout_below="@+id/backup"
         android:layout_alignRight="@+id/textView3"
         android:layout_alignEnd="@+id/textView3" />
@@ -110,21 +110,19 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/send"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="41dp"
         android:id="@+id/outcome"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:background="@drawable/border_black"
-        android:textSize="@dimen/text_size_medium"
+        android:textSize="@dimen/text_size_small"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp" />
+        android:paddingBottom="5dp"
+        android:layout_below="@+id/send"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
     <Button
         android:text="@string/close"
@@ -134,5 +132,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/closeButton"
         android:layout_marginTop="10dp" />
+
+
 
 </RelativeLayout>

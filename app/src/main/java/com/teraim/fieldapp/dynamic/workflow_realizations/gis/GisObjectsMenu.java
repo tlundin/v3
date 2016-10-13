@@ -177,7 +177,7 @@ public class GisObjectsMenu extends View {
 				switch (event.getAction()) {
 					case MotionEvent.ACTION_DOWN:
 						Log.e("vortex"," evX: "+event.getX()+" NOBu: "+NoOfButtonsPerRow+" ColW: "+ColW);
-						int clickedColumn = Math.round((event.getX()-PaddingX)/ColW);
+						int clickedColumn = Math.round((event.getX()-(PaddingX + ColW/2))/ColW);
 						if (clickedColumn<0||clickedColumn>=NoOfButtonsPerRow) {
 							Log.d("vortex","click in column "+clickedColumn+". Outside allowed range");
 

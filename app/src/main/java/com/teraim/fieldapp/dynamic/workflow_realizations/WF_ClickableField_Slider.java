@@ -9,25 +9,28 @@ import android.widget.SeekBar;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
-import com.teraim.fieldapp.utils.Tools;
 
 public class WF_ClickableField_Slider extends WF_ClickableField implements EventListener {
 
 	private final SeekBar sb;
 	private final LinearLayout ll;
 	private final String groupName;
+	private final DisplayFieldBlock format;
 	private Variable var = null;
 	private int min,max;
 	private EditText etview;
 
+
+	@SuppressWarnings("WrongConstant")
 	public WF_ClickableField_Slider(String headerT, String descriptionT,
-									WF_Context context, String id, boolean isVisible,String groupName,String textColor,String backgroundColor,int min,int max) {
+									WF_Context context, String id, boolean isVisible, String groupName, int min, int max, DisplayFieldBlock format) {
 		super(headerT,descriptionT, context, id,
-				LayoutInflater.from(context.getContext()).inflate(R.layout.selection_field_normal,null),
-				isVisible,textColor,backgroundColor);
+				LayoutInflater.from(context.getContext()).inflate(format.isHorisontal()?R.layout.selection_field_normal_horizontal:R.layout.selection_field_normal_vertical,null),
+				isVisible,format);
 
 		context.registerEventListener(this, Event.EventType.onSave);
 		ll = (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_slider_element,null);
@@ -57,6 +60,8 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		this.min = min;
 		this.max = max;
 
+		this.format = format;
+
 		sb.setMax(max);
 
 
@@ -65,8 +70,10 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	@Override
 	public LinearLayout getFieldLayout() {
 		Log.d("brexit","Getting field layout for slide!!");
-
-
+		if (this.format.isHorisontal())
+			ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+		else
+			ll.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT));
 		return ll;
 	}
 
@@ -172,10 +179,9 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 	public void setSeekBarAccordingToVariableValue() {
 
-		if (var!=null) {
+		if (var!=null && var.getValue()!=null) {
 			try {
-				if (var.getValue() != null)
-					sb.setProgress(Integer.parseInt(var.getValue()));;
+				sb.setProgress(Integer.parseInt(var.getValue()));;
 			} catch (NumberFormatException e) {
 				o.addRow("");
 				o.addRedText("The variable used for slider " + this.getId() + " is not containing a numeric value");
@@ -201,7 +207,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 	public Integer getSliderValue() {
 		try {
-			if (var!=null)
+			if (var!=null && var.getValue()!=null)
 				return Integer.parseInt(var.getValue());
 		} catch (NumberFormatException e) {
 			o.addRow("");

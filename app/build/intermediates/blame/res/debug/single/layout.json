@@ -24,24 +24,24 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_title_item.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_table_row.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_table_row.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_table_row.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_table_row.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\map_layers_row.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\map_layers_row.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gron_lapp.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gron_lapp.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_media.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_media.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gron_lapp.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gron_lapp.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_page_with_agg_wf.xml",
@@ -60,12 +60,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\naviframe.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_provyta_wf.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_header.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_header.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_provyta_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_provyta_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_simple_dropdown_hint.xml",
@@ -100,36 +100,36 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_normal.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_normal.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_lines.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_lines.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_normal.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_normal.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_content_include.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_content_include.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_ruta_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_ruta_wf.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_output_field_selection_element.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_output_field_selection_element.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_ruta_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_ruta_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_toolbar.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_toolbar.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_row.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_row.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_row.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_row.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
@@ -152,16 +152,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_media_action.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_menu_selectable.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\drawer_menu_selectable.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal_colored.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal_colored.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_screen_simple_overlay_action_mode.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\drawer_menu_selectable.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\drawer_menu_selectable.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\mr_media_route_chooser_dialog.xml",
@@ -176,6 +172,14 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\gis_object_menu_pop.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\display_value_textview_horizontal.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\display_value_textview_horizontal.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal_horizontal.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal_horizontal.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
@@ -188,12 +192,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\layout\\mr_media_route_controller_material_dialog_b.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_up_container.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layers_body.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\layers_body.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_bar_up_container.xml"
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\display_value_textview_vertical.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\display_value_textview_vertical.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_media_cancel_action.xml",
@@ -204,12 +212,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rule_row.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rule_row.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_multichoice_material.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\select_dialog_multichoice_material.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rule_row.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rule_row.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\send_log.xml",
@@ -236,12 +244,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\map_background_radiogroup.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_text_aggregate.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_text_aggregate.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\chart_wrapper.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\chart_wrapper.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\cell_field_text_aggregate.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\cell_field_text_aggregate.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\gis_candidate_button.xml",
@@ -264,12 +272,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_wf_default_no_scroll.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_linje_portal_wf.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_linje_portal_wf.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_action_menu_layout.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_linje_portal_wf.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_linje_portal_wf.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",
@@ -310,10 +318,6 @@
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\ja_nej_radiogroup.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\ja_nej_radiogroup.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\display_value_textview.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\display_value_textview.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_big_media.xml",
@@ -376,10 +380,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\output_field_selection_element.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
@@ -416,12 +416,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\layout\\mr_media_route_list_item.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\refresh_load_icon.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\refresh_load_icon.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\rules_popup.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\rules_popup.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\refresh_load_icon.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\refresh_load_icon.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_text.xml",
@@ -432,12 +432,20 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\filter_menu_pop.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\selection_field_normal_vertical.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\selection_field_normal_vertical.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\edit_field_numeric.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\edit_field_numeric.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\output_field_slider_element.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\output_field_slider_element.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_two_columns.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_two_columns.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\button_status_none.xml",
@@ -460,12 +468,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\layout\\notification_template_big_media_narrow.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_tag_textview.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_tag_textview.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_pop.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\status_pop.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\header_tag_textview.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\header_tag_textview.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\picture_issue.xml",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
+	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:layout_gravity="right"
 	android:gravity="right"
@@ -8,18 +8,16 @@
 
 	<SeekBar
 		android:id="@+id/spinnerOut"
-		android:layout_width="0dp"
+		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-
-		android:layout_weight=".5"
-		android:minWidth="125dp"
+		android:layout_weight=".65"
+		android:minWidth="133dp"
 		/>
 
 
 	<TextView
 		android:id="@+id/outputValueField"
-		android:layout_width="0dp"
-		android:layout_weight=".2"
+		android:layout_width="wrap_content"
 		android:singleLine="true"
 		android:gravity="center_vertical|right"
 		android:layout_height="match_parent"
@@ -28,12 +26,10 @@
 		android:textSize="25sp" />
 	<TextView
 		android:id="@+id/outputUnitField"
-		android:layout_width="0dp"
-		android:layout_weight=".1"
+		android:layout_width="25dp"
 		android:layout_height="match_parent"
 		android:singleLine="true"
-		android:gravity="center_vertical"
-		android:layout_marginRight="10dp"
+		android:gravity="center_vertical|left"
 		android:text="%"
 		android:textSize="20sp" />
 </LinearLayout>

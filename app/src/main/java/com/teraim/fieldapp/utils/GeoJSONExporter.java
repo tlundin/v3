@@ -199,7 +199,8 @@ public class GeoJSONExporter extends Exporter {
 								o.addRedText("Polygon is too short (only 1 value) for " + keyUID);
 								continue;
 							}
-						boolean isPoly= "Polygon".equals(geoType) || "Linestring".equals(geoType);
+						boolean isPoly= "Polygon".equals(geoType);
+						boolean isLineString = "Linestring".equals(geoType);
 						//Beg of line.
 							writer.beginObject();
 							write("type", "Feature");
@@ -209,7 +210,7 @@ public class GeoJSONExporter extends Exporter {
 							writer.name("coordinates");
 							Log.d("brex","RUTA: "+rutMap.get(keyUID));
 							Log.d("brex","GID: "+keyUID);
-							if (isPoly)
+							if (isPoly||isLineString)
 								writer.beginArray();
 
 							for (String polygon : polygons) {
@@ -235,7 +236,7 @@ public class GeoJSONExporter extends Exporter {
 								if (isPoly)
 									writer.endArray();
 							}
-							if (isPoly)
+							if (isPoly||isLineString)
 								writer.endArray();
 							//End geometry.
 							writer.endObject();

@@ -15,12 +15,6 @@ public class StaticGisPoint extends GisPointObject {
 
 
 
-	@Override
-	public Location getLocation() {
-		if (myCoordinates.isEmpty())
-			return null;
-		return myCoordinates.get(0);
-	}
 	/*
 	@Override
 	public String toString() {

@@ -104,6 +104,7 @@ public class Start extends MenuActivity {
 			}
 		});
 
+
 		Log.d("nils","in START onCreate");
 		singleton = this;
 		//This is the frame for all pages, defining the Action bar and Navigation menu.

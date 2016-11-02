@@ -766,7 +766,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								}
 								if (xy!=null) {
 									//Log.d("vortex","drawing "+gop.getLabel());
-									drawPoint(canvas,bitmap,radius,color,style,polyType,xy,adjustedScale);
+									drawPoint(canvas,bitmap,radius,color,style,polyType,xy,adjustedScale,gop.getFullConfiguration().useIconOnMap());
 									if (layerO!=null && layerO.showLabels()) {
 										drawGopLabel(canvas,xy,go.getLabel(),LabelOffset,bCursorPaint,txtPaint);
 									}
@@ -1018,6 +1018,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				}
 
 				@Override
+				public boolean useIconOnMap() {
+					return true;
+				}
+
+				@Override
 				public boolean isVisible() {
 					return true;
 				}
@@ -1095,7 +1100,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			gop = (GisPointObject) go;
 			if (gop.getTranslatedLocation() != null) {
 				//Log.d("vortex","Calling drawpoint in dispatchdraw for "+go.getLabel());
-				drawPoint(canvas, null, gop.getRadius(), "red", Style.FILL, gop.getShape(), gop.getTranslatedLocation(), 1);
+				drawPoint(canvas, null, gop.getRadius(), "red", Style.FILL, gop.getShape(), gop.getTranslatedLocation(), 1,false);
 			} else
 				Log.e("vortex", "NOT calling drawpoint since translatedlocation was null");
 
@@ -1111,7 +1116,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					canvas.drawPath(p, polyPaint);
 				xy = intBuffer.getIntBuf();
 				translateMapToRealCoordinates(gpo.getCoordinates().get(gpo.getCoordinates().size()-1),xy);
-				drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1);
+				drawPoint(canvas, null,2, "white", Style.STROKE, PolyType.circle, xy,1,false);
 			} else {
 				if (go instanceof GisPolygonObject) {
 					//check if buffered paths already exists.
@@ -1232,11 +1237,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
-	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale) {
+	private void drawPoint(Canvas canvas, Bitmap bitmap, float radius, String color, Style style, PolyType type, int[] xy, float adjustedScale, boolean useIconOnMap) {
 
 		Rect r;
 		//Log.d("bortex","in drawpoint type "+type.name()+" bitmap: "+bitmap);
-		if (bitmap!=null) {
+		if (useIconOnMap && bitmap!=null ) {
 			r = new Rect();
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);

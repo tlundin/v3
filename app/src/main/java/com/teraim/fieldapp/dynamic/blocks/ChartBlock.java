@@ -182,11 +182,13 @@ public abstract class ChartBlock  extends Block implements EventListener {
 
 
     private void refreshChart() {
-            generate();
-            WF_Widget myWidget = new WF_Widget(blockId, chart, isVisible, myContext);
-            myContainer.add(myWidget);
-            ((ViewGroup) chart.getParent()).removeView(chart);
-            myContainer.getViewGroup().addView(myWidget.getWidget(), insertIndex);
+        generate();
+        WF_Widget myWidget = new WF_Widget(blockId, chart, isVisible, myContext);
+        myContainer.add(myWidget);
+        ViewGroup parent = ((ViewGroup) chart.getParent());
+        if (parent!=null)
+            parent.removeView(chart);
+        myContainer.getViewGroup().addView(myWidget.getWidget(), insertIndex);
     }
 
 

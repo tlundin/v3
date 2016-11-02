@@ -9,6 +9,7 @@ import java.util.Set;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -191,7 +192,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 						Log.d("nils","Bonnlapp - Adding key "+cd.get(colC).colName+" with value "+colVals[colC]);
 					}
 					String header = colVals[myHeaderCol];
-					WF_ClickableField entryF = new WF_ClickableField_Selection(header,"",myContext,this.getId()+rowC,true,"black",null);
+					WF_ClickableField entryF = new WF_ClickableField_Selection(header,"",myContext,this.getId()+rowC,true,new DisplayFieldBlock());
 					if (colVals[myHeaderCol]!=null && colVals[myHeaderCol].equals("Avgränsning")) {
 						Log.d("vortex","In refreshlist for avgränsning");						
 						//(String name,String label,List<String> row,Map<String,String>keyChain, GlobalState gs,String valueColumn, String defaultOrExistingValue, Boolean valueIsPersisted)

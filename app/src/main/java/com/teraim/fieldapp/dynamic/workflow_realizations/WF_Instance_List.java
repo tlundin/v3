@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
@@ -17,8 +18,9 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
 	public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
+		private final DisplayFieldBlock entryFormat;
 
-	//Create variables for each instance of variables in <rows> that matches key with variable column <variatorColumn>
+		//Create variables for each instance of variables in <rows> that matches key with variable column <variatorColumn>
 
 
 
@@ -44,7 +46,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 	private boolean showHistorical;
 
 
-	public WF_Instance_List(String id, WF_Context ctx,List<List<String>> rows,String variatorColumn,boolean isVisible) {
+	public WF_Instance_List(String id, WF_Context ctx, List<List<String>> rows, String variatorColumn, boolean isVisible, DisplayFieldBlock format) {
 		super(id, ctx,rows,isVisible);
 		suffices.clear();
 		namePrefix = al.getFunctionalGroup(rows.get(0));
@@ -54,6 +56,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 		ctx.registerEventListener(this, EventType.onSave);
 		o = GlobalState.getInstance().getLogger();
 		this.variatorColumn=variatorColumn;
+		this.entryFormat = format;
 		Log.d("nils","INSTANCE LIST CREATED. ROWS: "+rows.size()+" VARIATOR: "+variatorColumn);
 	}
 
@@ -119,7 +122,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 						String entryInstanceLabel = al.getEntryLabel(var.getBackingDataSet())+" ["+index+"]";
 						WF_ClickableField_Selection ef = entryFields.get(entryInstanceLabel);
 						if (ef == null) {
-							ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true,"black",null);
+							ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true,entryFormat);
 							Log.d("nils","Added list entry for "+entryInstanceLabel);
 							//cache
 							entryFields.put(entryInstanceLabel, ef);	

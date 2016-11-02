@@ -28,12 +28,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\color\\common_signin_btn_text_dark.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\wallet_primary_text_holo_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-wallet\\7.8.0\\res\\color\\wallet_primary_text_holo_light.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\common_signin_btn_text_light.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\color\\common_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\wallet_primary_text_holo_light.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-wallet\\7.8.0\\res\\color\\wallet_primary_text_holo_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\toggle_color.xml",

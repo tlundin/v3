@@ -26,7 +26,7 @@ public abstract class GisPointObject extends GisObject {
 		this.poc=poc;
 		
 	}
-	public abstract Location getLocation();
+
 	public abstract boolean isDynamic();
 	public abstract boolean isUser();
 	
@@ -36,8 +36,6 @@ public abstract class GisPointObject extends GisObject {
 	public float getRadius() {
 		return poc.getRadius();
 	}
-
-	
 
 
 
@@ -96,15 +94,19 @@ public abstract class GisPointObject extends GisObject {
 	}
 
 	public int[] getTranslatedLocation() {
+		//Log.d("vortex","fetched gop object xy, x is "+xy[0]);
 		return xy;
 	}
 	public void setTranslatedLocation(int[] xy) {
+		//Log.d("vortex","set gop object xy");
 		this.xy[0]=xy[0];
 		this.xy[1]=xy[1];
 	}
 
 	@Override
-	public void clearCache() {xy=new int[2];};
+	public void clearCache() {
+		//Log.d("vortex","cleared gop object xy");
+		xy=new int[2];};
 
 }
 

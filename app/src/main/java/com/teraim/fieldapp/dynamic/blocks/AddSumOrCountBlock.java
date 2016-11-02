@@ -14,20 +14,22 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Not_ClickableField_S
  * @author Terje
  *
  */
-public  class AddSumOrCountBlock extends Block {
+public  class AddSumOrCountBlock extends DisplayFieldBlock {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4139158043307360229L;
-	String containerId, label, postLabel,myPattern, target,result,textColor,bgColor;
+	String containerId, label, postLabel,myPattern, target,result;
 	WF_Not_ClickableField_SumAndCountOfVariables.Type type;
 	String format;
+
 	boolean isVisible = true;
 	private VariableConfiguration al;
 	public AddSumOrCountBlock(String id,String containerId, String label,String postLabel,
 			String filter, String target,
 			WF_Not_ClickableField_SumAndCountOfVariables.Type sumOrCount,String result,
-			boolean isVisible, String format, String textColor, String bgColor) {
+			boolean isVisible, String format, String textColor, String bgColor,String verticalFormat,String verticalMargin) {
+		super(textColor,bgColor,verticalFormat,verticalMargin);
 		this.containerId=containerId;
 		this.label=label;
 		this.myPattern=filter; //.trim();
@@ -38,8 +40,6 @@ public  class AddSumOrCountBlock extends Block {
 		this.isVisible = isVisible;
 		this.format = format;
 		this.blockId=id;
-		this.textColor=textColor;
-		this.bgColor=bgColor;
 
 	}
 
@@ -55,7 +55,7 @@ public  class AddSumOrCountBlock extends Block {
 					label,"", myContext, 
 					target, myPattern,
 					type,isVisible,
-					textColor,bgColor);
+					this);
 
 			if (result == null) {
 				o.addRow("");

@@ -50,6 +50,7 @@ import android.widget.TextView;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.InnerLayout;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
@@ -254,9 +255,11 @@ EventGenerator {
 	private ActionMode mActionMode;
 
 	public WF_ClickableField(final String label, final String descriptionT,
-							 WF_Context context, String id, View view, boolean isVisible, String textColor, final String backgroundColor) {
-		super(id, label, descriptionT, context, view, isVisible,textColor, backgroundColor);
+							 WF_Context context, String id, View view, boolean isVisible, DisplayFieldBlock format) {
+		super(id, label, descriptionT, context, view, isVisible, format);
 		 //Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
+		//change between horizontal and vertical
+
 
 		gs = GlobalState.getInstance();
 		sd = gs.getSpinnerDefinitions();
@@ -788,8 +791,7 @@ EventGenerator {
 			w = spin ? new OutSpin(ll, opt, val) : new OutC(ll, format);
 			myOutputFields.put(var, w);
 			outputContainer.addView(ll);
-
-
+			Log.d("franco","Added viewz "+var.getLabel()+" with width: "+ll.getWidth());
 			// refreshInputFields();
 			refreshOutputField(var, w);
 

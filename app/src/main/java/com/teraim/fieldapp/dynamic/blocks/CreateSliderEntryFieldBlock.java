@@ -13,7 +13,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Slide
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
-public class CreateSliderEntryFieldBlock extends Block {
+public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 
 	/**
 	 *
@@ -29,8 +29,8 @@ public class CreateSliderEntryFieldBlock extends Block {
 	String variableName=null;
 
 	public CreateSliderEntryFieldBlock(String id, String name,
-									   String containerId, boolean isVisible, boolean showHistorical, String initialValue, String label, String variableName, String group,String textColor,String backgroundColor,int min,int max) {
-		super();
+									   String containerId, boolean isVisible, boolean showHistorical, String initialValue, String label, String variableName, String group,String textColor,String backgroundColor,int min,int max,String verticalFormat,String verticalMargin) {
+		super(textColor,backgroundColor,verticalFormat,verticalMargin);
 		this.name = name;
 		this.group = group;
 		this.containerId=containerId;
@@ -40,15 +40,8 @@ public class CreateSliderEntryFieldBlock extends Block {
 		this.showHistorical=showHistorical;
 		this.label=label;
 		this.variableName = variableName;
-		this.textColor=textColor;
-		this.backgroundColor = backgroundColor;
 		this.min=min;
 		this.max=max;
-		if (textColor.isEmpty())
-			this.textColor="black";
-
-
-		Log.d("vortex","my id: "+this.getBlockId()+" my textcolor: "+textColor);
 	}
 
 	/**
@@ -92,7 +85,7 @@ public class CreateSliderEntryFieldBlock extends Block {
 				}
 				Log.d("vortex", "current hash: " + gs.getVariableCache().getContext());
 				myField = new WF_ClickableField_Slider(label==null||label.equals("")?v.getLabel():label, "This is a description for the entryfield"
-						, myContext, name, isVisible,group,textColor,backgroundColor,min,max);
+						, myContext, name, isVisible,group,min,max,this);
 				Log.d("nils", "In CreateSliderEntryFieldBlock.");
 				myField.addVariable(v, true,"slider",true,showHistorical);
 				myContext.addDrawable(v.getId(), myField);

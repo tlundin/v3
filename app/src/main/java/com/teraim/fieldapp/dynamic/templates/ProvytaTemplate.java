@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.Executor;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
@@ -157,15 +158,15 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 
 
 		WF_DisplayValueField rSel = new WF_DisplayValueField("whatevar", "[$Current_Ruta]",myContext, null, 
-				"Vald Ruta", true,null,null,null);
+				"Vald Ruta", true,null,new DisplayFieldBlock());
 
-		LinearLayout provytorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
+		LinearLayout provytorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 		TextView h = (TextView)provytorRemainingView.findViewById(R.id.header);
 		h.setText("Provytor gjorda");
 
 		provOutputValueField = (TextView)provytorRemainingView.findViewById(R.id.outputValueField);
 
-		LinearLayout linjerRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
+		LinearLayout linjerRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 		h = (TextView)linjerRemainingView.findViewById(R.id.header);
 		h.setText("Linjer gjorda");		
 

@@ -9,20 +9,24 @@ import java.util.Set;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public abstract class WF_Not_ClickableField extends WF_ListEntry {
+
 	private final int textColorC;
+	final LinearLayout outputContainer;
+
 	protected WF_Context myContext;
 	protected String myDescription;
-	final LinearLayout outputContainer;
 	private boolean showAuthor  = false;
 	protected Map<Variable,OutC> myOutputFields = new HashMap<Variable,OutC>();
 
@@ -68,8 +72,9 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 	}
 
 
-	public WF_Not_ClickableField(String id,final String label,final String descriptionT, WF_Context myContext, 
-			View view,boolean isVisible,String textColor, String backgroundColor) {
+	@SuppressWarnings("WrongConstant")
+	public WF_Not_ClickableField(String id, final String label, final String descriptionT, WF_Context myContext,
+								 View view, boolean isVisible, DisplayFieldBlock format) {
 		super(id,view,myContext,isVisible);
 
 
@@ -78,18 +83,23 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		outputContainer = (LinearLayout)getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
 		//Log.d("taxx","variable label: "+label+" variable ID: "+id);
-		textColorC = Color.parseColor(textColor);
+		textColorC = Color.parseColor(format.getTextColor());
 		//myheader can be null in case this is a Cell in a table.
 		if (myHeader !=null) {
 			myHeader.setTextColor(textColorC);
 			myHeader.setText(label);
 		}
+		//change between horizontal and vertical
+		LinearLayout root = ((LinearLayout)this.getWidget().findViewById(R.id.entryRoot));
+		ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)root.getLayoutParams());
+		lp.topMargin = format.getVerticalMargin();
+		lp.bottomMargin = format.getVerticalMargin();
 		this.label = label;
 		myDescription = descriptionT;
 		//Show owner.
 		showAuthor = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.SHOW_AUTHOR_KEY);
-		if (backgroundColor!=null) {
-			this.backgroundColor = Color.parseColor(backgroundColor);
+		if (format.getBackgroundColor()!=null) {
+			this.backgroundColor = Color.parseColor(format.getBackgroundColor());
 			getWidget().setBackgroundColor(this.backgroundColor);
 		}
 		//Log.d("vortex","setting background to "+this.backgroundColor);
@@ -121,6 +131,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			 */
 			myOutputFields.put(var,new OutC(ll,format));
 			outputContainer.addView(ll);
+
+			Log.d("franco","Added view "+var.getLabel()+" with width: "+ll.getWidth());
 			myVar = var;
 		}
 

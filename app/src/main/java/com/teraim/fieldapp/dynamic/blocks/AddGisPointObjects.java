@@ -52,6 +52,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 	private static final long serialVersionUID = 7979886099817953005L;
 	private final String objectContextS;
+	private final boolean useIconOnMap;
 	private String nName,
 	target, coordType,locationVariables,imgSource,refreshRate;
 
@@ -80,7 +81,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 	public AddGisPointObjects(String id, String nName, String label,
 			String target, String objectContext,String coordType, String locationVars, 
-			String imgSource, String refreshRate, String radius, boolean isVisible, 
+			String imgSource,boolean use_image_icon_on_map, String refreshRate, String radius, boolean isVisible, 
 			GisObjectType type, String color, String polyType, String fillType, 
 			String onClick, String statusVariable, boolean isUser, boolean createAllowed, String palette, LoggerI o) {
 		super();
@@ -99,6 +100,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		this.createAllowed=createAllowed;
 		this.palette = palette;
 		this.creator = "";
+		this.useIconOnMap = use_image_icon_on_map;
 		myType = type;
 
 		if (coordType==null||coordType=="")
@@ -489,7 +491,9 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	}
 
 	
-	
+	public boolean useIconOnMap() {
+		return useIconOnMap;
+	}
 
 	private void setDefaultBitmaps(WF_Context myContext) {
 		if (icon==null) {

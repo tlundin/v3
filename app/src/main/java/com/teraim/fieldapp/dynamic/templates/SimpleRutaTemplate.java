@@ -96,7 +96,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		myContext.addContainers(getContainers());
 
 
-		LinearLayout rutorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
+		LinearLayout rutorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 		TextView h = (TextView)rutorRemainingView.findViewById(R.id.header);
 		h.setText("Rutor gjorda");
 

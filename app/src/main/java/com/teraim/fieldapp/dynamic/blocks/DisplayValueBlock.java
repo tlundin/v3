@@ -8,18 +8,18 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_DisplayValueField;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
-public class DisplayValueBlock extends Block implements EventGenerator {
+public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerator {
 
 	private static final long serialVersionUID = 9151756426062334462L;
+
 	private String namn,label,formula, containerId,format;
 	boolean isVisible = false;
 	Unit unit;
 	GlobalState gs;
-	private String textColor;
-	private String bgColor;
 	
 	public DisplayValueBlock(String id,String namn, String label,Unit unit,
-			String formula, String containerId,boolean isVisible,String format, String textColor, String bgColor) {
+			String formula, String containerId,boolean isVisible,String format,String textColor,String bgColor,String verticalFormat,String verticalMargin ) {
+		super(textColor,bgColor,verticalFormat,verticalMargin);
 		this.blockId=id;
 		this.unit=unit;
 		this.namn=namn;;
@@ -28,8 +28,7 @@ public class DisplayValueBlock extends Block implements EventGenerator {
 		this.containerId=containerId;
 		this.isVisible=isVisible;
 		this.format=format;
-		this.textColor = textColor;
-		this.bgColor = bgColor;
+
 	}
 
 	public void create(final WF_Context myContext) {
@@ -38,7 +37,7 @@ public class DisplayValueBlock extends Block implements EventGenerator {
 		Container myContainer = myContext.getContainer(containerId);
 		if (myContainer != null) {
 		
-		WF_DisplayValueField vf = new WF_DisplayValueField(namn,formula,myContext,unit,label,isVisible,format, bgColor, textColor);
+		WF_DisplayValueField vf = new WF_DisplayValueField(namn,formula,myContext,unit,label,isVisible,format, this);
 		myContainer.add(vf);
 		vf.onEvent(new WF_Event_OnSave(null));
 		}  else {

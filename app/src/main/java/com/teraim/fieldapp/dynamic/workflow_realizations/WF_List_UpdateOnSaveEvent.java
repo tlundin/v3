@@ -9,6 +9,7 @@ import java.util.Set;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
@@ -20,6 +21,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventListener,EventGenerator{
 
 
+	private final DisplayFieldBlock myEntryFieldFormat;
 	//Precached variables.
 	private Map<String,String> varValueMap;
 
@@ -36,7 +38,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 	private Map<String,EntryField> entryFields = new HashMap<String,EntryField>();
 	int index = 0;
 
-	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx,List<List<String>> rows,boolean isVisible) {
+	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, List<List<String>> rows, boolean isVisible, DisplayFieldBlock format) {
 		super(id, ctx,rows,isVisible);
 		String namePrefix = al.getFunctionalGroup(rows.get(0));
 		Log.d("nils","SkarmGrupp: "+namePrefix);
@@ -45,11 +47,12 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		o = GlobalState.getInstance().getLogger();
 
 		for (List<String>r:rows)  {
-			addEntryField(r);
+			addEntryField(r,format);
 		}
+		this.myEntryFieldFormat = format;
 	}
 
-	private void addEntryField(List<String> r) {
+	private void addEntryField(List<String> r,DisplayFieldBlock format) {
 		EntryField ef;
 		String entryLabel = al.getEntryLabel(r);
 		if (entryLabel==null||entryLabel.length()==0) {
@@ -59,7 +62,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		//Log.d("nils","ADD EntryField with label "+entryLabel);
 		ef = entryFields.get(entryLabel);
 		if (ef==null) 	{	
-			WF_ClickableField entryF = new WF_ClickableField_Selection(entryLabel,al.getDescription(r),myContext,this.getId()+"_"+index++,true,"black",null);
+			WF_ClickableField entryF = new WF_ClickableField_Selection(entryLabel,al.getDescription(r),myContext,this.getId()+"_"+index++,true,format);
 			get().add(entryF);
 			ef = new EntryField();
 			entryFields.put(entryLabel, ef);
@@ -162,7 +165,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 	@Override
 	public void addFieldListEntry(String listEntryID,String label,String description) {		
-		WF_ClickableField entryF = new WF_ClickableField_Selection(label,description,myContext,this.getId()+listEntryID,true,"black",null);
+		WF_ClickableField entryF = new WF_ClickableField_Selection(label,description,myContext,this.getId()+listEntryID,true,myEntryFieldFormat);
 		get().add(entryF);
 		EntryField ef = new EntryField();
 		entryFields.put(this.getId()+listEntryID, ef);

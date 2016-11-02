@@ -316,7 +316,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 				if (objectId == null) {
 					Log.e("vortex", "ingen object ID!!!!");
-					return new LoadResult(this,ErrorCode.ParseError,"MISSING OBJECT ID");
+					//return new LoadResult(this,ErrorCode.ParseError,"MISSING OBJECT ID");
 
 				} //else
 				//	Log.d("vortex","OBJECT ID: "+objectId);

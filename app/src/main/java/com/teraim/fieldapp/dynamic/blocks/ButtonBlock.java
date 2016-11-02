@@ -527,13 +527,14 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 
 													}
-													if (button instanceof WF_StatusButton)  {
-														((WF_StatusButton)button).changeStatus(WF_StatusButton.Status.ready);
-													}
+
 													((Activity) ctx).runOnUiThread(new Runnable() {
 														@Override
 														public void run() {
 															{
+																if (button instanceof WF_StatusButton)  {
+																	((WF_StatusButton)button).changeStatus(WF_StatusButton.Status.ready);
+																}
 																exporter.getDialog().setOutCome(msg);
 															}
 														}
@@ -546,14 +547,18 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 								}
 							} else if (onClick.equals("Start_Camera")) {
-								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-								File file = new File(Constants.PIC_ROOT_DIR,getTarget());
-								Uri outputFileUri = Uri.fromFile(file);
-								intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-								//				intent.putExtra(Strand.KEY_PIC_NAME, name);
-								((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+								if (getTarget()!=null) {
+									Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+									File file = new File(Constants.PIC_ROOT_DIR, getTarget());
+									Uri outputFileUri = Uri.fromFile(file);
+									intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+									//				intent.putExtra(Strand.KEY_PIC_NAME, name);
+									((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
 
-
+								} else {
+									o.addRow("");
+									o.addRedText("No target (filename) specified for camera action button. BlockId: "+ButtonBlock.this.getBlockId());
+								}
 							} else if (onClick.equals("barcode")) {
 								myContext.registerEventListener(new BarcodeReader(myContext,getTarget()), Event.EventType.onActivityResult);
 								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

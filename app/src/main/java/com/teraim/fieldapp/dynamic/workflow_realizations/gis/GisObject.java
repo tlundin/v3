@@ -201,7 +201,7 @@ public class GisObject {
 
 	//Should be overridden. 
 	
-	public void clearCache() {Log.e("vortex","Getszzzzz");}
+	public void clearCache() {Log.e("vortex","ERROR: Getszzzzz");}
 
 	public void markAsUseful() {
 		this.isUseful = true;

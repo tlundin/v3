@@ -18,14 +18,16 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_TimeOrder_Sorter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithValue_Filter;
 
-public class BlockCreateListEntriesFromFieldList extends Block {
+public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
 	private static Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
 	private String id,type,containerId,selectionPattern,selectionField,variatorColumn;
 	boolean isVisible = true;
 	public BlockCreateListEntriesFromFieldList(String id,String namn, String type,
-			String containerId, String selectionPattern, String selectionField,String variatorColumn) {
-		super();
+			String containerId, String selectionPattern, String selectionField,String variatorColumn,
+											   String textColor, String bgColor,String verticalFormat,String verticalMargin) {
+		super(textColor,bgColor,verticalFormat,verticalMargin);
+
 		this.blockId=id;
 		this.id = namn;
 		this.type = type;
@@ -33,6 +35,7 @@ public class BlockCreateListEntriesFromFieldList extends Block {
 		this.selectionPattern = selectionPattern;
 		this.selectionField = selectionField;
 		this.variatorColumn=variatorColumn;
+
 
 
 	}
@@ -62,7 +65,7 @@ public class BlockCreateListEntriesFromFieldList extends Block {
 				//prefetch values from db.
 				if (type.equals("selected_values_list")) {
 					o.addRow("This is a selected values type list. Adding Time Order sorter.");
-					myList =  new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible);
+					myList =  new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible,this);
 					myList.addSorter(new WF_TimeOrder_Sorter());	
 					o.addRow("Adding Filter Type: only instantiated");
 					myList.addFilter(new WF_OnlyWithValue_Filter(id));
@@ -70,17 +73,17 @@ public class BlockCreateListEntriesFromFieldList extends Block {
 				else { 
 					if (type.equals("selection_list")) {
 						o.addRow("This is a selection list. Adding Alphanumeric sorter.");
-						myList = new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible);
+						myList = new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible,this);
 						myList.addSorter(new WF_Alphanumeric_Sorter());
 					} 
 					else if (type.equals("instance_list")) {
 						o.addRow("instance selection list. Time sorter.");
-						myList = new WF_Instance_List(id,myContext,rows,variatorColumn,isVisible);
+						myList = new WF_Instance_List(id,myContext,rows,variatorColumn,isVisible,this);
 						myList.addSorter(new WF_IndexOrder_Sorter());	
 					} else
 					{
 						//TODO: Find other solution
-						myList = new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible);
+						myList = new WF_List_UpdateOnSaveEvent(id,myContext,rows,isVisible,this);
 						myList.addSorter(new WF_Alphanumeric_Sorter());
 					}
 				}

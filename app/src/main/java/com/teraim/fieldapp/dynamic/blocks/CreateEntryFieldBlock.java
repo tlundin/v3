@@ -13,24 +13,25 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selec
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
-public class CreateEntryFieldBlock extends Block {
+public class CreateEntryFieldBlock extends DisplayFieldBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2013870148670474248L;
-	String name,type,label,containerId,postLabel,initialValue,textColor,backgroundColor;
+	String name,type,label,containerId,postLabel,initialValue;
+
 	Unit unit;
 	GlobalState gs;
 	boolean isVisible = false,showHistorical,autoOpenSpinner=true;
 	String format;
-	
+
 	WF_ClickableField myField;
 
 
 	public CreateEntryFieldBlock(String id,String name, 
-			String containerId,boolean isVisible,String format,boolean showHistorical,String initialValue, String label, boolean autoOpenSpinner,String textColor,String backgroundColor) {
-		super();
+			String containerId,boolean isVisible,String format,boolean showHistorical,String initialValue, String label, boolean autoOpenSpinner,String textColor,String backgroundColor,String verticalFormat,String verticalMargin) {
+		super(textColor,backgroundColor,verticalFormat,verticalMargin);
 		this.name = name;
 		this.containerId=containerId;
 		this.isVisible=isVisible;
@@ -40,11 +41,7 @@ public class CreateEntryFieldBlock extends Block {
 		this.showHistorical=showHistorical;
 		this.label=label;
 		this.autoOpenSpinner=autoOpenSpinner;
-		this.textColor=textColor;
-		this.backgroundColor=backgroundColor;
 
-		if (textColor.isEmpty())
-			this.textColor="black";
 	}
 
 	/**
@@ -84,7 +81,7 @@ public class CreateEntryFieldBlock extends Block {
 				o.addRedText("Current DB Context: ["+gs.getVariableCache().getContext()+"]");
 			} else	{	
 				myField = new WF_ClickableField_Selection_OnSave(label==null||label.equals("")?v.getLabel():label,
-						al.getDescription(v.getBackingDataSet()),myContext,name,isVisible,autoOpenSpinner,textColor,backgroundColor);
+						al.getDescription(v.getBackingDataSet()),myContext,name,isVisible,autoOpenSpinner,this);
 				Log.d("nils", "In CreateEntryField. Description: "+al.getDescription(v.getBackingDataSet()));
 				Log.d("nils","Backing data: "+v.getBackingDataSet().toString());
 				myField.addVariable(v, true,format,true,showHistorical);
@@ -102,7 +99,7 @@ public class CreateEntryFieldBlock extends Block {
 		} else {
 			Log.e("vortex","Container null! Cannot add entryfield!");
 			o.addRow("");
-			o.addRedText("Adding Entryfield for "+name+" failed. Container not configured");
+			o.addRedText("Adding Entryfield for "+name+" failed. Container "+containerId+" not configured");
 			return null;
 		}
 	}

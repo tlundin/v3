@@ -226,8 +226,6 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 						Location last = gopCoordinates.get(gopCoordinates.size()-1);
 						if (last instanceof SweLocation) {
 							SweLocation sweloc = (SweLocation)last;
-							double north=sweloc.getY(),east = sweloc.getX();
-
 							switch (d) {
 								case UP:
 									sweloc.north+=changeDistance;
@@ -243,9 +241,15 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 									break;
 
 							}
-
+							Log.d("nudge","sweloc changed with "+changeDistance+" dir: "+d);
+							if (gop instanceof GisPointObject) {
+								int[] xy = new int[2];
+								gisImageView.translateMapToRealCoordinates(sweloc,xy);
+								((GisPointObject) gop).setTranslatedLocation(xy);
+							}
 							//gopCoordinates.remove(last);
 							//gopCoordinates.add(new SweLocation(east,north));
+
 							gisImageView.redraw();
 						} else
 								Log.d("vortex","not sweloc!! "+last.getClass().getCanonicalName());

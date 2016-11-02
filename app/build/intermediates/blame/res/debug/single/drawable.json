@@ -68,12 +68,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_none.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bgpic.jpg",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bgpic.jpg"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\minus_selector.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\minus_selector.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bgpic.jpg",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\bgpic.jpg"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",
@@ -84,24 +84,24 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\drawable\\common_signin_btn_text_dark.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_ready.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_ready.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_cab_background_top_material.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_ready.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_ready.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\poly.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\poly.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\fixpunkt.png",
@@ -156,12 +156,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\teraim_small.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\dbase.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\dbase.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_settings_light.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\drawable\\mr_ic_settings_light.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\dbase.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\dbase.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_play_dark.xml",
@@ -212,10 +212,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_spinner_textfield_background_material.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\checkmark.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\checkmark.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_light.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_dialog_material_background_light.xml"
     },
@@ -224,16 +220,20 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_item_background_holo_light.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\checkmark.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\checkmark.png"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\border.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\border.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_menu_button.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_menu_button.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_pause_light.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\drawable\\mr_ic_pause_light.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_menu_button.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\gis_menu_button.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_light.xml",
@@ -264,10 +264,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\drawable\\mr_ic_settings_dark.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_dark.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\drawable\\mr_ic_media_route_connecting_mono_dark.xml"
     },
@@ -276,8 +272,16 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_btn_borderless_material.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_light.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\drawable\\abc_list_selector_holo_light.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_text_light.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\drawable\\common_signin_btn_text_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\zoom.png",
@@ -286,10 +290,6 @@
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\profil.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\profil.png"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_text_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\drawable\\common_signin_btn_text_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
@@ -308,12 +308,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\mediarouter-v7\\22.2.0\\res\\drawable\\mr_ic_media_route_mono_light.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\car.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\car.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_icon_dark.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\drawable\\common_signin_btn_icon_dark.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\car.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\car.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_mono_dark.xml",

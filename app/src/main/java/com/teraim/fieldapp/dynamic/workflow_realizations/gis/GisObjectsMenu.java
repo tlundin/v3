@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -298,7 +299,7 @@ public class GisObjectsMenu extends View {
 				for (FullGisObjectConfiguration item : myMenuItemsForPalette) {
 					Set<FullGisObjectConfiguration> itemSet = menuGroupsM.get(item.getGisPolyType());
 					if (itemSet == null) {
-						itemSet = new HashSet<FullGisObjectConfiguration>();
+						itemSet = new LinkedHashSet<FullGisObjectConfiguration>();
 						menuGroupsM.put(item.getGisPolyType(), itemSet);
 					}
 					Log.d("vortex", "Adding " + item.getName() + " to " + paletteName);
@@ -403,13 +404,15 @@ public class GisObjectsMenu extends View {
 					col = 0;
 					row++;
 					i++;
-					totalHeaderHeight += SpaceBetweenHeaderAndButton;
+					totalHeaderHeight += headerTextP.getTextSize() + SpaceBetweenHeaderAndButton;
 				}
 
 			}
-			totalHeaderHeight += headerTextP.getTextSize() + SpaceBetweenHeaderAndButton;
-			col = 0;
-			row++;
+			if (col!=0) {
+				totalHeaderHeight += headerTextP.getTextSize() + SpaceBetweenHeaderAndButton;
+				col = 0;
+				row++;
+			}
 
 		}
 
@@ -468,8 +471,8 @@ public class GisObjectsMenu extends View {
 		}
 		//Draw header and tabs
 		for (int row = 0 ; row < MAX_ROWS; row++) {
-			if (menuHeaderArray[row]!=null)
-				canvas.drawText(menuHeaderArray[row]+" types", w/2, row*RowH+PaddingY+totalHeaderHeight+ SpaceBetweenHeaderAndButton+tabRowHeight+headerTextP.getTextSize(), headerTextP);
+			//if (menuHeaderArray[row]!=null)
+			//	canvas.drawText(menuHeaderArray[row]+" types", w/2, row*RowH+PaddingY+totalHeaderHeight+ SpaceBetweenHeaderAndButton+tabRowHeight+headerTextP.getTextSize(), headerTextP);
 			MenuButton currB=null;
 			for (int col = 0; col < NoOfButtonsPerRow;col++) {
 				currB = menuButtonArray[col][row];

@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
+import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 
 public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
@@ -18,7 +20,7 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 			WF_Context context, String id,boolean isVisible) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(R.layout.cell_field_normal,null),
-				isVisible,"black",null);
+				isVisible,new DisplayFieldBlock("black",null,null,null));
 
 		myHash = columnKeyHash;
 	}

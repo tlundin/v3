@@ -33,6 +33,7 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.OnclickExtra;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Delyta;
@@ -90,7 +91,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		fieldListPanel = (LinearLayout)v.findViewById(R.id.fieldList);
 
 		WF_DisplayValueField rSel = new WF_DisplayValueField("whatevar", "[$Current_Ruta]",myContext, null, 
-				"Vald Ruta", true,null,null,null);
+				"Vald Ruta", true,null,new DisplayFieldBlock());
 
 
 		final String currPy = al.getCurrentProvyta();
@@ -104,9 +105,9 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 
 		
 
-		LinearLayout delytorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
-		LinearLayout smaRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
-		LinearLayout synkadMedView = (LinearLayout)inflater.inflate(R.layout.display_value_textview, null);		
+		LinearLayout delytorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
+		LinearLayout smaRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
+		LinearLayout synkadMedView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 
 		TextView h = (TextView)delytorRemainingView.findViewById(R.id.header);
 		h.setText("Delytor gjorda");

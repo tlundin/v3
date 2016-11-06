@@ -70,10 +70,11 @@ public class WF_Button extends WF_Widget {
 
 
     public static Button createInstance(String text, Context ctx) {
-        final LayoutInflater inflater = (LayoutInflater)ctx.getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
+       // final LayoutInflater inflater = (LayoutInflater)ctx.getSystemService
+       //         (Context.LAYOUT_INFLATER_SERVICE);
 
         Button button = new Button(ctx);
+        button.setTextSize(22);
         button.setText(text);
         return button;
     }

@@ -199,8 +199,10 @@ public class GeoJSONExporter extends Exporter {
 								o.addRedText("Polygon is too short (only 1 value) for " + keyUID);
 								continue;
 							}
-						boolean isPoly= "Polygon".equals(geoType);
-						boolean isLineString = "Linestring".equals(geoType);
+						boolean isPoly= "Polygon".equalsIgnoreCase(geoType);
+						boolean isLineString = "Linestring".equalsIgnoreCase(geoType);
+						if (isLineString)
+							geoType="LineString";
 						//Beg of line.
 							writer.beginObject();
 							write("type", "Feature");
@@ -229,6 +231,16 @@ public class GeoJSONExporter extends Exporter {
 										printCoord(writer, coords[i + 1]);
 										writer.endArray();
 									}
+									//Close poly if not done.
+									if (isPoly && lastCoordEqualToFirst(coords)) {
+										Log.d("vortex","Closing poly..");
+										writer.beginArray();
+										printCoord(writer, coords[0]);
+										printCoord(writer, coords[0 + 1]);
+										writer.endArray();
+									}
+
+
 								} catch (IllegalStateException e) {
 									Log.e("brex","Illegalstate!!");
 									Log.e("brex","Full Poly is "+polygon);
@@ -318,6 +330,13 @@ public class GeoJSONExporter extends Exporter {
 		}
 
 		return null;	}
+
+	private boolean lastCoordEqualToFirst(String[] coords) {
+		return (coords==null || coords.length==0 || (coords[0].equals(coords.length-2) &&
+				coords[1].equals(coords.length-1))) ;
+
+
+	}
 
 	private String getCoordinates(String uid, String thisYear) {
 		//If there is a coord for this year, return it.

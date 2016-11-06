@@ -8,8 +8,7 @@
 
 	<TextView
         android:id="@+id/outputValueField"
-        android:layout_width="0dp"
-        android:layout_weight=".9"
+        android:layout_width="wrap_content"
         android:singleLine="true"
         android:gravity="center_vertical|right"
         android:layout_height="match_parent"
@@ -19,9 +18,10 @@
 
 	<TextView
     android:id="@+id/outputUnitField"
-    android:layout_width="25dp"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:singleLine="true"
+		android:layout_marginRight="5dp"
     android:gravity="center_vertical|left"
     android:text="%"
     android:textSize="20sp" />

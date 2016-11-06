@@ -554,7 +554,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Log.d("vortex","HACK: Adding uid: "+uid);
 			keyHash.put("uid", uid);
 			Variable gistyp = GlobalState.getInstance().getVariableCache().getVariable(keyHash,NamedVariables.GIS_TYPE);
-			if (gistyp!=null && keyHash != null) {
+			if (gistyp!=null ) {
 				gistyp.setValue(gisTypeToCreate.getObjectKeyHash().getContext().get("gistyp"));
 				Log.d("vortex", "keyhash for new obj is: " + keyHash.toString() + " and gistyp: " + gistyp.getValue());
 			}

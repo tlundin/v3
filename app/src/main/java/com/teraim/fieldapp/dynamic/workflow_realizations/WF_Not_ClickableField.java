@@ -91,9 +91,11 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		}
 		//change between horizontal and vertical
 		LinearLayout root = ((LinearLayout)this.getWidget().findViewById(R.id.entryRoot));
+		if (root!=null) {
 		ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)root.getLayoutParams());
-		lp.topMargin = format.getVerticalMargin();
-		lp.bottomMargin = format.getVerticalMargin();
+			lp.topMargin = format.getVerticalMargin();
+			lp.bottomMargin = format.getVerticalMargin();
+		}
 		this.label = label;
 		myDescription = descriptionT;
 		//Show owner.

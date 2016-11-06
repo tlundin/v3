@@ -635,10 +635,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			if (createGisBlock.isTeamVisible()) {
 				String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 				if(team ==null || team.isEmpty()) {
-					o = GlobalState.getInstance().getLogger();
-					Log.d("vortex", "no team but team is set to show. alarm!");
-					o.addRow("");
-					o.addRedText("Team name missing. Cannot show team members.");
+					//o = GlobalState.getInstance().getLogger();
+					//Log.d("vortex", "no team but team is set to show. alarm!");
+					//o.addRow("");
+					//o.addRedText("Team name missing. Cannot show team members.");
 				} else {
 					Log.d("bortex", "team is visible! Adding layer for team "+team);
 					final GisLayer teamLayer = new GisLayer(this, "Team", "Team", true, true, true);

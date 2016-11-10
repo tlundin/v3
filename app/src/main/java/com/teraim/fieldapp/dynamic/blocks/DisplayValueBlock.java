@@ -1,5 +1,7 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import android.view.ViewGroup;
+
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
@@ -46,4 +48,7 @@ public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerat
 		}
 			
 	}
+
+
+
 }

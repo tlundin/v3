@@ -63,6 +63,8 @@ public class WF_Container extends WF_Thing implements Container {
 				continue;
 			}
 			me.addView(v);
+
+			d.postDraw();
 			
 		} 
 

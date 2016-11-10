@@ -1158,7 +1158,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		}
 		//Check if label should be drawn.
 
-		if (!selected&&layerO!=null && layerO.showLabels() ) {
+		if (!selected&&layerO!=null && layerO.showLabels() && !beingDrawn) {
 			xy = intBuffer.getIntBuf();
 			translateMapToRealCoordinates(go.getLocation(),xy);
 			//Log.d("vortex","Calling drawlabel in drawgop for "+go.getLabel()+". I am a path? "+(go instanceof GisPathObject)+" Iam point? "+(go instanceof GisPointObject));

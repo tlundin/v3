@@ -471,22 +471,30 @@ public class Tools {
 	}
 */
 
-	public static boolean isNumeric(String str)
-	{	
-		if (str==null||str.length()==0)
+	public static boolean isNumeric(Object num)
+	{
+		if (num == null)
 			return false;
-		if (str.length()==1 && !Character.isDigit(str.charAt(0)))
-			return false;
-		int i=0;
-		for (char c : str.toCharArray())
-		{
-			if (!Character.isDigit(c)&& c!='.') {
-				if (i>0 || c!='-')
-					return false;
+		if (num instanceof Double || num instanceof Float || num instanceof Integer)
+			return true;
+		if (num instanceof String) {
+			String str = (String)num;
+			if (str==null||str.length()==0)
+				return false;
+			int i=0;
+			for (char c : str.toCharArray())
+			{
+				if (!Character.isDigit(c)&& c!='.') {
+					if (i>0 || c!='-')
+						return false;
+				}
+				i++;
 			}
-			i++;
+			return true;
+		} else {
+			System.out.println("isNumeric returns false...not a string: "+num.getClass()+" "+num);
+			return false;
 		}
-		return true;
 	}
 
 	public static String printSelectionArgs(String[] selectionArgs) {

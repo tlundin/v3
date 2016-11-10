@@ -80,19 +80,29 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public void eraseSyncObjects() {
         db.delete(TABLE_SYNC,null,null);
+    }
 
+    //This function attempts to recover a newer  uuid from a old uuid using the variable GlobalID as key.
+    public String findUIDFromGlobalId(String uid) {
+        String query = "SELECT " + this.getDatabaseColumnName("uid") + " FROM " + TABLE_VARIABLES + " WHERE " + VALUE + " = '{"+ uid + "}' AND " + VARID + " = '" + GisConstants.GlobalGid + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
+        Log.d("quinto",query);
+        Cursor resultSet = db.rawQuery(query, null);
+        if (resultSet.moveToNext())
+            return resultSet.getString(0);
+        return null;
 
     }
 
-    public String findCoordinatesInHistorical(String uid) {
-        String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + GisConstants.GPS_Coord_Var_Name + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
-        //Log.d("vortex","findCoordinatesInHistorical: \n"+query);
+    public String findVarFromUID(String uid,String variableName) {
+        String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + variableName + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
+
 
         Cursor resultSet = db.rawQuery(query, null);
         if (resultSet.moveToNext())
             return resultSet.getString(0);
         return null;
     }
+
     public Map<String,String> createNotNullSelection(Map<String, String> myKeyHash) {
         boolean first = true;
         String query = "";
@@ -544,7 +554,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         }
 
-        ((Activity) ctx).runOnUiThread(new Runnable() {
+        ((Activity) exporter.getContext()).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
@@ -921,6 +931,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         //Log.d("nils","In getvalue with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         Cursor c = null;
+
         if (checkForNulls(s.selectionArgs)) {
             c = db.query(TABLE_VARIABLES, valueCol,
                     s.selection, s.selectionArgs, null, null, null, null);
@@ -1389,6 +1400,228 @@ public class DbHelper extends SQLiteOpenHelper {
     int synC = 0;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public SyncReport synchronise(SyncEntry[] ses, UIProvider ui, LoggerI o, SyncStatusListener syncListener) {
         if (ses == null) {
             Log.d("sync", "ses är tom! i synchronize");
@@ -1619,7 +1852,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 } else {
                     if (s.isDelete()) {
                         keySet.clear();
-                                    Log.d("sync", "Got Delete for: " + s.getTarget());
+                        Log.d("sync", "Got Delete for: " + s.getTarget());
                         String[] sChanges = null;
                         if (s.getChange() != null)
                             sChanges = s.getChange().split("\\|");
@@ -1650,7 +1883,7 @@ public class DbHelper extends SQLiteOpenHelper {
                             }
 
                         }
-                                        Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
+                        Log.d("sync", "DELETE WITH PARAMETER NAMED " + name);
                         Log.d("sync","Keyset:  "+keySet.toString());
 
                         Selection sel = this.createSelection(keySet, name);
@@ -1659,8 +1892,8 @@ public class DbHelper extends SQLiteOpenHelper {
                             String xor = "";
                             for (String sz : sel.selectionArgs)
                                 xor += sz + ",";
-                                               Log.d("nils", "Selection ARGS: " + xor);
-                                               Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
+                            Log.d("nils", "Selection ARGS: " + xor);
+                            Log.d("nils","Calling delete with Selection: "+sel.selection+" args: "+print(sel.selectionArgs));
                             //Check timestamp. If timestamp is older, delete. Otherwise skip.
 
                             //StoredVariableData sv = this.getVariable(s.getTarget(), sel);
@@ -1682,13 +1915,13 @@ public class DbHelper extends SQLiteOpenHelper {
                             } else
                                 Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
                             if (!existingTimestampIsMoreRecent) {
-                                                       Log.d("sync", "Deleting " + name);
+                                Log.d("sync", "Deleting " + name);
                                 this.deleteVariable(s.getTarget(), sel, false);
                                 vc.insert(name, keyHash, null);
                                 changes.deletes++;
                             } else {
                                 changes.refused++;
-                                                       Log.d("sync", "Did not delete.");
+                                Log.d("sync", "Did not delete.");
                                 //                       o.addRow("");
                                 //                       o.addYellowText("DB_DELETE REFUSED: " + name);
                                 //                       if (hasValueAlready)
@@ -1723,27 +1956,27 @@ public class DbHelper extends SQLiteOpenHelper {
                 if (c!=null)
                     c.close();
             }
-                //Log.d("vortex", "Touched variables: "+touchedVariables.toString());
-                if (ui != null)
-                    ui.setInfo(synC + "/" + size);
-                //Log.d("sync","UNLOCK!");
-                endTransactionSuccess();
+            //Log.d("vortex", "Touched variables: "+touchedVariables.toString());
+            if (ui != null)
+                ui.setInfo(synC + "/" + size);
+            //Log.d("sync","UNLOCK!");
+            endTransactionSuccess();
 
-                //Add instructions in log if conflicts.
-                if (changes.conflicts > 0) {
+            //Add instructions in log if conflicts.
+            if (changes.conflicts > 0) {
+                o.addRow("");
+                o.addRedText("You *may* have sync conflicts in the following workflow(s): ");
+                int i = 1;
+                for (String flow : conflictFlows) {
                     o.addRow("");
-                    o.addRedText("You *may* have sync conflicts in the following workflow(s): ");
-                    int i = 1;
-                    for (String flow : conflictFlows) {
-                        o.addRow("");
-                        o.addRedText(i + ".: " + flow);
-                        i++;
-                    }
-
-                    o.addRedText("Verify that the values are correct. If not, make corrections and resynchronise!");
+                    o.addRedText(i + ".: " + flow);
+                    i++;
                 }
-                if (resetCache)
-                    vc.reset();
+
+                o.addRedText("Verify that the values are correct. If not, make corrections and resynchronise!");
+            }
+            if (resetCache)
+                vc.reset();
 
 
 
@@ -2410,6 +2643,10 @@ public class DbHelper extends SQLiteOpenHelper {
         int sesTot = 0;int inserts = 0; int count = 0;
         int id=-1;
         try {
+
+
+
+
             while (!control.flag && c.moveToNext()) {
 
                 row = c.getBlob(1);
@@ -2423,15 +2660,18 @@ public class DbHelper extends SQLiteOpenHelper {
 
                             int st = 0;
                             Log.d("plaz", "calling SYNCHRONISE WITH " + ses.length + " entries!");
+
                             while (!control.flag && st < ses.length) {
 
                                 //final AlertDialog uiBlockerWindow;
+
 
                                 SyncEntry[] ses2;
 
 
                                 //Log.d("vortex","ses l"+ses.length+" st "+st);
                                 ses2 = Arrays.copyOfRange(ses, st, Math.min(st + 10, ses.length));
+
                                 st += 10;
 
                                 if (GlobalState.getInstance()==null) {
@@ -2439,6 +2679,8 @@ public class DbHelper extends SQLiteOpenHelper {
                                     break;
                                 }
                                 final SyncReport syncReport = this.synchronise(ses2, null, GlobalState.getInstance().getLogger(), null);
+
+
                                 if (syncReport != null && syncReport.hasChanges()) {
                                     //Log.d("plaz", "Inserts done: " + syncReport.inserts);
                                     inserts += syncReport.inserts;
@@ -2455,6 +2697,7 @@ public class DbHelper extends SQLiteOpenHelper {
             }
 
             c.close();
+
             Log.d("plaz", "in total " + sesTot + " syncobjects and " + inserts + " inserts");
             Log.d("plaz", "Deleting entries in table_sync with id less than or equal to " + id);
             if (id != -1 && !control.error)

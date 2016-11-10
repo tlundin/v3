@@ -17,6 +17,7 @@ import com.teraim.fieldapp.dynamic.types.FixedVariable;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -376,7 +377,12 @@ public class VariableConfiguration implements Serializable {
 			return null;
 		return Tools.createKeyMap(KEY_YEAR,currentYear,"ruta",currentRuta,"provyta",currentProvyta,"smaprovyta",currentSmayta);
 	}
-	
+
+	public Map<String,String> createYearKeyMap() {
+		Map ar = new HashMap<String,String>();
+		ar.put(KEY_YEAR,Constants.getYear());
+		return ar;
+	}
 	public Map<String, String> createDelytaKeyMap() {
 		String currentYear = getGlobalVariable(NamedVariables.CURRENT_YEAR);
 		String currentRuta = getGlobalVariable(NamedVariables.CURRENT_RUTA);

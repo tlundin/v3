@@ -13,6 +13,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -50,7 +51,10 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     private static final String SUM = "SUM";
     private static final String MIN_SUM = "MINSUM";
     private static final String MAX_SUM = "MAXSUM";
-
+    private static final String SUM_STICKY_LIMITS = "SUM_STICKY_LIMITS";
+    private static final String SUM_STICKY_MIN = "SUM_STICKY_MIN";
+    private static final String SUM_STICKY_MAX = "SUM_STICKY_MAX";
+    private static final String SUM_STICKY = "SUM_STICKY";
 
     public void create(final WF_Context myContext) {
         myC = myContext;
@@ -65,7 +69,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
         Log.d("vortex","function is "+function);
 
-
+        onEvent(new WF_Event_OnSave(null));
     }
 
     public boolean isActive() {
@@ -154,11 +158,42 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
         int  totalMin = 0;
         int totalMax = 0;
+        final List<WF_ClickableField_Slider> slidersToCalibrate;//=new ArrayList<>();
+
+        if (sliders==null || sliders.isEmpty())
+            return;
+        if (functionIsStickyLimits() && sliders.size()<3) {
+            Log.d("vortex","sticky return");
+            return;
+        }
+        if (functionIsSticky() && sliders.size()<2) {
+            Log.d("vortex","sticky min max return");
+            return;
+        }
+
+        WF_ClickableField_Slider min=null,max=null;
         for (WF_ClickableField_Slider slider:sliders) {
             totalMin += slider.getMin();
             totalMax += slider.getMax();
+            if (min == null || slider.getPosition()<min.getPosition())
+                min = slider;
+            if (max == null || slider.getPosition()>max.getPosition())
+                max = slider;
         }
-        if (sumToReach>(totalMax) || sumToReach < totalMin) {
+
+        //Remove min max sliders.
+        if (functionIsSticky()) {
+            slidersToCalibrate = new ArrayList<>(sliders);
+            if (functionIsStickyLimits()||functionIsStickyLimitsMin())
+                slidersToCalibrate.remove(min);
+            if (functionIsStickyLimits()||functionIsStickyLimitsMax())
+                slidersToCalibrate.remove(max);
+        } else
+            slidersToCalibrate=sliders;
+
+
+
+        if (sumToReach>totalMax || sumToReach < totalMin) {
             Log.d("vortex","over Max or below min: "+sumToReach+", "+totalMin+" , "+totalMax);
             o = GlobalState.getInstance().getLogger();
             o.addRow("");
@@ -167,7 +202,8 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
         Log.d("vortex","SUM TO REACH: "+sumToReach);
         currentSum = 0;
-        for (WF_ClickableField_Slider slider:sliders) {
+
+        for (WF_ClickableField_Slider slider:slidersToCalibrate) {
             Integer value = slider.getSliderValue();
             if (value!=null) {
                 currentSum += value;
@@ -185,13 +221,13 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
                     int oldSum = currentSum;
                     Log.d("currentsum","Currentsum is: "+currentSum+" min func? "+functionIsMinSum()+" sum to reach: "+sumToReach);
 
-                    for (WF_ClickableField_Slider slider:sliders) {
+                    for (WF_ClickableField_Slider slider:slidersToCalibrate) {
 
-                        if ((functionIsSum() || functionIsMinSum()) && currentSum < sumToReach) {
+                        if ((functionIsSum() || functionIsMinSum() || functionIsSticky()) && currentSum < sumToReach) {
                             increaseSlider(slider);
 
-                        } else if ((functionIsSum() || functionIsMaxSum()) && currentSum > sumToReach) {
-                            Log.d("vortex","gets here: x n m"+functionIsMaxSum()+","+functionIsSum()+","+functionIsMinSum());
+                        } else if ((functionIsSum() || functionIsMaxSum() || functionIsSticky()) && currentSum > sumToReach) {
+//                            Log.d("vortex","gets here: x n m"+functionIsMaxSum()+","+functionIsSum()+","+functionIsMinSum());
                             decreaseSlider(slider);
                         }
 
@@ -199,30 +235,21 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
                     if (oldSum==currentSum) {
                         Log.d("vortex","SUM not changed in group "+groupName);
                         Log.d("vortex","currentSum: "+currentSum+" sumtoreach: "+sumToReach);
-                        updateSliderVariables(sliders);
+                        updateSliderVariables(slidersToCalibrate);
                         active = false;
                     } else
                         handler.postDelayed(this,50);
                     Log.d("vortex","Current sum is: "+currentSum);
                 } else {
                     Log.d("vortex","Sliders are calibrated.update variables.");
-                    updateSliderVariables(sliders);
+                    updateSliderVariables(slidersToCalibrate);
                     active = false;
                 }
             }
 
-            private boolean functionIsSum() {
-                return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM);
-            }
-
-            private boolean functionIsMaxSum() {
-                return function.equalsIgnoreCase(CoupledVariableGroupBlock.MAX_SUM);
-            }
 
 
-            private boolean functionIsMinSum() {
-                return function.equalsIgnoreCase(CoupledVariableGroupBlock.MIN_SUM);
-            }
+
             }
 
             ;
@@ -232,8 +259,31 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
     }
 
+    private boolean functionIsSum() {
+        return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM);
+    }
+
+    private boolean functionIsMaxSum() {
+        return function.equalsIgnoreCase(CoupledVariableGroupBlock.MAX_SUM);
+    }
 
 
+    private boolean functionIsMinSum() {
+        return function.equalsIgnoreCase(CoupledVariableGroupBlock.MIN_SUM);
+    }
+
+    public boolean functionIsSticky() {
+        return function.toUpperCase().startsWith(CoupledVariableGroupBlock.SUM_STICKY);
+    }
+    public boolean functionIsStickyLimits() {
+        return function.toUpperCase().startsWith(CoupledVariableGroupBlock.SUM_STICKY_LIMITS);
+    }
+    public boolean functionIsStickyLimitsMin() {
+        return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM_STICKY_MIN);
+    }
+    public boolean functionIsStickyLimitsMax() {
+        return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM_STICKY_MAX);
+    }
     private void updateSliderVariables(List<WF_ClickableField_Slider> sliders) {
         for (WF_ClickableField_Slider slider:sliders) {
            slider.setValueFromSlider();

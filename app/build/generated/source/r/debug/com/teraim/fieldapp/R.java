@@ -2243,8 +2243,8 @@ containing a value of this type.
         public static final int editfieldtext=0x7f0e00f4;
         public static final int end=0x7f0e0016;
         public static final int end_padder=0x7f0e00ea;
-        public static final int entryRoot=0x7f0e0076;
-        public static final int entryfield=0x7f0e0075;
+        public static final int entryRoot=0x7f0e0075;
+        public static final int entryfield=0x7f0e015c;
         public static final int expand_activities_button=0x7f0e0044;
         public static final int expanded_menu=0x7f0e0054;
         public static final int extendedDescr=0x7f0e007d;
@@ -2290,6 +2290,7 @@ containing a value of this type.
         public static final int inner=0x7f0e008d;
         public static final int ja=0x7f0e00ba;
         public static final int korrigera=0x7f0e00f2;
+        public static final int lastElement=0x7f0e0076;
         public static final int layout=0x7f0e00fa;
         public static final int layout_root=0x7f0e00ec;
         public static final int left_drawer=0x7f0e00dd;
@@ -2317,12 +2318,12 @@ containing a value of this type.
         public static final int media_route_volume_layout=0x7f0e00d6;
         public static final int media_route_volume_slider=0x7f0e00d7;
         public static final int menuB=0x7f0e009d;
-        public static final int menu_continue=0x7f0e0161;
-        public static final int menu_delete=0x7f0e015f;
-        public static final int menu_goto=0x7f0e0162;
-        public static final int menu_info=0x7f0e0160;
-        public static final int menu_se_stor=0x7f0e015e;
-        public static final int menu_settings=0x7f0e015d;
+        public static final int menu_continue=0x7f0e0162;
+        public static final int menu_delete=0x7f0e0160;
+        public static final int menu_goto=0x7f0e0163;
+        public static final int menu_info=0x7f0e0161;
+        public static final int menu_se_stor=0x7f0e015f;
+        public static final int menu_settings=0x7f0e015e;
         public static final int middle=0x7f0e0017;
         public static final int minusB=0x7f0e00a1;
         public static final int mmenuL=0x7f0e00bc;
@@ -2450,7 +2451,7 @@ containing a value of this type.
         public static final int textView2=0x7f0e0081;
         public static final int textView3=0x7f0e0082;
         public static final int textView6=0x7f0e0116;
-        public static final int text_block=0x7f0e015c;
+        public static final int text_block=0x7f0e015d;
         public static final int text_wrapper=0x7f0e00d4;
         public static final int time=0x7f0e00e4;
         public static final int title=0x7f0e0049;

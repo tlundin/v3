@@ -43,7 +43,7 @@ public class GeoJSONExporter extends Exporter {
 
 		LoggerI o = GlobalState.getInstance().getLogger();
 		sw = new StringWriter();
-		writer = new JsonWriter(sw);	
+		writer = new JsonWriter(sw);
 
 		try {
 			if (cp!=null && cp.moveToFirst()) {
@@ -64,12 +64,12 @@ public class GeoJSONExporter extends Exporter {
 				writer.endObject();
 				writer.name("features");
 				writer.beginArray();
-				
+
 				Map<String,String> currentHash=null;
-				
+
 				//gisobjects: A map between UID and variable key-value pairs.
 				HashMap<String, Map<String, Map<String, String>>> gisObjects=null;
-				
+
 
 				Map<String, String> gisObjM;
 				do {
@@ -104,7 +104,7 @@ public class GeoJSONExporter extends Exporter {
 						}
 						//Find correct "spy" for this uid. if spy doesnt exist, create.
 						gisObjM = gisObjH.get(spy);
-						if (gisObjM==null) { 
+						if (gisObjM==null) {
 							gisObjM = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 							gisObjH.put(spy, gisObjM);
 							if (spy == null)
@@ -128,7 +128,7 @@ public class GeoJSONExporter extends Exporter {
 								boolean isLocal = gs.getVariableConfiguration().isLocal(gs.getVariableConfiguration().getCompleteVariableDefinition(name));
 								if (isLocal) {
 									Log.d("vortex","skipping "+name+" since it is marked local");
-									o.addRow("skipping "+name+" since it is marked local");
+									//o.addRow("skipping "+name+" since it is marked local");
 
 								} else {
 									gisObjM.put(name, cp.getVariable().value);
@@ -160,25 +160,63 @@ public class GeoJSONExporter extends Exporter {
 						//Log.d("vortex", "Spy sets under " + keyUID);
 						Map<String, Map<String, String>> gisObjH = gisObjects.get(keyUID);
 
-							//First do the default.
-							gisObjM = gisObjH.get(null);
+						//First do the default.
+						gisObjM = gisObjH.get(null);
 
-							String coordinates = getCoordinates(keyUID, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
-							String[] polygons = null;
-							if (coordinates == null) {
-								//Try to find the object from historical. If not possible, sound alert.
+						String coordinates = getCoordinates(keyUID, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
 
-								Log.e("fortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
+						String[] polygons = null;
+						if (coordinates == null) {
+							//Try to find the object from historical. If not possible, sound alert.
+							//o.addRow("");
+							//o.addRedText("Object " + keyUID + " is missing GPS Coordinates!!!");
+							Log.e("fortex", "Object " + keyUID + " is missing GPS Coordinates!!!");
 
-								for (String mKey : gisObjM.keySet()) {
-									Log.d("fortex","variable: " + mKey + ", value: " + gisObjM.get(mKey));
-								}
+							//for (String mKey : gisObjM.keySet()) {
+							//	Log.d("fortex","variable: " + mKey + ", value: " + gisObjM.get(mKey));
+							//}
 
-								coordLess.add(keyUID);
-								coordinates = "0,0";
+
+
+							//coordinates = "0,0";
+
+							//check for coordinates from global id.
+							String uidFromGlobal =   GlobalState.getInstance().getDb().findUIDFromGlobalId(keyUID);
+
+							if (uidFromGlobal !=null) {
+								//remove braces.
+								//uidFromGlobal = uidFromGlobal.replaceAll("[{}]", " ");
+								Log.d("vortex","trying to find coords from globalId");
+								coordinates = getCoordinates(uidFromGlobal, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
+
 							}
-							polygons = coordinates.split("\\|");
-							String geoType= gisObjM.get(GisConstants.Geo_Type);
+							if (coordinates==null) {
+								if (uidFromGlobal !=null) {
+									o.addRow("");
+									o.addRedText("Failed to find replacement coord with " + uidFromGlobal + " for [" + keyUID + "]");
+								} else
+									o.addRow("uidfromglobal failed for "+keyUID);
+								coordLess.add(keyUID);
+								continue;
+							} else {
+								o.addRow("");
+								o.addCriticalText("Found replacement coords with "+uidFromGlobal+" ["+keyUID+"]");
+								String objectId = GlobalState.getInstance().getDb().findVarFromUID(uidFromGlobal,GisConstants.ObjectID);
+								String geoT= GlobalState.getInstance().getDb().findVarFromUID(uidFromGlobal,GisConstants.Geo_Type);
+								if (objectId!=null) {
+									o.addRow("Found object ID...");
+									gisObjM.put(GisConstants.ObjectID,objectId);
+								}
+								if (geoT!=null) {
+									o.addRow("Found geotype...: "+geoT);
+									gisObjM.put(GisConstants.Geo_Type,geoT);
+								}
+							}
+
+						}
+						polygons = coordinates.split("\\|");
+						String geoType= gisObjM.get(GisConstants.Geo_Type);
+						Log.d("gorgon","geotype: "+geoType);
 							//Try to figure out geotype from number of coordinates
 							if (geoType==null) {
 								if (polygons.length == 1) {
@@ -189,85 +227,86 @@ public class GeoJSONExporter extends Exporter {
 										else if (cs.length > 2)
 											geoType = "Polygon";
 									}
-								} else if (polygons.length > 2) {
+								} else if (polygons.length >= 2) {
 									geoType = "Polygon";
 								}
 							}
-							if (geoType==null){
-								Log.d("brex","WRONG: "+polygons[0]);
-								o.addRow("");
-								o.addRedText("Polygon is too short (only 1 value) for " + keyUID);
-								continue;
-							}
+						if (geoType==null){
+							Log.d("brex","WRONG: "+polygons[0]);
+							o.addRow("");
+							o.addRedText("Failed to assign geotype for " + keyUID+" with polygons length = "+polygons.length+" and coordinates "+coordinates);
+							continue;
+						}
 						boolean isPoly= "Polygon".equalsIgnoreCase(geoType);
 						boolean isLineString = "Linestring".equalsIgnoreCase(geoType);
 						if (isLineString)
 							geoType="LineString";
+
 						//Beg of line.
-							writer.beginObject();
-							write("type", "Feature");
-							writer.name("geometry");
-							writer.beginObject();
-							write("type", geoType);
-							writer.name("coordinates");
-							Log.d("brex","RUTA: "+rutMap.get(keyUID));
-							Log.d("brex","GID: "+keyUID);
-							if (isPoly||isLineString)
+						writer.beginObject();
+						write("type", "Feature");
+						writer.name("geometry");
+						writer.beginObject();
+						write("type", geoType);
+						writer.name("coordinates");
+						Log.d("brex","RUTA: "+rutMap.get(keyUID));
+						Log.d("brex","GID: "+keyUID);
+						if (isPoly||isLineString)
+							writer.beginArray();
+
+						for (String polygon : polygons) {
+
+							String[] coords = polygon.split(",");
+							if (isPoly)
 								writer.beginArray();
-
-							for (String polygon : polygons) {
-
-								String[] coords = polygon.split(",");
-								if (isPoly)
+							Log.d("vortex", "is poly? "+isPoly);
+							Log.d("vortex", "geotype is  "+geoType);
+							Log.d("vortex", "Length is "+coords.length);
+							try {
+								for (int i = 0; i < coords.length; i += 2) {
+									Log.d("vortex", "coord [" + i + "] :" + coords[i]+" [" + (i+1) + "] :" + coords[i+1]);
 									writer.beginArray();
-								Log.d("vortex", "is poly? "+isPoly);
-								Log.d("vortex", "geotype is  "+geoType);
-								Log.d("vortex", "Length is "+coords.length);
-								try {
-									for (int i = 0; i < coords.length; i += 2) {
-										Log.d("vortex", "coord [" + i + "] :" + coords[i]+" [" + (i+1) + "] :" + coords[i+1]);
-										writer.beginArray();
-										printCoord(writer, coords[i]);
-										printCoord(writer, coords[i + 1]);
-										writer.endArray();
-									}
-									//Close poly if not done.
-									if (isPoly && lastCoordEqualToFirst(coords)) {
-										Log.d("vortex","Closing poly..");
-										writer.beginArray();
-										printCoord(writer, coords[0]);
-										printCoord(writer, coords[0 + 1]);
-										writer.endArray();
-									}
-
-
-								} catch (IllegalStateException e) {
-									Log.e("brex","Illegalstate!!");
-									Log.e("brex","Full Poly is "+polygon);
-								}
-								if (isPoly)
+									printCoord(writer, coords[i]);
+									printCoord(writer, coords[i + 1]);
 									writer.endArray();
+								}
+								//Close poly if not done.
+								if (isPoly && !lastCoordEqualToFirst(coords)) {
+									Log.d("vortex","Closing poly..");
+									writer.beginArray();
+									printCoord(writer, coords[0]);
+									printCoord(writer, coords[0 + 1]);
+									writer.endArray();
+								}
+
+
+							} catch (IllegalStateException e) {
+								Log.e("brex","Illegalstate!!");
+								Log.e("brex","Full Poly is "+polygon);
 							}
-							if (isPoly||isLineString)
+							if (isPoly)
 								writer.endArray();
-							//End geometry.
-							writer.endObject();
-							writer.name("properties");
-							writer.beginObject();
-							//Add the UUID
-							write(GisConstants.FixedGid, keyUID);
-							String ruta = rutMap.get(keyUID);
-							String author = authorMap.get(keyUID);
-							if (ruta!=null)
-								write("RUTA",ruta);
-							write("author", author);
-							//write("timestamp",cp.getVariable().timeStamp);
-							//write("author",cp.getKeyColumnValues().get("author"));
-							for (String mKey : gisObjM.keySet()) {
-								write(mKey, gisObjM.get(mKey));
-								//Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
-							}
-							//Check if there are other spy than default.
+						}
+						if (isPoly||isLineString)
+							writer.endArray();
+						//End geometry.
+						writer.endObject();
+						writer.name("properties");
+						writer.beginObject();
+						//Add the UUID
+						write(GisConstants.FixedGid, keyUID);
+						String ruta = rutMap.get(keyUID);
+						String author = authorMap.get(keyUID);
+						if (ruta!=null)
+							write("RUTA",ruta);
+						write("author", author);
+						//write("timestamp",cp.getVariable().timeStamp);
+						//write("author",cp.getKeyColumnValues().get("author"));
+						for (String mKey : gisObjM.keySet()) {
+							write(mKey, gisObjM.get(mKey));
+							//Log.d("volde", "var, value: " + mKey + "," + gisObjM.get(mKey));
+						}
+						//Check if there are other spy than default.
 						if (gisObjH != null && !gisObjH.isEmpty()) {
 							writer.name("sub");
 							writer.beginArray();
@@ -291,12 +330,12 @@ public class GeoJSONExporter extends Exporter {
 							}
 							writer.endArray();
 						}
-							writer.endObject();
+						writer.endObject();
 
-							//eol
-							writer.endObject();
+						//eol
+						writer.endObject();
 
-						}
+					}
 
 				} else {
 					o.addRow("");
@@ -344,7 +383,7 @@ public class GeoJSONExporter extends Exporter {
 			return thisYear;
 		//otherwise, search historical for uid.
 		return
-				GlobalState.getInstance().getDb().findCoordinatesInHistorical(uid);
+				GlobalState.getInstance().getDb().findVarFromUID(uid,GisConstants.GPS_Coord_Var_Name);
 	}
 
 	private void printCoord(JsonWriter writer, String coord) {
@@ -363,9 +402,9 @@ public class GeoJSONExporter extends Exporter {
 				;
 			}
 		}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

@@ -320,7 +320,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	public void insertIntoDatabase() {
-		
+		Log.d("vortex", "inserting into db called");
 		
 		//Insert into database
 		long d = System.currentTimeMillis();

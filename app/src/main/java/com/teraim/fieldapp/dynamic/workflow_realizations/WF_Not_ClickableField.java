@@ -24,6 +24,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 	private final int textColorC;
 	final LinearLayout outputContainer;
+	private final DisplayFieldBlock displayFieldFormat;
 
 	protected WF_Context myContext;
 	protected String myDescription;
@@ -90,12 +91,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			myHeader.setText(label);
 		}
 		//change between horizontal and vertical
-		LinearLayout root = ((LinearLayout)this.getWidget().findViewById(R.id.entryRoot));
-		if (root!=null) {
-		ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)root.getLayoutParams());
-			lp.topMargin = format.getVerticalMargin();
-			lp.bottomMargin = format.getVerticalMargin();
-		}
+
+
 		this.label = label;
 		myDescription = descriptionT;
 		//Show owner.
@@ -104,12 +101,28 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			this.backgroundColor = Color.parseColor(format.getBackgroundColor());
 			getWidget().setBackgroundColor(this.backgroundColor);
 		}
+
+		displayFieldFormat = format;
+
 		//Log.d("vortex","setting background to "+this.backgroundColor);
 
+		LinearLayout topElem = (LinearLayout)getWidget().findViewById(R.id.entryRoot);
+
+		//ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)bg.getLayoutParams());
+		if (topElem!=null)
+			topElem.setPadding(0,displayFieldFormat.getVerticalMargin(),0,0);
 
 
 	}
 
+
+	@Override
+	public void postDraw() {
+		View lastElem = getWidget().findViewById(R.id.lastElement);
+		if (lastElem!=null) {
+			lastElem.setPadding(0, 0, 0, displayFieldFormat.getVerticalMargin());
+		}
+	}
 
 
 	public void addVariable(Variable var, boolean displayOut, String format, boolean isVisible) {

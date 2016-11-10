@@ -353,6 +353,10 @@ public class MenuActivity extends Activity   {
 				case SyncService.MSG_SYNC_RELEASE_DB:
 					if (GlobalState.getInstance()!=null) {
 						Log.d("vortex", "MSG -->SYNC RELEASE DB LOCK");
+
+						//Create ui provider.
+						//final UIProvider ui = new UIProvider(MenuActivity.this);
+						//ui.lock();
 						//Check if something needs to be saved. If so, do it on its own thread.
 						if (!syncDbInsert) {
 							syncDbInsert = true;
@@ -363,7 +367,7 @@ public class MenuActivity extends Activity   {
 							Log.d("vortex", "total rows to sync is: " + z_totalToSync);
 							if (t == null) {
 								t = new MThread() {
-									final int increment = 5;
+									final int increment = z_totalToSync;
 
 									@Override
 									public void stopMe() {
@@ -376,7 +380,7 @@ public class MenuActivity extends Activity   {
 									public void run() {
 
 										while (!control.flag) {
-											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment);
+											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment);//,ui);
 											Log.d("vortex", "done scanning syncs...threaddone is " + control.flag + " this is thread " + this.getId());
 											if (control.error) {
 												Log.d("vortex", "Uppsan...exiting");
@@ -399,6 +403,7 @@ public class MenuActivity extends Activity   {
 												reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
 												syncError = false;
 												syncActive = false;
+
 
 												try {
 
@@ -429,6 +434,7 @@ public class MenuActivity extends Activity   {
 
 										syncDbInsert = false;
 										t = null;
+										//ui.unlock();
 										if (!control.error) {
 											runOnUiThread(new Runnable() {
 												@Override
@@ -967,7 +973,7 @@ public class MenuActivity extends Activity   {
 				switch (msg.what) {
 					case LOCK:
 						oneButton();
-						Log.d("vortex","I get here?");
+						Log.d("vortex","One button Lock interface");
 						break;
 					case UNLOCK:
 						uiBlockerWindow.cancel();
@@ -1020,7 +1026,11 @@ public class MenuActivity extends Activity   {
 			mHandler.obtainMessage(LOCK).sendToTarget();
 
 		}
+		public void unlock() {
+			Log.d("vortex","Lock called");
+			mHandler.obtainMessage(UNLOCK).sendToTarget();
 
+		}
 		/**
 		 *
 		 * @param msg

@@ -327,7 +327,7 @@ public class Expressor {
 				res[i++] = intVal;
 			}
 			else
-				System.err.println("Got NEE back when evaluating " + expr.toString() + " . will not be included in endresult.");
+				System.err.println("Got NULL back when evaluating " + expr.toString() + " . will not be included in endresult.");
 		}
 
 		return res;
@@ -1047,38 +1047,22 @@ public class Expressor {
 
 			//functions require both arguments be of same kind.
 
-			boolean isIntegerOperator = arg1v instanceof Integer || arg2v instanceof Integer;
-			boolean isDoubleOperator = arg1v instanceof Double && arg2v instanceof Double;
-			boolean isBooleanOperator = arg1v instanceof Boolean && arg2v instanceof Boolean;
-			//if any of the arguments are string, then treat both as literal.
-			boolean isLiteralOperator = arg1v instanceof String && arg2v instanceof String;
+			boolean isNumericOperator = Tools.isNumeric(arg1v) && Tools.isNumeric(arg2v);
+			boolean isBooleanOperator = arg1v instanceof Boolean
+					&& arg2v instanceof Boolean;
+			// if not boolean and not numeric it is literal.
+			boolean isLiteralOperator = !isNumericOperator && !isBooleanOperator;
+
 
 			//System.err.println("arg1: "+arg1v+" arg2: "+arg2v+ "arg1vClass: "+arg1v.getClass()+" arg2vClass: "+arg2v.getClass());
-
-
-			if (!isIntegerOperator && !isBooleanOperator && !isLiteralOperator && !isDoubleOperator) {
-
-				o.addRow("");
-				o.addRedText("Argument types are not same for "+arg1v+operator+arg2v);
-				o.addRedText("Type(arg1): " +arg1v.getClass().getSimpleName()+", Type(arg2): "+arg2v.getClass().getSimpleName());
-
-				Log.e("Vortex","Argument types are wrong in operand: "+arg1v.getClass().getSimpleName()+","+arg2v.getClass().getSimpleName());
-				return null;
-			}
-			if (isLiteralOperator) {
-				if ((arg1v instanceof Double || arg1v instanceof Integer || Tools.isNumeric((String)arg1v)) && (arg2v instanceof Double || arg2v instanceof Integer || Tools.isNumeric((String)arg2v))) {
-					Log.d("vortex","turning literal into numeric...both numbers");
-					arg1v = (arg1v instanceof Double || arg1v instanceof Integer) ? arg1v : Integer.parseInt((String)arg1v);
-					arg2v = (arg2v instanceof Double || arg2v instanceof Integer) ? arg2v : Integer.parseInt((String)arg2v);
-					isIntegerOperator = true;
-					//Log.d("vortex","arg1v "+arg1v+" arg2v "+arg2v+ )
-				}
-			}
 			//Requires Double arguments.
 			try {
-				if (isIntegerOperator || isDoubleOperator) {
+				if (isNumericOperator) {
 					double arg1F, arg2F;
 					Object res = null;
+					arg1F = castToDouble(arg1v);
+					arg2F = castToDouble(arg2v);
+/*
 					if (isDoubleOperator) {
 						arg1F = ((Double) arg1v).doubleValue();
 						arg2F = ((Double) arg2v).doubleValue();
@@ -1092,7 +1076,7 @@ public class Expressor {
 						else
 							arg2F = (Double) arg2v;
 					}
-
+*/
 					String opS = operator.myToken.str;
 					if (opS != null) {
 						TokenType op = TokenType.valueOf(opS);
@@ -1206,12 +1190,23 @@ public class Expressor {
 					}
 				}
 			} catch (ClassCastException e) {
-				Log.d("vortex","Classcast exception for expression "+this.toString());
+				Log.d("vortex","Classcast exception for expression "+this.toString()+"arg1: "+arg1v);
 				o.addRow("");
 				o.addRedText("Illegal arguments (wrong type) in expression: " +this.toString()+". Missing $ operator?");
 
 			}
 			return null;
+		}
+
+		private double castToDouble(Object arg) {
+			if (arg instanceof Double)
+				return ((Double) arg).doubleValue();
+			if (arg instanceof Integer)
+				return ((Integer) arg).doubleValue();
+			if (arg instanceof Float)
+				return ((Float) arg).doubleValue();
+			o.addRedText("I never get here...Object is a "+arg.getClass());
+			return -1;
 		}
 
 	}
@@ -1711,9 +1706,8 @@ public class Expressor {
 					return null;
 
 				case getSweRefX:
-					if (gs==null)
-						return null;
-					Variable x = gs.getVariableCache().getVariable(null, NamedVariables.MY_GPS_LAT);
+					Map<String, String> ar = GlobalState.getInstance().getVariableConfiguration().createYearKeyMap();
+					Variable x = gs.getVariableCache().getVariable(ar, NamedVariables.MY_GPS_LAT);
 					if (x!=null && x.getValue()!=null) {
 						return x.getValue();
 					}
@@ -1723,9 +1717,8 @@ public class Expressor {
 					}
 
 				case getSweRefY:
-					if (gs==null)
-						return null;
-					Variable y = gs.getVariableCache().getVariable(null, NamedVariables.MY_GPS_LONG);
+					ar = GlobalState.getInstance().getVariableConfiguration().createYearKeyMap();
+					Variable y = gs.getVariableCache().getVariable(ar, NamedVariables.MY_GPS_LONG);
 					if (y!=null && y.getValue()!=null) {
 						return y.getValue();
 					}
@@ -2077,8 +2070,8 @@ public class Expressor {
 		private boolean checkPreconditions(List<Object> evaluatedArgumentsList,int cardinality, int flags) {
 			if ((flags==No_Null || flags== No_Null_Numeric || flags == No_Null_Literal || flags == No_Null_Boolean)
 					&& evaluatedArgumentsList.contains(null)) {
-				o.addRow("");
-				o.addRedText("Argument in function '"+getType().toString()+"' is null, but function does not allow NULL arguments.");
+				//o.addRow("");
+				//o.addRedText("Argument in function '"+getType().toString()+"' is null, but function does not allow NULL arguments.");
 				Log.e("Vortex","Argument in function '"+getType().toString()+"' is null");
 
 				return false;

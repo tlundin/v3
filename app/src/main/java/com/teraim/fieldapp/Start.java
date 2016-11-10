@@ -93,7 +93,7 @@ public class Start extends MenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Setup handler for uncaught exceptions.
-		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
+/*		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
 			public void uncaughtException (Thread thread, Throwable e)
@@ -103,7 +103,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-
+*/
 
 		Log.d("nils","in START onCreate");
 		singleton = this;

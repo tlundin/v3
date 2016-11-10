@@ -173,7 +173,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 			Log.e("vortex", "cannot initialize seekbar! empty? " + myVars.isEmpty());
 			return;
 		}
-		Log.d("vortex","Calling initialize seekbar for "+var.getId());
+		Log.d("vortex","Calling initialize seekbar for "+var.getId()+" with value "+var.getValue());
 		setSeekBarAccordingToVariableValue();
 	}
 

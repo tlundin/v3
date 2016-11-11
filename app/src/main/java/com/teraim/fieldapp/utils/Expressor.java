@@ -1185,7 +1185,7 @@ public class Expressor {
 						default:
 							System.err.println("Unsupported literal operand: "+op);
 							o.addRow("");
-							o.addRedText("Unsupported literal operator: "+op);
+							o.addRedText("Unsupported literal operator: "+op+" a1: "+arg1S+" a2: "+arg2S);
 							break;
 					}
 				}
@@ -1205,6 +1205,8 @@ public class Expressor {
 				return ((Integer) arg).doubleValue();
 			if (arg instanceof Float)
 				return ((Float) arg).doubleValue();
+			if (arg instanceof String)
+				return Double.parseDouble((String)arg);
 			o.addRedText("I never get here...Object is a "+arg.getClass());
 			return -1;
 		}

@@ -355,8 +355,8 @@ public class MenuActivity extends Activity   {
 						Log.d("vortex", "MSG -->SYNC RELEASE DB LOCK");
 
 						//Create ui provider.
-						//final UIProvider ui = new UIProvider(MenuActivity.this);
-						//ui.lock();
+						final UIProvider ui = new UIProvider(MenuActivity.this);
+						ui.lock();
 						//Check if something needs to be saved. If so, do it on its own thread.
 						if (!syncDbInsert) {
 							syncDbInsert = true;
@@ -372,7 +372,6 @@ public class MenuActivity extends Activity   {
 									@Override
 									public void stopMe() {
 										control.flag = true;
-
 										this.interrupt();
 									}
 
@@ -380,7 +379,7 @@ public class MenuActivity extends Activity   {
 									public void run() {
 
 										while (!control.flag) {
-											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment);//,ui);
+											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment,ui);
 											Log.d("vortex", "done scanning syncs...threaddone is " + control.flag + " this is thread " + this.getId());
 											if (control.error) {
 												Log.d("vortex", "Uppsan...exiting");
@@ -414,7 +413,7 @@ public class MenuActivity extends Activity   {
 													syncError = true;
 													syncActive = false;
 													syncDbInsert = false;
-													Object fuck=null;
+				 									Object fuck=null;
 													fuck.equals(fuck);
 												}
 
@@ -434,7 +433,7 @@ public class MenuActivity extends Activity   {
 
 										syncDbInsert = false;
 										t = null;
-										//ui.unlock();
+										ui.unlock();
 										if (!control.error) {
 											runOnUiThread(new Runnable() {
 												@Override
@@ -731,6 +730,8 @@ public class MenuActivity extends Activity   {
 				//close drawer menu if open
 				if (Start.singleton.getDrawerMenu()!=null)
 					Start.singleton.getDrawerMenu().closeDrawer();
+				if(isSynkServiceRunning())
+					stopSync();
 				Intent intent = new Intent(getBaseContext(),ConfigMenu.class);
 				startActivity(intent);
 				return true;
@@ -808,25 +809,7 @@ public class MenuActivity extends Activity   {
 						}
 					}
 				} else {
-					Log.d("vortex", "Trying to stop Internet sync");
-					ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
-					if (syncError) {
-						Log.d("vortex","Resetting sync error");
-						syncError=false;
-					}
-					if (syncDbInsert){
-
-						t.stopMe();
-						Log.e("vortex","control flag is now true");
-					}
-					reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
-					try {
-						mService.send(reply);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						syncActive=false;
-						syncError=true;
-					}
+					stopSync();
 
 
 
@@ -837,6 +820,29 @@ public class MenuActivity extends Activity   {
 			}
 		}
 	}
+
+	private void stopSync() {
+		Log.d("vortex", "Trying to stop Internet sync");
+		ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+		if (syncError) {
+			Log.d("vortex","Resetting sync error");
+			syncError=false;
+		}
+		if (syncDbInsert){
+
+			t.stopMe();
+			Log.e("vortex","control flag is now true");
+		}
+		reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
+		try {
+			mService.send(reply);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			syncActive=false;
+			syncError=true;
+		}
+	}
+
 	private void configureSynk() {
 		mAccount = GlobalState.getmAccount(getApplicationContext());
 

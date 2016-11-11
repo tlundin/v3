@@ -16,6 +16,8 @@ public class SyncReport implements Serializable {
 	public int conflicts=0;
 	public int totalRows=0;
 	public int currentRow = 1;
+	public int failedDeletes=0;
+
 	public boolean hasChanges() {
 		return (deletes+inserts+updates) > 0 ;
 	}

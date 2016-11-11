@@ -171,23 +171,29 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
             return;
         }
 
-        WF_ClickableField_Slider min=null,max=null;
+        Set<WF_ClickableField_Slider> min=null,max=null;
         for (WF_ClickableField_Slider slider:sliders) {
             totalMin += slider.getMin();
             totalMax += slider.getMax();
-            if (min == null || slider.getPosition()<min.getPosition())
-                min = slider;
-            if (max == null || slider.getPosition()>max.getPosition())
-                max = slider;
+            if (slider.getPosition()==slider.getMin()) {
+                if (min == null)
+                    min = new HashSet<>();
+                min.add(slider);
+            }
+            if (slider.getPosition()==slider.getMax()) {
+                if (max == null)
+                    max = new HashSet<>();
+                max.add(slider);
+            }
         }
 
         //Remove min max sliders.
         if (functionIsSticky()) {
             slidersToCalibrate = new ArrayList<>(sliders);
-            if (functionIsStickyLimits()||functionIsStickyLimitsMin())
-                slidersToCalibrate.remove(min);
-            if (functionIsStickyLimits()||functionIsStickyLimitsMax())
-                slidersToCalibrate.remove(max);
+            if (min != null && (functionIsStickyLimits()||functionIsStickyLimitsMin()))
+                slidersToCalibrate.removeAll(min);
+            if (max != null && (functionIsStickyLimits()||functionIsStickyLimitsMax()))
+                slidersToCalibrate.removeAll(max);
         } else
             slidersToCalibrate=sliders;
 
@@ -203,7 +209,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         Log.d("vortex","SUM TO REACH: "+sumToReach);
         currentSum = 0;
 
-        for (WF_ClickableField_Slider slider:slidersToCalibrate) {
+        for (WF_ClickableField_Slider slider:sliders) {
             Integer value = slider.getSliderValue();
             if (value!=null) {
                 currentSum += value;
@@ -238,7 +244,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
                         updateSliderVariables(slidersToCalibrate);
                         active = false;
                     } else
-                        handler.postDelayed(this,50);
+                        handler.postDelayed(this,0);
                     Log.d("vortex","Current sum is: "+currentSum);
                 } else {
                     Log.d("vortex","Sliders are calibrated.update variables.");

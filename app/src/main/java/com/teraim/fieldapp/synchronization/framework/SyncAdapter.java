@@ -373,8 +373,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.e("vortex","potentialStamp was null in updatecounters!");
 		busy = false;
 		//update ui here.....
+
+		forceSyncToHappen();
 	}
 
+	private void forceSyncToHappen() {
+		Bundle bundle = new Bundle();
+		bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+		bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+		ContentResolver.requestSync(null, SyncContentProvider.AUTHORITY, bundle);
+	}
 
 
 	private Message sendAndReceive(List<ContentValues> ret, String team,String user, String app, SyncEntry[] sa, long maxStamp) {

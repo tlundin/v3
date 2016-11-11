@@ -331,6 +331,9 @@ public class GlobalState  {
 	public void setSelectedGop(GisObject go) {
 		selectedGop=go;
 	}
+
+
+
 	/*
 	public MessageHandler getHandler() {
 		if (myHandler==null)

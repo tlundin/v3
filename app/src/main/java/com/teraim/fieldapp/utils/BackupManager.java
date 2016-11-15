@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.ui.ExportDialog;
 
 public class BackupManager {
 
@@ -149,6 +151,73 @@ public class BackupManager {
 		dir.mkdirs();
 		return dir;
 	}
+
+
+	public String backupExportDataWithProgress(String exportFileName, String data, final ExportDialog dialog, Activity act) {
+
+		File dir = createOrFindBackupStorageDir();
+
+		if (exportFileName==null) {
+			Log.e("vortex","no filename!!");
+			return "no filename";
+		}
+		if (data==null) {
+			Log.e("vortex","no data sent to backup!");
+			return "no data";
+		}
+
+		if (dir == null) {
+			Log.e("vortex","failed to create export folder!!");
+			return "failed to create folder";
+		}
+		String ret = "OK";
+		File file = new File(dir, exportFileName);
+		BufferedWriter outWriter=null;
+		int offset=0;
+		int count=512;
+		boolean notDone=true;
+		try {
+			FileOutputStream f = new FileOutputStream(file);
+			outWriter = new BufferedWriter(new OutputStreamWriter(f), 1024);
+
+			while(data.length()>offset) {
+				// write part of
+				// string
+				outWriter.write(data, offset, Math.min(count,data.length()-offset));
+				final int off = offset;
+				act.runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						dialog.setBackupStatus(off+"");
+					}
+
+				});
+				offset += count;
+
+			}
+			outWriter.close();
+		}catch(Exception e){
+			ret = e.getMessage();
+			System.out.println("Could not write backup file! Filename: "+exportFileName);
+
+			e.printStackTrace();
+			try {
+				if (outWriter!=null)
+					outWriter.close();
+			} catch (IOException e1) {
+				ret = e1.getMessage();
+				e1.printStackTrace();
+			}
+			return ret;
+		}
+		Log.d("vortex","file succesfully written to backup: "+exportFileName);
+
+		return ret;
+
+
+	}
+
 
 	public String backupExportData(String exportFileName, String data) {
 

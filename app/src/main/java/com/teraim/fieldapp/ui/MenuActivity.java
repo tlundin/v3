@@ -379,6 +379,7 @@ public class MenuActivity extends Activity   {
 									public void run() {
 
 										while (!control.flag) {
+
 											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment,ui);
 											Log.d("vortex", "done scanning syncs...threaddone is " + control.flag + " this is thread " + this.getId());
 											if (control.error) {

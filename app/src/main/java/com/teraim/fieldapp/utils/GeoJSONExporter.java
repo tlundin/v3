@@ -87,7 +87,7 @@ public class GeoJSONExporter extends Exporter {
 					spy = currentHash.get("spy");
 
 
-					Log.d("botox","CURRENT_HASH: "+currentHash);
+					//Log.d("botox","CURRENT_HASH: "+currentHash);
 					if (uid==null) {
 						Log.e("vortex","missing uid!!!");
 						Log.e("vortex","keyhash: "+currentHash);
@@ -127,7 +127,7 @@ public class GeoJSONExporter extends Exporter {
 								//Check if this variable is supposed to be exported.
 								boolean isLocal = gs.getVariableConfiguration().isLocal(gs.getVariableConfiguration().getCompleteVariableDefinition(name));
 								if (isLocal) {
-									Log.d("vortex","skipping "+name+" since it is marked local");
+									//Log.d("vortex","skipping "+name+" since it is marked local");
 									//o.addRow("skipping "+name+" since it is marked local");
 
 								} else {
@@ -148,7 +148,7 @@ public class GeoJSONExporter extends Exporter {
 					((Activity)ctx).runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							eDialog.setGenerateStatus(varC+"");
+							eDialog.setGenerateStatus("Objects: #"+varC);
 						}
 					});
 
@@ -156,13 +156,29 @@ public class GeoJSONExporter extends Exporter {
 				Log.d("vortex","now inserting into json.");
 				//For each fixedGid (uid)...
 				if (gisObjects!=null) {
-					for (String keyUID:gisObjects.keySet()) {
+					final int sz = gisObjects.keySet().size();
+					int curr = 0;
+					for (final String keyUID:gisObjects.keySet()) {
 						//Log.d("vortex", "Spy sets under " + keyUID);
+						final int cf = curr++;
+						((Activity)ctx).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								eDialog.setGenerateStatus("Writing: ("+(cf)+"/"+sz+")");
+							}
+						});
 						Map<String, Map<String, String>> gisObjH = gisObjects.get(keyUID);
 
 						//First do the default.
 						gisObjM = gisObjH.get(null);
+						if (gisObjM==null) {
+							Log.e("vortex", "NULL gisobjM.Keys: "+gisObjH.keySet());
+							gisObjM = gisObjH.get(gisObjH.keySet().iterator().next());
+							//String coor = gisObjM.remove(GisConstants.GPS_Coord_Var_Name);
+							//Log.d("vortex","COOR is "+coor);
 
+							continue;
+						}
 						String coordinates = getCoordinates(keyUID, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
 
 						String[] polygons = null;
@@ -186,7 +202,7 @@ public class GeoJSONExporter extends Exporter {
 							if (uidFromGlobal !=null) {
 								//remove braces.
 								//uidFromGlobal = uidFromGlobal.replaceAll("[{}]", " ");
-								Log.d("vortex","trying to find coords from globalId");
+								//Log.d("vortex","trying to find coords from globalId");
 								coordinates = getCoordinates(uidFromGlobal, gisObjM.remove(GisConstants.GPS_Coord_Var_Name));
 
 							}
@@ -195,7 +211,7 @@ public class GeoJSONExporter extends Exporter {
 									o.addRow("");
 									o.addRedText("Failed to find replacement coord with " + uidFromGlobal + " for [" + keyUID + "]");
 								} else
-									o.addRow("uidfromglobal failed for "+keyUID);
+									Log.d("vortex","uidfromglobal failed for "+keyUID);
 								coordLess.add(keyUID);
 								continue;
 							} else {
@@ -348,7 +364,7 @@ public class GeoJSONExporter extends Exporter {
 				writer.endObject();
 
 				Log.d("nils","finished writing JSON");
-				Log.d("nils", sw.toString());
+				//Log.d("nils", sw.toString());
 				if (!coordLess.isEmpty()&&globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH)) {
 					o.addRow("");
 					o.addRedText("No coordinates found for these objects:");

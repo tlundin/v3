@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.types;
 
+import android.content.ContentValues;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;

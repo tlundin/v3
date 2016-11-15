@@ -472,8 +472,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
 
-
+				objOut.close();
+				int i=0;
 				while (true) {
+					Log.d("vortex","i: "+i++);
 					reply = objIn.readObject();
 					if (reply instanceof String) {
 						Log.d("vortex","received timestamp for next cycle: "+reply);
@@ -502,7 +504,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						ContentValues cv = new ContentValues();
 						cv.put("DATA", (byte[])reply);
 						cv.put("count",orderNr++);
-						//Log.d("vortex","Count: "+cv.get("count"));
+						Log.d("vortex","Count: "+cv.get("count"));
 						ret.add(cv);
 						insertedRows++;
 					}

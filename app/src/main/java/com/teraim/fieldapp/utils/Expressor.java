@@ -377,7 +377,7 @@ public class Expressor {
 
 		}
 
-		Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
+		//Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
 		if (endResult.toString().isEmpty())
 			return null;
 		else
@@ -486,8 +486,8 @@ public class Expressor {
 					//new token either if endmarker, or a comma on toplevel.
 				} else if (t.type==TokenType.endMarker || (t.type==TokenType.comma && depth==0)) {
 					if (curr!=null && !curr.isEmpty()) {
-						Log.d("franco","CURR tokens: ");
-						printTokens(curr);
+						//Log.d("franco","CURR tokens: ");
+						//printTokens(curr);
 						EvalExpr ret = analyzeExpression(curr);
 						if (ret==null)
 							System.err.println("Eval of expression "+curr.toString()+" failed");

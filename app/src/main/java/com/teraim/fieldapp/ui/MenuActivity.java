@@ -9,6 +9,7 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -260,7 +261,12 @@ public class MenuActivity extends Activity   {
 					syncActive = true;
 					syncError=false;
 					break;
-
+				case SyncService.MSG_SYNC_DATA_ARRIVING:
+					syncActive=false;
+					syncDataArriving=true;
+					z_totalSynced = msg.arg1;
+					z_totalToSync = msg.arg2;
+					break;
 				case SyncService.MSG_SYNC_ERROR_STATE:
 					String toastMsg = "";
 					Log.d("vortex","MSG -->SYNC ERROR STATE");
@@ -310,6 +316,7 @@ public class MenuActivity extends Activity   {
 					if (toastMsg !=null && toastMsg.length()>0) {
 						Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
 					}
+					syncDataArriving=false;
 					syncActive=false;
 					break;
 
@@ -339,6 +346,7 @@ public class MenuActivity extends Activity   {
 					} catch (RemoteException e) {
 						e.printStackTrace();
 						syncActive=false;
+						syncDataArriving=false;
 						syncError=true;
 					}
 					break;
@@ -347,6 +355,7 @@ public class MenuActivity extends Activity   {
 					Log.d("vortex","***DEVICES IN SYNC***");
 					inSync = true;
 					syncActive=false;
+					syncDataArriving=false;
 					syncError = false;
 					break;
 
@@ -355,8 +364,8 @@ public class MenuActivity extends Activity   {
 						Log.d("vortex", "MSG -->SYNC RELEASE DB LOCK");
 
 						//Create ui provider.
-						final UIProvider ui = new UIProvider(MenuActivity.this);
-						ui.lock();
+
+
 						//Check if something needs to be saved. If so, do it on its own thread.
 						if (!syncDbInsert) {
 							syncDbInsert = true;
@@ -364,6 +373,8 @@ public class MenuActivity extends Activity   {
 							z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
 							setSyncState(mnu[0]);
 							z_totalSynced = 0;
+							final UIProvider ui = new UIProvider(MenuActivity.this);
+
 							Log.d("vortex", "total rows to sync is: " + z_totalToSync);
 							if (t == null) {
 								t = new MThread() {
@@ -403,7 +414,7 @@ public class MenuActivity extends Activity   {
 												reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
 												syncError = false;
 												syncActive = false;
-
+												syncDataArriving=false;
 
 												try {
 
@@ -414,7 +425,8 @@ public class MenuActivity extends Activity   {
 													syncError = true;
 													syncActive = false;
 													syncDbInsert = false;
-				 									Object fuck=null;
+													syncDataArriving=false;
+													Object fuck=null;
 													fuck.equals(fuck);
 												}
 
@@ -434,7 +446,7 @@ public class MenuActivity extends Activity   {
 
 										syncDbInsert = false;
 										t = null;
-										ui.unlock();
+										ui.closeProgress();
 										if (!control.error) {
 											runOnUiThread(new Runnable() {
 												@Override
@@ -456,14 +468,16 @@ public class MenuActivity extends Activity   {
 							Log.e("vortex", "Extra call made to SYNC RELEASE DB LOCK");
 						}
 						syncActive = false;
+						syncDataArriving=false;
 						syncError = false;
 					} else {
 						syncActive=false;
+						syncDataArriving=false;
 						syncError=true;
 					}
 					break;
 			}
-			Log.d("Vortex","Refreshing status row. status is se: "+syncError+" sA: "+syncActive);
+			//Log.d("Vortex","Refreshing status row. status is se: "+syncError+" sA: "+syncActive);
 			refreshStatusRow();
 		}
 
@@ -548,7 +562,7 @@ public class MenuActivity extends Activity   {
 		}
 	}
 
-	boolean animationRunning = false;
+	boolean animationRunning = false,syncDataArriving=false;
 
 	private void setSyncState(final MenuItem menuItem) {
 		//Log.d("vortex","Entering setsyncstate");
@@ -594,6 +608,10 @@ public class MenuActivity extends Activity   {
 				}
 				return;
 			}
+			else if (syncDataArriving) {
+				title = (z_totalSynced+"/"+z_totalToSync);
+				ret = R.drawable.syncactive;
+			}
 			else if (syncDbInsert) {
 				title = (z_totalSynced+"/"+z_totalToSync);
 				ret = R.drawable.dbase;
@@ -613,7 +631,7 @@ public class MenuActivity extends Activity   {
 		menuItem.setIcon(ret);
 		menuItem.setTitle(title);
 		menuItem.setVisible(true);
-		Log.d("vortex","Exiting setsyncstate");
+		//Log.d("vortex","Exiting setsyncstate");
 	}
 
 
@@ -913,13 +931,31 @@ public class MenuActivity extends Activity   {
 
 	public class UIProvider {
 
-		public static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6;
+		public static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6, PROGRESS = 7,SHOW_PROGRESS=8,CLOSE_PROGRESS=9;
 		private String row1="",row2="";
 		private AlertDialog uiBlockerWindow=null;
 		public static final int Destroy_Sync = 1;
+		private ProgressDialog progress;
 
 		Handler mHandler= new Handler(Looper.getMainLooper()) {
 			boolean twoButton=false;
+
+			private void showProgress(int max) {
+				progress = new ProgressDialog(mContext);
+				progress.setIndeterminate(false);
+				progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				progress.setMax(max);
+				progress.setTitle("Inserting");
+				progress.show();
+
+			}
+			private void progress(int curr) {
+				if (progress!=null) {
+					Log.d("vortex","progress: "+curr);
+					progress.setProgress(curr);
+				}
+			}
+
 
 			private void oneButton() {
 				dismiss();
@@ -978,10 +1014,23 @@ public class MenuActivity extends Activity   {
 			public void handleMessage(Message msg) {
 
 				switch (msg.what) {
+					case SHOW_PROGRESS:
+						showProgress(msg.arg1);
+						break;
+					case PROGRESS:
+						progress(msg.arg1);
+						break;
+					case CLOSE_PROGRESS:
+						if (progress!=null) {
+							progress.dismiss();
+							progress=null;
+						}
+						break;
 					case LOCK:
 						oneButton();
 						Log.d("vortex","One button Lock interface");
 						break;
+
 					case UNLOCK:
 						uiBlockerWindow.cancel();
 						break;
@@ -1025,8 +1074,23 @@ public class MenuActivity extends Activity   {
 		}
 
 
+		public void startProgress(int totalRows) {
+			if (progress==null) {
+				Message msg = mHandler.obtainMessage(SHOW_PROGRESS);
+				msg.arg1=totalRows;
+				msg.sendToTarget();
+			}
+		}
 
+		public void setProgress(int count) {
+			Message msg = mHandler.obtainMessage(PROGRESS);
+			msg.arg1=count;
+			msg.sendToTarget();
 
+		}
+		public void closeProgress() {
+			mHandler.obtainMessage(CLOSE_PROGRESS).sendToTarget();
+		}
 
 		public void lock() {
 			Log.d("vortex","Lock called");
@@ -1087,15 +1151,6 @@ public class MenuActivity extends Activity   {
 
 
 		}
-
-
-
-
-
-
-
-
-
 
 
 	}

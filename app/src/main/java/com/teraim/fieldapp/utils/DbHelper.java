@@ -1399,7 +1399,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //VariableCache variableCache = GlobalState.getInstance().getVariableCache();
         String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
-        String variableName = null;
+        String variableName = null,uid=null;
         int synC = 1;
         //Log.d("berra","In sync2 with team "+team);
         beginTransaction();
@@ -1415,6 +1415,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 control.error=true;
                 return changes;
             }
+            /*
             if (synC % 50 == 0) {
                 //Log.d("vortex",synC+"");
                 String syncStatusS = "Batch: "+changes.currentRow+"/"+changes.totalRows+"\n"+"Entry: "+synC + "/" + (ses.length)+"\nInserts: "+changes.inserts+"\nRefused: "+changes.refused+"\nDeleted: "+changes.deletes+"\nFaults: "+changes.faults+"\nReplace: "+changes.replace;
@@ -1424,6 +1425,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 if (syncListener != null)
                     syncListener.send(syncStatus);
             }
+            */
             synC++;
             //Skip array inserts that are older than one hour.
             if (s.isInsertArray()) {
@@ -1511,10 +1513,12 @@ public class DbHelper extends SQLiteOpenHelper {
                     }
                 }
                 variableName = cv.getAsString("var");
+
                 if (variableName==null || error)
                     continue;
+
 /*
-                if (isStatusVariable(variableName)) {
+ if (isStatusVariable(variableName)) {
                     Selection sel=createSelection(keySet,variableName);
                     Cursor c = db.query(TABLE_VARIABLES, new String[]{"id", TIMESTAMP, VALUE, VARID, AUTHOR},
                             sel.selection, sel.selectionArgs, null, null, null, null);
@@ -1547,9 +1551,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 //Insert also in cache if not array.
                 //
-                if (s.isInsert()) {
+                uid = cv.getAsString(getDatabaseColumnName("uid"));
+                if (s.isInsert() && uid !=null) {
                     //delete(sKeys,s.getTimeStamp());
-                    changes.tsMap.add(cv.getAsString(getDatabaseColumnName("uid")),variableName,cv);
+                    changes.tsMap.add(uid,variableName,cv);
 
                     //variableCache.insert(variableName, keyHash, myValue);
                 }
@@ -1572,7 +1577,7 @@ public class DbHelper extends SQLiteOpenHelper {
                             cv
                     );
 
-                    changes.insertsArray++;
+                    changes.inserts++;
                 }
 
 
@@ -1694,7 +1699,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     private boolean isStatusVariable(String variableName) {
-        return variableName.startsWith("STATUS:");
+        return variableName.startsWith("STATUS:status_ruta");
     }
 
     public SyncReport synchronise(SyncEntry[] ses, UIProvider ui, LoggerI o, SyncStatusListener syncListener) {
@@ -2722,8 +2727,9 @@ public class TmpVal {
 
             SyncReport syncReport = new SyncReport();
             syncReport.totalRows=c.getCount();
+            ui.startProgress(syncReport.totalRows);
             while (!control.flag && c.moveToNext()) {
-
+                ui.setProgress(count);
                 row = c.getBlob(1);
                 id = c.getInt(0);
                 if (row != null) {
@@ -2824,18 +2830,12 @@ public class TmpVal {
             Log.d("vortex","delStr: "+delStr);
         }
         Log.d("rosto","inserting some "+keys.size()+" rows");
-        Set<String> names = new HashSet<>();
+
         for (String key:keys) {
             Map<String,ContentValues> m = tsMap.get(key);
             if (m!=null) {
                 for (ContentValues cv: m.values()) {
                     db.insert(TABLE_VARIABLES, null, cv);
-                    String name = cv.getAsString("var");
-                    String uid = cv.getAsString("L4");
-                    if (names.contains(name+uid))
-                        Log.d("vortex","DUPLICATE! "+name+uid);
-                    else
-                        names.add(name+uid);
                     sr.inserts++;
                 }
             }

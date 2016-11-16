@@ -63,7 +63,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private TextView appTxt;
 	private float oldV = -1;
 	private Activity mActivity;
-	private final static String InitialBundleName = "Rlotst";
+	private final static String InitialBundleName = "Smabio";
 
 
 	@Override
@@ -299,7 +299,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.USER_ID_KEY, "Teraim");//getRandomName());
 		if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.LAG_ID_KEY, "Rlotstsynk");
+			globalPh.put(PersistenceHelper.LAG_ID_KEY, "Smabiosynk");
 		if (globalPh.get(PersistenceHelper.LOG_LEVEL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.LOG_LEVEL, "critical");
 

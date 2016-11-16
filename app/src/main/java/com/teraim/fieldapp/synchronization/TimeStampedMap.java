@@ -20,9 +20,8 @@ public class TimeStampedMap {
     private int size = 0;
 
     public void add(String uniqueKey, String varName, ContentValues cv) {
-        Log.d("bang","uid: "+uniqueKey+" vn: "+varName);
-        if (uniqueKey==null)
-            return;
+        //Log.d("bang","uid: "+uniqueKey+" vn: "+varName);
+
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
 
         if (ves==null) {
@@ -63,7 +62,7 @@ public class TimeStampedMap {
 
         if (ves!=null && ves.get(varName)!=null) {
             Log.d("zoobaz","found variable "+varName);
-            return ves.remove(varName);
+            return ves.get(varName);
         }
 
         return null;

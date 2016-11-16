@@ -37,20 +37,19 @@ public class SyncService extends Service {
 	public static final int MSG_SYNC_STARTED = 7;
 	public static final int MSG_DEVICE_IN_SYNC = 8;
 	public static final int MSG_USER_STOPPED_SYNC = 9;
-	
-	
-	
+	public static final int MSG_SYNC_DATA_ARRIVING = 10;
+	public static final int MSG_USER_STARTED_SYNC = 11;
+
+	public static final int ERR_UNKNOWN = 0;
 	public static final int ERR_NOT_READY = 1;
 	public static final int ERR_SYNC_BUSY = 2;
 	public static final int ERR_NOT_INTERNET_SYNC = 3;
 	public static final int ERR_SETTINGS = 4;
-	public static final int ERR_UNKNOWN = 0;
-	public static final int ERR_SERVER_NOT_REACHABLE = 6;
-	public static final int ERR_SERVER_CONN_TIMEOUT = 7;
-	public static final int MSG_USER_STARTED_SYNC = 7;
+	public static final int ERR_SERVER_NOT_REACHABLE = 5;
+	public static final int ERR_SERVER_CONN_TIMEOUT = 6;
 
-	public static final int REFRESH = 8;
-	
+	public static final int REFRESH = 9;
+
 
     class IncomingHandler extends Handler {
         @Override

@@ -320,6 +320,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	public void insertIntoDatabase() {
+		Message msg;
 		Log.d("vortex", "inserting into db called");
 		
 		//Insert into database
@@ -330,8 +331,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	            ArrayList<ContentProviderOperation>();
 		Iterator<ContentValues>it = rowsToInsert.iterator();
 		while (it.hasNext()) {
-			if (i%10==0)
-				Log.d("vortex", "inserting: "+i);
+			if (i%10==0) {
+				Log.d("vortex", "inserting: " + i);
+
+				msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
+					msg.arg1 = i;
+					msg.arg2 = rowsToInsert.size();
+					sendMessage(
+							msg
+					);
+
+			}
 			i++;
 			mContentResolver.insert(CONTENT_URI,it.next());
 			//list.add(ContentPinsertroviderOperation.newInsert(CONTENT_URI).withValues(it.next()).build());
@@ -451,7 +461,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("vortex","After read object. reply is "+(reply!=null?"not":"")+" null");
 
 			if (reply instanceof String ) {
-				String numberOfRows = (String) reply;
+
+				int numberOfRows = Integer.parseInt((String) reply);
 				Log.d("vortex","Number of Rows that will arrive: "+numberOfRows);
 				//We now know that the SyncEntries from this user are safely stored. So advance the pointer! 
 				if (maxStamp!=-1) {
@@ -475,7 +486,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				objOut.close();
 				int i=0;
 				while (true) {
-					Log.d("vortex","i: "+i++);
 					reply = objIn.readObject();
 					if (reply instanceof String) {
 						Log.d("vortex","received timestamp for next cycle: "+reply);
@@ -507,6 +517,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						Log.d("vortex","Count: "+cv.get("count"));
 						ret.add(cv);
 						insertedRows++;
+						if (insertedRows%10==0) {
+							msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
+							msg.arg1 = 0;
+							msg.arg2 = numberOfRows;
+							sendMessage(
+									msg
+							);
+						}
 					}
 					else {
 						Log.e("vortex","Got back alien object!! "+reply.getClass().getSimpleName());

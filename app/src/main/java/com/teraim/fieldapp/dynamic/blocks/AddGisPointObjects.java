@@ -380,7 +380,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 					Map <String,Pair<String,String>> statusVarM=null;
 					//Find status per UID for all geo objects. This is used to color the objects later on.
 					if (pickerStatusVars!=null) {
-						
+
 						while (pickerStatusVars.next()) {
 							String value = pickerStatusVars.getVariable().value;
 							String name = pickerStatusVars.getVariable().name;

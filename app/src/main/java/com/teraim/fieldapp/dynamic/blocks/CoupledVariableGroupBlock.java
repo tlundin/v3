@@ -32,7 +32,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     private final List<Expressor.EvalExpr> argumentE;
     String groupName, function, argument;
     private Integer currentEvaluationOfArg = null;
-    long delay=0;
+    long delay=25;
 
     WF_Context myC;
     private boolean active=false;
@@ -188,6 +188,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
 
         //Remove min max sliders.
+
         if (functionIsSticky()) {
             slidersToCalibrate = new ArrayList<>(sliders);
             if (min != null && (functionIsStickyLimits()||functionIsStickyLimitsMin()))
@@ -195,6 +196,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
             if (max != null && (functionIsStickyLimits()||functionIsStickyLimitsMax()))
                 slidersToCalibrate.removeAll(max);
         } else
+
             slidersToCalibrate=sliders;
 
 
@@ -230,20 +232,23 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
                     for (WF_ClickableField_Slider slider:slidersToCalibrate) {
 
                         if ((functionIsSum() || functionIsMinSum() || functionIsSticky()) && currentSum < sumToReach) {
-                            increaseSlider(slider);
+                            if (!slider.wasDecreasedLastTime())
+                                increaseSlider(slider);
 
                         } else if ((functionIsSum() || functionIsMaxSum() || functionIsSticky()) && currentSum > sumToReach) {
 //                            Log.d("vortex","gets here: x n m"+functionIsMaxSum()+","+functionIsSum()+","+functionIsMinSum());
-                            decreaseSlider(slider);
+                            if (!slider.wasIncreasedLastTime())
+                                decreaseSlider(slider);
                         }
 
                     }
-                    if (oldSum==currentSum) {
+                   /* if (oldSum==currentSum) {
                         Log.d("vortex","SUM not changed in group "+groupName);
                         Log.d("vortex","currentSum: "+currentSum+" sumtoreach: "+sumToReach);
                         updateSliderVariables(slidersToCalibrate);
                         active = false;
                     } else
+                    */
                         handler.postDelayed(this,0);
                     Log.d("vortex","Current sum is: "+currentSum);
                 } else {
@@ -256,9 +261,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
 
 
-            }
-
-            ;
+            };
 
         handler.postDelayed(runnable,delay);
 
@@ -300,20 +303,65 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
     private void increaseSlider(WF_ClickableField_Slider slider) {
         int curr = slider.getPosition();
-        if (curr<slider.getMax()) {
-            currentSum++;
-            slider.setPosition(curr + 1);
+        int increase = calc(curr, slider.getMin(),slider.getMax());
+        if (increase==0 && r.nextBoolean()) {
+            Log.e("vortex","fecckoo");
+            increase = 1;
+        }
+
+        curr += increase;
+        if (curr<=slider.getMax()) {
+
+            currentSum+=increase;
+            slider.setPosition(curr);
+            slider.wasIncreased();
         } else
-            Log.d("vortex",slider.getId()+" is at max: "+slider.getPosition());
+            Log.d("vortex",slider.getId()+" is over max in increase: "+slider.getPosition());
     }
 
     private void decreaseSlider(WF_ClickableField_Slider slider) {
         int curr = slider.getPosition();
-        if (curr>slider.getMin()) {
-            currentSum--;
-            slider.setPosition(curr - 1);
+        int decrease = calc(curr, slider.getMin(),slider.getMax());
+        if (decrease==0 && r.nextBoolean()) {
+            decrease=1;
+        }
+
+        curr -= decrease;
+        if (curr>=slider.getMin()) {
+
+            currentSum-=decrease;
+            slider.setPosition(curr);
+            slider.wasDecreased();
         } else
-            Log.d("vortex","this slider is at min: "+slider.getPosition());
+            Log.d("vortex",slider.getId()+" is below min in decrease: "+slider.getPosition());
     }
 
+
+    private int calc(float x, int min, int max) {
+        Log.d("vortex","x: "+x+" min: "+min+" max: "+max);
+        float midP = (max-min)/2; //50
+        float maxChange = 8;
+        //reverse if > mid.
+        if (x>midP)
+            x = max-x;  //22
+        //interval is 0..intervalMax
+        float intervalMax = func(midP);  //2500
+
+        //segment size is intervalMax/maxChange
+        float seg = intervalMax/maxChange; //500
+        //change is f(x)/segment
+        int change = Math.round(func(x)/seg);//
+        Log.d("vortex","change is : "+change);
+
+        return change;
+
+    }
+
+
+ //   private float func(float x) {
+ //       return (float) Math.pow(x,2);
+ //   }
+    private float func(float x) {
+        return (float) x;
+    }
 }

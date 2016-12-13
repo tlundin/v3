@@ -233,4 +233,26 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	public int getMax() {
 		return max;
 	}
+
+	boolean sliderWasDecreased = false;
+	boolean sliderWasIncreased = false;
+
+	public void wasDecreased() {
+		sliderWasDecreased=true;
+	}
+
+	public void wasIncreased() {
+		sliderWasIncreased=true;
+	}
+
+	public boolean wasDecreasedLastTime() {
+		boolean ret = sliderWasDecreased;
+		sliderWasDecreased=false;
+		return ret;
+	}
+	public boolean wasIncreasedLastTime() {
+		boolean ret = sliderWasIncreased;
+		sliderWasIncreased=false;
+		return ret;
+	}
 }

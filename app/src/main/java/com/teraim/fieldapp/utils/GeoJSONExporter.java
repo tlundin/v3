@@ -30,7 +30,7 @@ public class GeoJSONExporter extends Exporter {
 	private List<String> coordLess = new ArrayList<>();
 	private Map<String,String> rutMap = new HashMap<>();
 	private Map<String,String> authorMap = new HashMap<>();
-	private int varC=0;
+	private int varC=0,exx=0;
 
 
 	protected GeoJSONExporter(Context ctx) {
@@ -245,6 +245,7 @@ public class GeoJSONExporter extends Exporter {
 									}
 								} else if (polygons.length >= 2) {
 									geoType = "Polygon";
+
 								}
 							}
 						if (geoType==null){
@@ -257,7 +258,15 @@ public class GeoJSONExporter extends Exporter {
 						boolean isLineString = "Linestring".equalsIgnoreCase(geoType);
 						if (isLineString)
 							geoType="LineString";
-
+						if (isPoly) {
+							String firstPoly = polygons[0];
+							String[] coordio = firstPoly.split(",");
+							if (coordio.length<6){
+								exx++;
+								Log.e("bengo","polygon has "+coordio.length+" count:"+exx);
+								continue;
+							}
+						}
 						//Beg of line.
 						writer.beginObject();
 						write("type", "Feature");
@@ -267,6 +276,7 @@ public class GeoJSONExporter extends Exporter {
 						writer.name("coordinates");
 						Log.d("brex","RUTA: "+rutMap.get(keyUID));
 						Log.d("brex","GID: "+keyUID);
+
 						if (isPoly||isLineString)
 							writer.beginArray();
 
@@ -294,6 +304,7 @@ public class GeoJSONExporter extends Exporter {
 									printCoord(writer, coords[0 + 1]);
 									writer.endArray();
 								}
+
 
 
 							} catch (IllegalStateException e) {

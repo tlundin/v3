@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,6 +31,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -56,6 +58,7 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Numerable.Type;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.ui.ConfigMenu;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 
 public class Tools {
@@ -76,11 +79,34 @@ public class Tools {
 		ctx.startActivity (intent);
 	}
 
+	public static String getPath(Context context, Uri uri) throws URISyntaxException {
+		if ("content".equalsIgnoreCase(uri.getScheme())) {
+			String[] projection = { "_data" };
+			Cursor cursor = null;
+
+			try {
+				cursor = context.getContentResolver().query(uri, projection, null, null, null);
+				int column_index = cursor.getColumnIndexOrThrow("_data");
+				if (cursor.moveToFirst()) {
+					return cursor.getString(column_index);
+				}
+			} catch (Exception e) {
+				// Eat it
+			}
+		}
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
+
+		return null;
+	}
+
 	public enum Unit {
 		percentage,
 		dm,
 		m,
 		cm,
+		cm2,
 		meter,
 		cl,
 		ml,
@@ -139,12 +165,12 @@ public class Tools {
 
 
 	/**
-	 * 
+	 *
 	 * @param filename abc
 	 * @return abc
-	 * @throws IOException 
-	 * @throws StreamCorruptedException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws StreamCorruptedException
+	 * @throws ClassNotFoundException
 	 */
 	public static Object readObjectFromFile(String filename) throws IOException, ClassNotFoundException {
 		ObjectInputStream objectIn = null;
@@ -173,7 +199,7 @@ public class Tools {
 	//This cannot be part of Variable, since Variable is an interface.
 
 	public static Type convertToType(String text) {
-		Type[] types = Type.values();	
+		Type[] types = Type.values();
 		//Special cases
 		if (text.equals("number"))
 			return Type.NUMERIC;
@@ -197,7 +223,7 @@ public class Tools {
 			if (unit.equalsIgnoreCase(units[i].name()))
 				return units[i];
 		}
-		return Unit.nd;				
+		return Unit.nd;
 	}
 
 	public static void createFoldersIfMissing(File file) {
@@ -351,7 +377,7 @@ public class Tools {
 	}
 
 	public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
-			int reqWidth, int reqHeight) {
+														 int reqWidth, int reqHeight) {
 
 		// First decode with inJustDecodeBounds=true to check dimensions
 		final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -393,7 +419,7 @@ public class Tools {
 
 
 	/*********************************************************
-	 * 
+	 *
 	 * File Data Parsers.
 	 */
 
@@ -404,7 +430,7 @@ public class Tools {
 			return null;
 		Map<String,String> res = new HashMap<String,String>();
 		for (String key:orig.keySet()) {
-			res.put(key, orig.get(key));		
+			res.put(key, orig.get(key));
 		}
 		return res;
 	}
@@ -440,7 +466,7 @@ public class Tools {
 		Map<String,String> ret = new HashMap<String,String>();
 		for (int i=0;i<parameters.length;i+=2) {
 			colName = parameters[i];
-			colValue = parameters[i+1];	
+			colValue = parameters[i+1];
 			if (colName != null && colValue!=null && !colValue.equals("null"))
 				ret.put(colName,colValue);
 
@@ -511,7 +537,7 @@ public class Tools {
 
 
 	public static boolean isVersionNumber(String str)
-	{	
+	{
 		if (str==null||str.length()==0)
 			return false;
 		for (char c : str.toCharArray())
@@ -531,7 +557,7 @@ public class Tools {
 		}
 
 		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
-		Canvas canvas = new Canvas(bitmap); 
+		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 		drawable.draw(canvas);
 
@@ -572,12 +598,12 @@ public class Tools {
 					if (listValues.size()>1) {
 						//yes..include these in search
 						Log.d("nils","found additional keys...");
-						String[] keyPair;							
+						String[] keyPair;
 						for (int i=1;i<listValues.size();i++) {
 							keyPair = listValues.get(i).split("=");
 							if (keyPair!=null && keyPair.length==2) {
 								String valx=vc.getVariableValue(null,keyPair[1]);
-								if (valx!=null) 										
+								if (valx!=null)
 									keySet.put(keyPair[0], valx);
 								else {
 									Log.e("nils","The variable "+keyPair[1]+" used for dynamic list "+variable.getLabel()+" is not returning a value");
@@ -591,7 +617,7 @@ public class Tools {
 							}
 						}
 
-					} else 
+					} else
 						Log.d("nils","no additional keys..only column");
 					Selection s = gs.getDb().createCoulmnSelection(keySet);
 					List<String[]> values = gs.getDb().getUniqueValues(column, s);
@@ -601,8 +627,8 @@ public class Tools {
 						SortedSet<String> ss = new TreeSet<String>(new Comparator<String>(){
 							public int compare(String a, String b){
 								return Integer.parseInt(a)-Integer.parseInt(b);
-							}}						                         
-								);
+							}}
+						);
 						String S;
 						for (int i = 0; i<values.size();i++) {
 							S = values.get(i)[0];
@@ -612,7 +638,7 @@ public class Tools {
 								Log.e("vortex","NonNumeric value found: ["+S+"]");
 						}
 						opt = new String[ss.size()];
-						int i = 0; 
+						int i = 0;
 						Iterator<String> it = ss.iterator();
 						while (it.hasNext()) {
 							opt[i++]=it.next();
@@ -655,7 +681,7 @@ public class Tools {
 	 */
 	//Check if two keys are equal
 	public static boolean sameKeys(Map<String, String> m1,
-			Map<String, String> m2) {
+								   Map<String, String> m2) {
 		if (m1.size() != m2.size())
 			return false;
 		for (String key: m1.keySet()) {
@@ -707,23 +733,23 @@ public class Tools {
 		if (value == null || value.length()<=1 || !value.startsWith("0"))
 			return value;
 		return removeStartingZeroes(value.substring(1));
-	}		
+	}
 
 
 	public static void restart(Activity context) {
-		Log.d("vortex","restarting...");			
+		Log.d("vortex","restarting...");
 		android.app.FragmentManager fm = context.getFragmentManager();
-		for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {    
+		for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
 			fm.popBackStack();
 		}
 		Intent intent = new Intent(context, Start.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
-		context.finish();		
+		context.finish();
 	}
 
 	public static Map<String,String> findKeyDifferences(Map<String, String> k1,
-			Map<String, String> k2) {
+														Map<String, String> k2) {
 		Map<String,String> res = new HashMap<String,String>();
 		Map<String, String> longer,shorter;
 		//if (shorter!=null && longer!=null){
@@ -742,17 +768,17 @@ public class Tools {
 			if (k1.size()<k2.size()) {
 				longer = k2;
 				shorter = k1;
-			} 
+			}
 			//same.
-			else 
+			else
 				return null;
 		} else {
 			//both are null
 			if (k2==null||k2.isEmpty())
 				return null;
-			//else k2 is the difference.
-			else 
-				return copyKeyHash(k2);			
+				//else k2 is the difference.
+			else
+				return copyKeyHash(k2);
 		}
 		Set<String> sK = shorter.keySet();
 		for (String key:longer.keySet()) {
@@ -834,7 +860,7 @@ public class Tools {
 
 	public static void onLoadCacheImage(String serverFileRootDir, final String fileName, final String cacheFolder, WebLoaderCb cb) {
 		final String fullPicURL = serverFileRootDir+fileName;
-		new DownloadTask(cb).execute(fileName,fullPicURL,cacheFolder); 
+		new DownloadTask(cb).execute(fileName,fullPicURL,cacheFolder);
 
 	}
 	public static void preCacheImage(String serverFileRootDir, final String fileName, final String cacheFolder, final LoggerI logger) {
@@ -882,7 +908,7 @@ public class Tools {
 		}
 
 		protected Boolean doInBackground(String... fileNameAndUrl) {
-			final String protoH = "http://";	
+			final String protoH = "http://";
 			if (fileNameAndUrl==null||fileNameAndUrl.length<3) {
 				Log.e("vortex","filename or url name corrupt in downloadtask");
 				return false;
@@ -1001,7 +1027,7 @@ public class Tools {
 
 			return f;
 		}
-		else 
+		else
 			return null;
 	}
 
@@ -1009,7 +1035,7 @@ public class Tools {
 		o.addRow("");
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);		
+		e.printStackTrace(pw);
 		o.addRedText(sw.toString());
 		e.printStackTrace();
 	}
@@ -1036,7 +1062,7 @@ public class Tools {
 		Object o =null;
 		try {
 			in = new ObjectInputStream(bis);
-			o = in.readObject(); 
+			o = in.readObject();
 
 		} catch (IOException e) {
 

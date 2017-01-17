@@ -42,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 5.10f;
+	public final static float VORTEX_VERSION = 5.13f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -235,20 +235,33 @@ public class Constants {
 			//"https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
 	public static final Object TRANS_ACK = "TRANSACK";
 
-	
 
 
 
 
-	public static List<ConfigurationModule> getCurrentlyKnownModules(PersistenceHelper globalPh,PersistenceHelper ph,String server, String bundle, LoggerI debugConsole) {
+
+	public static List<ConfigurationModule> getCurrentlyKnownModules(Source source, PersistenceHelper globalPh,PersistenceHelper ph,String server, String bundle, LoggerI debugConsole) {
 		List<ConfigurationModule> ret = new ArrayList<ConfigurationModule>();
 		//Workflow xml. Named same as bundle.
+		final String pathOrURL;
 
-		ret.add(new WorkFlowBundleConfiguration(globalPh,ph,server,bundle,debugConsole));
-		ret.add(new SpinnerConfiguration(globalPh,ph,server,bundle,debugConsole));
-		ret.add(new GroupsConfiguration(globalPh,ph,server,bundle,debugConsole));		
+		if (source == Source.internet) {
+			pathOrURL = server + bundle.toLowerCase() + "/";
+		}
+		else {
+			Log.d("vortex","Local configuration from folder: "+server);
+			if (server==null || server.isEmpty())
+				pathOrURL = VORTEX_ROOT_DIR+bundle.toLowerCase() + "/config/";
+			else
+				pathOrURL=server;
+		}
+		Log.d("vortex","Parthorurl is now"+pathOrURL);
+
+		ret.add(new WorkFlowBundleConfiguration(source,globalPh,ph,pathOrURL,bundle,debugConsole));
+		ret.add(new SpinnerConfiguration(source,globalPh,ph,pathOrURL,debugConsole));
+		ret.add(new GroupsConfiguration(source,globalPh,ph,pathOrURL,bundle,debugConsole));
 		//VariableConfiguration depends on the Groups Configuration.
-		ret.add(new VariablesConfiguration(globalPh,ph,server,bundle,debugConsole));
+		ret.add(new VariablesConfiguration(source,globalPh,ph,pathOrURL,debugConsole));
 
 		return ret;
 	}

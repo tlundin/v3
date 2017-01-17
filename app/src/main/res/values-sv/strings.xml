@@ -48,7 +48,7 @@
 	<string name="Automatic_backup">Säkerhetskopiering</string>
 	<string name="Backup_folder">Plats för säkerhetskopia</string>
 	
-	<string name="s_summary">Enheten laddar sin konfiguration härifrån</string>
+
 	<string name="appDialMsg">Appens namn utan \'.xml\'\n (ändring kräver omstart)</string>
 	<string name="Backup_folder_s">Om inget värde anges så används foldern \'backup\' under Appens hem</string>
 	<string name="Backup_dm">Export och säkerhetskopior hamnar här. Om du inte anger något värde så hamnar dessa filer under folder \'backup\' i Appens hemfolder</string>
@@ -60,4 +60,15 @@
 	<string name="layers">Lager</string>
 	<string name="filters">Filter</string>
 	<string name="backgrounds">Kartor</string>
+
+	<string name="config_from_server">Lokal konfiguration</string>
+	<string name="s_summary">Enheten laddar sin konfiguration härifrån</string>
+	<string name="s_folder_summary">Folder för konfiguration</string>
+	<string name="directory_selected_label">Directory selected:</string>
+	<string name="choose_directory">Choose Directory</string>
+	<string name="none">none</string>
+	<string name="btn_choose">Choose in Dialog</string>
+	<string name="btn_switch">Switch to Dialog Sample</string>
+	<string name="local_config_s">Laddar konfigurationen från projektfoldern i filsystemet</string>
+
 </resources>

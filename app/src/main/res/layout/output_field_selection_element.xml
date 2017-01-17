@@ -21,7 +21,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:singleLine="true"
-		android:layout_marginRight="5dp"
+	android:layout_marginRight="5dp"
     android:gravity="center_vertical|left"
     android:text="%"
     android:textSize="20sp" />

@@ -29,7 +29,7 @@ public class FileLoader extends Loader {
 		
 		BufferedReader reader=null;
 		try {
-			reader = new BufferedReader(new FileReader(module.fullPath));
+			reader = new BufferedReader(new FileReader(module.getFullPath()));
 		float version=-1;
 		StringBuilder sb = new StringBuilder();		
 		if (module.hasSimpleVersion) {

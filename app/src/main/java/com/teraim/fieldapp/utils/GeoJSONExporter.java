@@ -301,7 +301,7 @@ public class GeoJSONExporter extends Exporter {
 									Log.d("vortex","Closing poly..");
 									writer.beginArray();
 									printCoord(writer, coords[0]);
-									printCoord(writer, coords[0 + 1]);
+									printCoord(writer, coords[1]);
 									writer.endArray();
 								}
 

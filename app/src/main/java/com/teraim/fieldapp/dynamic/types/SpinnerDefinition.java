@@ -2,6 +2,7 @@ package com.teraim.fieldapp.dynamic.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,7 @@ public class SpinnerDefinition implements Serializable {
 			//this.descr=descr;
 			if (vars!=null&&!vars.isEmpty()) {
 				String[] v = vars.split("\\|");
-				for (String s:v) 
-					varMapping.add(s);
+				Collections.addAll(varMapping, v);
 			}
 			//Log.e("vortex","SPINNER val "+val+" OPT: "+opt+" VARS "+vars+" DESC "+descr);
 		}

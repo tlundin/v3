@@ -220,6 +220,9 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
         }
         Log.d("currentsum","Currentsum initial is: "+currentSum);
+        Log.d("vortex","number of sliders:" +slidersToCalibrate.size());
+
+
         final Handler handler = new Handler();
         Runnable runnable = new Runnable(){
             public void run() {
@@ -227,7 +230,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
                     //Check if any change.
                     int anyChange=0;
                     int oldSum = currentSum;
-                    Log.d("currentsum","Currentsum is: "+currentSum+" min func? "+functionIsMinSum()+" sum to reach: "+sumToReach);
+                    Log.d("currentsum","Currentsum is: "+currentSum+" Min: "+functionIsMinSum()+" Max: "+functionIsMaxSum()+" SL: "+functionIsStickyLimits()+" SUM: "+functionIsSum()+" STICKY: "+functionIsSticky()+" sum to reach: "+sumToReach);
 
                     for (WF_ClickableField_Slider slider:slidersToCalibrate) {
 
@@ -263,7 +266,10 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
             };
 
-        handler.postDelayed(runnable,delay);
+       if (slidersToCalibrate.size()>0)
+            handler.postDelayed(runnable,delay);
+        else
+           Log.d("vortex","No sliders to calibrate");
 
 
     }
@@ -304,17 +310,19 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     private void increaseSlider(WF_ClickableField_Slider slider) {
         int curr = slider.getPosition();
         int increase = calc(curr, slider.getMin(),slider.getMax());
+
         if (increase==0 && r.nextBoolean()) {
             Log.e("vortex","fecckoo");
             increase = 1;
         }
-
+       // Log.d("vortex","INC: "+increase);
         curr += increase;
         if (curr<=slider.getMax()) {
 
             currentSum+=increase;
             slider.setPosition(curr);
             slider.wasIncreased();
+         //   Log.d("vortex","currsum: "+currentSum);
         } else
             Log.d("vortex",slider.getId()+" is over max in increase: "+slider.getPosition());
     }

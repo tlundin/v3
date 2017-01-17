@@ -1002,7 +1002,7 @@ public class Expressor {
 				arg1s="?";
 			if (arg2s==null)
 				arg2s="?";
-			return String.format("%s(%s,%s)", operator.toString(), arg1s.toString(), arg2s.toString());
+			return String.format("%s(%s,%s)", operator.toString(), arg1s, arg2s);
 		}
 
 		public Object eval()  {

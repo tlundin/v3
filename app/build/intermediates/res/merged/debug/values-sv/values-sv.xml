@@ -78,7 +78,10 @@
     <string name="app_name_t">Appens namn</string>
     <string name="avbrytsynk">Avbryt Synkning</string>
     <string name="backgrounds">Kartor</string>
+    <string name="btn_choose">Choose in Dialog</string>
+    <string name="btn_switch">Switch to Dialog Sample</string>
     <string name="cancel">Avbryt</string>
+    <string name="choose_directory">Choose Directory</string>
     <string name="close">Stäng</string>
     <string msgid="6428604800157361567" name="common_android_wear_notification_needs_update_text">"En uppdatering av appen Android Wear krävs för <ns1:g id="APP_NAME">%1$s</ns1:g>."</string>
     <string msgid="2453027084525739603" name="common_android_wear_update_text">"<ns1:g id="APP_NAME">%1$s</ns1:g> körs inte om du inte uppdaterar appen Android Wear."</string>
@@ -112,17 +115,20 @@
     <string msgid="411506735369601515" name="common_open_on_phone">"Öppna på mobilen"</string>
     <string msgid="9071884888741449141" name="common_signin_button_text">"Logga in"</string>
     <string msgid="2429381841831957106" name="common_signin_button_text_long">"Logga in med Google"</string>
+    <string name="config_from_server">Lokal konfiguration</string>
     <string name="context">Context</string>
     <string name="debug_summary">Extra debug information i logg</string>
     <string name="delete">Ta bort</string>
     <string name="description">Beskrivning</string>
     <string name="developer_functions">Avlusningsfunktioner</string>
+    <string name="directory_selected_label">Directory selected:</string>
     <string name="drawer_close">Stäng</string>
     <string name="drawer_open">Öppna</string>
     <string name="filters">Filter</string>
     <string name="iunderstand">Jag förstår!</string>
     <string name="layers">Lager</string>
     <string name="length_">Length:</string>
+    <string name="local_config_s">Laddar konfigurationen från projektfoldern i filsystemet</string>
     <string name="local_service_started">Blåtandtjänst startad</string>
     <string name="log">Logg</string>
     <string name="menu_settings">Inställningar</string>
@@ -133,12 +139,14 @@
     <string msgid="5441529851481176817" name="mr_system_route_name">"System"</string>
     <string msgid="7498112907524977311" name="mr_user_route_category_name">"Enheter"</string>
     <string name="no">Nej</string>
+    <string name="none">none</string>
     <string name="ok">OK</string>
     <string name="reference">Referens</string>
     <string name="resetSyncButton">Nollställ synk</string>
     <string name="reset_sync_d">Raderar allt synkdata </string>
     <string name="restart">Omstart</string>
     <string name="restartMessage">Du måste starta om för att ändringen ska gälla. Starta om?</string>
+    <string name="s_folder_summary">Folder för konfiguration</string>
     <string name="s_summary">Enheten laddar sin konfiguration härifrån</string>
     <string name="save">Spara</string>
     <string name="settings">Inställningar</string>

@@ -184,7 +184,13 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 		//create module descriptors for all known configuration files.
 		//Log.d("vortex","Creating Configuration and ModuleLoader");
-		myModules = new Configuration(Constants.getCurrentlyKnownModules(globalPh,ph,server(),bundleName,debugConsole));
+
+		//Check if configuration should be loaded from server or from file system.
+
+		if (globalPh.getB("local_config"))
+			myModules = new Configuration(Constants.getCurrentlyKnownModules(ConfigurationModule.Source.file,globalPh,ph,null,bundleName,debugConsole));
+		else
+			myModules = new Configuration(Constants.getCurrentlyKnownModules(ConfigurationModule.Source.internet,globalPh,ph,server(),bundleName,debugConsole));
 		String loaderId = "moduleLoader";
 		boolean allFrozen = ph.getB(PersistenceHelper.ALL_MODULES_FROZEN+loaderId);
 		myLoader = new ModuleLoader(loaderId,myModules,loginConsole,globalPh,allFrozen,debugConsole,this,mActivity);

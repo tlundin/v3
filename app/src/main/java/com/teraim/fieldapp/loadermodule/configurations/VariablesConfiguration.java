@@ -2,6 +2,7 @@ package com.teraim.fieldapp.loadermodule.configurations;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,8 +39,8 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	private int groupIndex;
 
 
-	public VariablesConfiguration(PersistenceHelper globalPh,PersistenceHelper ph, String server, String bundle, LoggerI debugConsole) {
-		super(globalPh,ph, Source.internet, server+bundle.toLowerCase()+"/",VariablesConfiguration.NAME,"Variables module      ");	 
+	public VariablesConfiguration(Source source,PersistenceHelper globalPh,PersistenceHelper ph, String serverOrFile, LoggerI debugConsole) {
+		super(globalPh,ph, source, serverOrFile,VariablesConfiguration.NAME,"Variables module      ");
 		this.o = debugConsole;
 		o.addRow("Parsing Variables.csv file");
 
@@ -226,8 +227,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 
 	private List<String> trimmed(String[] r) {
 		ArrayList<String> ret = new ArrayList<String>();
-		for(int i=0;i<Constants.VAR_PATTERN_ROW_LENGTH;i++)
-			ret.add(r[i]);
+		ret.addAll(Arrays.asList(r).subList(0, Constants.VAR_PATTERN_ROW_LENGTH));
 		return ret;
 	}
 

@@ -24,7 +24,15 @@
             android:key="user_id"
             android:title="@string/UserName" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/DevOp" >
+    <PreferenceCategory
+        android:title="@string/DevOp"
+        android:key="developer_options"
+        >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:title="@string/config_from_server"
+            android:summary="@string/local_config_s"
+            android:key="local_config" />
         <EditTextPreference
             android:defaultValue="http://www.teraim.com/"
             android:dialogMessage="App server URL"
@@ -33,7 +41,14 @@
             android:summary="@string/s_summary"
             android:title="Server URL" />
         <EditTextPreference
-            android:defaultValue="Nilstst.xml"
+            android:defaultValue=""
+            android:dialogMessage="Folder for configuration files"
+            android:title="Folder"
+            android:summary="@string/s_folder_summary"
+            android:key="file_picker"
+            />
+        <EditTextPreference
+            android:defaultValue=""
             android:dialogMessage="@string/appDialMsg"
             android:dialogTitle="App"
             android:inputType="textCapSentences"
@@ -90,6 +105,7 @@
             android:title="@string/resetSyncButton"
             android:key="reset_sync"
             android:summary="@string/reset_sync_d"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

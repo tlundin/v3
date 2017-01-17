@@ -37,7 +37,7 @@ public class Rule implements Serializable {
         List<Expressor.EvalExpr> tmp = Expressor.preCompileExpression(condition);
         if (tmp!=null) {
             this.condition = tmp.get(0);
-            Log.d("vortex", "Bananas rule " + condition.toString());
+            Log.d("vortex", "Bananas rule " + condition);
         } else
             Log.d("vortex", "Condition precompiles to null: "+condition);
         this.errorMsg=errorMsg;

@@ -160,7 +160,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 					//coordinates
 					//Log.d("vortex","reading coords")
 					myGisObjects.add(new GisObject(keyChain,Arrays.asList(new Location[] {readLocation(reader)}),attributes));
-				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POINT)||(mType.equalsIgnoreCase(GisConstants.LINE_STRING.toString()))){
+				} else if (mType.equalsIgnoreCase(GisConstants.MULTI_POINT)||(mType.equalsIgnoreCase(GisConstants.LINE_STRING))){
 					List<Location> myCoordinates = new ArrayList<Location>();
 					while (!reader.peek().equals(JsonToken.END_ARRAY)) {
 						reader.beginArray();

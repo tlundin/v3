@@ -19,6 +19,8 @@ import com.teraim.fieldapp.utils.Tools;
 //Class that describes the specific load behaviour for a certain type of input data.
 public abstract class ConfigurationModule {
 
+
+
 	public enum Type {
 		json,
 		xml,
@@ -31,7 +33,7 @@ public abstract class ConfigurationModule {
 	}
 	public Source source;
 	public Type type;
-	public String rawData,fileName,fullPath,printedLabel,frozenPath;
+	public String rawData,fileName,printedLabel,frozenPath;
 	protected float newVersion;
 	protected PersistenceHelper globalPh,ph;
 	protected boolean IamLoaded=false;
@@ -41,6 +43,7 @@ public abstract class ConfigurationModule {
 	protected Object essence;
 	protected String baseBundlePath;
 	private boolean notFound=false;
+	private String fullPath = null;
 	//freezeSteps contains the number of steps required to freeze the object. Should be -1 if not set specifically by specialized classes.
 	protected int freezeSteps=-1;
 	//tells if this module is stored on disk or db.
@@ -57,7 +60,8 @@ public abstract class ConfigurationModule {
 		this.baseBundlePath=urlOrPath;
 		fullPath = urlOrPath+fileName+"."+type.name();
 		frozenPath = Constants.VORTEX_ROOT_DIR+gPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/"+fileName;
-		Log.d("vortex","full path "+fullPath);
+		Log.d("balla","full path "+fullPath);
+		Log.d("balla","base bundle path "+baseBundlePath);
 		this.versionControl = globalPh.get(PersistenceHelper.VERSION_CONTROL);
 	}
 
@@ -68,7 +72,13 @@ public abstract class ConfigurationModule {
 
 	public abstract float getFrozenVersion();
 
+	public String getFullPath() {
+		return fullPath;
+	}
 
+	public String getURL() {
+		return fullPath;
+	}
 	//Stores version number. Can be different from frozen version during load.
 	public void setNewVersion(float version) {
 		this.newVersion=version;

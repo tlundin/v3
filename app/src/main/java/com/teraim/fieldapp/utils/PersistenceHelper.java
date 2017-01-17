@@ -27,6 +27,7 @@ public class PersistenceHelper {
 	public static final String BUNDLE_NAME = "bundle_name";
 	public static final String BACKUP_LOCATION = "backup_location";	
 	public static final String SERVER_URL = "server_location";
+	public static final String FOLDER = "file_picker";
 	public static final String CURRENT_VERSION_OF_APP = "current_version_of_app_f";
 	public static final String CURRENT_VERSION_OF_WF_BUNDLE = "current_version_wf_f";
 	public static final String CURRENT_VERSION_OF_GROUP_CONFIG_FILE = "current_version_config_f";

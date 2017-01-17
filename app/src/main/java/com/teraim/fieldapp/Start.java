@@ -165,6 +165,12 @@ public class Start extends MenuActivity {
 
 	}
 
+
+	
+
+
+
+
 	private void invokeLogActivity(){
 		Intent intent = new Intent ();
 		if (globalPh!=null) {

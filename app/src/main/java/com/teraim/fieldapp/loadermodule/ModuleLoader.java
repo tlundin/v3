@@ -236,7 +236,7 @@ public class ModuleLoader implements FileLoadedCb{
 				if (res.errorMessage !=null)
 					o.addRow(res.errorMessage);
 				else
-					o.addRow("No data (Network error)");
+					o.addRow("File not found (Network error)");
 			}
 		} else if (errCode==ErrorCode.Unsupported) {
 			o.addRow("");

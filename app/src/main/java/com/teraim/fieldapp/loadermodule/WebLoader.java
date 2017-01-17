@@ -41,7 +41,7 @@ public class WebLoader extends Loader {
 		ConfigurationModule module = params[0];
 		URL url;
 		try {
-			url = new URL(module.fullPath);
+			url = new URL(module.getURL());
 
 			URLConnection ucon = url.openConnection();
 			if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) { ucon.setRequestProperty("Connection", "close"); }

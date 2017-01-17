@@ -35,9 +35,9 @@
             <TextView
                 android:id="@+id/outputValueField"
                 android:layout_gravity="right"
-            	android:gravity="right"               
+            	android:gravity="right"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"          
+                android:layout_height="match_parent"
                 android:singleLine="true"
                 android:textSize="25sp" />
 
@@ -54,8 +54,8 @@
         </LinearLayout>
 
     <View
-        android:layout_width="wrap_content"
         android:layout_height="1dip"
-        android:background="#000000" />
+        android:layout_width="match_parent"
+        android:background="#696969" />
 
 </LinearLayout>

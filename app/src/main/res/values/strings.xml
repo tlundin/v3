@@ -48,7 +48,7 @@
     <string name="Automatic_backup">Backup</string>
     <string name="Backup_folder">Backup Folder</string>
 
-    <string name="s_summary">Location of all configuration files</string>
+
     <string name="appDialMsg">Enter the application name. No \'.xml\', only the name!\n (Change requires restart)</string>
     <string name="Backup_folder_s">Leave empty to use folder named \'backup\' under project folder</string>
     <string name="Backup_dm">Export and backup files are saved to this folder. If you leave the field empty, the files will be stored under \'backup\' in your project folder.</string>
@@ -60,5 +60,16 @@
     <string name="layers">Layers</string>
     <string name="filters">Filters</string>
     <string name="backgrounds">Maps</string>
+
+    <string name="s_summary">Location of all configuration files</string>
+    <string name="s_folder_summary">Folder for configuration files</string>
+    <string name="config_from_server">Local Configuration</string>
+
+    <string name="directory_selected_label">Directory selected:</string>
+    <string name="choose_directory">Choose Directory</string>
+    <string name="none">none</string>
+    <string name="btn_choose">Choose in Dialog</string>
+    <string name="btn_switch">Switch to Dialog Sample</string>
+    <string name="local_config_s">Loads configuration from project folder in file system</string>
 
 </resources>

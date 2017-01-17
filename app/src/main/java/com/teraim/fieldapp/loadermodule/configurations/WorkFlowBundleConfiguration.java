@@ -71,9 +71,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private String language="se";
 	public static LoggerI debugConsole;
 
-	public WorkFlowBundleConfiguration(PersistenceHelper globalPh,PersistenceHelper ph,
-			String server, String bundle,LoggerI debugConsole) {
-		super(globalPh,ph, Source.internet, server+bundle.toLowerCase()+"/", bundle,"Workflow bundle       ");
+	public WorkFlowBundleConfiguration(Source source,PersistenceHelper globalPh,PersistenceHelper ph,
+			String urlOrPath, String bundle,LoggerI debugConsole) {
+		super(globalPh,ph, source, urlOrPath, bundle,"Workflow bundle       ");
 		this.o=debugConsole;
 		cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
 		//make debugConsole globally available, so we dont have to pass it to each subclass.

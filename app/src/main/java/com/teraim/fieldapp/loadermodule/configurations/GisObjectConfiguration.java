@@ -28,6 +28,8 @@ import com.teraim.fieldapp.loadermodule.JSONConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
@@ -311,7 +313,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 				}
 				else {
 					//Log.d("vortex","RUTA ID: "+rutaId);
-					keyChain.put("ruta", rutaId);
+					keyChain.put(NamedVariables.AreaTerm, rutaId);
 				}
 
 				if (objectId == null) {

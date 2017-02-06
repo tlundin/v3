@@ -19,6 +19,7 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 import com.teraim.fieldapp.utils.Exporter.Report;
@@ -82,7 +83,7 @@ public class GeoJSONExporter extends Exporter {
 						continue;
 					}
 					uid = currentHash.get("uid");
-					rutMap.put(uid,currentHash.get("ruta"));
+					rutMap.put(uid,currentHash.get(NamedVariables.AreaTerm));
 
 					spy = currentHash.get("spy");
 
@@ -325,7 +326,7 @@ public class GeoJSONExporter extends Exporter {
 						String ruta = rutMap.get(keyUID);
 						String author = authorMap.get(keyUID);
 						if (ruta!=null)
-							write("RUTA",ruta);
+							write(NamedVariables.AreaTerm.toUpperCase(),ruta);
 						write("author", author);
 						//write("timestamp",cp.getVariable().timeStamp);
 						//write("author",cp.getKeyColumnValues().get("author"));

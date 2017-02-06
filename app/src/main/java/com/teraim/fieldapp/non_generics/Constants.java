@@ -42,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 5.13f;
+	public final static float VORTEX_VERSION = 5.14f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -104,8 +104,8 @@ public class Constants {
 	public static final String SMA = "SMA";
 	public static final String NULL_VALUE = "NULL";
 	public static final String NOT_NULL = "*NN*";
-	
-	//Name of the special variable group used for status variables 
+
+	//Name of the special variable group used for status variables
 	public static final String STATUS_VARIABLES_GROUP_NAME = "STATUS";
 
 	public static final String NO_DEFAULT_VALUE = "*NULL*";

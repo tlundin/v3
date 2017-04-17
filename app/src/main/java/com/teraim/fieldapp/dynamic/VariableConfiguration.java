@@ -36,8 +36,8 @@ public class VariableConfiguration implements Serializable {
 	public static String Col_Variable_Scope = "Scope";
 	public static String Col_Variable_Limits = "Limits";
 	public static String Col_Variable_Dynamic_Limits = "D_Limits";
-	public static String Col_Group_Label = "Label";
-	public static String Col_Group_Description = "Group Description";
+	public static String Col_Group_Label = "Member Label";
+	public static String Col_Group_Description = "Member Description";
 
 	public final static String KEY_YEAR = "år";
 
@@ -71,7 +71,7 @@ public class VariableConfiguration implements Serializable {
 			int tableIndex = myTable.getColumnIndex(c);
 			if (tableIndex==-1) {
 				Log.e("nils","Missing column: "+c);
-				Log.e("nils","Tabe has "+myTable.getColumnHeaders().toString());
+				Log.e("nils","Table has "+myTable.getColumnHeaders().toString());
 				return ErrorCode.missing_required_column;
 			}
 			else
@@ -122,14 +122,14 @@ public class VariableConfiguration implements Serializable {
 
 	public String getGroupDescription(List<String> row) {
 		Integer col = fromNameToColumn.get(Col_Group_Description);
-		if (col!=null)
+		if (col!=null && col<row.size())
 			return row.get(col);
 		return null;
 	}
 
 	public String getGroupLabel(List<String> row) {
 		Integer col = fromNameToColumn.get(Col_Group_Label);
-		if (col!=null)
+		if (col!=null && col<row.size())
 			return row.get(col);
 		return null;
 	}

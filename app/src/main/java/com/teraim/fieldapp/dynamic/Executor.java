@@ -144,6 +144,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	private ProgressDialog pDialog; 
 
 	protected boolean survivedCreate = false;
+    private WF_Event_OnSave delayedOnSave=null;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -275,7 +276,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 					@Override
 					public String getName() {
-						return "TURKEY";
+						return "Executor_StatusVar_onSave";
 					}
 				}, EventType.onSave);
 			}
@@ -429,8 +430,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					o.addYellowText("CreateEntryFieldBlock found "+b.getBlockId());
 					CreateSliderEntryFieldBlock bl = (CreateSliderEntryFieldBlock)b;
 					Log.d("NILS","CreateSliderEntryFieldBlock found");
-					bl.create(myContext);
-
+					Variable v=bl.create(myContext);
+					if (v!=null)
+						visiVars.add(v);
 				}
 				else if (b instanceof AddSumOrCountBlock) {
 					o.addRow("");
@@ -589,11 +591,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 																}
 
 																if (!found) {
-																	Log.d("nils","Variable "+v.getId()+" not found.Removing");
+																	Log.d("nils","Variable gone.Removing");
 																	v.deleteValue();
 																	//here we need a onSave event.
-																	myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_setvalue"));
-																}
+																	//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_setvalue"));
+																} else
+																	Log.d("nils","Still visible!");
 
 															}	
 														}
@@ -646,8 +649,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 							v.setValue(eval);
 							o.addRow(bl.getExpression()+" Eval: ["+eval+"]");
 							//Take care of any side effects before triggering redraw.
-							myContext.registerEvent(new WF_Event_OnSave(bl.getBlockId()));
-							o.addRow("Continues after onSave Event in block "+bl.getBlockId());
+							//Try to delay onSave.
+							//myContext.registerEvent(new WF_Event_OnSave(bl.getBlockId()));
+							delayedOnSave = new WF_Event_OnSave(bl.getBlockId());
+							Log.d("blubb","delayed onSaveEvent in SetValue block "+bl.getBlockId());
 						}
 					} else {
 						o.addRow("");
@@ -695,11 +700,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 												}
 
 												if (!found) {
-													Log.d("nils","Variable "+v.getId()+" not found.Removing");
+													Log.d("nils","Variable not found.Removing");
 													v.deleteValue();
-													myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_cond_cont"));
+													//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_cond_cont"));
 
-												}
+												} else
+													Log.d("bortex","Still visible!");
 
 											}	
 										}
@@ -839,7 +845,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				if (root!=null) 
 					myContext.drawRecursively(root);
 				//open menu if any
+				if (delayedOnSave!=null) {
 
+                    Log.d("blubb","executing delayed onSave");
+					myContext.registerEvent(delayedOnSave);
+                    delayedOnSave=null;
+				}
 				if (myContext.hasMenu()) {
 					Log.d("vortex","Drawing menu");
 					gs.getDrawerMenu().openDrawer();

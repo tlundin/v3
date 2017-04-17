@@ -68,8 +68,9 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
             Log.d("vortex","?");
         }
         Log.d("vortex","function is "+function);
-
-        onEvent(new WF_Event_OnSave(null));
+        String eventID = blockId==null?"BLOCK_ID_WAS_NULL":blockId;
+        blockId = eventID;
+        onEvent(new WF_Event_OnSave(eventID));
     }
 
     public boolean isActive() {

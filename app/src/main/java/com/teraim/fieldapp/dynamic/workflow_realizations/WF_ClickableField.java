@@ -210,14 +210,14 @@ EventGenerator {
 			case R.id.menu_info:
 				if (row != null) {
 					String msg =
-							"V_Label: "+al.getVarLabel(row)+"\n" +
-							"V_Desc : "+al.getVariableDescription(row)+"\n";
+							"Var_Label: "+al.getVarLabel(row)+"\n" +
+							"Var_Desc : "+al.getVariableDescription(row)+"\n";
 					int i = 1;
 
 					while (row!=null)  {
 						msg +=
-								" G_Label"+i+": "+al.getGroupLabel(row)+"\n"+
-								" G_Desc "+i+":  "+al.getGroupDescription(row)+"\n";
+								" Group_Lbl "+i+": "+al.getGroupLabel(row)+"\n"+
+								" Group_Desc "+i+":  "+al.getGroupDescription(row)+"\n";
 						i++;
 						row = (it.hasNext()?it.next().getBackingDataSet():null);
 					} ;

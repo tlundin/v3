@@ -1032,8 +1032,11 @@ public class Expressor {
 //					Log.d("vortex","op is "+op+" which equals and? "+op.equals(TokenType.and));
 					if (op.equals(TokenType.or)) {
 						if (arg1v instanceof Boolean)
-							if ((Boolean) arg1v)
+							if ((Boolean) arg1v) {
+								Log.d("vortex","arg1 is true so returning true");
 								return true;
+							} else
+								Log.d("vortex","arg1 is false");
 					}
 					else if (op.equals(TokenType.and)) {
 //								Log.d("vortex","operator is AND! Arg1: "+arg1v);
@@ -1042,6 +1045,7 @@ public class Expressor {
 								return false;
 					}
 				}
+				Log.d("vortex","...returning null");
 				return null;
 			}
 
@@ -1760,8 +1764,10 @@ public class Expressor {
 					else {
 						Integer sum = 0;
 						for (Object arg : evalArgs) {
-							if (arg!=null)
+							if (arg!=null) {
+								//Log.d("blaffa"," SUM arg is "+arg+" CLASS: "+arg.getClass().getName());
 								sum += (Integer) arg;
+							}
 						}
 						return sum;
 					}
@@ -2110,9 +2116,10 @@ public class Expressor {
 			}
 			if (flags == Null_Numeric) {
 				for (Object obj:evaluatedArgumentsList) {
-					if (obj !=null && !((obj instanceof Double)||!(obj instanceof Integer)||!(obj instanceof Double))) {
+					//Log.d("vortex","In null_numeric with "+obj);
+					if (obj !=null && !(obj instanceof Double)&&!(obj instanceof Integer)&&!(obj instanceof Double)) {
 						o.addRow("");
-						o.addRedText("Type error. Not null & not numeric argument for function '" + getType().toString() + "'.");
+						o.addRedText("Type error. Not null & not numeric argument for function '" + getType().toString() + "'. Argument evaluated to : "+obj+" Type: "+obj.getClass().getName());
 						Log.e("Vortex","Type error. Not null & not numeric argument for function '"+getType().toString()+"'.");
 						return false;
 					}
@@ -2122,7 +2129,7 @@ public class Expressor {
 				for (Object obj:evaluatedArgumentsList) {
 					if (obj !=null && !(obj instanceof String)) {
 						o.addRow("");
-						o.addRedText("Type error. Not null & Non literal argument for function '" + getType().toString() + "'.");
+						o.addRedText("Type error. Not null & Non literal argument for function '" + getType().toString() + "'. Argument evaluated to : "+obj+" Type: "+obj.getClass().getName());
 						Log.e("Vortex","Type error. Not null & Non literal argument for function '"+getType().toString()+"'.");
 						return false;
 					}
@@ -2131,9 +2138,9 @@ public class Expressor {
 			if (flags == No_Null_Boolean) {
 				for (Object obj:evaluatedArgumentsList) {
 					if (!(obj instanceof Boolean)) {
-						Log.e("Vortex","Type error. Non boolean argument for function '"+getType().toString()+"'.  Argument: "+obj.toString());
+						Log.e("Vortex","Type error. Non boolean argument for function '"+getType().toString()+ "'. Argument evaluated to : "+obj+" Type: "+obj.getClass().getName());
 						o.addRow("");
-						o.addRedText("Type error. Non boolean argument for function '" + getType().toString() + "'. Argument: "+obj.toString());
+						o.addRedText("Type error. Non boolean argument for function '" + getType().toString() + "'. Argument evaluated to : "+obj+" Type: "+obj.getClass().getName());
 						return false;
 					}
 				}
@@ -2246,9 +2253,9 @@ public class Expressor {
 			e = null;
 		}
 		//If any items remain on stack, add them.
-		while (!opStack.isEmpty() && opStack.peek() instanceof Operand) {
-			valStack.push(new Convoluted(valStack.pop(),
-					valStack.pop(), (Operand) opStack.pop()));
+		while (!opStack.isEmpty() && opStack.peek() instanceof Operand && valStack.size()>1) {
+				valStack.push(new Convoluted(valStack.pop(),
+						valStack.pop(), (Operand) opStack.pop()));
 		}
 		EvalExpr ret = valStack.isEmpty()?null:(EvalExpr) valStack.pop();
 		System.out.println("Returning: " + ret);

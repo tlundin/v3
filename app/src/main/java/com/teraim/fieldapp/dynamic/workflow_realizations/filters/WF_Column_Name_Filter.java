@@ -102,7 +102,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 			if (key == null || key.isEmpty()) {
 				match = false;
 			} else {
-				String[] facets = key.split(";");
+				String[] facets = key.split("\\|");
 				for (String facet:facets) {
 
 					match=true;

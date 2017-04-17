@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
@@ -23,14 +24,19 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	private Variable var = null;
 	private int min,max;
 	private EditText etview;
+	private TextView tv;
+	private boolean addVarCalled = false;
 
 
 	@SuppressWarnings("WrongConstant")
 	public WF_ClickableField_Slider(String headerT, String descriptionT,
-									WF_Context context, String id, boolean isVisible, String groupName, int min, int max, DisplayFieldBlock format) {
+									WF_Context context, String id, boolean isVisible, String groupName, final int min, final int max, DisplayFieldBlock format) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(format.isHorisontal()?R.layout.selection_field_normal_horizontal:R.layout.selection_field_normal_vertical,null),
 				isVisible,format);
+
+		this.min = min;
+		this.max = max;
 
 		context.registerEventListener(this, Event.EventType.onSave);
 		ll = (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_slider_element,null);
@@ -38,7 +44,18 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+				if (tv!=null)
+					tv.setText(WF_ClickableField_Slider.this.min + progress +"");
+				else {
+					if (!addVarCalled) {
+						if (o!=null) {
+							o.addRow("");
+							o.addRedText("Addvariable was never called on clickablefield " + WF_ClickableField_Slider.this.getId());
+						}
+						Log.e("vortex", "Addvar was never called on clickablefield " + WF_ClickableField_Slider.this.getId());
+					}
+					Log.e("bladda", "tv was null in onProgressChanged");
+				}
 			}
 
 			@Override
@@ -57,8 +74,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		}
 		this.groupName = groupName ;
 
-		this.min = min;
-		this.max = max;
+
 
 		this.format = format;
 
@@ -84,7 +100,15 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 	@Override
 	public void onEvent(Event e) {
-		if (!e.getProvider().equals(getId())) {
+
+		if (myContext.myEndIsNear()) {
+			Log.d("vortex","myendisnear...discarding event in slider");
+			return;
+		}
+		if (getId() == null || !getId().equals(e.getProvider())) {
+			if (getId() == null) {
+				Log.e("gulp","MY ID IS NULL THIS IS NOT GOOD");
+			}
 			Log.d("nils","In onEvent for WF_ClickableField_Slider_OnSave. Provider: "+e.getProvider());
 			//Check that group is not active. If it is, this event should be dropped.
 			if (getGroup()!=null) {
@@ -112,7 +136,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	public void addVariable(final Variable var, boolean displayOut,
 							String format, boolean isVisible, boolean showHistorical) {
 		Integer val=null;
-
+		addVarCalled = true;
 		if (this.var!=null) {
 			Log.e("vortex","only one variable allowed for slider entryfield");
 			String varId = "<null_value_given>";
@@ -167,10 +191,14 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 			this.var=var;
 			//Has to set value for inner view as well.
 			etview = (EditText) myVars.get(var).findViewById(R.id.edit);
-
+			OutC outC = myOutputFields.get(var);
+			LinearLayout ll = outC.view;
+			tv = (TextView)ll.findViewById(R.id.outputValueField);
 
 		} else {
 			Log.e("vortex", "cannot initialize seekbar! empty? " + myVars.isEmpty());
+			o.addRow("");
+			o.addRedText("Cannot initialize seekbar with variable "+var.getId()+".");
 			return;
 		}
 		Log.d("vortex","Calling initialize seekbar for "+var.getId()+" with value "+var.getValue());

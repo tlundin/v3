@@ -499,7 +499,7 @@ public class Tools {
 
 	public static boolean isNumeric(Object num)
 	{
-		Log.d("vortex","isnumeric "+num);
+		//Log.d("vortex","isnumeric "+num);
 		if (num == null)
 			return false;
 		if (num instanceof Double || num instanceof Float || num instanceof Integer)
@@ -509,7 +509,7 @@ public class Tools {
 			if (str==null||str.length()==0)
 				return false;
 			int i=0;
-			Log.d("vortex","isnumeric? str "+str);
+			//Log.d("vortex","isnumeric? str "+str);
 			for (char c : str.toCharArray())
 			{
 
@@ -518,7 +518,7 @@ public class Tools {
 				}
 				i++;
 			}
-			Log.d("vortex","isnumeric yes");
+			//Log.d("vortex","isnumeric yes");
 			return true;
 		} else {
 			System.out.println("isNumeric returns false...not a string: "+num.getClass()+" "+num);

@@ -183,8 +183,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 
 	public void onEvent(Event e) {
-		Log.d("bulla","in event for "+this.getText()+" button is "+button.getClass().getCanonicalName());
-		if (button!=null) {
+		Log.d("bulla","in event for button "+this.getText());
+
+		if (button!=null && !myContext.myEndIsNear()) {
 			button.setText(getText());
 			if (button instanceof WF_StatusButton) {
 				Log.d("bulla","calling refresh for "+this.getText());
@@ -195,11 +196,16 @@ public  class ButtonBlock extends Block  implements EventListener {
 				buttonContext = DB_Context.evaluate(buttonContextE);
 
 		}
+		Log.d("vortex","disregarded event on button");
 	}
 
 	public String getName() {
-		return name;
+		if (name!=null)
+			return name;
+		else
+			return getText();
 	}
+
 	public String getTarget() {
 		return Expressor.analyze(targetE);
 	}
@@ -207,6 +213,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 	public WF_Widget create(final WF_Context myContext) {
 		button = null;
+		this.myContext=myContext;
 		final Context ctx = myContext.getContext();
 		myContext.registerEventListener(this, Event.EventType.onSave);
 		gs = GlobalState.getInstance();

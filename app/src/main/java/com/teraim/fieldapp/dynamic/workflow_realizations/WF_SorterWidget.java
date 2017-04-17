@@ -121,7 +121,7 @@ public class WF_SorterWidget extends WF_Widget {
 						if (row.size()>cIndex) {
 							String sortFacets = row.get(cIndex);
 							if (sortFacets!=null) {
-								String facets[] = sortFacets.split(";");
+								String facets[] = sortFacets.split("\\|");
 								if (facets.length>0) {
 									for (String facet:facets) {
 										Log.d("vortex","Adding facet "+facet);

@@ -3,66 +3,147 @@
 
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\6a96123fd3be58a07e6250df407237ab9289d2e1\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-22.2.0_00e2d6a791c9a23dce88db247b692f57e3ff66ce.jar" />
+        revision="25.0.0"
+        sha1="166e458ee3b5fb5fcff0f936df3f3a788e6c54f3">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_e8d5cf9c1a4e058fcd254866dd8d7e0848e2fb60.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-maps\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\43c137d3c3e6febe58918cd51016429498f1c217\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="cb6fab7a71fa9ec1f483d44c5fca65ab469d8aca">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-maps-7.8.0_8c955ed1e9abf261f7a86508cc5be25062ee05c8.jar" />
+        revision="25.0.0"
+        sha1="b99f0b78bbcb76b915bc6529a83b65d4d46990dd">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_1dec2ddaf20b1a8c11ad284198a85bfa8a5aa199.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-nearby\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\83a8b9939ad114ff2088d68da411bdd566cae3d3\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
         sha1="adebe28e0c0c05d34a3bfd76f3275bf4d8ff87b6">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-nearby-7.8.0_5dceae8eb6fa89d88eda859489f9a6b297f4205d.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_ea90c5ebf80ff9d9c4289f21d37d0dbdac53377e.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\f46e541df2be5d05a4df732b197e6662d19d654c\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
         sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-22.2.0_c1dba3ce33e238c33cf670cb573f19d901b2335c.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_22e70b002b6b4323d90d7b12c81e4450512715c6.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appstate\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\083473be14d0aaf2d78a88ff9b411c6a63fd8f61\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
         sha1="edea92852b40eee716e910af8dad9eeaa58fb0e1">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-appstate-7.8.0_f8579311b3ca40fc13b9c181f74d8b1ccbb4aafc.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_9d5efa7d1135605667cc4f7edd2d738455351724.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-plus\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\a4d9414660926f4a4148288fce2ed228009d912d\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
         sha1="2491ae1b2a848af1f4f0c795f3117c1bd6a1989f">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-plus-7.8.0_0acfe78803f1d5526d760636d9a495f531912280.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_512d62ce093dafddcc44dd244bcd7bf08c84e581.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-panorama\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
+        sha1="1ff30fa49c07a08c3035d7218a3efebf5680d522">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_d53a70494c511bb013bc7a610c2626ef66b27cdb.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\1e39ff30a251371ff784d8740ae1d5ef8db2c603\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="98137c4d12c50923f5809852b1ef4d1c4e162081">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_59abf54d4ba7e52c65a5c1aa79fe2c4999dc63c7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\08d82ac7124e70d271478cc99d835d536cf3826d\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
         sha1="6e85edfc9b5346d216e50ccef1f8e825504144a3">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-panorama-7.8.0_7f898818bcc0858e2bb5459399c44ca237374833.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_22607609d3e94fc7171979b023714a08a281175f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\3d0771eff27e1ffefc3e5a396fe7397b0019bed0\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="2e24e5f1b11170163028277de63f709e42525db4">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_6d80c3939808e38efdbc3ce22d274dd7b80908ec.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\836192f16e810be276522b84f7fa65f5e2d84a9b\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="77a9dcb5f8b1dba36aacaa9c150eb0942dbea158">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_f88208a697d3df08f7296226d3d7e20daf47bd51.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\4ffcb073fd9fe2f781923bfe94d3c2ec909a2e72\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="e23ea11124bb700eeddd4ab7aa848c615f493850">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_584c37478ad5ac327b0ad3e45ebad3e1cb2c173b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\3573b864a68287f264adb6a77de1d1882b2b8ec4\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="42a1ee578b62fd1bd28b3307a679dc9ba0791587">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_3600b0b1f80130b20b962081a86d18ed383e380d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_a942d784319ba1f363d7a1ecfc8048602366ee81.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\52b35290ce84096ca671e2fb82d409989d1d8bf0\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="dcf8c83c3dead00a6c4fe313e95f7aaca20dc641">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_06d4d567b0c08887af2b3df79de6592e5b830542.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\f46e541df2be5d05a4df732b197e6662d19d654c\output\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_d0e06d0200526484d5d694beae3935fcc85f9b8c.jar" />
     </item>
     <item
         is-multidex="false"
@@ -75,39 +156,66 @@
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-vision\7.8.0\jars\classes.jar"
+        jar="D:\Terje\Projects\Vortex\app\libs\achartengine-1.2.0.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="b99f0b78bbcb76b915bc6529a83b65d4d46990dd">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-vision-7.8.0_e11b963b758eba9d086db01e68f2578018e5059c.jar" />
+        revision="25.0.0"
+        sha1="559920bf08a6250aa3d5544cd5856c5f1282ad8c">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\achartengine-1.2.0_59d757ef09ec770f9779a46f4200ae8c50365bc7.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-cast\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="130b32ed466fa0f63efd4c7d6250ccd2ed506790">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-cast-7.8.0_6532a8bc716bb780a6ab598495b2a57c7767b340.jar" />
+        revision="25.0.0"
+        sha1="cb6fab7a71fa9ec1f483d44c5fca65ab469d8aca">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_7be24c59bd7a99dfa4ec0b4cb1add05b0274d25d.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-drive\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="42a1ee578b62fd1bd28b3307a679dc9ba0791587">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-drive-7.8.0_d1b3dd4e42a2cf7010064c145164e3423ea30ddc.jar" />
+        revision="25.0.0"
+        sha1="c0c912d58c9468b1f9d9769c8975afdf2c85d681">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_eb7e8d5f5ac413ffa3ea08d0fc36068446491262.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-games\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\330058bff5a00ba600d21a481c7aacf17cf64875\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="2e24e5f1b11170163028277de63f709e42525db4">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-games-7.8.0_76074b590f349439f2116feddb40b8f6f5dd9119.jar" />
+        revision="25.0.0"
+        sha1="d11330ea68c0d964d30d5caed1f27e6b1488b189">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_305bda524bf890e31e883f87d114c07619ef2fb8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\52b35290ce84096ca671e2fb82d409989d1d8bf0\output\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0632f06970823b7e3436f649bfa65b47035c91d0">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_3d347b42396cf326c832e2b7211faee10c238213.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\1775f41ef398f73b3869f6fc81e70d57453f01c9\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c5cafb324568d954780abb858c25db7ce675ab3c">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_4a709c92d1abd5dfe977cd3f8e3cf82ce3d9382b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c756d14e99d39471e99013a1e8fd2f3813ed42bf">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_b0f7aa3b8d73b01d9513bf4ca8fbfeaf39a37793.jar" />
     </item>
     <item
         is-multidex="false"
@@ -120,138 +228,48 @@
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-fitness\7.8.0\jars\classes.jar"
+        jar="C:\Users\Terje\.android\build-cache\87c70097133982d1cebf68a2a67928d4dd197d42\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
-        sha1="77a9dcb5f8b1dba36aacaa9c150eb0942dbea158">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-fitness-7.8.0_2a0d52b0db2a5c0b9c5b35b2722cb12296a2f6d2.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_8929b778a8981b082fe68ae49e8e494ec2f5f5d9.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wallet\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="c2ac04c5b232f6f0658ee4f1c13be09cd76406e2">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-wallet-7.8.0_4e7c580c99f461e189462e82b4c897607d5df2bf.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-gcm\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="c756d14e99d39471e99013a1e8fd2f3813ed42bf">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-gcm-7.8.0_2736a6041aadd87084040cdeac0bf0d70f1cb735.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-safetynet\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="166e458ee3b5fb5fcff0f936df3f3a788e6c54f3">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-safetynet-7.8.0_c36409102b72e9e56e2714363beec1fee07f429b.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-identity\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="d11330ea68c0d964d30d5caed1f27e6b1488b189">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-identity-7.8.0_1361c3b6252adace0c5e22949e52924651e6dfd4.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appinvite\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="98137c4d12c50923f5809852b1ef4d1c4e162081">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-appinvite-7.8.0_dd6c4bbb8bca148476d63045e2cf94a8f6526155.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-ads\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="1ff30fa49c07a08c3035d7218a3efebf5680d522">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-ads-7.8.0_f0311aa0e6504e91394870a13a0800e461ed8c48.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-appindexing\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="e23ea11124bb700eeddd4ab7aa848c615f493850">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-appindexing-7.8.0_f1c84c892ae194fe6196ac756bb37a71d7bf3e91.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-base\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="c0c912d58c9468b1f9d9769c8975afdf2c85d681">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-base-7.8.0_53bda52d807bfbfe7801d18d0dd1ba2902c2eade.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-location\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
         sha1="4a135d56554069e5d0ff80e3220e887e57146ee5">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-location-7.8.0_d35d551ea4baed3030b4be39fb46646ec37c80fc.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_b0cc04eefb27300258b7261c0521179b9c379211.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-analytics\7.8.0\jars\classes.jar"
+        jar="D:\Apps\adt\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
         jumboMode="false"
         optimize="true"
-        revision="21.1.2"
+        revision="25.0.0"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.0_8da03e279d3800cda7f8b2500e594e042cd2e75f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="c2ac04c5b232f6f0658ee4f1c13be09cd76406e2">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_710f120dcd8fb2622732f7c23b80398dd19e9a09.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\586ae24c03687c703ff8cf2b4b44539df31e3641\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="130b32ed466fa0f63efd4c7d6250ccd2ed506790">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_0f597b83b1681d013dbf87d0530d5750cbcdfe2d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\984d766bf52dbcc923cc1f0ded50310f67950c2e\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
         sha1="0124ce31248c0e8acfa2b28283c6d1a4d76e73d2">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-analytics-7.8.0_b35ce027e030cc93d96dfb4d12c4f971bd7e674b.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.google.android.gms\play-services-wearable\7.8.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="c5cafb324568d954780abb858c25db7ce675ab3c">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.google.android.gms-play-services-wearable-7.8.0_891516d2092345ec964efd23cbed7780117d51e9.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.android.support\mediarouter-v7\22.2.0\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="dcf8c83c3dead00a6c4fe313e95f7aaca20dc641">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\com.android.support-mediarouter-v7-22.2.0_911bcc73fe80d68a70d518122b5b1cd1f43c510b.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="D:\Terje\Projects\Vortex\app\build\intermediates\exploded-aar\com.android.support\mediarouter-v7\22.2.0\jars\libs\internal_impl-22.2.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="21.1.2"
-        sha1="0632f06970823b7e3436f649bfa65b47035c91d0">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_fb688332e1e6203702d8ba52f96e2325d242a14b.jar" />
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_8e738b58c66d3d1ef69f0826d98174873f1f1f86.jar" />
     </item>
 
 </items>

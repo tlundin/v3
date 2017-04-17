@@ -41,26 +41,27 @@ public class ConditionalContinuationBlock extends Block {
     }
     
 	public boolean evaluate() {
-			//assume fail
-			int eval=STOP;
-			if (exprE!=null && exprE.size()==1) {
-				Boolean result = Expressor.analyzeBooleanExpression(exprE.get(0));
-			if (result!=null) { 
-				if (result==true) {
-						Log.d("nils","Evaluates to true");
-						eval=NEXT;
+		//assume fail
+		int eval = STOP;
+		if (exprE != null && exprE.size() == 1) {
+			Boolean result = Expressor.analyzeBooleanExpression(exprE.get(0));
+			if (result != null) {
+				if (result == true) {
+					Log.d("nils", "Evaluates to true..continue to next block");
+					eval = NEXT;
 				} else {
-						eval=JUMP;
-						Log.d("nils","Evaluates to false");
-					}
+					eval = JUMP;
+					Log.d("nils", "Evaluates to false..jump to " + elseID);
 				}
+
 			} else {
-				Log.e("vortex","Stopped on block "+this.getBlockId()+" due to null eval");
-				eval=STOP;
+				Log.e("vortex", "Stopped on block " + this.getBlockId() + " due to null eval");
+				eval = STOP;
 			}
-			
+		}
+
 		
-		boolean ret = lastEval==null?true:eval!=lastEval;
+		boolean ret = lastEval==null?false:eval!=lastEval;
 		lastEval = eval;
 		return ret;
 	}

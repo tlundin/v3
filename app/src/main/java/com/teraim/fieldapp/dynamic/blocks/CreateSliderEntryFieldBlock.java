@@ -42,6 +42,10 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 		this.variableName = variableName;
 		this.min=min;
 		this.max=max;
+		if (name==null || name.isEmpty()) {
+			this.name = id;
+		}
+
 	}
 
 	/**

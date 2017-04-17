@@ -20,7 +20,12 @@ public class WF_ClickableField_Selection_OnSave extends WF_ClickableField_Select
 
 	@Override
 	public void onEvent(Event e) {
-		if (!e.getProvider().equals(getId())) {
+		if (myContext.myEndIsNear()) {
+			Log.d("vortex","Disregarding onsave due to ongoing reexecute.");
+			return;
+		}
+
+		if (!getId().equals(e.getProvider())) {
 			Log.d("nils","In onEvent for WF_ClickableField_Selection_OnSave. Provider: "+e.getProvider());
 			if (iAmOpen)
 				refreshInputFields();

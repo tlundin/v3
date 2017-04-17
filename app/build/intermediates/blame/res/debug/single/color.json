@@ -1,39 +1,39 @@
 [
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_disable_only_material_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_primary_text_disable_only_material_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_primary_text_disable_only_material_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_disable_only_material_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_primary_text_disable_only_material_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_primary_text_disable_only_material_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_secondary_text_material_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_secondary_text_material_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\switch_thumb_material_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\switch_thumb_material_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_search_url_text.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_search_url_text.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_search_url_text.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\switch_thumb_material_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\switch_thumb_material_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\switch_thumb_material_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\common_signin_btn_text_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\color\\common_signin_btn_text_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\a3cad375b1966347952f3c8e06fddb5067d8efb0\\output\\res\\color\\common_signin_btn_text_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\common_signin_btn_text_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-base\\7.8.0\\res\\color\\common_signin_btn_text_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\a3cad375b1966347952f3c8e06fddb5067d8efb0\\output\\res\\color\\common_signin_btn_text_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\wallet_primary_text_holo_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-wallet\\7.8.0\\res\\color\\wallet_primary_text_holo_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\65a53ac8f78f0951798538c0170f584dfebe8321\\output\\res\\color\\wallet_primary_text_holo_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\toggle_color.xml",
@@ -41,18 +41,18 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_light.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_primary_text_material_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_primary_text_material_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\wallet_secondary_text_holo_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.google.android.gms\\play-services-wallet\\7.8.0\\res\\color\\wallet_secondary_text_holo_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\65a53ac8f78f0951798538c0170f584dfebe8321\\output\\res\\color\\wallet_secondary_text_holo_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_primary_text_material_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_primary_text_material_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_primary_text_material_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\color\\abc_secondary_text_material_dark.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.0\\res\\color\\abc_secondary_text_material_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\color\\abc_secondary_text_material_dark.xml"
     }
 ]

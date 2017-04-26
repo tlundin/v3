@@ -27,7 +27,8 @@ public class Workflow implements Serializable {
 	private String name,applicationName,applicationVersion;
 	private DB_Context mContext=null;
 	//Extended context.
-
+	private int blockP = 0;
+	private PageDefineBlock myPDefBl = null;
 
 
 	public Workflow() {
@@ -50,6 +51,18 @@ public class Workflow implements Serializable {
 		return ret;
 	}
 
+	public void saveBlockPointer(int blockP) {
+		this.blockP=blockP;
+	}
+
+	//If this is a sub workflow, inherit pagedefineblock from parent.
+	public void setPageDefineBlock(PageDefineBlock p) {
+		myPDefBl = p;
+	}
+	public int getBlockPointer() {
+		return blockP;
+	}
+
 	public void addBlocks(List<Block> _blocks) {
 		blocks = _blocks;
 	}
@@ -64,19 +77,20 @@ public class Workflow implements Serializable {
 	}
 
 	public String getLabel() {
-
-		if (blocks!=null && blocks.size()>1 && blocks.get(1) instanceof PageDefineBlock)
-				return ((PageDefineBlock)blocks.get(1)).getPageLabel();
-		else
-				return "";
+		if (myPDefBl==null)
+			getMyPageDefineBlock();
+		if (myPDefBl!=null)
+			return myPDefBl.getPageLabel();
+		return null;
 	}
 
 
 
 	public boolean isBackAllowed() {
-		if (blocks!=null && blocks.size()>1 && blocks.get(1) instanceof PageDefineBlock)
-			return ((PageDefineBlock)blocks.get(1)).goBackAllowed();
-
+		if (myPDefBl==null)
+			getMyPageDefineBlock();
+		if (myPDefBl!=null)
+			return myPDefBl.goBackAllowed();
 		Log.e("vortex","failed to find pagedefineblock");
 		return true;
 	}
@@ -97,15 +111,31 @@ public class Workflow implements Serializable {
 	}
 
 	public String getTemplate() {
-		for (Block b:blocks) {
-			if (b instanceof PageDefineBlock) {
-				PageDefineBlock bl = (PageDefineBlock)b;
-				return bl.getPageType();
-			}
-		}
-		Log.d("vortex","Could not find a PageDefineBlock for workflow "+this.getName());
-
+		if (myPDefBl==null)
+			getMyPageDefineBlock();
+		if (myPDefBl!=null)
+			return myPDefBl.getPageType();
+		Log.d("vortex", "Could not find a PageDefineBlock for workflow " + this.getName());
 		return null;
+	}
+
+
+    boolean called = false;
+	public PageDefineBlock getMyPageDefineBlock() {
+		if (called)
+			return myPDefBl;
+
+			Log.d("vortex","In getmypagedefine with "+blocks.size()+" blocks.");
+			for (Block b : blocks) {
+				if (b instanceof PageDefineBlock) {
+					myPDefBl = (PageDefineBlock) b;
+
+				} else Log.d("vortex","not pagedefine: "+b.getClass().getName());
+			}
+
+		Log.d("brexit","getMyPageDefine returns null? "+(myPDefBl==null));
+		called = true;
+		return myPDefBl;
 	}
 
 

@@ -4,10 +4,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\provytadeletemenu.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\directory_chooser.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\net.rdrei.android.dirchooser\\library\\3.2\\res\\menu\\directory_chooser.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\tagpopmenu.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\tagpopmenu.xml"
     },

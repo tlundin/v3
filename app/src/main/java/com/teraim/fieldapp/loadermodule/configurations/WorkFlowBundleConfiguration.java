@@ -17,6 +17,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
 import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
@@ -323,6 +324,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockDeleteMatchingVariables(parser));
 				else if (name.equals("block_no_op"))
 					blocks.add(readBlockNoOp(parser));
+				else if (name.equals("block_go_sub"))
+					blocks.add(readBlockGoSub(parser));
 				else if (name.equals("block_define_coupled_variable_group"))
 					blocks.add(readBlockSliderGroup(parser));
 				else {			
@@ -387,6 +390,35 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 		checkForNull("block_ID",id);
 		return new CoupledVariableGroupBlock(id,groupName,function,arguments,delay);
+
+	}
+
+	private Block readBlockGoSub(XmlPullParser parser) throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_go_sub...");
+		String id=null,label=null,target=null,pattern=null;
+
+
+		parser.require(XmlPullParser.START_TAG, null,"block_go_sub");
+		Log.d("vortex","Parsing block_go_sub!!");
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name= parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID",parser);
+			} else if (name.equals("target")) {
+				target = readText("target",parser);
+			}
+			else {
+
+				Log.e("vortex","Skipped "+name);
+				skip(name,parser);
+			}
+		}
+
+		checkForNull("block_ID",id);
+		return new BlockGoSub(id,target);
 
 	}
 

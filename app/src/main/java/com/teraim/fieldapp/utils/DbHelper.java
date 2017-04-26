@@ -2178,7 +2178,9 @@ public class DbHelper extends SQLiteOpenHelper {
             String[] keyValue = pair.split("=");
             if (keyValue != null && keyValue.length == 2) {
                 column = realColumnNameToDB.get(keyValue[0]);
+                Log.d("vortex","column: "+column+" value: "+keyValue[1]);
                 if (Constants.NOT_NULL.equals(keyValue[1])) {
+                    Log.d("vortex","match for NN!");
                     delStmt.append(column + " IS NOT NULL");
                     //erase in cache will erase all keys containing pairs that have value.
                     exact = false;
@@ -2199,8 +2201,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         valuesA = values.toArray(new String[values.size()]);
         Log.d("vortex", "Delete statement is now " + delStmt);
-        Log.d("vortex", "VALUES:");
-        Log.d("vortex", print(valuesA));
+        Log.d("vortex", "VALUES:"+print(valuesA));
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         Log.d("vortex", "Deleted rows count: " + affected);
         //Invalidate affected cache variables

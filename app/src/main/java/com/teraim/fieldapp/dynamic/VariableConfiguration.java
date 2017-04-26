@@ -65,7 +65,7 @@ public class VariableConfiguration implements Serializable {
 		validateAndInit();
 	}
 
-	public ErrorCode validateAndInit() {
+	private ErrorCode validateAndInit() {
 		fromNameToColumn = new HashMap<String,Integer>();
 		for (String c:requiredColumns) {
 			int tableIndex = myTable.getColumnIndex(c);
@@ -237,12 +237,12 @@ public class VariableConfiguration implements Serializable {
 	public String getEntryLabel(List<String> row) {
 		if (row == null)
 			return null;
-		String  res= myTable.getElement("Label", row);
+		String  res= myTable.getElement(Col_Group_Label, row);
 		//If this is a non-art variable, use varlabel instead.
 		if (res==null) {
-			Log.d("vortex","failed to find value for column Label. Will use varlabel "+this.getVarLabel(row)+" instead.");
+			Log.d("vortex","failed to find value for column "+Col_Group_Label+ ". Will use varlabel "+this.getVarLabel(row)+" instead.");
 			gs.getLogger().addRow("");
-			gs.getLogger().addYellowText("failed to find value for column Label. Will use varlabel "+this.getVarLabel(row)+" instead.");
+			gs.getLogger().addYellowText("failed to find value for column "+Col_Group_Label+ ". Will use variable label "+this.getVarLabel(row)+" instead.");
 			res =this.getVarLabel(row);
 		}
 		if (res == null)
@@ -251,7 +251,7 @@ public class VariableConfiguration implements Serializable {
 	}
 
 	public String getDescription(List<String> row) {
-		String b = myTable.getElement("Description", row);
+		String b = myTable.getElement(Col_Group_Description, row);
 		if(b==null) 
 			b = this.getVariableDescription(row);
 

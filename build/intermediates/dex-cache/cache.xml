@@ -21,21 +21,21 @@
     </item>
     <item
         is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\2cd7c3c486b8416ac95c5c5227b5f0000040a972\output\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_6d02726122f7b8e0370c477c299222665f6eb23b.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="C:\Users\Terje\.android\build-cache\83a8b9939ad114ff2088d68da411bdd566cae3d3\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="adebe28e0c0c05d34a3bfd76f3275bf4d8ff87b6">
         <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_ea90c5ebf80ff9d9c4289f21d37d0dbdac53377e.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\Terje\.android\build-cache\f46e541df2be5d05a4df732b197e6662d19d654c\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_22e70b002b6b4323d90d7b12c81e4450512715c6.jar" />
     </item>
     <item
         is-multidex="false"
@@ -120,33 +120,6 @@
     </item>
     <item
         is-multidex="false"
-        jar="C:\Users\Terje\.android\build-cache\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_a942d784319ba1f363d7a1ecfc8048602366ee81.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\Terje\.android\build-cache\52b35290ce84096ca671e2fb82d409989d1d8bf0\output\jars\classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="dcf8c83c3dead00a6c4fe313e95f7aaca20dc641">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_06d4d567b0c08887af2b3df79de6592e5b830542.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\Terje\.android\build-cache\f46e541df2be5d05a4df732b197e6662d19d654c\output\jars\libs\internal_impl-22.2.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_d0e06d0200526484d5d694beae3935fcc85f9b8c.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="D:\Terje\Projects\Vortex\app\libs\achartengine-1.2.0.jar"
         jumboMode="false"
         optimize="true"
@@ -174,6 +147,15 @@
     </item>
     <item
         is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_23045aeadea7bf9e2a0a4082b845c80c8ebb1006.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
@@ -183,21 +165,21 @@
     </item>
     <item
         is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\59537ed2e7ed907276e3a2236f163ae52d90fc5e\output\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="0632f06970823b7e3436f649bfa65b47035c91d0">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_cf55d0789792ea76ddefa2b440df2a6b3ed50d25.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="C:\Users\Terje\.android\build-cache\330058bff5a00ba600d21a481c7aacf17cf64875\output\jars\classes.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="d11330ea68c0d964d30d5caed1f27e6b1488b189">
         <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_305bda524bf890e31e883f87d114c07619ef2fb8.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\Terje\.android\build-cache\52b35290ce84096ca671e2fb82d409989d1d8bf0\output\jars\libs\internal_impl-22.2.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="0632f06970823b7e3436f649bfa65b47035c91d0">
-        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.0_3d347b42396cf326c832e2b7211faee10c238213.jar" />
     </item>
     <item
         is-multidex="false"
@@ -219,12 +201,30 @@
     </item>
     <item
         is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\59537ed2e7ed907276e3a2236f163ae52d90fc5e\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="dcf8c83c3dead00a6c4fe313e95f7aaca20dc641">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_0f7ba847dab01046222b19abd00e63a981e5ee53.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="D:\Apps\adt\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
         jumboMode="false"
         optimize="true"
         revision="21.1.2"
         sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
         <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.0_8da03e279d3800cda7f8b2500e594e042cd2e75f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\Terje\.android\build-cache\2cd7c3c486b8416ac95c5c5227b5f0000040a972\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="D:\Terje\Projects\Vortex\app\build\intermediates\pre-dexed\debug\classes_90cc9b74b7ed22b5480919b8a0133fd7c6f17cf1.jar" />
     </item>
     <item
         is-multidex="false"

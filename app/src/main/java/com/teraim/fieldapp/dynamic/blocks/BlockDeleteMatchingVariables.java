@@ -58,7 +58,7 @@ public class BlockDeleteMatchingVariables extends Block {
 			}
 			int rowsAffected = GlobalState.getInstance().getDb().erase(keyBuilder.toString(),pattern);
 			if (rowsAffected>0) {
-				Log.d("vortex",("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + hash + "] and pattern [" + keyBuilder.toString() + "]"));
+				Log.d("vortex",("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + keyBuilder + "] and pattern [" + pattern + "]"));
 				o.addRow("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + hash + "] and pattern [" + keyBuilder.toString() + "]");
 			}
 			else {

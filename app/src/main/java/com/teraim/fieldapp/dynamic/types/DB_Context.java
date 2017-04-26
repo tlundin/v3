@@ -115,7 +115,7 @@ public class DB_Context implements Serializable {
 								} 
 								
 								for (char c:val.toCharArray()) {
-									if(!Character.isLetterOrDigit(c) && c!='-' && c!='_') {
+									if(!Character.isLetterOrDigit(c) && c!='-' && c!='_' && c!='*') {
 										if (c == '?') {
 											hasWildCard=true;
 										} else {

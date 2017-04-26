@@ -25,7 +25,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	private int min,max;
 	private EditText etview;
 	private TextView tv;
-	private boolean addVarCalled = false;
+	//private boolean addVarCalled = false;
 
 
 	@SuppressWarnings("WrongConstant")
@@ -46,16 +46,18 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				if (tv!=null)
 					tv.setText(WF_ClickableField_Slider.this.min + progress +"");
+				/*
 				else {
 					if (!addVarCalled) {
 						if (o!=null) {
 							o.addRow("");
-							o.addRedText("Addvariable was never called on clickablefield " + WF_ClickableField_Slider.this.getId());
+							o.addRedText("Variable not added to entry field. Could you be missing 'block_add_variable_to_entry_field' on clickablefield " + WF_ClickableField_Slider.this.getId());
 						}
 						Log.e("vortex", "Addvar was never called on clickablefield " + WF_ClickableField_Slider.this.getId());
 					}
 					Log.e("bladda", "tv was null in onProgressChanged");
 				}
+				*/
 			}
 
 			@Override
@@ -136,7 +138,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	public void addVariable(final Variable var, boolean displayOut,
 							String format, boolean isVisible, boolean showHistorical) {
 		Integer val=null;
-		addVarCalled = true;
+
 		if (this.var!=null) {
 			Log.e("vortex","only one variable allowed for slider entryfield");
 			String varId = "<null_value_given>";

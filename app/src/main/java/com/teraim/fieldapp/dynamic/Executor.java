@@ -30,6 +30,7 @@ import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
+import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
 import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
@@ -115,6 +116,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	protected final Map<Rule,Boolean>executedRules = new LinkedHashMap<Rule,Boolean>();	
 
 	protected List<Rule> rules = new ArrayList<Rule>();
+	private List<Workflow> wfStack;
 
 	public WF_Context getCurrentContext() {
 		return myContext;
@@ -349,9 +351,26 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			while(notDone) {
 
 				if (blockP>=blocks.size()) {
-					notDone=false;
+
 					Log.d("vortex","EXECUTION STOPPED ON BLOCK "+(blockP-1));
-					break;
+					if (wfStack!=null) {
+						wf = wfStack.remove(wfStack.size()-1);
+						if (wf==null)
+							Log.e("brexit","WF IS NULL AFTER STACK POP IN EXECUTOR");
+						else {
+							if (wfStack.isEmpty())
+								wfStack = null;
+
+							blockP = wf.getBlockPointer()+1;
+							blocks = wf.getCopyOfBlocks();
+							Log.d("vortex","popped to wf "+wf.getName()+" blockP is now "+blockP);
+							continue;
+						}
+					} else {
+						notDone=false;
+						Log.d("brexit", "wfStack was empty - exiting");
+						break;
+					}
 				}
 				Block b = blocks.get(blockP);
 				Log.d("vortex","In execute with block "+b.getClass().getSimpleName()+" ID: "+b.getBlockId());
@@ -525,9 +544,32 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					bl.create(myContext);
 
 				}
+
 				else if (b instanceof NoOpBlock) {
 					o.addRow("");
 					o.addYellowText("Noopblock found and skipped! "+b.getBlockId());
+				}
+				else if (b instanceof BlockGoSub) {
+					o.addRow("");
+					o.addYellowText("BlockGoSub found "+b.getBlockId());
+					String target = ((BlockGoSub)b).getTarget();
+					Log.d("vortex","TARGET: "+target);
+					if (target!=null) {
+						Workflow sub = gs.getWorkflow(target);
+						if (sub!=null) {
+							Log.d("vortex","Executing gosub to "+target);
+							if (wfStack==null)
+								wfStack = new ArrayList<Workflow>();
+							wfStack.add(wf);
+							wf.saveBlockPointer(blockP);
+							sub.setPageDefineBlock(wf.getMyPageDefineBlock());
+							wf = sub;
+							blockP = 0;
+							blocks = sub.getCopyOfBlocks();
+
+						}
+					}
+
 				}
 				else if (b instanceof JumpBlock) {
 					o.addRow("");

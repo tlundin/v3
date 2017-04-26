@@ -1,7 +1,7 @@
 [
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_list_selector_holo_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_list_selector_holo_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_object_menu_button.png",
@@ -13,7 +13,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_tab_indicator_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_tab_indicator_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_icon_divider.xml",
@@ -29,7 +29,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_edit_text_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_edit_text_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_edit_text_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_icon_light.xml",
@@ -37,15 +37,11 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_switch_thumb_material.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\borderless_button.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\exploded-aar\\net.rdrei.android.dirchooser\\library\\3.2\\res\\drawable\\borderless_button.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_switch_thumb_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_pause_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_pause_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_pause_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\my_location.png",
@@ -81,31 +77,31 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_internal_bg.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_cab_background_internal_bg.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_cab_background_internal_bg.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_text_dark.xml",
         "source": "C:\\Users\\Terje\\.android\\build-cache\\a3cad375b1966347952f3c8e06fddb5067d8efb0\\output\\res\\drawable\\common_signin_btn_text_dark.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_cab_background_top_material.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_ready.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_ready.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_cab_background_top_material.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_cab_background_top_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\poly.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\poly.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\fixpunkt.png",
@@ -137,7 +133,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_play_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_play_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_play_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_plus_menu_button_pressed.png",
@@ -149,7 +145,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_dialog_material_background_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_dialog_material_background_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\frontpic.jpg",
@@ -165,15 +161,15 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_settings_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_settings_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_settings_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_play_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_play_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_play_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_textfield_search_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_textfield_search_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_textfield_search_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\bt.png",
@@ -189,11 +185,11 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_full_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_ratingbar_full_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_ratingbar_full_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_item_background_holo_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_item_background_holo_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\inset_toggle.xml",
@@ -201,11 +197,11 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_check_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_btn_check_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_btn_check_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_btn_radio_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_btn_radio_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\case_no_pic.png",
@@ -213,19 +209,19 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_spinner_textfield_background_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_spinner_textfield_background_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_spinner_textfield_background_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_dialog_material_background_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_dialog_material_background_light.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_item_background_holo_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_dialog_material_background_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\checkmark.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\checkmark.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_item_background_holo_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\border.xml",
@@ -233,7 +229,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_pause_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_pause_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_pause_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\gis_menu_button.png",
@@ -241,7 +237,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\transparent_object_menu_pop_bg.xml",
@@ -257,7 +253,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\insync.png",
@@ -265,27 +261,23 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_settings_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_settings_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_settings_dark.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_dark.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_dark.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_btn_borderless_material.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_btn_borderless_material.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_holo_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_list_selector_holo_light.xml"
-    },
-    {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_text_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\a3cad375b1966347952f3c8e06fddb5067d8efb0\\output\\res\\drawable\\common_signin_btn_text_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_list_selector_holo_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\zoom.png",
@@ -296,8 +288,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\profil.png"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_text_light.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\a3cad375b1966347952f3c8e06fddb5067d8efb0\\output\\res\\drawable\\common_signin_btn_text_light.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_list_selector_background_transition_holo_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\248ad9cbbcfaedd81e7ac65917b5fcfe30ed7580\\output\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\stroke_bg.xml",
@@ -309,7 +305,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_mono_light.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_media_route_mono_light.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_mono_light.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_signin_btn_icon_dark.xml",
@@ -321,7 +317,7 @@
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_mono_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\52b35290ce84096ca671e2fb82d409989d1d8bf0\\output\\res\\drawable\\mr_ic_media_route_mono_dark.xml"
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_mono_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\ruta_listview_bg_key.xml",

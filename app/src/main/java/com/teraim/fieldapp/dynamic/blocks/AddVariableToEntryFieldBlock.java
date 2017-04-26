@@ -49,7 +49,11 @@ public class AddVariableToEntryFieldBlock extends Block {
 			if (var!=null) {
 				myField.addVariable(var, displayOut, format,isVisible,showHistorical);
 				return var;
+			} else {
+				o.addRow("");
+				o.addRedText("Couldn't find Variable with name "+namn+" in AddVariableToEntryBlock" );
 			}
+
 		}
 		return null;
 	}

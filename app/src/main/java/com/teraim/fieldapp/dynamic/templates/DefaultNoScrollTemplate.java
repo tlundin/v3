@@ -61,7 +61,8 @@ public class DefaultNoScrollTemplate extends Executor {
 //		my_pie = (LinearLayout)v.findViewById(R.id.pieRoot);
 		if (myContext != null )
 			myContext.addContainers(getContainers());
-		
+		else
+			Log.e("brexit","mycontext was null! Couldnt add containers");
 		
 		if (wf!=null) {
 			Log.d("vortex","Executing workflow!!");

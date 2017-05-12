@@ -301,7 +301,13 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	 * Execute the workflow.
 	 */
 	protected void run() {
-		String wfLabel = wf.getLabel();
+		//If a stack exists, discard it.
+		if (wfStack!=null) {
+			if (!wfStack.isEmpty())
+				wf = wfStack.get(0);
+			wfStack=null;
+		}
+ 		String wfLabel = wf.getLabel();
 		o.addRow("");
 		o.addRow("");
 		o.addRow("*******EXECUTING: "+wfLabel);
@@ -336,6 +342,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		visiVars = new HashSet<Variable>();
 		//LinearLayout my_root = (LinearLayout) findViewById(R.id.myRoot);		
 		blocks = wf.getCopyOfBlocks();
+		jump.clear();
 		Log.d("vortex","*******EXECUTING: "+wf.getLabel());
 		Log.d("vortex","myHash: "+wfHash);
 		execute(0);

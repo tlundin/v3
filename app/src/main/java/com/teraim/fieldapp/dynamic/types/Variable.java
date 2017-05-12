@@ -22,7 +22,7 @@ import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
 /**
- * 
+ *
  * @author Terje
  * Variable Class. Part of Vortex core.
  * Copyright Teraim Holding. 
@@ -30,11 +30,11 @@ import com.teraim.fieldapp.utils.Tools.Unit;
  */
 
 public class Variable implements Serializable {
-	
+
 	private static final long serialVersionUID = 6239650487891494128L;
-	
-   
-	
+
+
+
 	Map<String, String> keyChain = new HashMap <String,String>();
 	Map<String,String> histKeyChain=null;
 	//String value=null;
@@ -73,9 +73,9 @@ public class Variable implements Serializable {
 	protected boolean iAmOutOfRange=false;
 
 	protected String iAmPartOfKeyChain=null;
-	
+
 	protected String myHistory = null;
-	
+
 	protected boolean historyChecked = false;
 
 	protected Long timeStamp=null;
@@ -120,31 +120,31 @@ public class Variable implements Serializable {
 			//refreshRuleState();
 		}
 		//Log.d("nils","Getvalue returns "+myValue+" for "+this.getId());
-		if (myType == DataType.bool && myValue !=null ) 
+		if (myType == DataType.bool && myValue !=null )
 			return boolValue(myValue);
 		return myValue;
 	}
 
 	public String getHistoricalValue() {
 		if (!historyChecked) {
-			
-		if (keyChain == null || keyChain.get(VariableConfiguration.KEY_YEAR)==null) {
-			Log.d("nils","historical keychain is null. Should contain year at least.");
-			return null;
-		}
-		if (histKeyChain == null) {
-			histKeyChain = new HashMap<String,String>(keyChain);
-			histKeyChain.put(VariableConfiguration.KEY_YEAR, Constants.HISTORICAL_TOKEN_IN_DATABASE);
-			Log.d("nils","My historical keychain: "+histKeyChain.toString()+" my name: "+name);
-			histSelection = myDb.createSelection(histKeyChain,name);
-		}
 
-		myHistory= myDb.getValue(name,histSelection,myValueColumn);
-		
-		historyChecked = true;
-		
+			if (keyChain == null || keyChain.get(VariableConfiguration.KEY_YEAR)==null) {
+				Log.d("nils","historical keychain is null. Should contain year at least.");
+				return null;
+			}
+			if (histKeyChain == null) {
+				histKeyChain = new HashMap<String,String>(keyChain);
+				histKeyChain.put(VariableConfiguration.KEY_YEAR, Constants.HISTORICAL_TOKEN_IN_DATABASE);
+				Log.d("nils","My historical keychain: "+histKeyChain.toString()+" my name: "+name);
+				histSelection = myDb.createSelection(histKeyChain,name);
+			}
+
+			myHistory= myDb.getValue(name,histSelection,myValueColumn);
+
+			historyChecked = true;
+
 		}
-		if (myHistory !=null && myType == DataType.bool) 
+		if (myHistory !=null && myType == DataType.bool)
 			return boolValue(myHistory);
 		if (myHistory !=null)
 			Log.d("vortex","getHistoricalValue returns "+myHistory+" for "+this.getId());
@@ -168,13 +168,13 @@ public class Variable implements Serializable {
 	 */
 
 	//return true if change.
-	
+
 	private String boolValue(String myValue) {
 		if (myValue.equals("1"))
 			return "true";
 		else if (myValue.equals("0"))
-				return "false";
-		
+			return "false";
+
 		return myValue;
 	}
 
@@ -184,12 +184,12 @@ public class Variable implements Serializable {
 		if (value==null)
 			return false;
 		if (!usingDefault && myValue != null && myValue.equals(value))
-				return false;
+			return false;
 		if (this.iAmOutOfRange) {
 			Log.d("vortex","Out of range. Value not stored!");
 			return false;
 		}
-			
+
 		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext());
 		value = Tools.removeStartingZeroes(value);
 		myValue = value;
@@ -200,7 +200,7 @@ public class Variable implements Serializable {
 			Log.d("vortex","chopped of .0 in setvalue: "+value);
 		}
 		if (this.getType()==DataType.bool) {
-			
+
 			if (value.equals("true"))
 				value = "1";
 			else if (value.equals("false"))
@@ -209,8 +209,8 @@ public class Variable implements Serializable {
 				Log.e("vortex","This is not a boolean value: "+value);
 				return false;
 			}
-				
-		} 
+
+		}
 		//will change keyset as side effect if valueKey variable.
 		//reason for changing indirect is that old variable need to be erased. 
 		insert(value,isSynchronized);
@@ -221,13 +221,13 @@ public class Variable implements Serializable {
 		usingDefault = false;
 		return true;
 	}
-	
+
 	public void setOnlyCached(String value) {
 		unknown=false;
-		value = Tools.removeStartingZeroes(value);		
+		value = Tools.removeStartingZeroes(value);
 		myValue=value;
 		Log.d("zzzz","myValue in setOnlyCached "+myValue);
-		
+
 	}
 	//Force fetch from db next get.
 	public void revert() {
@@ -244,7 +244,7 @@ public class Variable implements Serializable {
 		return isSynchronizedNext;
 	}
 	protected void insert(final String value,
-			final boolean isSynchronized) {
+						  final boolean isSynchronized) {
 		//Insert into database at some point in time.
 		this.isSynchronizedNext= isSynchronized;
 		//gs.getVariableCache().save(this);
@@ -311,22 +311,26 @@ public class Variable implements Serializable {
 		//Log.d("zaxx","Creating variable ["+name+"] with keychain "+((keyChain==null)?"null":keyChain.toString())+"\nvalueIsPersisted?"+valueIsPersisted+" default value: "+defaultOrExistingValue);
 		this.gs=gs;
 		al=gs.getVariableConfiguration();
-		this.name = name;
+
 		if (name==null)
 			Log.e("zaxx","NULL NAME FOR "+label);
 		if (row!=null) {
+			String oldName = name;
+			name = al.getVarName(row);
+			Log.d("plax","name now: "+name+" previous: "+oldName);
 			myRow = row;
-			myType = al.getnumType(row);		
+			myType = al.getnumType(row);
 			myStringUnit = al.getUnit(row);
 			isSynchronized = al.isSynchronized(row);
 			//check for rules on type level.
 			addRules(al.getDynamicLimitExpression(row));
 			String limitDesc = al.getLimitDescription(row);
-			if (limitDesc!=null&&limitDesc.length()>0) 
-				myFilter = FilterFactory.getInstance(gs.getContext()).createLimitFilter(this,limitDesc);	
-		} else 
+			if (limitDesc!=null&&limitDesc.length()>0)
+				myFilter = FilterFactory.getInstance(gs.getContext()).createLimitFilter(this,limitDesc);
+		} else
 			Log.d("nils","Parameter ROW was null!!");
-		this.keyChain=keyChain;		
+		this.name = name;
+		this.keyChain=keyChain;
 		myDb = gs.getDb();
 		mySelection = myDb.createSelection(keyChain,name);
 		myLabel = label;
@@ -339,7 +343,7 @@ public class Variable implements Serializable {
 			//Log.e("vortex","Historicalvaluefor "+this.getId()+" is "+historicalValue+" varObj: "+this.toString());
 			historyChecked=true;
 			myHistory = historicalValue;
-			
+
 			if (historicalValue.equals("*NULL*")) {
 				//Log.e("vortex","Historicalvaluefor "+this.getId()+" is "+historicalValue+" varObj: "+this.toString());
 				myHistory = null;
@@ -362,17 +366,17 @@ public class Variable implements Serializable {
 				//Log.d("nils","Creating variable "+this.getId()+". Variable is not persisted: "+myValue);
 				usingDefault = true;
 			}
-		} 
-			
+		}
+
 		if (keyChain!=null && keyChain.containsKey(valueColumn)) {
 			Log.e("vortex","Variable value column in keyset for valcol "+valueColumn+" varid "+name);
 			isKeyVariable=true;
 		}
-		
+
 		//Log.d("vortex","unknown? "+unknown);
 	}
 
-	
+
 
 
 	public void deleteValue() {
@@ -382,7 +386,7 @@ public class Variable implements Serializable {
 		unknown = false;
 		usingDefault = false;
 	}
-	
+
 	public void deleteValueNoSync() {
 		myDb.deleteVariable(name,mySelection,false);
 		//Log.d("zzzz","myValue null in DeleteValueNoS");
@@ -483,48 +487,48 @@ public class Variable implements Serializable {
 			//Log.d("vortex","cached Timestamp for "+this.getId()+" is "+timeStamp);
 			return timeStamp;
 		}
-			//Log.d("vortex","Timestamp for "+this.getId()+" name: "+name+" mySelection: "+mySelection.selection+" selArgs:"+Tools.printSelectionArgs(mySelection.selectionArgs));
-			String tmp = myDb.getValue(name, mySelection,Variable.timeStampS);
-			if (tmp!=null) {
-				//Log.d("vortex","Timestamp for "+this.getId()+" is "+tmp);
-				timeStamp = Long.parseLong(tmp);
-				return timeStamp;
-			}
-			Log.e("vortex","returning null in gettimeofinsert");
-			return null;
-		
+		//Log.d("vortex","Timestamp for "+this.getId()+" name: "+name+" mySelection: "+mySelection.selection+" selArgs:"+Tools.printSelectionArgs(mySelection.selectionArgs));
+		String tmp = myDb.getValue(name, mySelection,Variable.timeStampS);
+		if (tmp!=null) {
+			//Log.d("vortex","Timestamp for "+this.getId()+" is "+tmp);
+			timeStamp = Long.parseLong(tmp);
+			return timeStamp;
+		}
+		Log.e("vortex","returning null in gettimeofinsert");
+		return null;
+
 	}
-	
+
 	public String getWhoGaveThisValue() {
 		if (who!=null) {
 			Log.d("vortex","cached who for "+this.getId()+" is "+who);
 			return who;
 		}
-			who = myDb.getValue(name, mySelection,Variable.authorS);
-			if (who!=null) {
-				//Log.d("vortex","Who for "+this.getId()+" is "+who);
-				return who;
-			}
-			//Log.e("vortex","returning null in whogavethisvalue");
-			return null;
-		
-	}
-	
-	
-/*
-	public void setKeyChainVariable(String key) {
-		Log.d("nils","SetKeyChain called for "+this.getId());
-		iAmPartOfKeyChain = key;
+		who = myDb.getValue(name, mySelection,Variable.authorS);
+		if (who!=null) {
+			//Log.d("vortex","Who for "+this.getId()+" is "+who);
+			return who;
+		}
+		//Log.e("vortex","returning null in whogavethisvalue");
+		return null;
+
 	}
 
-	public String getPartOfKeyChain() {
-		return iAmPartOfKeyChain;
-	}
-*/	
+
+	/*
+        public void setKeyChainVariable(String key) {
+            Log.d("nils","SetKeyChain called for "+this.getId());
+            iAmPartOfKeyChain = key;
+        }
+
+        public String getPartOfKeyChain() {
+            return iAmPartOfKeyChain;
+        }
+    */
 	public boolean isInvalidated() {
 		return unknown;
 	}
-	
+
 	public boolean isUsingDefault() {
 		return usingDefault ;
 	}
@@ -564,7 +568,9 @@ public class Variable implements Serializable {
 	public void setDefaultValue(String defaultValue) {
 
 		this.setDefault(defaultValue);
+		Log.d("brox","setDefValue inParam: "+defaultValue+" Defaultvalue for "+this.getId()+" set to "+myDefaultValue);
 		setValue(myDefaultValue);
+		Log.d("brox","Value now "+this.getValue());
 		usingDefault=true;
 	}
 
@@ -578,16 +584,16 @@ public class Variable implements Serializable {
 		else if (defaultValue.equals(Constants.HISTORICAL_TOKEN_IN_XML)) {
 
 			myDefaultValue = this.getHistoricalValue();
-			//Log.d("vortex","Setting default from historical: "+myDefaultValue+" for "+this.getId());
+			Log.d("vortex","Setting default from historical: "+myDefaultValue+" for "+this.getId());
 		}
 		else {
 			//Log.d("vortex","Setting default from default value: "+defaultValue+" for "+this.getId());
 			myDefaultValue = defaultValue.equals(Constants.NO_DEFAULT_VALUE)?null:defaultValue;
 		}
 	}
-	
 
-	
+
+
 
 
 

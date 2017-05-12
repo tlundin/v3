@@ -176,6 +176,7 @@ public class VariableCache {
                         String header = gs.getVariableConfiguration().getVarLabel(row);
                         DataType type = gs.getVariableConfiguration().getnumType(row);
                         String rowKH = gs.getVariableConfiguration().getKeyChain(row);
+                        //String variableId = gs.getVariableConfiguration().getVarName(row);
                         int rowKHL = 0;
                         int myKeyhashSize = 0;
                         String[] rowKHA=null;

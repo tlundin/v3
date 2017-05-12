@@ -420,10 +420,10 @@ public class Expressor {
 		//Log.d("Vortex","BoolExpr: "+expr.toString()+" evaluated to "+eval);
 		//o.addRow("Expression "+expr.toString()+" evaluated to "+eval);
 		variables = null;
-		if (eval instanceof String) {
-			Log.e("vortex","String back in analyzeBoolean...likely missing [..]");
+		if (eval !=null && !(eval instanceof Boolean)) {
+			Log.e("vortex","eval was not bool back in analyzeBoolean...likely missing [..]?");
 			o.addRow("");
-			o.addRedText("The expression "+expr.toString()+" evaluated to Text: '"+eval+"'. This is likely because of missing [ ] parantheses around the expression in the XML");
+			o.addRedText("The expression "+expr.toString()+" evaluated to: '"+eval.getClass()+"' but must be Boolean. Missing [ ] around the expression can cause this");
 			return false;
 		} else
 			return (Boolean)eval;

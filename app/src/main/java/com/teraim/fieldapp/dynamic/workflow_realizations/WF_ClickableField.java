@@ -791,7 +791,7 @@ EventGenerator {
 			w = spin ? new OutSpin(ll, opt, val) : new OutC(ll, format);
 			myOutputFields.put(var, w);
 			outputContainer.addView(ll);
-			Log.d("franco","Added viewz "+var.getLabel()+" with width: "+ll.getWidth());
+			//Log.d("franco","Added viewz "+var.getLabel()+" with width: "+ll.getWidth());
 			// refreshInputFields();
 			refreshOutputField(var, w);
 

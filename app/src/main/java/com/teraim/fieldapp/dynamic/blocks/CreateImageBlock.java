@@ -199,10 +199,19 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 
 			if (flists!=null && flists.length>0) {
 				Log.d("botox","found file matches for pattern "+pattern);
+				long max = -1; File fMax=null;
 				for (File fl:flists) {
-					Log.d("vortex",fl.getName());
+					Log.d("vortex",fl.getName()+" "+fl.lastModified());
+					long lm = fl.lastModified();
+					if (lm>max) {
+						max = lm;
+						fMax = fl;
+					}
 				}
-				return flists[0].getName();
+				if (fMax!=null)
+					return fMax.getName();
+				else
+					return flists[0].getName();
 			}
 		}
 

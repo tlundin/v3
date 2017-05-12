@@ -456,12 +456,12 @@ public class DbHelper extends SQLiteOpenHelper {
         if (exporter == null)
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
         Log.d("nils", "Started export");
-        Log.d("vortex", "filename: " + exportFileName+ " context: "+context);
+        Log.d("vortex", "filename: " + exportFileName + " context: " + context);
         String selection = "";
 
         if (exporter instanceof GeoJSONExporter) {
-            Log.d("vortex","geojsonexport");
-            selection = (getDatabaseColumnName("uid")+" NOT NULL "+(context!=null?"AND ":""));
+            Log.d("vortex", "geojsonexport");
+            selection = (getDatabaseColumnName("uid") + " NOT NULL " + (context != null ? "AND " : ""));
         }
 
         List<String> selArgs = null;
@@ -496,8 +496,13 @@ public class DbHelper extends SQLiteOpenHelper {
         String[] selArgsA = null;
         if (selArgs != null)
             selArgsA = selArgs.toArray(new String[selArgs.size()]);
-        Cursor c = db.query(TABLE_VARIABLES, null, selection,
-                selArgsA, null, null, null,null);
+        Cursor c=null;
+        try {
+             c = db.query(TABLE_VARIABLES, null, selection,
+                    selArgsA, null, null, null, null);
+        } catch (SQLiteException e) {
+
+        }
 
         if (c != null) {
             Log.d("nils", "Variables found in db for context " + context);
@@ -551,7 +556,7 @@ public class DbHelper extends SQLiteOpenHelper {
             @Override
             public void run() {
                 exporter.getDialog().setCheckGenerate(false);
-                exporter.getDialog().setGenerateStatus("!No Data to export!");
+                exporter.getDialog().setGenerateStatus("Failed export. No data?");
             }
         });
 

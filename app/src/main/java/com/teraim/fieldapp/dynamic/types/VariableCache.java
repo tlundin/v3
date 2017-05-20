@@ -483,6 +483,32 @@ public class VariableCache {
 
     }
 
+    //Insert when unique key value pair is known.
+    //cache last chain to save some time.
+    Map<String,String> prevChain = null;
+    final static String uniqueKey = "uid";
+    public void turboRemoveOrInvalidate(String uniqueKeyValue, String variableName, boolean invalidate) {
+//        if (prevValue!=null && prevValue.equals(uniqueKeyValue))
+        //Log.d("bascar","turbo1 "+uniqueKeyValue+" "+variableName);
+        for (Map<String, String> chain : newcache.keySet()) {
+            //Log.d("bascar","turbo2 chain: "+chain+" uniq: "+uniqueKey+" uval: "+uniqueKeyValue);
+            if (chain!=null && chain.containsKey(uniqueKey) && chain.get(uniqueKey).equals(uniqueKeyValue)) {
+                //Log.d("bascar","turbo3 Varname: "+variableName+"cache:"+newcache.get(chain));
+                Variable v = newcache.get(chain).get(variableName.toLowerCase());
+                if (v!=null) {
+
+                    Log.d("bascar","Invalidated "+v.getId()+". Chain eq to prevchain?"+(prevChain!=null && prevChain.equals(chain)));
+                    if (invalidate)
+                        v.invalidate();
+                    else
+                        v.deleteValue();
+                }
+                prevChain=chain;
+            }
+        }
+
+    }
+
     public void insert(String name, Map<String, String> keyHash, String newValue) {
         //Log.d("vortex", "In insert with " + keyHash.toString());
         Map<String, Variable> vars = newcache.get(keyHash);

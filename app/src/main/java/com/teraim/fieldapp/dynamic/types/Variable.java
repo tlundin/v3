@@ -179,7 +179,7 @@ public class Variable implements Serializable {
 	}
 
 	public boolean setValue(String value) {
-		Log.d("nils","In SetValue for variable "+this.getId()+" New val: "+value+" existing val: "+myValue+" unknown? "+unknown+" using default? "+usingDefault);
+		//Log.d("nils","In SetValue for variable "+this.getId()+" New val: "+value+" existing val: "+myValue+" unknown? "+unknown+" using default? "+usingDefault);
 		//Null values are not allowed in db.
 		if (value==null)
 			return false;

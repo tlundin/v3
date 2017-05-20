@@ -224,7 +224,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			c.close();
 			//If succesful, update the counter.
 
-			Log.d("vortex","SYNCING --> ["+targets+"]");
+			Log.d("bascar","SYNCING --> ["+targets+"]");
 			Log.d("vortex","Maxstamp--> ["+maxStamp+"]");
 
 			//Send and Receive.
@@ -332,7 +332,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Iterator<ContentValues>it = rowsToInsert.iterator();
 		while (it.hasNext()) {
 			if (i%10==0) {
-				Log.d("vortex", "inserting: " + i);
+				Log.d("bascar", "inserting entry: " + i + "-"+(i+10));
 
 				msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
 					msg.arg1 = i;
@@ -402,7 +402,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		int orderNr = 0;
 		assert(sa!=null);
 
-		Log.d("vortex","In Send And Receive.");
+		Log.d("bascar","In Send And Receive.");
 
 		//Send a Start Sync message to the other side.
 
@@ -440,7 +440,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				objOut.writeObject(sa);				
 			}
 			else 
-				Log.d("vortex","did not write any Sync Entries. SA[] Empty");
+				Log.d("bascar","did not write any Sync Entries. SA[] Empty");
 				
 
 			//Done sending.
@@ -454,16 +454,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			int rowCount=0;
 			Object reply=null;
-			Log.d("vortex","Waiting for Data ["+rowCount++ +"]");
+			Log.d("bascar","Waiting for Data ["+rowCount++ +"]");
 			ObjectInputStream objIn = new ObjectInputStream(conn.getInputStream());
 
 			reply = objIn.readObject();
-			Log.d("vortex","After read object. reply is "+(reply!=null?"not":"")+" null");
+			Log.d("bascar","After read object. reply is "+(reply!=null?"not":"")+" null");
 
 			if (reply instanceof String ) {
 
 				int numberOfRows = Integer.parseInt((String) reply);
-				Log.d("vortex","Number of Rows that will arrive: "+numberOfRows);
+				Log.d("bascar","Number of Rows that will arrive: "+numberOfRows);
 				//We now know that the SyncEntries from this user are safely stored. So advance the pointer! 
 				if (maxStamp!=-1) {
 					Log.d("vortex","LAST_SYNC ME --> TEAM: "+maxStamp);

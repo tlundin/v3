@@ -130,7 +130,7 @@ public class Workflow implements Serializable {
 				if (b instanceof PageDefineBlock) {
 					myPDefBl = (PageDefineBlock) b;
 
-				} else Log.d("vortex","not pagedefine: "+b.getClass().getName());
+				} //else Log.d("vortex","not pagedefine: "+b.getClass().getName());
 			}
 
 		Log.d("brexit","getMyPageDefine returns null? "+(myPDefBl==null));

@@ -124,7 +124,7 @@ public class WF_SorterWidget extends WF_Widget {
 								String facets[] = sortFacets.split("\\|");
 								if (facets.length>0) {
 									for (String facet:facets) {
-										Log.d("vortex","Adding facet "+facet);
+										//Log.d("vortex","Adding facet "+facet);
 										txts.add(facet);
 									}
 								}

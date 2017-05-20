@@ -96,12 +96,12 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\poly.png"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_default_mtrl_shape.xml",
         "source": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\center.png",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\center.png"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\fixpunkt.png",
@@ -264,12 +264,12 @@
         "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_settings_dark.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_dark.xml",
-        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_dark.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\btn_icon_started.png",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\drawable\\btn_icon_started.png"
+    },
+    {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\mr_ic_media_route_connecting_mono_dark.xml",
+        "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\drawable\\mr_ic_media_route_connecting_mono_dark.xml"
     },
     {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",

@@ -554,7 +554,7 @@ public class MenuActivity extends Activity   {
 
 			mnu[1].setVisible(true);
 			mnu[2].setVisible(!globalPh.get(PersistenceHelper.LOG_LEVEL).equals("off"));
-			if (debugLogger.hasRed()) {
+			if (debugLogger!=null && debugLogger.hasRed()) {
 				mnu[2].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 				mnu[2].setIcon(R.drawable.warning);
 			}

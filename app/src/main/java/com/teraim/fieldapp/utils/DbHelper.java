@@ -1397,11 +1397,12 @@ public class DbHelper extends SQLiteOpenHelper {
         String uidCol = getDatabaseColumnName("uid");
         String arCol = getDatabaseColumnName("år");
         SyncStatus syncStatus=new SyncStatus();
+        TimeStampedMap tsMap = changes.getTimeStampedMap();
         ContentValues cv;
         //Map<String, String> keySet = new HashMap<String, String>();
        // Map<String, String> keyHash = new HashMap<String, String>();
 
-        //VariableCache variableCache = GlobalState.getInstance().getVariableCache();
+        VariableCache variableCache = GlobalState.getInstance().getVariableCache();
         String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
         String variableName = null,uid=null;
@@ -1445,9 +1446,7 @@ public class DbHelper extends SQLiteOpenHelper {
             }
 
             if (s.isInsert() || s.isInsertArray()) {
-                //Log.d("vortex","Insert "+s.getTarget());
-
-                cv.clear();
+                Log.d("bascar","Insert "+s.getTarget());
 
                 String[] sKeys = null, sValues = null;
 
@@ -1556,14 +1555,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 //Insert also in cache if not array.
                 //
-                uid = cv.getAsString(getDatabaseColumnName("uid"));
+                uid = cv.getAsString(uidCol);
                 if (s.isInsert() && uid !=null) {
                     //delete(sKeys,s.getTimeStamp());
-                    changes.tsMap.add(uid,variableName,cv);
+                    tsMap.add(uid,variableName,cv);
 
-                    //variableCache.insert(variableName, keyHash, myValue);
+
                 }
-                //Look for UID.
+
                 /*
                Cursor c = db.rawQuery("SELECT ID FROM "+TABLE_VARIABLES+" WHERE "+uidCol+" = '"+keyHash.get("uid")+"' AND var = '"+variableName+"' AND " + arCol + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'",null);
                 if (c.moveToFirst()) {
@@ -1576,20 +1575,21 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
                 */
                 else {
-
+                    Log.e("bascar","Inserting RAW"+s.getChange());
                     db.insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
                             cv
                     );
-
+                    variableCache.turboRemoveOrInvalidate(cv.getAsString(uidCol),variableName,true);
                     changes.inserts++;
+
                 }
 
 
             }
             else if (s.isDelete()) {
 
-                //Log.d("sync", "Delete for: " + s.getTarget());
+                Log.d("bascar", "Delete for: " + s.getTarget()+" ch: "+s.getChange());
                 String[] sChanges = null;
 
                 if (s.getChange() != null)
@@ -1602,14 +1602,31 @@ public class DbHelper extends SQLiteOpenHelper {
                     continue;
                 }
 
+                for (String keyPair:sChanges) {
+                    String[] pair = keyPair.split("=");
+                    if (pair.length != 2) {
+                        Log.e("vortex","Error at split");
+                        continue;
+                    }
+                    //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
+                    //Put variable name last.
+                    if (pair[0].equals("var")) {
+                       variableName = pair[1];
+                    }
+                    else if (pair[0].equals("uid"))
+                        uid = pair[1];
+
+                }
 
 
-                changes.deletes++;
-                if(!changes.tsMap.delete(cv.getAsString(getDatabaseColumnName("uid")),variableName)) {
+                if(!tsMap.delete(uid,variableName)) {
                     int aff = delete(sChanges, s.getTimeStamp());
                     if (aff == 0) {
                         changes.refused++;
                         changes.failedDeletes++;
+                    } else {
+                        changes.deletes++;
+                        variableCache.turboRemoveOrInvalidate(uid,variableName,false);
                     }
                 }
                 //variableCache.insert(variableName, keyHash, null);
@@ -1630,9 +1647,9 @@ public class DbHelper extends SQLiteOpenHelper {
             String pattern = s.getTarget();
             if (keyPairs != null) {
                 Log.d("sync", "Got Erase Many sync message with keyPairs: " + keyPairs);
+                //Erase updates cache as side effect.
                 int affectedRows = this.erase(keyPairs, pattern);
-                resetCache = true;
-                //Invalidate Cache...purposeless to invalidate only part.
+
                 o.addRow("");
                 o.addGreenText("DB_ERASE message executed in sync");
                 changes.deletes += affectedRows;
@@ -1694,6 +1711,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         //Log.d("vortex","Calling delete with Selection: "+whereClause+" args: "+print(whereArgs));
         //Calling delete with Selection: L4= ? AND L2= ? AND L1= ? AND L3= ? AND timestamp <= ? AND var = ? args: [0]: 2B1AFEF6-6C71-45DC-BB26-AF0B362E9073 [1]: 999994 [2]: 2016 [3]: Angsobete [4]: 1474478318 [5]: null [6]: STATUS:status_angsochbete
+
         return
                 db.delete(TABLE_VARIABLES, //table name
                         whereClause.toString(),  // selections
@@ -2765,7 +2783,7 @@ public class TmpVal {
                             syncReport = synchronise2(control,syncReport, ses, ui, GlobalState.getInstance().getLogger(), null);
                             if (syncReport!=null) {
                                 syncReport.currentRow++;
-                                Log.d("vortex","timestampedmap now has "+syncReport.tsMap.size() +" entries");
+                                Log.d("vortex","timestampedmap now has "+syncReport.getTimeStampedMap().size() +" entries");
                             }
 
                             Log.d("vortex","isdone is "+control.flag);
@@ -2800,7 +2818,8 @@ public class TmpVal {
     }
 
     private void insertIfMax(SyncReport sr) {
-        TimeStampedMap tsMap = sr.tsMap;
+        TimeStampedMap tsMap = sr.getTimeStampedMap();
+        VariableCache varCache = GlobalState.getInstance().getVariableCache();
         long t = System.currentTimeMillis();
         Set<Integer> idsToDelete = new HashSet<>();
         String query = "SELECT id,timestamp,"+getDatabaseColumnName("år")+","+VARID+","+getDatabaseColumnName("uid")+" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
@@ -2818,6 +2837,8 @@ public class TmpVal {
                 if (timestamp > existingts) {
                     int id = c.getInt(0);
                    idsToDelete.add(id);
+                    //invalidate in cache.
+
                     //db.execSQL("Delete from " + TABLE_VARIABLES + " where " + VARID + " = '" + vid + "' AND " + getDatabaseColumnName("uid")+"= '"+uid+"'");
                 } else
                     tsMap.delete(uid,vid);
@@ -2835,13 +2856,17 @@ public class TmpVal {
             db.execSQL(delStr);
             Log.d("vortex","delStr: "+delStr);
         }
-        Log.d("rosto","inserting some "+keys.size()+" rows");
 
-        for (String key:keys) {
-            Map<String,ContentValues> m = tsMap.get(key);
+        ContentValues cv;
+        for (String uid:keys) {
+            Map<String,ContentValues> m = tsMap.get(uid);
             if (m!=null) {
-                for (ContentValues cv: m.values()) {
+                //For each variable...
+                for (String vid:m.keySet()) {
+                    cv=m.get(vid);
                     db.insert(TABLE_VARIABLES, null, cv);
+                    Log.d("bascar","inserted "+vid);
+                    varCache.turboRemoveOrInvalidate(uid,vid,true);
                     sr.inserts++;
                 }
             }

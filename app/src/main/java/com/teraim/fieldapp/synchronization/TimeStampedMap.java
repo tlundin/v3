@@ -80,11 +80,13 @@ public class TimeStampedMap {
     }
 
     public boolean delete(String uniqueKey, String variableName) {
-        if (uniqueKey==null || variableName==null)
-            return true;
+        Log.d("bascar","In deleteTimeSTMap with: "+uniqueKey+","+variableName);
+        if (uniqueKey==null || variableName==null) {
+            return false;
+        }
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
-        if (ves.get(variableName)!=null) {
-            Log.d("zoobaz","Removing "+variableName);
+        if (ves!=null && ves.get(variableName)!=null) {
+            Log.d("bascar","Deleting "+variableName+" from Timestamped map");
             ves.remove(variableName);
             if (ves.isEmpty())
                 myMap.remove(ves);

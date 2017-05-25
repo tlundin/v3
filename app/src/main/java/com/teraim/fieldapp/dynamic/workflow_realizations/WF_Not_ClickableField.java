@@ -180,8 +180,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 					int purple = myContext.getContext().getResources().getColor(R.color.purple);
 					o.setTextColor(purple);
 					u.setTextColor(purple);
-					if (myHeader!=null)
-						myHeader.setTextColor(purple);
+					//if (myHeader!=null)
+					//	myHeader.setTextColor(purple);
 				} else {
 					o.setTextColor(textColorC);
 					u.setTextColor(textColorC);

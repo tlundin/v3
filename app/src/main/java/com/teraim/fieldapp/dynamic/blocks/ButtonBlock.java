@@ -195,8 +195,8 @@ public  class ButtonBlock extends Block  implements EventListener {
 			if (buttonContextE!=null&&!buttonContextE.isEmpty())
 				buttonContext = DB_Context.evaluate(buttonContextE);
 
-		}
-		Log.d("vortex","disregarded event on button");
+		} else
+			Log.d("vortex","disregarded event on button");
 	}
 
 	public String getName() {

@@ -37,7 +37,7 @@ public class EventBroker {
 			Log.d("vortex","registerEventListener discarded...listener already exist");
 		else {
 			els.add(el);
-			Log.d("nils","Added eventlistener for event "+et.name());
+			//Log.d("nils","Added eventlistener for event "+et.name());
 		}
 
 	}

@@ -1324,7 +1324,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		if (touchedGop==null) {
 			handler=null;
-			Log.e("vortex","Touched GOP null in dispDistAndDir. Will exit");
+			//Log.e("vortex","Touched GOP null in dispDistAndDir. Will exit");
 			return;
 		}
 

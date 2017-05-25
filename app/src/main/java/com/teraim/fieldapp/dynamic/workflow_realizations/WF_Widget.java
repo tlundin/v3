@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
@@ -12,7 +13,8 @@ public class WF_Widget extends WF_Thing implements Drawable {
 	private View myView;
 	private boolean isVisible;
 	protected VariableConfiguration al;
-	
+
+
 	public WF_Widget(String id,View v,boolean isVisible,WF_Context myContext) {
 		super(id);
 		al = GlobalState.getInstance().getVariableConfiguration();
@@ -21,7 +23,7 @@ public class WF_Widget extends WF_Thing implements Drawable {
 			hide();
 		this.isVisible = isVisible;
 		myContext.addDrawable(id, this);
-		
+
 	}
 
 

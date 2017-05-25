@@ -302,8 +302,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			globalPh.put(PersistenceHelper.VERSION_CONTROL, "Major");
 		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.SYNC_METHOD, "NONE");
-		if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.USER_ID_KEY, "Teraim");//getRandomName());
+		//if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
+		//	globalPh.put(PersistenceHelper.USER_ID_KEY, "");//getRandomName());
 		//if (globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
 		//	globalPh.put(PersistenceHelper.LAG_ID_KEY, "");
 		if (globalPh.get(PersistenceHelper.LOG_LEVEL).equals(PersistenceHelper.UNDEFINED))

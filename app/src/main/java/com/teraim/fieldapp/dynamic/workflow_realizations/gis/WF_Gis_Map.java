@@ -1092,7 +1092,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		LinearLayout layersL = (LinearLayout)li.inflate(R.layout.layers_body,null);
 		layersF.addView(layersL);
 		View layersRow=null;
-		layersRow = li.inflate(R.layout.layers_row, null);
+		//layersRow = li.inflate(R.layout.layers_row, null);
 
 		//find the longest text. if shorter than max, all strings will have this length.
 		final int MaxLabelLength = 18;

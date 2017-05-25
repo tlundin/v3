@@ -160,7 +160,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 					//Log.d("nils","found variable "+r[pNameIndex]+" in varpattern");							
 					myTable.addRow(trr);
 					//o.addRow("Generated variable(1): ["+r[pNameIndex]+"]");
-					//Log.d("vortex","Generated variable ["+r[pNameIndex]+"] ROW:\n"+row);
+					Log.d("vortex","Generated variable ["+r[pNameIndex]+"] ROW:\n"+row);
 				} else {
 					//Log.d("nils","found group name: "+pGroup);
 					elems = groups.get(pGroup);

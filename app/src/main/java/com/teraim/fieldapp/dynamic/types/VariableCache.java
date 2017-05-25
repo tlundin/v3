@@ -166,11 +166,14 @@ public class VariableCache {
                     List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varName);
                     if (row == null) {
                         Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
+                        Table table = gs.getVariableConfiguration().getTable();
+
                         Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);
                         //Entry is either historical or normal. Delete independently
                         deleteHash.remove("år");
                         gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), false);
                         Log.e("vortex", "Deleted " + varName);
+
 
                     } else {
                         String header = gs.getVariableConfiguration().getVarLabel(row);
@@ -338,6 +341,11 @@ public class VariableCache {
 
         } else {
             //Log.d("vortex","Found "+variable.getId()+" in cache with value "+variable.getValue()+" varobj: "+variable.toString());
+
+            //hasValueInDB = false, if value is null in DB, NULL if no known value, true if known value.
+            if (variable.unknown && hasValueInDB!=null) {
+                variable.unknown=false;
+            }
             if (variable.getValue() == null && defaultValue != null && !defaultValue.equals(Constants.NO_DEFAULT_VALUE)) {
                 Log.d("vortex", "defTrigger on " + defaultValue);
                 variable.setDefaultValue(defaultValue);
@@ -487,23 +495,25 @@ public class VariableCache {
     //cache last chain to save some time.
     Map<String,String> prevChain = null;
     final static String uniqueKey = "uid";
-    public void turboRemoveOrInvalidate(String uniqueKeyValue, String variableName, boolean invalidate) {
+    public void turboRemoveOrInvalidate(String uniqueKeyValue, String spy,String variableName, boolean invalidate) {
 //        if (prevValue!=null && prevValue.equals(uniqueKeyValue))
         //Log.d("bascar","turbo1 "+uniqueKeyValue+" "+variableName);
         for (Map<String, String> chain : newcache.keySet()) {
             //Log.d("bascar","turbo2 chain: "+chain+" uniq: "+uniqueKey+" uval: "+uniqueKeyValue);
             if (chain!=null && chain.containsKey(uniqueKey) && chain.get(uniqueKey).equals(uniqueKeyValue)) {
                 //Log.d("bascar","turbo3 Varname: "+variableName+"cache:"+newcache.get(chain));
-                Variable v = newcache.get(chain).get(variableName.toLowerCase());
-                if (v!=null) {
+                if (spy==null || (chain.containsKey("spy") && spy.equals(chain.get("spy")))) {
+                    Variable v = newcache.get(chain).get(variableName.toLowerCase());
+                    if (v != null) {
 
-                    Log.d("bascar","Invalidated "+v.getId()+". Chain eq to prevchain?"+(prevChain!=null && prevChain.equals(chain)));
-                    if (invalidate)
-                        v.invalidate();
-                    else
-                        v.deleteValue();
+                        Log.d("maggan", "Invalidated " + v.getId() + "SPY: "+spy+" UUID: "+uniqueKeyValue+". Chain eq to prevchain?" + (prevChain != null && prevChain.equals(chain)));
+                        if (invalidate)
+                            v.invalidate();
+                        else
+                            v.deleteValue();
+                    }
+                    prevChain = chain;
                 }
-                prevChain=chain;
             }
         }
 

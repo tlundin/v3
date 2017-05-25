@@ -112,8 +112,9 @@ public class Variable implements Serializable {
 				Log.d("nils","Value null! Using default: "+myDefaultValue);
 				//use default value.
 				myValue = myDefaultValue;
-				Log.d("zzzz","myValue in get def"+myValue);
 				usingDefault = true;
+				Log.d("brox","GetValue: Default now true for "+this.getId()+" Value: "+myDefaultValue);
+
 			}
 			unknown = false;
 //			Log.d("nils","done:     "+System.currentTimeMillis()+" var: "+this.getId());
@@ -364,6 +365,7 @@ public class Variable implements Serializable {
 			if (!valueIsPersisted) {
 				setValue(myDefaultValue);
 				//Log.d("nils","Creating variable "+this.getId()+". Variable is not persisted: "+myValue);
+				Log.d("brox","Variable: Default now true for "+this.getId()+" Value: "+this.getValue());
 				usingDefault = true;
 			}
 		}
@@ -405,6 +407,7 @@ public class Variable implements Serializable {
 		unknown=true;
 		usingDefault = false;
 		timeStamp=null;
+		myValue=null;
 		//Log.d("vortex","Test - getValue returns: "+this.getValue());
 		//Log.d("vortex","My keychain is: "+this.getKeyChain().toString());
 
@@ -570,7 +573,7 @@ public class Variable implements Serializable {
 		this.setDefault(defaultValue);
 		Log.d("brox","setDefValue inParam: "+defaultValue+" Defaultvalue for "+this.getId()+" set to "+myDefaultValue);
 		setValue(myDefaultValue);
-		Log.d("brox","Value now "+this.getValue());
+		Log.d("brox","Default now true for "+this.getId()+" Value: "+this.getValue());
 		usingDefault=true;
 	}
 

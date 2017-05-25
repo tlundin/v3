@@ -388,11 +388,11 @@ public class MenuActivity extends Activity   {
 
 									@Override
 									public void run() {
-
+										boolean threadDone = false;
 										while (!control.flag) {
 
-											boolean threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment,ui);
-											Log.d("vortex", "done scanning syncs...threaddone is " + control.flag + " this is thread " + this.getId());
+											threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment,ui);
+											Log.d("vortex", "done scanning syncs...threaddone is " + threadDone + " this is thread " + this.getId());
 											if (control.error) {
 												Log.d("vortex", "Uppsan...exiting");
 												syncError = true;
@@ -403,7 +403,7 @@ public class MenuActivity extends Activity   {
 											if (!control.flag && !threadDone) {
 												z_totalSynced += increment;
 											} else {
-
+												control.flag = threadDone;
 												gs.sendEvent(REDRAW_PAGE);
 												Log.d("vortex", "End reached for sync. Sending msg safely_stored");
 												if (uiLock != null)
@@ -569,6 +569,7 @@ public class MenuActivity extends Activity   {
 		String title=null;
 		boolean internetSync = globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet");
 		Integer ret = R.drawable.syncoff;
+		int numOfUnsynchedEntries = -1;
 		if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth")) {
 			ret = R.drawable.bt;
 			title = gs.getDb().getNumberOfUnsyncedEntries()+"";
@@ -577,14 +578,24 @@ public class MenuActivity extends Activity   {
 			ret = null;
 
 		else if (internetSync) {
+
 			if (syncError) {
 				//menuItem.setTitle("!ERROR!");
 				ret = R.drawable.syncerr;
+				title = "";
 			}
 			else if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY))
 				ret = R.drawable.syncoff;
 			else if (inSync) {
-				ret = R.drawable.insync;
+				numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
+				if (numOfUnsynchedEntries>0) {
+					inSync=false;
+					ret = R.drawable.syncon;
+
+				} else {
+					ret = R.drawable.insync;
+					title = "";
+				}
 			}
 			else if (syncActive) {
 				if (!animationRunning) {
@@ -618,11 +629,12 @@ public class MenuActivity extends Activity   {
 			}
 			else {
 				ret = R.drawable.syncon;
+				numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
 				Log.d("vortex","icon set to syncon!");
 			}
 		}
-		if ( title == null)
-			title = gs.getDb().getNumberOfUnsyncedEntries()+"";
+		if ( title == null & numOfUnsynchedEntries > 0)
+			title = numOfUnsynchedEntries+"";
 		animationRunning = false;
 		animView.clearAnimation();
 		menuItem.setActionView(null);

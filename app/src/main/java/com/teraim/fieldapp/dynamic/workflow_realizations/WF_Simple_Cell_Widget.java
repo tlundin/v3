@@ -273,7 +273,6 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell, EventLi
 		@Override
 		public void onEvent(Event e) {
 			if (e.getProvider().equals(Constants.SYNC_ID)) {
-				Log.d("vortex","refreshing cell after sync");
 				String val = myVariable.getValue();
 				myCheckBox.setChecked(val!=null && val.equals("true"));
 			}

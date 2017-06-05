@@ -43,12 +43,18 @@ public class BlockDeleteMatchingVariables extends Block {
 		DB_Context evaluatedContext = DB_Context.evaluate(contextE);
 		if (evaluatedContext.isOk()) {
 			Map<String, String> hash = evaluatedContext.getContext();
+			if (hash == null) {
+				Log.d("vortex","failed to build context..exiting delete matching variables");
+				return;
+			}
 			//Delete database entries.
 			//int entriesDeleted = GlobalState.getInstance().getDb().deleteAllVariablesUsingKey(hash);
 			StringBuilder keyBuilder = new StringBuilder("");
 			boolean last = false;
 			int i = 0;
+
 			for (String key:hash.keySet()) {
+
 				last = (i == hash.keySet().size()-1);
 				keyBuilder.append(key+"="+hash.get(key));
 				if (!last)

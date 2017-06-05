@@ -1031,13 +1031,22 @@ public class Tools {
 			return null;
 	}
 
+	public static void printErrorToLog(LoggerI o, String e) {
+		o.addRow("");
+		o.addRedText(e);
+		Log.e("vortex",e);
+
+	}
 	public static void printErrorToLog(LoggerI o, Exception e) {
 		o.addRow("");
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		e.printStackTrace(pw);
+		if (e!=null) {
+			e.printStackTrace(pw);
+			e.printStackTrace();
+		}
 		o.addRedText(sw.toString());
-		e.printStackTrace();
+
 	}
 
 	public static boolean existingTimestampIsMoreRecent(String existingTime, String newTime) {

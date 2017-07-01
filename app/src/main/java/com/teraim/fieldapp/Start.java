@@ -93,7 +93,7 @@ public class Start extends MenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Setup handler for uncaught exceptions.
-
+/*
 		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
@@ -104,7 +104,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-
+*/
 
 		Log.d("nils","in START onCreate");
 		singleton = this;
@@ -349,12 +349,13 @@ public class Start extends MenuActivity {
 
 		ft
 				.replace(R.id.content_frame, newPage)
-				.addToBackStack(null)
+				.addToBackStack("TROLL")
 				.commit();
 		setTitle(label);
+
 		//If previous was an empty fragment, clean it
 		if (emptyFragmentToExecute!=null) {
-			Log.d("vortex","removing empty fragment");
+			Log.d("blax","removing empty fragment");
 			ft.remove(emptyFragmentToExecute);
 			emptyFragmentToExecute=null;
 		}

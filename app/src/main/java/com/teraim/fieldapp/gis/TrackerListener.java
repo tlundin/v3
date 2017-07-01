@@ -2,11 +2,29 @@ package com.teraim.fieldapp.gis;
 
 public interface TrackerListener {
 
-	public enum GPS_State {
-		disabled,
-		enabled,
-		newValueReceived,
-		ping
+	public class GPS_State {
+
+		public static GPS_State GPS_State_C(State s) {
+			GPS_State g = new GPS_State();
+			g.state=s;
+			return g;
+		}
+
+		public enum State {
+
+			disabled,
+			enabled,
+			newValueReceived,
+			ping
+		}
+
+		public float accuracy;
+		public double x;
+		public double y;
+		public State state;
 	}
+
+
+
 	public void gpsStateChanged(GPS_State newState);
 }

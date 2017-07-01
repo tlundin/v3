@@ -134,11 +134,13 @@ EventGenerator {
 					x.setVisible(false);
 				else
 					x.setVisible(true);
-				if (row != null && al.getVariableDescription(row) != null
-						&& al.getVariableDescription(row).length() > 0)
+				if (row != null && ((al.getVariableDescription(row) != null
+						&& al.getVariableDescription(row).length() > 0 ) || (al.getGroupDescription(row)!=null && al.getGroupDescription(row).length()>0)))
 					y.setVisible(true);
-				else
+				else {
 					y.setVisible(false);
+					Log.d("burt",(row==null?"null":"vD: "+al.getVariableDescription(row)));
+				}
 
 			} else {
 				x.setVisible(false);

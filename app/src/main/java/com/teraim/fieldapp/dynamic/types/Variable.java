@@ -318,7 +318,7 @@ public class Variable implements Serializable {
 		if (row!=null) {
 			String oldName = name;
 			name = al.getVarName(row);
-			Log.d("plax","name now: "+name+" previous: "+oldName);
+			//Log.d("plax","name now: "+name+" previous: "+oldName);
 			myRow = row;
 			myType = al.getnumType(row);
 			myStringUnit = al.getUnit(row);

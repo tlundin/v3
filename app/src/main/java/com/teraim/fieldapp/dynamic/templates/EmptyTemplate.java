@@ -39,7 +39,16 @@ public class EmptyTemplate extends Executor {
 		
 		
 	}
-	
 
+	@Override
+	public void onStop() {
+		Log.d("blax","on stop!");
+		super.onStop();
+	}
 
+	@Override
+	public void onDestroy() {
+		Log.d("blax","on destroy!");
+		super.onDestroy();
+	}
 }

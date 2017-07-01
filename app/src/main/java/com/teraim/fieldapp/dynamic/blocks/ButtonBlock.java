@@ -418,6 +418,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 									goBack();
 								}
 							}
+							else if (onClick.equals("Start_Local_Workflow")) {
+
+							}
 							else if (onClick.equals("Start_Workflow")) {
 								String target = getTarget();
 								Workflow wf = gs.getWorkflow(target);

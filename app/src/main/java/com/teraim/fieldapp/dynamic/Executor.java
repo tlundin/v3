@@ -11,6 +11,8 @@ import java.util.Set;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +21,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
@@ -143,7 +149,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	private List<Block> blocks;
 
 	//Create pop dialog to display status.
-	private ProgressDialog pDialog; 
+	private ProgressDialog pDialog;
+
+
 
 	protected boolean survivedCreate = false;
     private WF_Event_OnSave delayedOnSave=null;
@@ -181,6 +189,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					if (intent.getAction().equals(REDRAW_PAGE)) {
 						gs.setDBContext(myContext.getHash());
 						Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
+						Log.d("vortex","my parent: "+Executor.this.getClass().getCanonicalName());
 						myContext.registerEvent(new WF_Event_OnSave(Constants.SYNC_ID));
 
 						//Executor.this.restart();
@@ -208,6 +217,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			}
 
 		}
+
+
 
 	}
 
@@ -243,6 +254,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		super.onPause();
 
 	}
+
+
 
 	protected Workflow getFlow() {
 		Workflow wf=null;
@@ -908,7 +921,15 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				//Send event that flow has executed.
 				Log.d("vortex","Registering WF EXECUTION");
 				myContext.registerEvent(new WF_Event_OnFlowExecuted("executor"));
+				if (root==null) {
 
+					int c = getActivity().getFragmentManager().getBackStackEntryCount();
+					Log.d("blax","need to redraw previous fragment if there is one! "+c);
+					if (c>0) {
+						Log.d("blax","there is a fragment to redraw. Try broadcast!");
+						gs.sendEvent(Executor.REDRAW_PAGE);
+					}
+				}
 			}
 
 		} catch (Exception e) {

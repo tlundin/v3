@@ -166,14 +166,15 @@ public class VariableCache {
                     List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varName);
                     if (row == null) {
                         Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
-                        Table table = gs.getVariableConfiguration().getTable();
+                        //Table table = gs.getVariableConfiguration().getTable();
 
                         Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);
                         //Entry is either historical or normal. Delete independently
-                        deleteHash.remove("år");
-                        gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), false);
-                        Log.e("vortex", "Deleted " + varName);
-
+                        if (deleteHash!=null) {
+                            deleteHash.remove("år");
+                            gs.getDb().deleteVariable(varName, gs.getDb().createSelection(deleteHash, varName), false);
+                            Log.e("vortex", "Deleted " + varName);
+                        }
 
                     } else {
                         String header = gs.getVariableConfiguration().getVarLabel(row);

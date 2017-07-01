@@ -1614,7 +1614,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	@Override
 	public void gpsStateChanged(GPS_State newState) {
 		//Log.d("vortex","Got GPS STATECHANGE");
-		if (newState==GPS_State.newValueReceived||newState==GPS_State.ping) {
+		if (newState.state==GPS_State.State.newValueReceived||newState.state==GPS_State.State.ping) {
 			mostRecentGPSValueTimeStamp = System.currentTimeMillis();
 			displayDistanceAndDirectionL();
 		}

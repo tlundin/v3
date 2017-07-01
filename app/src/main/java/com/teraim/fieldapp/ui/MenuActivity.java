@@ -43,6 +43,7 @@ import android.widget.Toast;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
+import com.teraim.fieldapp.gis.TrackerListener;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
@@ -56,7 +57,7 @@ import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
  * @author Terje
  *
  */
-public class MenuActivity extends Activity   {
+public class MenuActivity extends Activity implements TrackerListener   {
 
 
 	private BroadcastReceiver brr;
@@ -72,6 +73,9 @@ public class MenuActivity extends Activity   {
 	public static final String INITSTARTS = "com.teraim.fieldapp.init_done";
 	public static final String INITFAILED = "com.teraim.fieldapp.init_done_but_failed";
 	public static final String SYNC_REQUIRED = "com.teraim.fieldapp.sync_required";
+
+
+
 
 	public class Control {
 		public volatile boolean flag = false;
@@ -96,6 +100,11 @@ public class MenuActivity extends Activity   {
 
 				if (intent.getAction().equals(INITDONE)) {
 					initdone=true;
+					//set this to listen to Tracker.
+					if (GlobalState.getInstance()!=null) {
+						Log.d("glapp","menuactivity now listnes to tracker");
+						GlobalState.getInstance().getTracker().registerListener(MenuActivity.this);
+					}
 					//Now sync can start.
 					Message msg = Message.obtain(null, SyncService.MSG_REGISTER_CLIENT);
 					msg.replyTo = mMessenger;
@@ -151,7 +160,23 @@ public class MenuActivity extends Activity   {
 
 	}
 
+	//Tracker callback.
 
+	long GPSsignalTime = -1, previousGPSsignalTime=-1;
+	@Override
+	public void gpsStateChanged(GPS_State signal) {
+		previousGPSsignalTime = GPSsignalTime;
+		GPSsignalTime = System.currentTimeMillis();
+
+		if (signal.state == GPS_State.State.newValueReceived) {
+			Log.d("glapp","Got gps signal!");
+			if (previousGPSsignalTime > 0) {
+				long diff = GPSsignalTime - previousGPSsignalTime;
+				Log.d("glapp", "Diff: " + diff + " Accuracy: " + signal.accuracy);
+			}
+		} else
+			Log.d("glapp","Got "+signal.state.toString());
+	}
 
 
 	@Override

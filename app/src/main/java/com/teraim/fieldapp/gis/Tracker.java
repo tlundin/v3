@@ -31,6 +31,8 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Geomatte;
 
+import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
+
 
 public class Tracker extends Service implements LocationListener {
 
@@ -187,7 +189,14 @@ public class Tracker extends Service implements LocationListener {
 					myY.setValue(myL.getY() + "");
 					oldT = myX.getTimeOfInsert();
 				}
-				sendMessage(GPS_State.newValueReceived);
+				Log.d("glax","Accuracy: "+location.getAccuracy());
+				GlobalState.getInstance().getLogger().addRow("");
+				GlobalState.getInstance().getLogger().addCriticalText(location.getAccuracy()+"");
+				GPS_State signal = GPS_State_C(GPS_State.State.newValueReceived);
+				signal.accuracy=location.getAccuracy();
+				signal.x=myL.getX();
+				signal.y=myL.getY();
+				sendMessage(signal);
 
 			}
 		}catch(Exception e) {
@@ -228,7 +237,7 @@ public class Tracker extends Service implements LocationListener {
 				System.out.println("GPS out of service");
 				break;
 			case LocationProvider.AVAILABLE:
-				sendMessage(GPS_State.ping);
+				sendMessage(GPS_State_C(GPS_State.State.ping));
 				//System.out.println("GPS Available");
 				break;
 			case LocationProvider.TEMPORARILY_UNAVAILABLE:
@@ -266,13 +275,13 @@ public class Tracker extends Service implements LocationListener {
 	@Override
 	public void onProviderEnabled(String provider) {
 		Log.d("vortex","Provider enabled in gps listener");
-		sendMessage(GPS_State.enabled);
+		sendMessage(GPS_State_C(GPS_State.State.enabled));
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
 		Log.d("vortex","Provider disabled in gps listener");
-		sendMessage(GPS_State.disabled);
+		sendMessage(GPS_State_C(GPS_State.State.disabled));
 	}
 	public void stopUsingGPS(){
 		if(locationManager != null){

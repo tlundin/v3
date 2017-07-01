@@ -1620,13 +1620,19 @@ public class DbHelper extends SQLiteOpenHelper {
                 */
 
                 if(!wrongTeam && !tsMap.delete(uid,variableName)) {
-                    int aff = delete(sChanges, s.getTimeStamp());
-                    if (aff == 0) {
+                    try {
+                        int aff = delete(sChanges, s.getTimeStamp());
+                        if (aff == 0) {
+                            changes.refused++;
+                            changes.failedDeletes++;
+                        } else {
+                            changes.deletes++;
+                            variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false);
+                        }
+                    } catch (SQLException e) {
+                        Log.e("vortex","Delete failed due to exception in statement");
                         changes.refused++;
                         changes.failedDeletes++;
-                    } else {
-                        changes.deletes++;
-                        variableCache.turboRemoveOrInvalidate(uid, spy,variableName,false);
                     }
                 }
                 //variableCache.insert(variableName, keyHash, null);
@@ -1683,7 +1689,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     StringBuilder whereClause = new StringBuilder();
 
-    private int delete(String[] sChanges,String timeStamp) {
+    private int delete(String[] sChanges,String timeStamp) throws SQLException {
 
         if (sChanges==null)
             return 0;

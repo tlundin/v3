@@ -61,7 +61,7 @@ public class Tracker extends Service implements LocationListener {
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
 
-	private final Variable myX,myY;
+	private final Variable myX,myY,myAcc;
 
 	private final Map<String,String>YearKeyHash = new HashMap<String,String>();
 
@@ -69,6 +69,8 @@ public class Tracker extends Service implements LocationListener {
 		YearKeyHash.put("år", Constants.getYear());
 		myX = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LAT);
 		myY = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LONG);
+		myAcc = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_ACCURACY);
+
 
 	}
 
@@ -91,6 +93,12 @@ public class Tracker extends Service implements LocationListener {
 		GlobalState gs = GlobalState.getInstance();
 		if (gs==null)
 			return ErrorCode.UNSTABLE;
+
+		//set to null.
+		myX.setValueNoSync(null);
+		myY.setValueNoSync(null);
+		if (myAcc!=null)
+			myAcc.setValueNoSync(null);
 
 		try {
 			locationManager = (LocationManager) ctx
@@ -179,19 +187,23 @@ public class Tracker extends Service implements LocationListener {
 					//	Log.d("vortex","setting synced location");
 						myX.setValue(myL.getX() + "");
 						myY.setValue(myL.getY() + "");
+						if (myAcc!=null)
+							myAcc.setValue(location.getAccuracy() + "");
 						oldT = myX.getTimeOfInsert();
 					} else {
 						myX.setValueNoSync(myL.getX() + "");
 						myY.setValueNoSync(myL.getY() + "");
+						if (myAcc!=null)
+							myAcc.setValueNoSync(location.getAccuracy() + "");
 					}
 				} else {
 					myX.setValue(myL.getX() + "");
 					myY.setValue(myL.getY() + "");
+					if (myAcc!=null)
+						myAcc.setValue(location.getAccuracy() + "");
 					oldT = myX.getTimeOfInsert();
 				}
-				Log.d("glax","Accuracy: "+location.getAccuracy());
-				GlobalState.getInstance().getLogger().addRow("");
-				GlobalState.getInstance().getLogger().addCriticalText(location.getAccuracy()+"");
+
 				GPS_State signal = GPS_State_C(GPS_State.State.newValueReceived);
 				signal.accuracy=location.getAccuracy();
 				signal.x=myL.getX();

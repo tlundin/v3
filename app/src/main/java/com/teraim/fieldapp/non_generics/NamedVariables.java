@@ -14,6 +14,7 @@ public class NamedVariables {
 	public static final String CentrumGPSLong = "CentrumGPSLong";
 	public static final String MY_GPS_LAT = "GPS_X";
 	public static final String MY_GPS_LONG = "GPS_Y";
+	public static final String MY_GPS_ACCURACY = "GPS_Accuracy";
 
 	public static final String STRATUM_HISTORICAL = "StratumHistorical";
 	public static final String STRATUM = "Stratum";

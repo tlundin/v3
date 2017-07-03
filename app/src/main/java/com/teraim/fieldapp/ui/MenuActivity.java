@@ -157,25 +157,46 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 		configureSynk();
 
-
+		latestSignal = null;
 	}
 
 	//Tracker callback.
+	GPS_State latestSignal=null;
+	private final static long GPS_TIME_THRESHOLD = 15000;
 
-	long GPSsignalTime = -1, previousGPSsignalTime=-1;
 	@Override
 	public void gpsStateChanged(GPS_State signal) {
-		previousGPSsignalTime = GPSsignalTime;
-		GPSsignalTime = System.currentTimeMillis();
+
+
 
 		if (signal.state == GPS_State.State.newValueReceived) {
 			Log.d("glapp","Got gps signal!");
-			if (previousGPSsignalTime > 0) {
-				long diff = GPSsignalTime - previousGPSsignalTime;
-				Log.d("glapp", "Diff: " + diff + " Accuracy: " + signal.accuracy);
-			}
-		} else
-			Log.d("glapp","Got "+signal.state.toString());
+			latestSignal = signal;
+		} else {
+			Log.d("glapp", "Got " + signal.state.toString());
+			//latestSignal = null;
+		}
+		refreshStatusRow();
+	}
+
+	private boolean noGPS() {
+		return (latestSignal==null);
+
+	}
+
+	private boolean gpsSignalIsOld() {
+		long diff = System.currentTimeMillis()-latestSignal.time;
+		return (diff>GPS_TIME_THRESHOLD);
+
+	}
+
+	private GPSQuality calculateGPSKQI() {
+		if (latestSignal.accuracy<=6)
+			return GPSQuality.green;
+		else if (latestSignal.accuracy<=10)
+			return GPSQuality.yellow;
+		else
+			return GPSQuality.red;
 	}
 
 
@@ -183,7 +204,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 	public void onDestroy()
 	{
 		Log.d("NILS", "In the onDestroy() event");
-
+		latestSignal = null;
 		//Stop listening for bluetooth events.
 		this.unregisterReceiver(brr);
 
@@ -396,7 +417,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 							syncDbInsert = true;
 							control.flag = false;
 							z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
-							setSyncState(mnu[0]);
+							setSyncState(mnu[1]);
 							z_totalSynced = 0;
 							final UIProvider ui = new UIProvider(MenuActivity.this);
 
@@ -460,7 +481,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 												runOnUiThread(new Runnable() {
 													@Override
 													public void run() {
-														setSyncState(mnu[0]);
+														setSyncState(mnu[1]);
 													}
 												});
 											}
@@ -535,7 +556,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		return menuChoice(item);
 	}
 
-	private final static int NO_OF_MENU_ITEMS = 4;
+	private final static int NO_OF_MENU_ITEMS = 5;
 
 	MenuItem mnu[] = new MenuItem[NO_OF_MENU_ITEMS];
 	ImageView animView = null;
@@ -551,41 +572,70 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
 		mnu[0].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		mnu[1].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		mnu[1].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		mnu[2].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		mnu[2].setIcon(null);
+		mnu[3].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		mnu[3].setIcon(null);
 		mnu[mnu.length-1].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		mnu[1].setTitle(R.string.context);
-		mnu[2].setTitle(R.string.log);
+		mnu[2].setTitle(R.string.context);
+		mnu[3].setTitle(R.string.log);
 		mnu[mnu.length-1].setTitle(R.string.settings);
 		mnu[mnu.length-1].setIcon(android.R.drawable.ic_menu_preferences);
 
 
 	}
 
+	private enum GPSQuality {
+		red,
+		yellow,
+		green
+	}
+
 	protected void refreshStatusRow() {
 		if (initfailed ) {
-			if (mnu[2]!=null) {
-				mnu[2].setVisible(true);
+			if (mnu[3]!=null) {
+				mnu[3].setVisible(true);
 				mnu[mnu.length - 1].setVisible(true);
 				mnu[mnu.length - 1].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 			}
 		} else 	if (GlobalState.getInstance()!=null && initdone) {
+
+			if (noGPS())
+				mnu[0].setVisible(false);
+			else {
+				mnu[0].setVisible(true);
+				if (gpsSignalIsOld())
+					mnu[0].setIcon(R.drawable.btn_icon_none);
+				else {
+					GPSQuality GPSq = calculateGPSKQI();
+					if (GPSq == GPSQuality.green) {
+						mnu[0].setIcon(R.drawable.btn_icon_ready);
+					} else if (GPSq == GPSQuality.yellow)
+						mnu[0].setIcon(R.drawable.btn_icon_started);
+					else
+						mnu[0].setIcon(R.drawable.btn_icon_started_with_errors);
+					mnu[0].setTitle(latestSignal.accuracy+"");
+				}
+			}
+
 			gs = GlobalState.getInstance();
 			if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE") || gs.isSolo())
-				mnu[0].setVisible(false);
+				mnu[1].setVisible(false);
 			else
-				setSyncState(mnu[0]);
+				setSyncState(mnu[1]);
 
-			mnu[1].setVisible(true);
-			mnu[2].setVisible(!globalPh.get(PersistenceHelper.LOG_LEVEL).equals("off"));
+			mnu[2].setVisible(true);
+			mnu[3].setVisible(!globalPh.get(PersistenceHelper.LOG_LEVEL).equals("off"));
 			if (debugLogger!=null && debugLogger.hasRed()) {
-				mnu[2].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-				mnu[2].setIcon(R.drawable.warning);
+				mnu[3].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				mnu[3].setIcon(R.drawable.warning);
 			}
 			mnu[mnu.length-1].setVisible(true);
 		}
 	}
+
+
+
 
 	boolean animationRunning = false,syncDataArriving=false;
 
@@ -681,9 +731,29 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 		switch (selection) {
 			case 0:
-				toggleSyncOnOff();
+				if (latestSignal!=null) {
+					new AlertDialog.Builder(this)
+							.setTitle("GPS Details")
+							.setMessage("GPS_X: " + latestSignal.x + "\n" +
+									"GPS_Y: " + latestSignal.y + "\n" +
+									"Accuracy: " + latestSignal.accuracy + "\n" +
+									"Time since last value: " + Math.round((System.currentTimeMillis() - latestSignal.time)/1000)+"s")
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.setCancelable(true)
+							.setNeutralButton("Ok", new Dialog.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+
+								}
+							})
+							.show();
+				} else
+					refreshStatusRow();
 				break;
 			case 1:
+				toggleSyncOnOff();
+				break;
+			case 2:
 				if (gs!=null && gs.getVariableCache()!=null) {
 					//Object moo=null;
 					//moo.equals("moo");
@@ -702,8 +772,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				}
 				break;
 
-			case 2:
-				mnu[2].setIcon(null);
+			case 3:
+				mnu[3].setIcon(null);
 				final Dialog dialog = new Dialog(this);
 				dialog.setContentView(R.layout.log_dialog_popup);
 				dialog.setTitle("Session Log");

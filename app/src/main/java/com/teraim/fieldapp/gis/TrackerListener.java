@@ -7,6 +7,7 @@ public interface TrackerListener {
 		public static GPS_State GPS_State_C(State s) {
 			GPS_State g = new GPS_State();
 			g.state=s;
+			g.time=System.currentTimeMillis();
 			return g;
 		}
 
@@ -22,6 +23,7 @@ public interface TrackerListener {
 		public double x;
 		public double y;
 		public State state;
+		public long time;
 	}
 
 

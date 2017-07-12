@@ -604,9 +604,10 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				mnu[0].setVisible(false);
 			else {
 				mnu[0].setVisible(true);
-				if (gpsSignalIsOld())
-					mnu[0].setIcon(R.drawable.btn_icon_none);
-				else {
+				//if (gpsSignalIsOld())
+				//	mnu[0].setIcon(R.drawable.btn_icon_none);
+				//else
+				{
 					GPSQuality GPSq = calculateGPSKQI();
 					if (GPSq == GPSQuality.green) {
 						mnu[0].setIcon(R.drawable.btn_icon_ready);

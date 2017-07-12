@@ -109,6 +109,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	public static final String STOP_ID = "STOP";
 
 	public static final String REDRAW_PAGE = "executor_redraw_page";
+    public static final String REFRESH_AFTER_SUBFLOW_EXECUTION = "executor_refresh_after_subflow";
+
 
 
 	protected Workflow wf;
@@ -179,6 +181,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 			ifi = new IntentFilter();
 			ifi.addAction(REDRAW_PAGE);
+            ifi.addAction(REFRESH_AFTER_SUBFLOW_EXECUTION);
 			//ifi.addAction(BluetoothConnectionService.BLUETOOTH_MESSAGE_RECEIVED);
 			//This receiver will forward events to the current context.
 			//Bluetoothmessages are saved in the global context by the message handler.
@@ -187,14 +190,26 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				public void onReceive(Context ctx, Intent intent) {
 					Log.d("vortex","GETS HERE:::::: "+this.toString()+"  P: "+Executor.this.toString());
 					if (intent.getAction().equals(REDRAW_PAGE)) {
-						gs.setDBContext(myContext.getHash());
-						Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
-						Log.d("vortex","my parent: "+Executor.this.getClass().getCanonicalName());
-						myContext.registerEvent(new WF_Event_OnSave(Constants.SYNC_ID));
+                        boolean callAfterSub=intent.getBooleanExtra("RedrawAfterExecutingSub",false);
+                        Log.d("vortex","callAfterSUB: "+callAfterSub);
+                        if (!callAfterSub || callAfterSub && myContext.isCaller()) {
+
+                            Log.d("vortex","this is the right place.");
+
+
+                            gs.setDBContext(myContext.getHash());
+                            Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
+                            Log.d("vortex","my parent: "+Executor.this.getClass().getCanonicalName());
+                            myContext.registerEvent(new WF_Event_OnSave(Constants.SYNC_ID));
+
+                        } else
+                        	Log.d("vortex"," i am not a parent");
+
+
 
 						//Executor.this.restart();
 
-					} 
+					}
 					/*
 				else if (intent.getAction().equals(BluetoothConnectionService.BLUETOOTH_MESSAGE_RECEIVED)) {
 					Log.d("nils","New bluetoot message received event!");
@@ -231,9 +246,12 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		gs = GlobalState.getInstance();
 		if (gs!=null && gs.getContext()!=null) {
 			gs.getContext().registerReceiver(brr, ifi);
-			if(myContext!=null&&myContext.hasGPSTracker())
-				gs.getTracker().startScan(gs.getContext());
-
+			if(myContext!=null) {
+				if (myContext.hasGPSTracker())
+					gs.getTracker().startScan(gs.getContext());
+				else
+					gs.getTracker().stopUsingGPS();
+			}
 		}
 		super.onResume();
 	}
@@ -246,8 +264,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		//Stop listening for bluetooth events.
 		if (brr!=null && gs!=null)
 			gs.getContext().unregisterReceiver(brr);
-		if (gs!=null&&myContext!=null&&myContext.hasGPSTracker())
-			gs.getTracker().stopUsingGPS();
+
 		
 		
 		
@@ -927,7 +944,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					Log.d("blax","need to redraw previous fragment if there is one! "+c);
 					if (c>0) {
 						Log.d("blax","there is a fragment to redraw. Try broadcast!");
-						gs.sendEvent(Executor.REDRAW_PAGE);
+                        Intent intent = new Intent();
+                        intent.setAction(Executor.REDRAW_PAGE);
+                        intent.putExtra("RedrawAfterExecutingSub",true);
+						gs.sendSyncEvent(intent);
 					}
 				}
 			}

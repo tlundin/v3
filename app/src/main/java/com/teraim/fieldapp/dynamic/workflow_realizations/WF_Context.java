@@ -228,6 +228,7 @@ public class WF_Context {
 		hasGPSTracker=false;
 		contextVariables=null;
 		myEndIsNear=false;
+		isCaller = false;
 		if (hasMenu) {
 			hasMenu = false;
 			Start.singleton.getDrawerMenu().clear();
@@ -447,5 +448,13 @@ public class WF_Context {
 
 	public boolean hasMenu() {
 		return hasMenu;
+	}
+
+	private boolean isCaller = false;
+    public void setCaller() {
+		isCaller=true;
+    }
+    public boolean isCaller() {
+		return isCaller;
 	}
 }

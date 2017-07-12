@@ -209,17 +209,24 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    final static long TenDays = 3600*24*7*2;
+
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
 
-        Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and lag = '"+team+"' and author <> '"+user+"' group by author", null);
-        Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and lag = '"+team+"' and author <> '"+user+"' group by author", null);
+        Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and lag like '"+team+"' and author <> '"+user+"' group by author", null);
+        Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and lag like '"+team+"' and author <> '"+user+"' group by author", null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
             boolean isOld=false;
             String teamMemberName = qx.getString(0);
+            long diff = (System.currentTimeMillis()/1000 - timeStamp);
+            if (diff > TenDays) {
+                Log.d("bortex","timestamp for "+teamMemberName+" is older than 10 days.");
+                continue;
+            }
+            if (diff > 3600) {
 
-            if ((System.currentTimeMillis()/1000 - timeStamp) > 3600) {
                 Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis()/1000 - timeStamp));
                 isOld = true;
             }
@@ -1470,7 +1477,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 String[] sKeys = null, sValues = null;
 
 
-
                 if (s.getKeys() != null)
                     sKeys = s.getKeys().split("\\|");
                 if (s.getValues() != null)
@@ -1492,11 +1498,10 @@ public class DbHelper extends SQLiteOpenHelper {
                     if (pair.length == 1) {
                         changes.faultInValues++;
                         changes.faults++;
-                        Log.e("maggan","valPair fault pair: "+value+" VAL: "+print(sValues));
-                        error=true;
+                        Log.e("maggan", "valPair fault pair: " + value + " VAL: " + print(sValues));
+                        error = true;
                         break;
-                    }
-                    else if (pair[0].equals("lag")) {
+                    } else if (pair[0].equals("lag")) {
                         syncTeam = pair[1];
                         if ((syncTeam) == null || !syncTeam.equalsIgnoreCase(team)) {
                             //Log.e("vortex","wrong team: "+pair[0]+" "+pair[1]);
@@ -1505,15 +1510,12 @@ public class DbHelper extends SQLiteOpenHelper {
                             //break;
                             wrongTeam = true;
                         }
-                    }
-                    else if (pair[0].equals("value"))
+                    } else if (pair[0].equals("value"))
                         myValue = pair[1];
-
 
 
                     cv.put(getDatabaseColumnName(pair[0]), pair[1]);
                 }
-
 
 
                 for (String keyPair : sKeys) {
@@ -1523,8 +1525,8 @@ public class DbHelper extends SQLiteOpenHelper {
                             changes.faults++;
                             changes.faultInKeys++;
 
-                            Log.e("maggan","keyPair fault pair: "+keyPair+" KEY: "+print(sKeys));
-                            error=true;
+                            Log.e("maggan", "keyPair fault pair: " + keyPair + " KEY: " + print(sKeys));
+                            error = true;
                             break;
                         }
                         //Log.d("vortex", "wtf is this? Key:" + pair[0] + " Value: " + pair[1]);
@@ -1534,51 +1536,53 @@ public class DbHelper extends SQLiteOpenHelper {
                     } else {
                         changes.faults++;
                         changes.faultInKeys++;
-                        error=true;
+                        error = true;
                         Log.e("maggan", "Something not good in synchronize (dbHelper). A valuepair was null ");
                     }
                 }
                 variableName = cv.getAsString("var");
 
-                if (variableName==null || error)
+                if (variableName == null || error)
                     continue;
-
 
 
                 //Insert also in cache if not array.
                 //
                 uid = cv.getAsString(uidCol);
                 spy = cv.getAsString(spyCol);
+
                 /*
+
                 if (uid!=null && uid.equals("EC2A0B3B-C526-4E50-87B5-40665D06858B")) {
                     Log.d("maggan","INSERT for TEAM: "+team+"syncTeam: "+syncTeam+" variable: "+variableName);
                     Log.d("maggan",s.getChange());
 
                 }
                 */
-                if (!wrongTeam) {
-                    if (s.isInsert() && uid != null && spy==null) {
-                        //delete(sKeys,s.getTimeStamp());
-                        tsMap.add(uid, variableName, cv);
+                    if (!wrongTeam) {
+                        if (s.isInsert() && uid != null && spy == null) {
+                            //delete(sKeys,s.getTimeStamp());
+                            tsMap.add(uid, variableName, cv);
 
 
-                    } else {
-                        Log.e("bascar", "Inserting RAW" + s.getChange());
-                        db.insert(TABLE_VARIABLES, // table
-                                null, //nullColumnHack
-                                cv
-                        );
-                        if (uid!=null)
-                            variableCache.turboRemoveOrInvalidate(uid,spy, variableName, true);
-                        changes.inserts++;
+                        } else {
+                            Log.e("bascar", "Inserting RAW" + s.getChange());
+                            db.insert(TABLE_VARIABLES, // table
+                                    null, //nullColumnHack
+                                    cv
+                            );
+                            if (uid != null)
+                                variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
+                            changes.inserts++;
+
+                        }
 
                     }
 
-                }
             }
             else if (s.isDelete()) {
 
-                Log.d("bascar", "Delete for: " + s.getTarget()+" ch: "+s.getChange());
+                Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
                 String[] sChanges = null;
 
                 if (s.getChange() != null)
@@ -1590,27 +1594,30 @@ public class DbHelper extends SQLiteOpenHelper {
 
                     continue;
                 }
-                spy=null;
-                uid=null;
-                variableName=null;
-                for (String keyPair:sChanges) {
+                spy = null;
+                uid = null;
+                variableName = null;
+                for (String keyPair : sChanges) {
                     String[] pair = keyPair.split("=");
                     if (pair.length != 2) {
-                        Log.e("vortex","Error at split");
+                        Log.e("vortex", "Error at split");
                         continue;
                     }
                     //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
                     //Put variable name last.
                     if (pair[0].equals("var")) {
                         variableName = pair[1];
-                    }
-                    else if (pair[0].equals("uid"))
+                    } else if (pair[0].equals("uid"))
                         uid = pair[1];
                     else if (pair[0].equals("spy")) {
                         spy = pair[1];
                     }
 
                 }
+                //if (uid == null || !uid.equals("15E88876-CE15-4C39-8AF4-23FE60CE6FF2")) {
+                //} else {
+                //   Log.d("papp","Delete: "+s.getChange()+" TS: "+s.getTimeStamp()+" target: "+s.getTarget());
+
                 /*
                 if (uid.equals("EC2A0B3B-C526-4E50-87B5-40665D06858B")) {
                     Log.d("maggan","DELETE for TEAM: "+team+"syncTeam: "+syncTeam+" variable: "+variableName);
@@ -1619,7 +1626,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
                 */
 
-                if(!wrongTeam && !tsMap.delete(uid,variableName)) {
+                if (!wrongTeam && !tsMap.delete(uid, variableName)) {
                     try {
                         int aff = delete(sChanges, s.getTimeStamp());
                         if (aff == 0) {
@@ -1630,7 +1637,7 @@ public class DbHelper extends SQLiteOpenHelper {
                             variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false);
                         }
                     } catch (SQLException e) {
-                        Log.e("vortex","Delete failed due to exception in statement");
+                        Log.e("vortex", "Delete failed due to exception in statement");
                         changes.refused++;
                         changes.failedDeletes++;
                     }
@@ -1648,12 +1655,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
             }
 
+
             else if (s.isDeleteMany()) {
+
                 String keyPairs = s.getChange();
                 String pattern = s.getTarget();
                 if (keyPairs != null) {
-                    Log.d("sync", "Got Erase Many sync message with keyPairs: " + keyPairs);
-                    String[] sChanges = s.getChange().split(",");
+                    //Log.d("papp", "Erase many keyPairs: " + keyPairs);
+                    //String[] sChanges = s.getChange().split(",");
 
                     //Erase updates cache as side effect.
                     if (!wrongTeam) {
@@ -2236,16 +2245,17 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d("vortex", "Delete statement is now " + delStmt);
         Log.d("vortex", "VALUES:"+print(valuesA));
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
-        Log.d("vortex", "Deleted rows count: " + affected);
         //Invalidate affected cache variables
         if (affected > 0) {
+            Log.d("papp", "Deleted rows count: " + affected+" keys: "+keyPairs);
+
             Log.d("vortex", "cleaning up cache. Exact: " + exact);
             GlobalState.getInstance().getVariableCache().invalidateOnKey(map, exact);
         } else
-            Log.d("vortex", "No changes to db so no need to touch cache.");
+            dr0++;
         return affected;
     }
-
+    static int dr0 = 0;
     public void eraseDelytor(String currentRuta, String currentProvyta) {
 
         //create WHERE part of delete statement.

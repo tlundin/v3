@@ -72,6 +72,7 @@ public class PageWithAggregationTemplate extends Executor {
 				}
 			});
 		}
+		Log.d("nils","in onResume of Template PAGE with AGGregation");
 		super.onResume();
 	}
 

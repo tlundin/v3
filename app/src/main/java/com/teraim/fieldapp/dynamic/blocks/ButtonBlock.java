@@ -436,6 +436,13 @@ public  class ButtonBlock extends Block  implements EventListener {
 									o.addRow("");
 									o.addRow("Action button pressed. Executing wf: "+target+" with statusvar "+statusVar);
 									Log.d("Vortex","Action button pressed. Executing wf: "+target+" with statusvar "+statusVar);
+									//If the template called is empty, mark this flow as "caller" to make it possible to refresh its ui after call ends.
+									String calledTemplate = wf.getTemplate();
+									Log.d("vortex","template: "+calledTemplate);
+									if (calledTemplate==null) {
+										Log.d("vortex","call to empty template flow. setcaller.");
+										myContext.setCaller();
+									}
 									Start.singleton.changePage(wf,statusVar);
 
 								}

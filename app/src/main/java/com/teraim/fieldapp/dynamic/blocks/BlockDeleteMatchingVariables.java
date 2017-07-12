@@ -40,6 +40,7 @@ public class BlockDeleteMatchingVariables extends Block {
 	public void create(WF_Context ctx) {
 		o = GlobalState.getInstance().getLogger();
 		o.addRow("Now deleting all variables under Context: ["+context+"] and pattern "+pattern);
+		//Log.d("papp","Now deleting all variables under Context: ["+context+"] and pattern "+pattern);
 		DB_Context evaluatedContext = DB_Context.evaluate(contextE);
 		if (evaluatedContext.isOk()) {
 			Map<String, String> hash = evaluatedContext.getContext();
@@ -66,6 +67,9 @@ public class BlockDeleteMatchingVariables extends Block {
 			if (rowsAffected>0) {
 				Log.d("vortex",("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + keyBuilder + "] and pattern [" + pattern + "]"));
 				o.addRow("Deleteblock " + this.getBlockId() + " erased " + rowsAffected + " entries for [" + hash + "] and pattern [" + keyBuilder.toString() + "]");
+				//Create sync entry.
+				Log.d("vortex","Creating Erase sync entry for "+keyBuilder.toString());
+				GlobalState.getInstance().getDb().insertEraseAuditEntry(keyBuilder.toString(),pattern);
 			}
 			else {
 				Log.d("vortex","Deleteblock "+this.getBlockId()+" erased no entries for ["+hash+"] and pattern ["+keyBuilder.toString()+"]");
@@ -74,9 +78,7 @@ public class BlockDeleteMatchingVariables extends Block {
 
 			}
 
-			//Create sync entry.
-			Log.d("vortex","Creating Erase sync entry for "+keyBuilder.toString());			
-			GlobalState.getInstance().getDb().insertEraseAuditEntry(keyBuilder.toString(),pattern);
+
 			
 		} else {
 			o.addRow("");

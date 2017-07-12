@@ -405,10 +405,11 @@ public class GlobalState  {
 
 	
 	public void sendSyncEvent(Intent intent) {
+		Log.d("vortex","IN SEND SYNC EVENT WITH ACTION "+intent.getAction());
 		if (mHandler!=null) {
-		Message m = Message.obtain(mHandler);
-		m.obj=intent;
-		m.sendToTarget();
+			Message m = Message.obtain(mHandler);
+			m.obj=intent;
+			m.sendToTarget();
 		} else
 			Log.e("vortex","NO MESSAGE NO HANDLER!!");
 	}

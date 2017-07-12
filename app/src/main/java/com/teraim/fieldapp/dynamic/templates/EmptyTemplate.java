@@ -42,7 +42,7 @@ public class EmptyTemplate extends Executor {
 
 	@Override
 	public void onStop() {
-		Log.d("blax","on stop!");
+		Log.d("blax","Emptytemplate on stop!");
 		super.onStop();
 	}
 

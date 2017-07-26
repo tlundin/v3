@@ -327,10 +327,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 											for (Variable var:variablesToSave) {
 												Log.d("vortex","Saving "+var.getLabel());
 												boolean resultOfSave = var.setValue(var.getValue());
-												if (resultOfSave) {
+												/*if (resultOfSave) {
 													for (int i=0;i<100;i++)
 													Log.e("vortex","KORS I TAKET!!!!!!!!!!!!!!!!!!!!!!!!");
-												}
+												}*/
 											}
 											myContext.registerEvent(new WF_Event_OnSave(ButtonBlock.this.getBlockId()));
 											mpopup.dismiss();

@@ -184,14 +184,22 @@ public class Variable implements Serializable {
 		//Null values are not allowed in db.
 		if (value==null)
 			return false;
-		if (!usingDefault && myValue != null && myValue.equals(value))
-			return false;
+		if (!usingDefault && myValue != null) {
+			if (myValue.equals(value))
+				return false;
+			if (this.getType()==DataType.bool) {
+				if (value.equals("true")&&myValue.equals("1"))
+					return false;
+				if (value.equals("false")&&myValue.equals("0"))
+					return false;
+			}
+		}
 		if (this.iAmOutOfRange) {
 			Log.d("vortex","Out of range. Value not stored!");
 			return false;
 		}
 
-		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext());
+		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext()+"using default: "+usingDefault);
 		value = Tools.removeStartingZeroes(value);
 		myValue = value;
 		Log.d("zzzz","myValue in setValue "+myValue);

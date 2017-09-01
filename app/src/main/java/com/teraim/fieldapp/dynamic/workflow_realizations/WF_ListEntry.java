@@ -53,7 +53,7 @@ public abstract class WF_ListEntry extends WF_Widget implements Listable,Compara
 	@Override
 	public String getKey() { 
 		if (myVar == null) {
-			Log.d("taxx","id: "+getId()+" label: "+label);
+			Log.e("taxx","id: "+getId()+" label: "+label);
 			return null;
 		}
 		else return myVar.getId();

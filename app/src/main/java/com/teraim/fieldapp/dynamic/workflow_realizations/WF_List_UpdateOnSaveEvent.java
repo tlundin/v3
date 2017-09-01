@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -15,7 +17,6 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 import com.teraim.fieldapp.non_generics.Constants;
 
 public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventListener,EventGenerator{
@@ -38,17 +39,30 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 	private Map<String,EntryField> entryFields = new HashMap<String,EntryField>();
 	int index = 0;
 
-	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, List<List<String>> rows, boolean isVisible, DisplayFieldBlock format) {
+	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, final List<List<String>> rows, boolean isVisible, final DisplayFieldBlock format) {
 		super(id, ctx,rows,isVisible);
 		String namePrefix = al.getFunctionalGroup(rows.get(0));
 		Log.d("nils","SkarmGrupp: "+namePrefix);
 		varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
 		ctx.registerEventListener(this, EventType.onSave);
 		o = GlobalState.getInstance().getLogger();
+        long t1 = System.currentTimeMillis();
+        (new CreateListAsyncTask() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                super.doInBackground(params);
+                int i = 0;
+                for (List<String> r : rows) {
+                    i++;
+                    addEntryField(r, format);
+                    if (i%10==0)
+                        publishProgress("Creating list ("+i+"/"+rows.size()+")");
+                }
+                return null;
+            }
 
-		for (List<String>r:rows)  {
-			addEntryField(r,format);
-		}
+
+        }).execute();
 		this.myEntryFieldFormat = format;
 	}
 
@@ -75,17 +89,16 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 
 	@Override 
-	public Set<Variable> addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
-		//		List<String>cRow;
-		Set<Variable> retVar=null;
+	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
 
-		Log.e("nils","in AddVariableToEveryListEntry for "+varSuffix);
+		Log.d("nils","in AddVariableToEveryListEntry for "+varSuffix);
 		EntryField ef;
 		Map<String,EntryField> mapmap = new HashMap<String,EntryField>();
+        boolean success;
 		for (String key:entryFields.keySet()) {
 			ef = entryFields.get(key);
 
-			boolean success=false;
+			success=false;
 
 			//Log.d("vortex","varIDs contain: "+ef.varIDs);
 			for (String varID:ef.varIDs) {
@@ -103,7 +116,8 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 				//This variable is either wrong or global.
 				Log.d("nils","DID NOT FIND MATCH for suffix: "+varSuffix);
 				Variable v= varCache.getVariable(varSuffix,initialValue,-1);
-				if (v!=null)
+				//add global variable
+                if (v!=null)
 					ef.cfs.addVariable(v, displayOut,format,isVisible,showHistorical);	
 				else {
 					o.addRow("");
@@ -111,54 +125,103 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 					o.addRow("context: ["+gs.getVariableCache().getContext().toString()+"]");
 					String namePrefix = al.getFunctionalGroup(myRows.get(0));
 					o.addRow("Group: "+namePrefix);
+					return true;
 				}
+
 			}
 		}
-		if (!mapmap.isEmpty())
-			createAsync(mapmap,displayOut,format,isVisible,showHistorical,initialValue);
-
-		return null;
+		if (!mapmap.isEmpty()) {
+			createAsync(mapmap, displayOut, format, isVisible, showHistorical, initialValue);
+			return false;
+		}
+		//If mapmap is empty of variables, no work to be done. Return true = done.
+		return true;
 	}
 
 
+
+
+
+
+    private class CreateListAsyncTask extends AsyncTask<Void,String,Void> {
+
+        ProgressDialog pDialog;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            pDialog.dismiss();
+            WF_List_UpdateOnSaveEvent.listReady();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = ProgressDialog.show(myContext.getContext(), "",
+                    "Loading. Please wait...", true);
+
+        }
+
+        @Override
+        protected void onProgressUpdate(String ...value) {
+            super.onProgressUpdate(null);
+            pDialog.setMessage(value[0]);
+        }
+    }
 
 
 	private void createAsync(final Map<String, EntryField> mapmap,final  boolean displayOut,final  String format,final  boolean isVisible,final boolean showHistorical,final String initialValue) {
 
+        Log.d("beezo", myContext.getContext() + "");
 
+        (new CreateListAsyncTask() {
 
-		/*new Handler().postDelayed(new Runnable() {
-			public void run() {
-			}
+            @Override
+            protected Void doInBackground(Void... params) {
+                super.doInBackground(params);
+                Variable v;
+                long t = System.currentTimeMillis(), t2 = 0;
+                int i = 0;
+                int tot = mapmap.keySet().size();
+				WF_ClickableField.clearStaticGlobals();
+                for (String vs : mapmap.keySet()) {
+                    long t1 = System.currentTimeMillis();
+                    //If variabel has value in db, use it.
+                    if (varValueMap != null && varValueMap.containsKey(vs))
+                        v = varCache.getCheckedVariable(vs, varValueMap.get(vs), true);
+                    else
+                        //Otherwise use default.
+                        v = varCache.getCheckedVariable(vs, initialValue, false);
+                    i++;
 
-			}, 0);
-		}
-		 */
-		Variable v;
+                    //Defaultvalue is either the historical value, null or the current value.
+                    //Historical value will be set if the variable does not exist already. If it exists, the current value is used, even if it is null.
+                    t2 += (System.currentTimeMillis() - t1);
+                    if (v != null) {
+                        //Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
+                        mapmap.get(vs).cfs.addVariable(v, displayOut, format, isVisible, showHistorical, true);
+                    } else {
+                        o.addRow("");
+                        o.addRedText("Variable with suffix " + vs + " was not found when creating list with id " + getId());
+                        Log.e("nils", "Variable with suffix " + vs + " was not found when creating list with id " + getId());
+                    }
+                    if (i%10==0) {
+                        publishProgress("Adding variables ("+i + "/" + tot+")");
+                    }
+                }
+                //clear static opt-val variables.
 
-		for (String vs: mapmap.keySet()) {
+                Log.d("beezo", "Time: " + (System.currentTimeMillis() - t) + " t2: " + t2);
+               // pDialog.dismiss();
+                return null;
+            }
+        }).execute();
+    }
 
-			//If variabel has value in db, use it.
-			if (varValueMap!=null && varValueMap.containsKey(vs)) 
-				v = varCache.getCheckedVariable(vs, varValueMap.get(vs),true);	
-			else
-				//Otherwise use default. 
-				v = varCache.getCheckedVariable(vs, initialValue,false);
-
-
-			//Defaultvalue is either the historical value, null or the current value. 
-			//Historical value will be set if the variable does not exist already. If it exists, the current value is used, even if it is null.
-
-			if (v!=null) {
-				//Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
-				mapmap.get(vs).cfs.addVariable(v, displayOut,format,isVisible,showHistorical);		
-			} else {
-				o.addRow("");
-				o.addRedText("Variable with suffix "+vs+" was not found when creating list with id "+getId());
-				Log.e("nils","Variable with suffix "+vs+" was not found when creating list with id "+getId());
-			}
-		}
-	}
 
 
 

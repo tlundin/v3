@@ -93,7 +93,7 @@ public class Start extends MenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Setup handler for uncaught exceptions.
-
+/*
 		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
@@ -104,7 +104,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-
+*/
 
 		Log.d("nils","in START onCreate");
 		singleton = this;
@@ -372,7 +372,7 @@ public class Start extends MenuActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d("vortex","IN ONACTIVITY RESULT");
 		Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
-		if (f!=null)
+		if (f!=null && f instanceof Executor)
 			((Executor)f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start",EventType.onActivityResult));
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -504,16 +504,21 @@ public class Start extends MenuActivity {
 
 
 	public LoggerI getLogger() {
+		Log.d("vortex","getlogger - debuglogger is null? "+(debugLogger==null));
 		if (debugLogger==null) {
 			String logLevel =globalPh.get(PersistenceHelper.LOG_LEVEL);
 			if (logLevel == null || logLevel.equals(PersistenceHelper.UNDEFINED) ||
-					logLevel.equals("normal"))
-				debugLogger = new Logger(this,"DEBUG");
-			else if (logLevel.equals("off"))
+					logLevel.equals("normal")) {
+				debugLogger = new Logger(this, "DEBUG");
+				Log.d("vortex","logger normal");
+			}
+			else if (logLevel.equals("off")) {
 				debugLogger = new DummyLogger();
+				Log.d("vortex","logger off");
+			}
 			else {
 				debugLogger = new CriticalOnlyLogger(this);
-				Log.d("vortex","critical only");
+				Log.d("vortex","logger critical only");
 			}
 
 		}

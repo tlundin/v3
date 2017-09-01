@@ -143,7 +143,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 					l.refresh();
 					//Everything is WF_Widgets, so this is safe!
 					myW.addView(((WF_Widget)l).getWidget());
-					//Log.d("vortex","Drawing: "+l.getLabel());
+					Log.d("vortex","Drawing: "+l.getLabel());
 				}
 				//Log.d("nils","Settingdrawactive to false");
 
@@ -199,7 +199,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 				boolean isRemoved=false;
 				for (Filter fi : myFilters)
 					isRemoved = fi.isRemovedByFilter(li);
-				Log.e("zuzz","got here "+isRemoved);
+				Log.e("zuzz","isremoved "+isRemoved);
 				if (isRemoved && filteredList.contains(li)) {
 					filteredList.remove(li);
 					Log.e("zuzz","removed "+li);
@@ -244,4 +244,11 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 		myW.removeAllViews();
 	}
 
+	public static void listReady() {
+
+		if (GlobalState.getInstance()!=null) {
+			GlobalState.getInstance().getCurrentWorkflowContext().getTemplate().continueExecution();
+		} else
+			Log.e("vortex","GS null in Wf_list");
+	}
 }

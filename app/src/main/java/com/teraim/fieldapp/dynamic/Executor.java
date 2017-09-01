@@ -22,6 +22,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -219,6 +220,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 				}
 			};
+
+			LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(brr,
+					ifi);
 			
 			myContext = new WF_Context((Context)this.getActivity(),this,R.id.content_frame);
 			wf = getFlow();
@@ -244,8 +248,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		Log.d("vortex","in Executor onResume "+this.toString());
 
 		gs = GlobalState.getInstance();
-		if (gs!=null && gs.getContext()!=null) {
-			gs.getContext().registerReceiver(brr, ifi);
+		if ( gs!=null && gs.getContext()!=null) {
 			if(myContext!=null) {
 				if (myContext.hasGPSTracker())
 					gs.getTracker().startScan(gs.getContext());
@@ -260,15 +263,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	@Override
 	public void onPause()
 	{
+		super.onPause();
 		Log.d("Vortex", "onPause() for executor "+this.toString());
 		//Stop listening for bluetooth events.
-		if (brr!=null && gs!=null)
-			gs.getContext().unregisterReceiver(brr);
-
-		
-		
-		
-		super.onPause();
 
 	}
 
@@ -377,11 +374,19 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		Log.d("vortex","myHash: "+wfHash);
 		execute(0);
 	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (brr!=null && this.getActivity()!=null)
+			LocalBroadcastManager.getInstance(this.getActivity()).unregisterReceiver(brr);
+	}
+
 	private void execute(int blockP) {
 
 		boolean notDone = true;
-		Set<Variable>blockVars;
-
+		savedBlockPointer=-1;
+	    Log.d("vortex","in execute with blockP "+blockP);
 		myContext.clearExecutedBlocks();
 		try {
 
@@ -512,16 +517,24 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					o.addRow("");
 					o.addYellowText("AddVariableToEveryListEntryBlock found "+b.getBlockId());
 					AddVariableToEveryListEntryBlock bl = (AddVariableToEveryListEntryBlock)b;
-					blockVars = bl.create(myContext);
-					if (blockVars!=null)
-						visiVars.addAll(blockVars);
+					if(!bl.create(myContext)) {
+						savedBlockPointer = blockP+1;
+						return;
+					}
+
 
 				}
 				else if (b instanceof BlockCreateListEntriesFromFieldList) {
 					o.addRow("");
 					o.addYellowText("BlockCreateListEntriesFromFieldList found "+b.getBlockId());
 					BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList)b;
-					bl.create(myContext);
+
+					if(!bl.create(myContext)) {
+						//Pause execution and wait for callback..
+						savedBlockPointer = blockP+1;
+						return;
+
+					}
 				}
 				else if (b instanceof BlockCreateTable) {
 					o.addRow("");
@@ -851,7 +864,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				else if (b instanceof CreateGisBlock) {
 					pDialog = ProgressDialog.show(myContext.getContext(), "", 
 							"Loading. Please wait...", true);
-					savedBlockPointer = blockP+1;
+
 					//Will callback to this object after image is loaded.
 					CreateGisBlock bl = ((CreateGisBlock) b);
 					if (bl.hasCarNavigation())
@@ -860,6 +873,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						Log.e("vortex","This has no SATNAV");
 					if(!bl.create(myContext,this))
 						//Pause execution and wait for callback..
+						savedBlockPointer = blockP+1;
 						return;
 				}
 
@@ -991,8 +1005,10 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 	@Override
 	public void continueExecution() {
-		if (savedBlockPointer!=-1)
+		if (savedBlockPointer!=-1) {
 			this.execute(savedBlockPointer);
+
+		}
 		else
 			Log.e("vortex","No saved block pointer...aborting execution");
 	}

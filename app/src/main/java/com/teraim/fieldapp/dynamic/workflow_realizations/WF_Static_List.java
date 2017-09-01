@@ -30,7 +30,7 @@ public abstract class WF_Static_List extends WF_List {
 		
 	}
 
-	public abstract Set<Variable> addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible,boolean showHistorical,String initialValue);
+	public abstract boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible,boolean showHistorical,String initialValue);
 	public abstract void addFieldListEntry(String listEntryID, 
 			String label, String description);
 	public abstract Variable addVariableToListEntry(String varNameSuffix,boolean displayOut,String targetField,

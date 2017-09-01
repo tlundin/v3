@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +22,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -236,8 +240,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			} else {
 
 				Intent intent = new Intent();
-				intent.setAction("INITSTARTS");
-				mActivity.sendBroadcast(intent);
+				intent.setAction(MenuActivity.INITSTARTS);
+				LocalBroadcastManager.getInstance(this.getActivity()).sendBroadcast(intent);
 				Log.d("vortex","Loading In Memory Modules");
 				myLoader.loadModules(true);
 				loginConsole.draw();
@@ -417,51 +421,28 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			Table t = (Table)(myModules.getModule(VariablesConfiguration.NAME).getEssence());
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
 			if (mActivity!=null) {
-				GlobalState gs = 
+				final GlobalState gs =
 						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd);
-				Start.alive=true;
-				//Update app version if new
-				//if (majorVersionChange) {
-				float loadedAppVersion = ph.getF(PersistenceHelper.NEW_APP_VERSION);
-				Log.d("vortex","updating App version to "+loadedAppVersion);
-				ph.put(PersistenceHelper.CURRENT_VERSION_OF_APP,loadedAppVersion);
-				//				}
-				//drawermenu
-				gs.setDrawerMenu(Start.singleton.getDrawerMenu());
-				
-				
-				//Change to main.
-				//execute main workflow if it exists.
-				Workflow wf = gs.getWorkflow("Main");
-				if (wf == null) {
-					String[] x = gs.getWorkflowNames();
-					debugConsole.addRow("");
-					debugConsole.addRedText("workflow main not found. These are available:");
-					for (String n:x) 
-						debugConsole.addRow(n);
-				}
-				if (wf!=null) {
-					Start.singleton.getDrawerMenu().closeDrawer();
-					Start.singleton.getDrawerMenu().clear();
-					gs.sendEvent(MenuActivity.INITDONE);
-					float newV = ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-					if (newV==-1)
-						appTxt.setText(bundleName+" [no version]");
-					else {
-						if (newV>oldV)
-							appTxt.setText(bundleName+" --New Version! ["+newV+"]");
-						else
-							appTxt.setText(bundleName+" "+newV);
-					}
-					Start.singleton.changePage(wf,null);
-					Log.d("vortex","executing workflow main!");
-					gs.setModules(myModules);
+				if (gs.getBackupManager().timeToBackup()) {
+					final AlertDialog progD = new ProgressDialog.Builder(mActivity).setTitle("Backup")
+							.setMessage("Automatic backup in progress. Please wait")
+							.setCancelable(false)
+							.show();
+					final Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							long t1 = System.currentTimeMillis();
+							gs.getBackupManager().backUp();
+							Log.d("vortex","Backup took "+(System.currentTimeMillis()-t1)+" ms");
+							progD.dismiss();
+							start(gs);
+						}
+					}, 100);
 
-					GlobalState.getInstance().onStart();
-				} else {
-					loginConsole.addRow("");
-					loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
-				}
+				} else
+					start(gs);
+
 			} else {
 				Log.e("vortex","No activity.");
 			}
@@ -475,6 +456,53 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 
+private void start(GlobalState gs) {
+	Start.alive=true;
+	//Update app version if new
+	//if (majorVersionChange) {
+	float loadedAppVersion = ph.getF(PersistenceHelper.NEW_APP_VERSION);
+	Log.d("vortex","updating App version to "+loadedAppVersion);
+	ph.put(PersistenceHelper.CURRENT_VERSION_OF_APP,loadedAppVersion);
+	//				}
+	//drawermenu
+	gs.setDrawerMenu(Start.singleton.getDrawerMenu());
+
+
+	//Change to main.
+	//execute main workflow if it exists.
+	Workflow wf = gs.getWorkflow("Main");
+	if (wf == null) {
+		String[] x = gs.getWorkflowNames();
+		debugConsole.addRow("");
+		debugConsole.addRedText("workflow main not found. These are available:");
+		for (String n:x)
+			debugConsole.addRow(n);
+	}
+	if (wf!=null) {
+		Start.singleton.getDrawerMenu().closeDrawer();
+		Start.singleton.getDrawerMenu().clear();
+		gs.sendEvent(MenuActivity.INITDONE);
+		float newV = ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
+		if (newV==-1)
+			appTxt.setText(bundleName+" [no version]");
+		else {
+			if (newV>oldV)
+				appTxt.setText(bundleName+" --New Version! ["+newV+"]");
+			else
+				appTxt.setText(bundleName+" "+newV);
+		}
+		Start.singleton.changePage(wf,null);
+		Log.d("vortex","executing workflow main!");
+		gs.setModules(myModules);
+
+		GlobalState.getInstance().onStart();
+	} else {
+		loginConsole.addRow("");
+		loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
+	}
+
+
+	}
 	private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 		ImageView bmImage;
 
@@ -506,7 +534,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	@Override
 	public void loadFail(String loaderId) {
 		Log.d("vortex","loadFail!");
-		getActivity().sendBroadcast(new Intent(MenuActivity.INITFAILED));
+		LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MenuActivity.INITFAILED));
 	}
 
 

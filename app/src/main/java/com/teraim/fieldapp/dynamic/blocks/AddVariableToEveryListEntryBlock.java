@@ -38,17 +38,18 @@ public class AddVariableToEveryListEntryBlock extends Block {
 	//addVariableToEveryListEntry(String varSuffix,boolean displayOut)
 	//addVariable(String varLabel,Unit unit,String varId,boolean displayOut)
 
-	public Set<Variable> create(WF_Context myContext) {
+	public boolean create(WF_Context myContext) {
 
 		final WF_Static_List l = myContext.getList(target);
-		o = GlobalState.getInstance().getLogger();
 		if (l==null) {
+			o = GlobalState.getInstance().getLogger();
 			o.addRow("");
 			o.addRedText("Couldn't find list with ID "+target+" in AddVariableToEveryListEntryBlock");
+			return true;
 		} else {
 			Log.d("nils","Calling AddVariableToEveryListEntry for "+variableSuffix);
-			l.addVariableToEveryListEntry(variableSuffix, displayOut,format,isVisible,showHistorical,initialValue);		
+			return l.addVariableToEveryListEntry(variableSuffix, displayOut,format,isVisible,showHistorical,initialValue);
 		}
-		return null;
+
 	}
 }

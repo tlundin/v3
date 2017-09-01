@@ -39,7 +39,7 @@ public class DynamicGisPoint extends GisPointObject {
 			String x = myXVar.getValue();
 			String y = myYVar.getValue();
 			if (x== null || y == null) {
-				Log.d("vortex","(At least) one variable have no value in GisPObject: "+myXVar+" "+myYVar);
+				//Log.d("vortex","(At least) one variable have no value in GisPObject: "+myXVar+" "+myYVar);
 				return null;
 			} else
 				return new SweLocation(x,y);

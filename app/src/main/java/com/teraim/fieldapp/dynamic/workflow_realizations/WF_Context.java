@@ -388,12 +388,13 @@ public class WF_Context {
 	}
 	
 	public boolean isContextVariable(String cVar) {
+		Log.d("boo","contextvar? "+cVar+" cVars "+contextVariables);
 		if (contextVariables == null)
 			return false;
 		return (contextVariables.contains(cVar));
 	}
 	public void setMyEndIsNear() {
-		Log.e("Vortex","MY END IS NER IS NOW TRUEEE!!!!");
+		Log.e("Vortex","MY END IS COMING!");
 		myEndIsNear=true;
 	}
 	public boolean myEndIsNear() {

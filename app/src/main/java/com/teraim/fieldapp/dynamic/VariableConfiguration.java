@@ -87,6 +87,8 @@ public class VariableConfiguration implements Serializable {
 		return myTable;
 	}
 
+
+
 	/*
 	public String getListEntryName(List<String> row) {
 		return row.get(fromNameToColumn.get(requiredColumns.get(LIST_ENTRY)));

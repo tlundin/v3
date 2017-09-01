@@ -1255,7 +1255,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			Button button;
 			for (final GisObject go : candidates) {
 				button = (Button) li.inflate(R.layout.gis_candidate_button, null);
-				button.setText(go.getLabel() + " (" + (int)go.getDistanceToClick() + ")");
+				button.setText(go.getLabel() );
 				candidatesButtonL.addView(button);
 				button.setOnClickListener(new OnClickListener() {
 					@Override

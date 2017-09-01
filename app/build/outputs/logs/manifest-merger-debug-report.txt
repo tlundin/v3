@@ -19,30 +19,30 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:2:1-96:12
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:8:5-10:41
-MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\Terje\.android\build-cache\c11332ef542af894a05a35c7a291312273cf0a7c\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:23:5-42
-MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\984d766bf52dbcc923cc1f0ded50310f67950c2e\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-appindexing:7.8.0] C:\Users\Terje\.android\build-cache\4ffcb073fd9fe2f781923bfe94d3c2ec909a2e72\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\1e39ff30a251371ff784d8740ae1d5ef8db2c603\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-appstate:7.8.0] C:\Users\Terje\.android\build-cache\083473be14d0aaf2d78a88ff9b411c6a63fd8f61\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-cast:7.8.0] C:\Users\Terje\.android\build-cache\586ae24c03687c703ff8cf2b4b44539df31e3641\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\Terje\.android\build-cache\dd2e468551f4a86f5fd10196c175635c7dc3993f\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:23:5-42
+MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\d477180fb3bc77477e202876f22dcb248c9f3fde\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appindexing:7.8.0] C:\Users\Terje\.android\build-cache\5bb5cab2f6ce1ff77c7458dd4a32819c4fcc9844\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\4861bc12d549160bcc375df5a7fbfc7dee5a7fe3\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-appstate:7.8.0] C:\Users\Terje\.android\build-cache\434d6b28d0ada6745bd7f46c21183059b1362927\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-cast:7.8.0] C:\Users\Terje\.android\build-cache\994bf065f26084d4f8489dabcf8ca0e771f8ab87\output\AndroidManifest.xml:18:5-42
 MERGED from [com.android.support:mediarouter-v7:22.2.0] C:\Users\Terje\.android\build-cache\59537ed2e7ed907276e3a2236f163ae52d90fc5e\output\AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\Terje\.android\build-cache\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\output\AndroidManifest.xml:20:5-43
-MERGED from [com.google.android.gms:play-services-fitness:7.8.0] C:\Users\Terje\.android\build-cache\836192f16e810be276522b84f7fa65f5e2d84a9b\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-games:7.8.0] C:\Users\Terje\.android\build-cache\3d0771eff27e1ffefc3e5a396fe7397b0019bed0\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-drive:7.8.0] C:\Users\Terje\.android\build-cache\3573b864a68287f264adb6a77de1d1882b2b8ec4\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-location:7.8.0] C:\Users\Terje\.android\build-cache\87c70097133982d1cebf68a2a67928d4dd197d42\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\83a8b9939ad114ff2088d68da411bdd566cae3d3\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-panorama:7.8.0] C:\Users\Terje\.android\build-cache\08d82ac7124e70d271478cc99d835d536cf3826d\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-plus:7.8.0] C:\Users\Terje\.android\build-cache\a4d9414660926f4a4148288fce2ed228009d912d\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-safetynet:7.8.0] C:\Users\Terje\.android\build-cache\6a96123fd3be58a07e6250df407237ab9289d2e1\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-vision:7.8.0] C:\Users\Terje\.android\build-cache\43c137d3c3e6febe58918cd51016429498f1c217\output\AndroidManifest.xml:4:5-42
-MERGED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:19:5-42
-MERGED from [com.google.android.gms:play-services-identity:7.8.0] C:\Users\Terje\.android\build-cache\330058bff5a00ba600d21a481c7aacf17cf64875\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:27:5-42
-MERGED from [com.google.android.gms:play-services-wearable:7.8.0] C:\Users\Terje\.android\build-cache\1775f41ef398f73b3869f6fc81e70d57453f01c9\output\AndroidManifest.xml:18:5-42
-MERGED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-fitness:7.8.0] C:\Users\Terje\.android\build-cache\338fbcc6560ee3c8059974f22ebb200e7062cd00\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-games:7.8.0] C:\Users\Terje\.android\build-cache\164fec93f4170e21f3df7c3302bb5492467b86f2\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-drive:7.8.0] C:\Users\Terje\.android\build-cache\4a69d11323bbbf03aeecd2a9678749b4530e6712\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\ac5c4f157bb522657b6a1a048158fada89538c9d\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-location:7.8.0] C:\Users\Terje\.android\build-cache\5579e1084cab6ade92f9aa1dfac4ba7bd153bb61\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\397f5b2ed17c7b23777c9ff5c5b91c39cf64fff8\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-panorama:7.8.0] C:\Users\Terje\.android\build-cache\b0786bdefc76c198a0fdd510708fceea14d59e94\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-plus:7.8.0] C:\Users\Terje\.android\build-cache\c18728b79c2f47bf84ad5cd3a409e1a9661d66b4\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-safetynet:7.8.0] C:\Users\Terje\.android\build-cache\3fbfe81c1f58a065ed02c78a7d0081f5bc5838fb\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-vision:7.8.0] C:\Users\Terje\.android\build-cache\6dd647c76a1536f8ddb68bc936abb904a3c902d4\output\AndroidManifest.xml:4:5-42
+MERGED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:19:5-42
+MERGED from [com.google.android.gms:play-services-identity:7.8.0] C:\Users\Terje\.android\build-cache\f57b6af735d1437181942103cc737891c03ab5c3\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:27:5-42
+MERGED from [com.google.android.gms:play-services-wearable:7.8.0] C:\Users\Terje\.android\build-cache\d1b05384c756706fd4edef341a614f5ab19cce2d\output\AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\1fad7fecd5406d5db49dbb4a69e8305b08502181\output\AndroidManifest.xml:18:5-42
 MERGED from [com.android.support:support-v4:22.2.0] C:\Users\Terje\.android\build-cache\2cd7c3c486b8416ac95c5c5227b5f0000040a972\output\AndroidManifest.xml:20:5-43
 	android:targetSdkVersion
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:10:9-38
@@ -54,7 +54,7 @@ MERGED from [com.android.support:support-v4:22.2.0] C:\Users\Terje\.android\buil
 		INJECTED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml
 uses-feature#0x00020000
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:12:5-14:35
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:23:5-25:33
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:23:5-25:33
 	android:glEsVersion
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:13:9-41
 	android:required
@@ -73,17 +73,17 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:18:5-79
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:18:22-76
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:19:5-81
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:22:5-80
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:22:5-80
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:19:22-78
 uses-permission#android.permission.INTERNET
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:20:5-67
-MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:20:5-66
-MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\984d766bf52dbcc923cc1f0ded50310f67950c2e\output\AndroidManifest.xml:21:5-67
-MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\1e39ff30a251371ff784d8740ae1d5ef8db2c603\output\AndroidManifest.xml:19:5-67
-MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\AndroidManifest.xml:22:5-67
-MERGED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:20:5-66
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\d477180fb3bc77477e202876f22dcb248c9f3fde\output\AndroidManifest.xml:21:5-67
+MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\4861bc12d549160bcc375df5a7fbfc7dee5a7fe3\output\AndroidManifest.xml:19:5-67
+MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\ac5c4f157bb522657b6a1a048158fada89538c9d\output\AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:21:5-66
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:20:22-64
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
@@ -92,10 +92,10 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:21:5-81
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:21:22-78
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:22:5-79
-MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:21:5-78
-MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\984d766bf52dbcc923cc1f0ded50310f67950c2e\output\AndroidManifest.xml:22:5-79
-MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\83a8b9939ad114ff2088d68da411bdd566cae3d3\output\AndroidManifest.xml:19:5-79
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\d477180fb3bc77477e202876f22dcb248c9f3fde\output\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\397f5b2ed17c7b23777c9ff5c5b91c39cf64fff8\output\AndroidManifest.xml:19:5-79
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:20:5-78
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:22:22-76
 uses-permission#com.google.android.providers.gsf.permission.READ_GSERVICES
@@ -128,29 +128,29 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:29:5-80
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:29:22-77
 application
 ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:31:5-94:19
-MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\Terje\.android\build-cache\c11332ef542af894a05a35c7a291312273cf0a7c\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:24:5-32:19
-MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\984d766bf52dbcc923cc1f0ded50310f67950c2e\output\AndroidManifest.xml:24:5-20
-MERGED from [com.google.android.gms:play-services-appindexing:7.8.0] C:\Users\Terje\.android\build-cache\4ffcb073fd9fe2f781923bfe94d3c2ec909a2e72\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\1e39ff30a251371ff784d8740ae1d5ef8db2c603\output\AndroidManifest.xml:20:5-20
-MERGED from [com.google.android.gms:play-services-appstate:7.8.0] C:\Users\Terje\.android\build-cache\083473be14d0aaf2d78a88ff9b411c6a63fd8f61\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-cast:7.8.0] C:\Users\Terje\.android\build-cache\586ae24c03687c703ff8cf2b4b44539df31e3641\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\Terje\.android\build-cache\dd2e468551f4a86f5fd10196c175635c7dc3993f\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:24:5-32:19
+MERGED from [com.google.android.gms:play-services-analytics:7.8.0] C:\Users\Terje\.android\build-cache\d477180fb3bc77477e202876f22dcb248c9f3fde\output\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-appindexing:7.8.0] C:\Users\Terje\.android\build-cache\5bb5cab2f6ce1ff77c7458dd4a32819c4fcc9844\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-appinvite:7.8.0] C:\Users\Terje\.android\build-cache\4861bc12d549160bcc375df5a7fbfc7dee5a7fe3\output\AndroidManifest.xml:20:5-20
+MERGED from [com.google.android.gms:play-services-appstate:7.8.0] C:\Users\Terje\.android\build-cache\434d6b28d0ada6745bd7f46c21183059b1362927\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-cast:7.8.0] C:\Users\Terje\.android\build-cache\994bf065f26084d4f8489dabcf8ca0e771f8ab87\output\AndroidManifest.xml:19:5-20
 MERGED from [com.android.support:mediarouter-v7:22.2.0] C:\Users\Terje\.android\build-cache\59537ed2e7ed907276e3a2236f163ae52d90fc5e\output\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:appcompat-v7:22.2.0] C:\Users\Terje\.android\build-cache\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\output\AndroidManifest.xml:22:5-20
-MERGED from [com.google.android.gms:play-services-fitness:7.8.0] C:\Users\Terje\.android\build-cache\836192f16e810be276522b84f7fa65f5e2d84a9b\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-games:7.8.0] C:\Users\Terje\.android\build-cache\3d0771eff27e1ffefc3e5a396fe7397b0019bed0\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-drive:7.8.0] C:\Users\Terje\.android\build-cache\3573b864a68287f264adb6a77de1d1882b2b8ec4\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\AndroidManifest.xml:24:5-20
-MERGED from [com.google.android.gms:play-services-location:7.8.0] C:\Users\Terje\.android\build-cache\87c70097133982d1cebf68a2a67928d4dd197d42\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\83a8b9939ad114ff2088d68da411bdd566cae3d3\output\AndroidManifest.xml:20:5-20
-MERGED from [com.google.android.gms:play-services-panorama:7.8.0] C:\Users\Terje\.android\build-cache\08d82ac7124e70d271478cc99d835d536cf3826d\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-plus:7.8.0] C:\Users\Terje\.android\build-cache\a4d9414660926f4a4148288fce2ed228009d912d\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-safetynet:7.8.0] C:\Users\Terje\.android\build-cache\6a96123fd3be58a07e6250df407237ab9289d2e1\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-vision:7.8.0] C:\Users\Terje\.android\build-cache\43c137d3c3e6febe58918cd51016429498f1c217\output\AndroidManifest.xml:5:5-20
-MERGED from [com.google.android.gms:play-services-identity:7.8.0] C:\Users\Terje\.android\build-cache\330058bff5a00ba600d21a481c7aacf17cf64875\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\2f796f0d5d7084ab3e55c5ff6ce7a81bce150c7e\output\AndroidManifest.xml:28:5-20
-MERGED from [com.google.android.gms:play-services-wearable:7.8.0] C:\Users\Terje\.android\build-cache\1775f41ef398f73b3869f6fc81e70d57453f01c9\output\AndroidManifest.xml:19:5-20
-MERGED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-fitness:7.8.0] C:\Users\Terje\.android\build-cache\338fbcc6560ee3c8059974f22ebb200e7062cd00\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-games:7.8.0] C:\Users\Terje\.android\build-cache\164fec93f4170e21f3df7c3302bb5492467b86f2\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-drive:7.8.0] C:\Users\Terje\.android\build-cache\4a69d11323bbbf03aeecd2a9678749b4530e6712\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\ac5c4f157bb522657b6a1a048158fada89538c9d\output\AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-location:7.8.0] C:\Users\Terje\.android\build-cache\5579e1084cab6ade92f9aa1dfac4ba7bd153bb61\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-nearby:7.8.0] C:\Users\Terje\.android\build-cache\397f5b2ed17c7b23777c9ff5c5b91c39cf64fff8\output\AndroidManifest.xml:20:5-20
+MERGED from [com.google.android.gms:play-services-panorama:7.8.0] C:\Users\Terje\.android\build-cache\b0786bdefc76c198a0fdd510708fceea14d59e94\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-plus:7.8.0] C:\Users\Terje\.android\build-cache\c18728b79c2f47bf84ad5cd3a409e1a9661d66b4\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-safetynet:7.8.0] C:\Users\Terje\.android\build-cache\3fbfe81c1f58a065ed02c78a7d0081f5bc5838fb\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-vision:7.8.0] C:\Users\Terje\.android\build-cache\6dd647c76a1536f8ddb68bc936abb904a3c902d4\output\AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-identity:7.8.0] C:\Users\Terje\.android\build-cache\f57b6af735d1437181942103cc737891c03ab5c3\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-maps:7.8.0] C:\Users\Terje\.android\build-cache\c7edfe4802b45adf5b9a4b3780e3d93e07f56293\output\AndroidManifest.xml:28:5-20
+MERGED from [com.google.android.gms:play-services-wearable:7.8.0] C:\Users\Terje\.android\build-cache\d1b05384c756706fd4edef341a614f5ab19cce2d\output\AndroidManifest.xml:19:5-20
+MERGED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\1fad7fecd5406d5db49dbb4a69e8305b08502181\output\AndroidManifest.xml:20:5-24:19
 MERGED from [com.android.support:support-v4:22.2.0] C:\Users\Terje\.android\build-cache\2cd7c3c486b8416ac95c5c5227b5f0000040a972\output\AndroidManifest.xml:22:5-20
 	android:label
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:33:9-41
@@ -259,34 +259,34 @@ ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:88:13-90:57
 	android:name
 		ADDED from D:\Terje\Projects\Vortex\app\src\main\AndroidManifest.xml:89:17-69
 activity#com.google.android.gms.ads.AdActivity
-ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:26:9-29:64
+ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:26:9-29:64
 	android:configChanges
-		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:28:13-122
+		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:28:13-122
 	android:theme
-		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:29:13-61
+		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:29:13-61
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:27:13-65
+		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:27:13-65
 activity#com.google.android.gms.ads.purchase.InAppPurchaseActivity
-ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:30:9-31:52
+ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:30:9-31:52
 	android:theme
-		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:31:13-50
+		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:31:13-50
 	android:name
-		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\280f23e65a3ebc57f70844d068612947102f98e3\output\AndroidManifest.xml:30:19-91
+		ADDED from [com.google.android.gms:play-services-ads:7.8.0] C:\Users\Terje\.android\build-cache\0e131ffd739a8a6f66bdfdd66fd70e7d3967a135\output\AndroidManifest.xml:30:19-91
 uses-permission#com.google.android.c2dm.permission.RECEIVE
-ADDED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\AndroidManifest.xml:21:5-82
+ADDED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\ac5c4f157bb522657b6a1a048158fada89538c9d\output\AndroidManifest.xml:21:5-82
 	android:name
-		ADDED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\1f5bf10eab50fd5087005f818442fbf69f9d67d9\output\AndroidManifest.xml:21:22-79
+		ADDED from [com.google.android.gms:play-services-gcm:7.8.0] C:\Users\Terje\.android\build-cache\ac5c4f157bb522657b6a1a048158fada89538c9d\output\AndroidManifest.xml:21:22-79
 uses-permission#android.permission.GET_ACCOUNTS
-ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:21:5-70
+ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:21:5-70
 	android:name
-		ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:21:22-68
+		ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:21:22-68
 uses-permission#android.permission.USE_CREDENTIALS
-ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:22:5-73
+ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:22:5-73
 	android:name
-		ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\65a53ac8f78f0951798538c0170f584dfebe8321\output\AndroidManifest.xml:22:22-71
+		ADDED from [com.google.android.gms:play-services-wallet:7.8.0] C:\Users\Terje\.android\build-cache\f16cb08273ab6b0c373807c81bad569d5b231285\output\AndroidManifest.xml:22:22-71
 meta-data#com.google.android.gms.version
-ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\AndroidManifest.xml:21:9-23:69
+ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\1fad7fecd5406d5db49dbb4a69e8305b08502181\output\AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\AndroidManifest.xml:23:13-66
+		ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\1fad7fecd5406d5db49dbb4a69e8305b08502181\output\AndroidManifest.xml:23:13-66
 	android:name
-		ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\a3cad375b1966347952f3c8e06fddb5067d8efb0\output\AndroidManifest.xml:22:13-58
+		ADDED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\Terje\.android\build-cache\1fad7fecd5406d5db49dbb4a69e8305b08502181\output\AndroidManifest.xml:22:13-58

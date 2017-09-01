@@ -2,8 +2,10 @@ package com.teraim.fieldapp.loadermodule.configurations;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -1291,6 +1293,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	}
 
+	Map<String,Block> blockCache = new HashMap<>();
 
 	private Block readBlockCreateListEntriesFromFieldList(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_create_list_entries_from_field_list...");
@@ -1305,6 +1308,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			String name= parser.getName();
 			if (name.equals("block_ID")) {
 				id = readText("block_ID",parser);
+				//check if cached object exist.
+				if (blockCache.get(id)!=null)
+					return blockCache.get(id);
 			}
 			else if (name.equals("type")) {
 				type = readText("type",parser);

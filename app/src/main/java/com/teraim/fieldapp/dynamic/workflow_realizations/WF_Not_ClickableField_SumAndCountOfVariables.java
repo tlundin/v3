@@ -55,7 +55,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 			for (Listable l:targetList.get()) {
 				Set<Variable> vars = l.getAssociatedVariables();
 				for (Variable v:vars) {
-					Log.e("vortex","VAR: "+v.getId());
+					//Log.e("vortex","VAR: "+v.getId());
 					if (v.getId().matches(myPattern))
 						allMatchingVariables.add(v);
 					//else

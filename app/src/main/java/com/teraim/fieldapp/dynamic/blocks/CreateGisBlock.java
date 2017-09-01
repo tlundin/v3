@@ -224,8 +224,11 @@ public class CreateGisBlock extends Block {
 					}
 				}
 				if (!found) {
-					masterLayer.setVisible(true);
-					Log.d("gurk","masterlayer is now visible.");
+					if (masterLayer!=null) {
+						masterLayer.setVisible(true);
+						Log.d("gurk", "masterlayer is now visible.");
+					} else
+						Log.e("vortex", "no layer with label Def found");
 				}
 
 				BitmapFactory.Options options = new BitmapFactory.Options();
@@ -274,7 +277,7 @@ public class CreateGisBlock extends Block {
 						cb.continueExecution();
 					} else {
 						Log.e("vortex","Failed to create map image. Will exit");
-						cb.abortExecution("Failed to create GisImageView. The map file ["+cachedImgFilePath+"] could not be parsed" );
+						cb.abortExecution("Failed to create Gis page. The map image ["+cachedImgFilePath+"] could not be found" );
 					} 
 				}
 			}, 0);

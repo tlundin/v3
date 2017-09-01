@@ -167,8 +167,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		if (value!=null&&!value.isEmpty()) {
 			ll.setVisibility(View.VISIBLE);
 			CombinedRangeAndListFilter filter = variable.getLimitFilter();
-			if (filter!=null)
-				filter.testRun();
+			//if (filter!=null)
+			//	filter.testRun();
 
 			if (variable.hasBrokenRules()||variable.hasValueOutOfRange()) {
 				Log.d("nils","VARID: "+variable.getId()+" hasBroken: "+variable.hasBrokenRules()+" hasoutofRange: "+variable.hasValueOutOfRange());
@@ -192,6 +192,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			if (variable.getType() != Variable.DataType.bool) {
 
 				if (outC instanceof OutSpin) {
+					Log.d("bort","gets here. "+((OutSpin)outC).opt);
 					outS = value;
 					OutSpin os = ((OutSpin)outC);
 					if (os.opt!=null && os.val!=null)						

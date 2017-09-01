@@ -32,22 +32,23 @@ public class WF_Column_Name_Filter extends WF_Filter {
 	@Override
 	public List<? extends Listable> filter(List<? extends Listable> list) {
 		String key;
-		Iterator<? extends Listable> it = list.iterator();		
+		Iterator<? extends Listable> it = list.iterator();
+		Log.d("filterz","filtering ");
 		while(it.hasNext()) {
 			Listable l = it.next();
 
-
+//			Log.d("filterz","l "+l+" key "+l.getSortableField(columnToMatch)+" coltomatch "+columnToMatch);
 			key = l.getSortableField(columnToMatch);
 			if (key==null)
 				continue;
 			if (!match(key)) {
 				it.remove();
-				if (!key.isEmpty())
-				  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+//				if (!key.isEmpty())
+//				  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 
 			}
 			else {
-				Log.d("filterz", "filter KEEPS element " + l.getKey()+" Label: "+l.getLabel()+" column: "+key);// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+//				Log.d("filterz", "filter KEEPS element " + l.getKey()+" Label: "+l.getLabel()+" column: "+key);// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 				//Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
 				totMatch = true;
 			}
@@ -80,6 +81,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 			for (int i=0;i<myPrefix.length();i++) {
 				if (Character.toLowerCase(key.charAt(0))==Character.toLowerCase(myPrefix.charAt(i))) {
 					match = true;
+
 					break;
 				}
 			}

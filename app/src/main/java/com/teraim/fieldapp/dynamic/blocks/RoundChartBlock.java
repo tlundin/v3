@@ -86,6 +86,7 @@ public class RoundChartBlock extends ChartBlock  {
 		} else {
 			o.addRow("");
 			o.addRedText("Failed to add round chart block with id " + blockId + " - missing datasource!");
+			Log.e("vortex","Failed to add round chart block with id " + blockId + " - missing datasource!");
 			myContext.removeEventListener(this);
 			return;
 		}

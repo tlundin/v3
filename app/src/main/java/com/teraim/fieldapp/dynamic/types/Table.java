@@ -226,7 +226,15 @@ public class Table implements Serializable {
 		return keyParts;
 	}
 
+	public void printTable(String varName) {
+		for (Integer key:rowTable.keySet()) {
+			List<String> l = rowTable.get(key);
+			//if (GlobalState.getInstance().getVariableConfiguration().getVarName(l).)
+			Log.d("vortex","Row: "+key+":");
+			Log.d("vortex",l.toString());
+		}
 
+	}
 	public void printTable() {
 		Map<Integer, List<String>> x = rowTable;
 		Log.d("vortex",myColumns.toString());

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -44,7 +45,7 @@ public class Logger implements LoggerI {
 	public void addRedText(String text) {
 		if (!hasRed) {
 			hasRed = true;
-			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
+			LocalBroadcastManager.getInstance(myContext).sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

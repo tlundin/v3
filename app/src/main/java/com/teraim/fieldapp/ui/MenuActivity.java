@@ -26,6 +26,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,7 +71,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 	public final static String REDRAW = "com.teraim.fieldapp.menu_redraw";
 	public static final String INITDONE = "com.teraim.fieldapp.init_done";
-	public static final String INITSTARTS = "com.teraim.fieldapp.init_done";
+	public static final String INITSTARTS = "com.teraim.fieldapp.init_starts";
 	public static final String INITFAILED = "com.teraim.fieldapp.init_done_but_failed";
 	public static final String SYNC_REQUIRED = "com.teraim.fieldapp.sync_required";
 
@@ -120,6 +121,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					initfailed=false;
 				}
 				else if (intent.getAction().equals(INITFAILED)) {
+					Log.d("initf","got initfailed");
 					initfailed=true;
 				}
 				else if (intent.getAction().equals(SYNC_REQUIRED)) {
@@ -151,7 +153,10 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		filter.addAction(REDRAW);
 		filter.addAction(INITFAILED);
 
-		this.registerReceiver(brr, filter);
+		LocalBroadcastManager.getInstance(this).registerReceiver(brr,
+				filter);
+		//this.registerReceiver(brr, filter);
+
 		//Listen for Service started/stopped event.
 
 
@@ -173,7 +178,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 			Log.d("glapp","Got gps signal!");
 			latestSignal = signal;
 		} else {
-			Log.d("glapp", "Got " + signal.state.toString());
+			//Log.d("glapp", "Got " + signal.state.toString());
 			//latestSignal = null;
 		}
 		refreshStatusRow();
@@ -206,7 +211,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		Log.d("NILS", "In the onDestroy() event");
 		latestSignal = null;
 		//Stop listening for bluetooth events.
-		this.unregisterReceiver(brr);
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(brr);
 
 		// Unbind from the service
 		if (mBound) {
@@ -615,7 +620,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 						mnu[0].setIcon(R.drawable.btn_icon_started);
 					else
 						mnu[0].setIcon(R.drawable.btn_icon_started_with_errors);
-					mnu[0].setTitle(latestSignal.accuracy+"");
+					mnu[0].setTitle(Math.round(latestSignal.accuracy)+"");
 				}
 			}
 
@@ -755,6 +760,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				toggleSyncOnOff();
 				break;
 			case 2:
+				Log.d("vortex","gs is "+GlobalState.getInstance()+" gs "+gs);
+				//Log.d("vortex","in click for context: gs "+(gs==null)+" varc "+(gs.getVariableCache()==null));
 				if (gs!=null && gs.getVariableCache()!=null) {
 					//Object moo=null;
 					//moo.equals("moo");

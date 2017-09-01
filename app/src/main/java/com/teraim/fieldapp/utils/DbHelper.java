@@ -35,6 +35,7 @@ import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -463,6 +464,17 @@ public class DbHelper extends SQLiteOpenHelper {
     //Export a specific context with a specific Exporter.
     public Report export(Map<String, String> context, final Exporter exporter, String exportFileName) {
         //Check LagID.
+        Log.i("glado",Environment.getExternalStorageDirectory()+"");
+        Log.i("glado","EXP: "+Constants.EXPORT_FILES_DIR);
+        File f = new File(Constants.EXPORT_FILES_DIR);
+        if (f.isDirectory()) {
+            Log.i("glado","It is a directory");
+        } else {
+            Log.i("glado", "It is not a directory");
+            if(!f.mkdirs())
+                Log.e("glado","Failed to create export folder");
+
+        }
         if (exporter == null)
             return new Report(ExportReport.EXPORTFORMAT_UNKNOWN);
         Log.d("nils", "Started export");
@@ -535,7 +547,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
                     @Override
                     public void run() {
-                        if (res.getReport()==ExportReport.OK) {
+                        if (res.getReport() == ExportReport.OK) {
                             exporter.getDialog().setCheckGenerate(true);
                         } else {
                             exporter.getDialog().setCheckGenerate(false);
@@ -556,10 +568,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 });
 
                 return res;
-            } else
-                c.close();
+            }
+        } else
+            c.close();
 
-        }
 
         ((Activity) exporter.getContext()).runOnUiThread(new Runnable() {
 
@@ -1559,30 +1571,30 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 }
                 */
-                    if (!wrongTeam) {
-                        if (s.isInsert() && uid != null && spy == null) {
-                            //delete(sKeys,s.getTimeStamp());
-                            tsMap.add(uid, variableName, cv);
+                if (!wrongTeam) {
+                    if (s.isInsert() && uid != null && spy == null) {
+                        //delete(sKeys,s.getTimeStamp());
+                        tsMap.add(uid, variableName, cv);
 
 
-                        } else {
-                            Log.e("bascar", "Inserting RAW" + s.getChange());
-                            db.insert(TABLE_VARIABLES, // table
-                                    null, //nullColumnHack
-                                    cv
-                            );
-                            if (uid != null)
-                                variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
-                            changes.inserts++;
-
-                        }
+                    } else {
+                        //Log.e("bascar", "Inserting RAW" + s.getChange());
+                        db.insert(TABLE_VARIABLES, // table
+                                null, //nullColumnHack
+                                cv
+                        );
+                        if (uid != null)
+                            variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
+                        changes.inserts++;
 
                     }
+
+                }
 
             }
             else if (s.isDelete()) {
 
-                Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
+                //Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
                 String[] sChanges = null;
 
                 if (s.getChange() != null)
@@ -2202,7 +2214,7 @@ public class DbHelper extends SQLiteOpenHelper {
             return 0;
         }
 
-        Log.d("vortex", "In erase with keyPairs: " + keyPairs+" and pattern "+pattern);
+//        Log.d("vortex", "In erase with keyPairs: " + keyPairs+" and pattern "+pattern);
 
         //map keypairs. Create delete statement.
         StringBuilder delStmt = new StringBuilder("");
@@ -2220,7 +2232,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String[] keyValue = pair.split("=");
             if (keyValue != null && keyValue.length == 2) {
                 column = realColumnNameToDB.get(keyValue[0]);
-                Log.d("vortex","column: "+column+" value: "+keyValue[1]);
+  //              Log.d("vortex","column: "+column+" value: "+keyValue[1]);
                 if (Constants.NOT_NULL.equals(keyValue[1])) {
                     Log.d("vortex","match for NN!");
                     delStmt.append(column + " IS NOT NULL");
@@ -2242,14 +2254,14 @@ public class DbHelper extends SQLiteOpenHelper {
             delStmt.append(" AND var LIKE '" + pattern + "'");
 
         valuesA = values.toArray(new String[values.size()]);
-        Log.d("vortex", "Delete statement is now " + delStmt);
-        Log.d("vortex", "VALUES:"+print(valuesA));
+   //     Log.d("vortex", "Delete statement is now " + delStmt);
+   //     Log.d("vortex", "VALUES:"+print(valuesA));
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         //Invalidate affected cache variables
         if (affected > 0) {
             Log.d("papp", "Deleted rows count: " + affected+" keys: "+keyPairs);
 
-            Log.d("vortex", "cleaning up cache. Exact: " + exact);
+   //         Log.d("vortex", "cleaning up cache. Exact: " + exact);
             GlobalState.getInstance().getVariableCache().invalidateOnKey(map, exact);
         } else
             dr0++;

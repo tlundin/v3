@@ -158,6 +158,7 @@ public abstract class ChartBlock  extends Block implements EventListener {
                 } else {
                     o.addRow("");
                     o.addRedText("Failed to add round chart block with id " + blockId + " - missing container " + container);
+                    Log.e("vortex","missing container in chartblox...fail");
                     myContext.removeEventListener(this);
                     return;
                 }
@@ -177,7 +178,8 @@ public abstract class ChartBlock  extends Block implements EventListener {
 
         }
 
-        chart.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (chart !=null)
+            chart.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
 

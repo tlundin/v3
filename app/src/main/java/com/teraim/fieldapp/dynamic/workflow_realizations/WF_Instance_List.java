@@ -17,10 +17,10 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
-	public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
-		private final DisplayFieldBlock entryFormat;
+public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
+	private final DisplayFieldBlock entryFormat;
 
-		//Create variables for each instance of variables in <rows> that matches key with variable column <variatorColumn>
+	//Create variables for each instance of variables in <rows> that matches key with variable column <variatorColumn>
 
 
 
@@ -63,10 +63,10 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
 	//A set containing all variable suffices used in EntryFields.
 	Set<String> suffices = new HashSet<String>();
-	
-	@Override 
-	public Set<Variable> addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
-		this.showHistorical = showHistorical;	
+
+	@Override
+	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
+		this.showHistorical = showHistorical;
 /*
 		Set<String> vars = findAllVarsEndingWith(varSuffix,myRows);
 		Log.d("nils","Addvartolistentry found "+vars.size()+" entries for varSuffix "+varSuffix);
@@ -85,7 +85,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 */
 		suffices.add(varSuffix);
 		Log.d("vortex","In addvariabletoEverylist! Suffices now: "+suffices.toString());
-		return null;
+		return true;
 	}
 
 	Map<String,List<String>> suffixToVars=null;
@@ -93,11 +93,11 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
 
 	private Set<String> myVars=new HashSet<String>();
-	
+
 	private void updateEntryFields() {
 		//fetch all variable instances of given namePrefix. Remove variator from keychain so that all variables independent of variator are loaded.
-		
-		
+
+
 		myKeyHash.remove(variatorColumn);
 		//preload
 		Cursor c = gs.getDb().getPrefetchCursor(myKeyHash, namePrefix, variatorColumn);
@@ -114,9 +114,9 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 					Log.d("vortex","discarding "+varId+". Not part of this list");
 					continue;
 				}
-				
+
 				if (varName!=null) {
-					myKeyHash.put(variatorColumn, index);	
+					myKeyHash.put(variatorColumn, index);
 					Variable var = varCache.getVariable(myKeyHash,varCache.createOrGetCache(myKeyHash), varId, value, true);//(myKeyHash, varId,value);
 					if (var!=null) {
 						String entryInstanceLabel = al.getEntryLabel(var.getBackingDataSet())+" ["+index+"]";
@@ -125,8 +125,8 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 							ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true,entryFormat);
 							Log.d("nils","Added list entry for "+entryInstanceLabel);
 							//cache
-							entryFields.put(entryInstanceLabel, ef);	
-							
+							entryFields.put(entryInstanceLabel, ef);
+
 							get().add(ef);
 							//Create a standard variable for each as part of entryfield.
 							String efVarName;
@@ -134,22 +134,22 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 							for (String suffix:suffices) {
 								efVarName = namePrefix+":"+varName+":"+suffix;
 								Log.d("vortex","will generate: "+efVarName);
-								//If this equals the main var, then dont generate - use existing. 
-								if (efVarName.equals(varId)) 
+								//If this equals the main var, then dont generate - use existing.
+								if (efVarName.equals(varId))
 									ef.addVariable(var, true, null, true,showHistorical);
 								else {
 									efVar =varCache.getVariable(myKeyHash,varCache.createOrGetCache(myKeyHash), efVarName, null, true);
 									ef.addVariable(efVar, true, null, true,showHistorical);
 								}
 							}
-							
+
 						} else {
 							Set<Variable> vars = ef.getAssociatedVariables();
 							if (vars!=null)
 								Log.d("vortex","ASSOC VARS: "+vars.toString());
 							else
 								Log.d("Vortex","ASSOCs are null");
-							//find missing variables for myvars. missing = var - suffix + other endings.				
+							//find missing variables for myvars. missing = var - suffix + other endings.
 							if (vars==null || !vars.contains(var)) {
 								Log.e("vortex","Variable did not exist. It must exist...!!!");
 							} else {
@@ -157,27 +157,27 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 								var.setValue(value);
 							}
 						}
-						
+
 
 
 						//							visitedEntryFields.put(entryInstanceLabel,ef);
 					} else
 						Log.e("nils","Variable "+varId+" does not exist! (In WF_InstanceList, updateEntryFields)");
 				}
-				
+
 			} while (c.moveToNext());
 		}
-		
+
 		/*
-		
-		Map<String, Map<String, String>> allInstances = gs.getDb().preFetchValues(myKeyHash, namePrefix, variatorColumn);		
+
+		Map<String, Map<String, String>> allInstances = gs.getDb().preFetchValues(myKeyHash, namePrefix, variatorColumn);
 
 		if (allInstances !=null ) {
 			Log.d("nils","in update entry fields. AllInstances contain "+allInstances.size());
 			//clear existing entries.
 			entryFields.clear();
 			//Cache entryfields.
-			//Map<String,WF_ClickableField_Selection> visitedEntryFields = new HashMap<String,WF_ClickableField_Selection>();	
+			//Map<String,WF_ClickableField_Selection> visitedEntryFields = new HashMap<String,WF_ClickableField_Selection>();
 			//Remove variator.
 			//For each instance, create new List entry if needed. Otherwise add.
 			//Iterate over all variable instances.
@@ -191,8 +191,8 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 					Set<String> indexes = indexToValue.keySet();
 					Log.d("nils","indexes: "+indexes.toString());
 					for (String index:indexes) {
-						String value = indexToValue.get(index);					
-						myKeyHash.put(variatorColumn, index);				
+						String value = indexToValue.get(index);
+						myKeyHash.put(variatorColumn, index);
 						Variable var = varCache.getFixedVariableInstance(myKeyHash, varId,value);
 						if (var!=null) {
 							String entryInstanceLabel = al.getEntryLabel(var.getBackingDataSet())+" ["+index+"]";
@@ -201,11 +201,11 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 								ef = new WF_ClickableField_Selection(entryInstanceLabel,al.getDescription(var.getBackingDataSet()),myContext,entryInstanceLabel,true);
 								Log.d("nils","Added list entry for "+entryInstanceLabel);
 								//cache
-								entryFields.put(entryInstanceLabel, ef);	
+								entryFields.put(entryInstanceLabel, ef);
 								list.add(ef);
 							}
 							Set<Variable> vars = ef.getAssociatedVariables();
-							//find missing variables for myvars. missing = var - suffix + other endings.				
+							//find missing variables for myvars. missing = var - suffix + other endings.
 							if (vars==null || !vars.contains(var)) {
 								Log.d("nils","Adding variable "+var.getId()+" to EF: "+ef.getLabel());
 								ef.addVariable(var, true, null, true,showHistorical);
@@ -221,22 +221,22 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 				} else {
 					Log.d("nils","is not member of myVars. Myvars has "+myVars.size()+" entries:");
 					String mvS="";
-					for (String m:myVars) 
+					for (String m:myVars)
 						mvS+=m+",";
-					Log.d("nils",mvS);						
+					Log.d("nils",mvS);
 				}
 			}
 		} else
 			Log.d("vortex","Instance list size same as before.");
 
 		//		entryFields = visitedEntryFields;
-		 
+
 		 */
 	}
 
 	private Set<String> findAllVarsEndingWith(String suffix,
-			List<List<String>> myRows) {
-		String vId;		
+											  List<List<String>> myRows) {
+		String vId;
 		if (myRows==null)
 			return null;
 		Set<String> ret = new HashSet<String>();
@@ -250,13 +250,13 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 
 
 	@Override
-	public void addFieldListEntry(String listEntryID,String label,String description) {		
+	public void addFieldListEntry(String listEntryID,String label,String description) {
 		//not supported.
 	}
 
 
 	public Variable addVariableToListEntry(String varNameSuffix,boolean displayOut,String targetField,
-			String format, boolean isVisible, boolean showHistorical,String initialValue) {
+										   String format, boolean isVisible, boolean showHistorical,String initialValue) {
 		return null;
 		//not supported.
 	}
@@ -279,8 +279,8 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 						//TODO: ID is a bit hacked here..
 
 						listRow = new WF_ClickableField_Selection(al.getEntryLabel(r),al.getDescription(r),myContext,"C_F_"+index,true);
-						list.add(listRow);	
-					} 
+						list.add(listRow);
+					}
 					if (!al.getAction(r).equals("add")&&!al.getAction(r).equals("create"))
 						o.addRow("something is wrong...action is neither Create or Add: "+al.getAction(r));
 					else {
@@ -305,12 +305,12 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 			Log.d("nils","Throwing event that originated from me");
 		else {
 			if (e.getType()==EventType.onFlowExecuted) {
-			Log.d("nils","WF has executed.");
-			//Regenerate list.
-			//list.clear();
-			updateEntryFields();
+				Log.d("nils","WF has executed.");
+				//Regenerate list.
+				//list.clear();
+				updateEntryFields();
 				resetOnEvent();
-			draw();
+				draw();
 			}
 			else if (e.getType()==EventType.onSave) {
 				Log.d("nils","OnSave i instancelist");
@@ -334,10 +334,10 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 		myContext.registerEvent(new WF_Event_OnRedraw(this.getId()));
 	}
 
-		@Override
-		public String getName() {
-			return "INSTANCE_LIST "+this.getId();
-		}
-
-
+	@Override
+	public String getName() {
+		return "INSTANCE_LIST "+this.getId();
 	}
+
+
+}

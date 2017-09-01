@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -279,30 +280,40 @@ public class BackupManager {
 	}
 
 
-	public void startBackupIfTimeAndNeed() {
+	public boolean timeToBackup() {
+
 		if (gs.getGlobalPreferences().getB(PersistenceHelper.BACKUP_AUTOMATICALLY)) {
-		long timeOfLast = gs.getPreferences().getL(PersistenceHelper.TIME_OF_LAST_BACKUP);
-		Log.d("vortex","time of last backup: "+timeOfLast);
-		if (System.currentTimeMillis()-timeOfLast>Constants.BACKUP_FREQUENCY) {
-			Log.d("vortex","Time to backup!");
-			if (!this.backupDatabase()) {
+			long timeOfLast = gs.getPreferences().getL(PersistenceHelper.TIME_OF_LAST_BACKUP);
+			Log.d("vortex", "time of last backup: " + timeOfLast);
+			if (System.currentTimeMillis() - timeOfLast > Constants.BACKUP_FREQUENCY) {
+				Log.d("vortex", "Time to backup!");
+				return true;
+			}  else {
+				Log.d("vortex","No backup required");
 				gs.getLogger().addRow("");
-				gs.getLogger().addRedText("Backup of data failed! Please make sure you have configured the backup folder correctly under the config menu.");
-			} else {
-				gs.getLogger().addRow("");
-				gs.getLogger().addGreenText("Your database has been backed up");
+				gs.getLogger().addGreenText("Database backup not required");
 			}
-			
-		} else {
-			Log.d("vortex","No backup required");
-			gs.getLogger().addRow("");
-			gs.getLogger().addGreenText("Database backup not required");
-		}
 		} else {
 			Log.d("vortex","Autobackup is off");
 			gs.getLogger().addRow("");
 			gs.getLogger().addGreenText("Database auto-backup turned off");
 		}
+		return false;
+	}
+
+	public boolean backUp() {
+			if (!this.backupDatabase()) {
+				gs.getLogger().addRow("");
+				gs.getLogger().addRedText("Backup of data failed! Please make sure you have configured the backup folder correctly under the config menu.");
+				return false;
+			} else {
+				gs.getLogger().addRow("");
+				gs.getLogger().addGreenText("Your database has been backed up");
+				return true;
+			}
+
+
+
 	}
 
 	public boolean restoreDatabase() {
@@ -359,5 +370,13 @@ public class BackupManager {
 		}
 		Log.d("vortex","restore done");
 		return true;
+	}
+
+	public String daysSinceLastBackup() {
+		long timeOfLast = gs.getPreferences().getL(PersistenceHelper.TIME_OF_LAST_BACKUP);
+
+		Calendar c= Calendar.getInstance();
+		c.setTimeInMillis(System.currentTimeMillis()-timeOfLast);
+		return c.get(Calendar.HOUR)+"";
 	}
 }

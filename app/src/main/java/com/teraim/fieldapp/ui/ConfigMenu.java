@@ -26,6 +26,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -164,7 +165,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 										Intent intent = new Intent();
 										intent.setAction(MenuActivity.REDRAW);
-										getActivity().sendBroadcast(intent);
+										LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 
 									}
 
@@ -392,7 +393,7 @@ public class ConfigMenu extends PreferenceActivity {
 			//force redraw of menuactivity.
 			Intent intent = new Intent();
 			intent.setAction(MenuActivity.REDRAW);
-			getActivity().sendBroadcast(intent);
+			LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
 		}
 
 

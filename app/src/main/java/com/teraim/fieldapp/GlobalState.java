@@ -1,6 +1,7 @@
 package com.teraim.fieldapp;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
@@ -23,6 +25,7 @@ import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.expr.Aritmetic;
 import com.teraim.fieldapp.expr.Parser;
@@ -132,7 +135,7 @@ public class GlobalState  {
 	
 		myBackupManager = new BackupManager(this);
 		
-		myBackupManager.startBackupIfTimeAndNeed();
+
 
 		Log.d("fennox","my ID is "+getMyId());
 		
@@ -332,8 +335,16 @@ public class GlobalState  {
 		selectedGop=go;
 	}
 
+	//Map<String,WF_Static_List> listCache = new HashMap<>();
 
+	/*public WF_Static_List getListFromCache(String blockId) {
+		return listCache.get(blockId);
+	}
 
+	public void addListToCache(String blockId, WF_Static_List list) {
+		listCache.put(blockId,list);
+	}
+	*/
 	/*
 	public MessageHandler getHandler() {
 		if (myHandler==null)
@@ -394,7 +405,7 @@ public class GlobalState  {
         		if (msg.obj instanceof Intent)
         			intent = (Intent)msg.obj;
     		if (intent!=null)
-    			getContext().sendBroadcast(intent);
+    			LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
     		else
     			Log.e("vortex","Intent was null in handleMessage");
         	

@@ -17,6 +17,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -142,7 +143,9 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 				ifi.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
 				internalState  = InternalState.opening;
-				ctx.registerReceiver(brr, ifi);
+				LocalBroadcastManager.getInstance(ctx).registerReceiver(brr,
+						ifi);
+				//ctx.registerReceiver(brr, ifi);
 
 			}
 			else {
@@ -190,7 +193,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 				mConnected_T.cancel();
 			mConnected_T=null;
 			try {
-				ctx.unregisterReceiver(brr);
+				LocalBroadcastManager.getInstance(ctx).unregisterReceiver(brr);
 			} catch (IllegalArgumentException e) {
 				Log.d("nils","unregisterReceiver - dropping exception");
 			}

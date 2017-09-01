@@ -129,7 +129,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                 o.addRow("");
                 o.addText("Found "+myGisObjects.size()+" objects");
                 freezeSteps = myGisObjects.size();
-                Log.d("vortex","Found "+myGisObjects.size()+" objekt");
+                Log.d("vortex","Found "+myGisObjects.size()+" objekt of type "+fileName);
                 //freezeSteps=myBlocks.size();
                 return new LoadResult(this,ErrorCode.parsed);
             }

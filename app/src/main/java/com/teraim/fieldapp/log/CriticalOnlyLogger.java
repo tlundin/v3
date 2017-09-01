@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -45,7 +46,7 @@ public class CriticalOnlyLogger implements LoggerI {
 			//if (GlobalState.getInstance().getCurrentWorkflowContext()!=null) {
 			//	GlobalState.getInstance().getCurrentWorkflowContext().getTemplate().
 			//}
-			myContext.sendBroadcast(new Intent(MenuActivity.REDRAW));
+			LocalBroadcastManager.getInstance(myContext).sendBroadcast(new Intent(MenuActivity.REDRAW));
 		}
 		if (text!=null && text.length()>0) {
 			s = new SpannableString("\n" + text);

@@ -186,13 +186,12 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 		}
 
-
-
 		super.addVariable(var,displayOut,null,isVisible,showHistorical);
+		super.createInputFields();
 		if (!myVars.isEmpty()) {
 			this.var=var;
 			//Has to set value for inner view as well.
-			etview = (EditText) myVars.get(var).findViewById(R.id.edit);
+			etview = (EditText) myVars.get(var).view.findViewById(R.id.edit);
 			OutC outC = myOutputFields.get(var);
 			LinearLayout ll = outC.view;
 			tv = (TextView)ll.findViewById(R.id.outputValueField);

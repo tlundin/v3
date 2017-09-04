@@ -264,7 +264,7 @@ public class Expressor {
 		o = WorkFlowBundleConfiguration.debugConsole;
 		Log.d("franco","Precompiling: "+expression);
 		List<Token> result = tokenize(expression);
-		printTokens(result);
+		//printTokens(result);
 		List<EvalExpr> endResult = new ArrayList<EvalExpr>();
 		if (result!=null && testTokens(result)) {
 			StreamAnalyzer streamAnalyzer = new StreamAnalyzer(result);
@@ -1168,7 +1168,7 @@ public class Expressor {
 					String arg1S=arg1v.toString();
 					String arg2S=arg2v.toString();
 					TokenType op = TokenType.valueOfIgnoreCase(operator.myToken.str);
-					System.out.println("in isliteral with exp: "+arg1S+" "+operator.myToken.str+" "+arg2S);
+					//System.out.println("in isliteral with exp: "+arg1S+" "+operator.myToken.str+" "+arg2S);
 					o.addText("calculating literal expression "+arg1S+" "+operator.myToken.str+" "+arg2S);
 
 					switch (op) {
@@ -1743,7 +1743,7 @@ public class Expressor {
 					return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 				case photoExists:
 					if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
-						System.out.println("Arg 0: "+evalArgs.get(0).toString());
+						//System.out.println("Arg 0: "+evalArgs.get(0).toString());
 						File dir = new File(Constants.PIC_ROOT_DIR);
 						final String regexp = evalArgs.get(0).toString(); // needs to be final so the anonymous class can use it
 						File[] matchingFiles = dir.listFiles(new FileFilter() {
@@ -2184,19 +2184,19 @@ public class Expressor {
 		ExpressionAnalyzer ef = new ExpressionAnalyzer(tokens.iterator());
 
 		Expr e = null, top;
-		System.out.println("Before:  " + tokens);
+		//System.out.println("Before:  " + tokens);
 
 		while (!err && ef.hasNext()) {
 			if (e == null)
 				e = ef.next();
 			if (e == null) {
-				System.out.println("cont on null");
+				System.out.println("continue on null");
 				continue;
 			}
 
-			System.out.println("vs: " + valStack);
-			System.out.println("os: " + opStack);
-			System.out.println("e: " + e);
+			//System.out.println("vs: " + valStack);
+			//System.out.println("os: " + opStack);
+			//System.out.println("e: " + e);
 
 			if (e instanceof Push) {
 				opStack.push(e);
@@ -2215,20 +2215,20 @@ public class Expressor {
 				// Stack empty? Then push.
 
 				if (opStack.isEmpty()) {
-					System.out.println("empty->push");
+					//System.out.println("empty->push");
 					opStack.push(e);
 				} else {
-					System.out.println("Top of stack: " + opStack.peek());
+					//System.out.println("Top of stack: " + opStack.peek());
 					int operatorPrecedence = TokenType.valueOfIgnoreCase(
 							e.toString()).prescedence();
 					int topStackPrecedence = TokenType.valueOfIgnoreCase(
 							opStack.peek().toString()).prescedence();
 					// This has higher precedence? Then push.
 					if (operatorPrecedence > topStackPrecedence) {
-						System.out.println("precedence->push");
+						//System.out.println("precedence->push");
 						opStack.push(e);
 					} else {
-						System.out.println("calctop");
+						//System.out.println("calctop");
 						if (valStack.size() < 2) {
 							System.err.println("smallstack: " + valStack);
 							err = true;
@@ -2246,8 +2246,8 @@ public class Expressor {
 				}
 
 			} else {
-				System.out.println("Pushing: " + e + " of class "
-						+ e.getClass());
+				//System.out.println("Pushing: " + e + " of class "
+				//		+ e.getClass());
 				valStack.push(e);
 			}
 			e = null;
@@ -2258,7 +2258,7 @@ public class Expressor {
 						valStack.pop(), (Operand) opStack.pop()));
 		}
 		EvalExpr ret = valStack.isEmpty()?null:(EvalExpr) valStack.pop();
-		System.out.println("Returning: " + ret);
+		//System.out.println("Returning: " + ret);
 		return ret;
 	}
 	//Pass left to right. Rewrite expr in term of functions with arguments.
@@ -2280,7 +2280,7 @@ public class Expressor {
 
 		while (ef.hasNext()) {
 			e = ef.next();
-			System.out.println("s: "+s);
+			//System.out.println("s: "+s);
 			//null if not an Expr.
 			if (e==null)
 				continue;
@@ -2308,21 +2308,21 @@ public class Expressor {
 				continue;
 			}
 			else if (e instanceof Operand) {
-				System.out.println("Op: "+((Operand) e).myToken.str+" Precedence: "+TokenType.valueOfIgnoreCase(e.toString()).prescedence());
+				//System.out.println("Op: "+((Operand) e).myToken.str+" Precedence: "+TokenType.valueOfIgnoreCase(e.toString()).prescedence());
 				precedence[depth] = TokenType.valueOfIgnoreCase(e.toString()).prescedence();
 				//as long as operator is binding stronger, keep pushing.
 				if (precedence[depth] > maxPrecedence[depth]) {
 					//System.out.println("> max: "+precedence[depth]+","+maxPrecedence[depth]);
 					maxPrecedence[depth]=precedence[depth];
 					s.push(e);
-					System.out.println(">=-->s: "+s.toString());
+					//System.out.println(">=-->s: "+s.toString());
 				} else
 				{
 					//calculate the current stack.
 					s.push(calcStack(s));
 					//System.out.println("pres below or = to max: "+precedence[depth]+","+maxPrecedence[depth]);
 					s.push(e);
-					System.out.println("<=-->s: "+s.toString());
+					//System.out.println("<=-->s: "+s.toString());
 					maxPrecedence[depth]=precedence[depth];
 				}
 
@@ -2331,7 +2331,7 @@ public class Expressor {
 			else {
 
 				s.push(e);
-				System.out.println("noop-->s: "+s.toString());
+				//System.out.println("noop-->s: "+s.toString());
 			}
 
 		}

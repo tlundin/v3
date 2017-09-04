@@ -1,20 +1,24 @@
 package com.teraim.fieldapp.loadermodule;
 
 import java.util.List;
+import java.util.Objects;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
+import android.text.SpannableString;
 import android.util.Log;
 
 import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.log.PassiveLogger;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
 public class ModuleLoader implements FileLoadedCb{
+	private final LoggerI frontPageLog;
 	private Configuration myModules;
 	private LoggerI o,debug;
 	private PersistenceHelper globalPh;
@@ -26,65 +30,68 @@ public class ModuleLoader implements FileLoadedCb{
 
 	public interface ModuleLoaderListener {
 
-		void loadSuccess(String loaderId, boolean majorVersionChange);
+		void loadSuccess(String loaderId, boolean majorVersionChange, CharSequence loadText);
 		void loadFail(String loaderId);
 	}
 
 
 
-	public ModuleLoader(String loaderId, Configuration currentlyKnownModules, LoggerI o, PersistenceHelper glPh, boolean allFrozen, LoggerI debugConsole,ModuleLoaderListener caller,Context ctx) {
+	public ModuleLoader(String loaderId, Configuration currentlyKnownModules, LoggerI log, PersistenceHelper glPh, boolean allFrozen, LoggerI debugConsole,ModuleLoaderListener caller,Context ctx) {
 		myModules = currentlyKnownModules;
-		this.o=o;
+		frontPageLog = log;
+
 		this.debug=debugConsole;
+		//Passive logger will be the main log window...text will appear on About page.
 		globalPh = glPh;
 		this.caller = caller;
 		this.loaderId=loaderId;
 		this.ctx=ctx;
 		//boolean that tells if all files already exist frozen.
 		this.allFrozen = allFrozen;
+		o = new PassiveLogger(ctx,"PassiveLog");
 	}
 
 
 	ConfigurationModule module;
 
-	private boolean majorVersionChange = true;
+	//private boolean majorVersionChange = true;
 
 	public void loadModules(boolean majorVersionChange) {
 
-		this.majorVersionChange=majorVersionChange;
+		//this.majorVersionChange=majorVersionChange;
 		//If all frozen, simply load from memory and check version later on. 
 
 		//check if any module needs to load.
 		module = myModules.next();
 		if (module!=null) {
-			o.addRow(module.getLabel()+" :");
-			Log.d("vortex",module.getLabel()+" :");
+			if (!module.isThawing) {
+				o.addRow(module.getLabel() + " :");
+				frontPageLog.addRow(module.getLabel()+ " :");
+				Log.d("amazon", module.getLabel() + " :");
+				boolean forced = module.versionControl.equals("Forced");
+				//Check if connection is slow. If so, use existing version IF versioncontrol is not set to "Always load".
+				if ((module.source == ConfigurationModule.Source.internet) &&
+						!Connectivity.isConnectedFast(ctx) &&
+						!forced) {
 
-			//Check if connection is slow. If so, use existing version IF versioncontrol is not set to "Always load".
-			if ((module.source == ConfigurationModule.Source.internet) &&
-					!Connectivity.isConnectedFast(ctx) &&
-					!module.versionControl.equals("Forced")) {
+						onFileLoaded(new LoadResult(module, ErrorCode.slowConnection));
 
-				new Handler().postDelayed(new Runnable() {
-					public void run() {
-						//Log.d("vortex","slow connection for module: "+module.getLabel());
-						onFileLoaded(new LoadResult(module,ErrorCode.slowConnection));
+				} else {
+					if (majorVersionChange || forced) {
+						Log.d("amazon","load");
+						module.load(this);
 					}
-				},0);
-			} else {
-				if (majorVersionChange)
-					module.load(this);
-				else {
-					//Load files in parallel from disk
-					new Handler().postDelayed(new Runnable() {
-						public void run() {
-							onFileLoaded(new LoadResult(module, ErrorCode.sameold));
-						}
-					}, 0);
+					else {
+						Log.d("amazon","sameold");
+						onFileLoaded(new LoadResult(module, ErrorCode.sameold));
+					}
 				}
-			}
-		} else
-			caller.loadSuccess(loaderId,majorVersionChange);
+			} else
+				Log.d("vortex","wait for thawing of "+module.getLabel());
+		} else {
+
+			caller.loadSuccess(loaderId, majorVersionChange, o.getLogText());
+		}
 
 	}
 
@@ -94,16 +101,21 @@ public class ModuleLoader implements FileLoadedCb{
 	@Override
 	public void onUpdate(Integer ...args) {
 		if (args.length==1)
-			o.writeTicky(" "+args[0].toString());
+			frontPageLog.writeTicky(" "+args[0].toString());
 		else
-			o.writeTicky(" "+args[0].toString()+"/"+args[1].toString());
+			frontPageLog.writeTicky(" "+args[0].toString()+"/"+args[1].toString());
 
 	}
+
+
+
 
 	@Override
 	public void onFileLoaded(LoadResult res) {
 
-		o.removeTicky();
+
+		frontPageLog.removeTicky();
+		frontPageLog.removeLine();
 		ConfigurationModule module = res.module;
 		if (module != null) {
 			debug.addRow("Module "+res.module.fileName+" loaded. Returns code "+res.errCode.name()+(res.errorMessage!=null?" and errorMessage: "+res.errorMessage:""));
@@ -114,38 +126,35 @@ public class ModuleLoader implements FileLoadedCb{
 				//If version of App not updated, and default Version handling, and all config files exist frozen, then turn on justLoadCurrent
 				case majorVersionNotUpdated:
 					if (allFrozen) {
-						Log.d("vortex","Major control!!");
-						majorVersionChange = false;
+						//majorVersionChange = false;
 						o.removeLine();
 						o.addRow("Use existing configuration");
-					}
 
+					}
 					break;
 				case existingVersionIsMoreCurrent:
-				case sameold:
-					if (thawModule(module)) {
-						module.setLoaded(true);
-						if (res.errCode==ErrorCode.existingVersionIsMoreCurrent) {
-							o.addRow("");
-							o.addText(" Remote version older: [");
-							o.addRedText(res.errorMessage);
-							o.addText("]");
-						}
-						float frozenModuleVersion = module.getFrozenVersion();
-						String frozenModuleVersionS = frozenModuleVersion+"";
-						if (frozenModuleVersion==-1)
-							frozenModuleVersionS="missing";
-						o.addText(" ["+frozenModuleVersionS+"]");
-					} else {
-						Log.d("vortex","Retrying.");
-						o.addYellowText(" fail..retrying..");
-						module.setFrozenVersion(-1);
-						module.load(this);
-						o.draw();
-						return;
-						//failing thaw will lead to retry.
-					}
+				case thawed:
+                    debug.addRow("Module "+module.getFileName()+" was thawed.");
+                    module.setLoaded(true);
+                    if (res.errCode==ErrorCode.existingVersionIsMoreCurrent) {
+                        o.addRow("");
+                        o.addText(" Remote version older: [");
+                        o.addRedText(res.errorMessage);
+                        o.addText("]");
+                    }
+                    float frozenModuleVersion = module.getFrozenVersion();
+                    String frozenModuleVersionS = frozenModuleVersion+"";
+                    if (frozenModuleVersion==-1)
+                        frozenModuleVersionS="unknown";
+                    o.addText(" ["+frozenModuleVersionS+"]");
 					break;
+
+				case sameold:
+					//async call...will callback with onFileLoaded.
+					module.thaw(this);
+
+					break;
+
 				case frozen:
 				case nothingToFreeze:
 					module.setLoaded(true);
@@ -160,7 +169,18 @@ public class ModuleLoader implements FileLoadedCb{
 					else
 						o.addText("?");
 					o.addText("]");
+
 					break;
+                case thawFailed:
+                    //if thaw failed, remove file and try again.
+                    Log.d("vortex","Retrying.");
+                    o.addYellowText(" corrupt..reload..");
+                    module.deleteFrozen();
+                    module.setFrozenVersion(-1);
+                    module.load(this);
+                    o.draw();
+                    break;
+
 				case Unsupported:
 				case IOError:
 				case BadURL:
@@ -181,10 +201,8 @@ public class ModuleLoader implements FileLoadedCb{
 					}
 					printError(res);
 					if (module.frozenFileExists()) {
-						if (thawModule(module)) {
-							o.addRow("");o.addYellowText("Current version will be used: "+module.getFrozenVersion());
-							module.setLoaded(true);
-						}
+						module.thaw(this);
+                        o.addRow("");o.addYellowText("Using current: "+module.getFrozenVersion());
 					} else
 						module.setNotFound();
 
@@ -218,7 +236,9 @@ public class ModuleLoader implements FileLoadedCb{
 					break;
 			}
 			o.draw();
-			loadModules(majorVersionChange);
+			if (res.errCode!=ErrorCode.sameold)
+				loadModules(!allFrozen);
+
 		}
 
 	}
@@ -251,23 +271,6 @@ public class ModuleLoader implements FileLoadedCb{
 			o.addYellowText(" "+res.errCode.name());
 
 
-	}
-
-	private boolean thawModule(ConfigurationModule module) {
-		LoadResult res = module.thaw();
-		if (res.errCode!=ErrorCode.thawed) {
-			debug.addRow("");
-			debug.addYellowText("Failed to thaw module "+module.fileName+" due to "+res.errCode.name());
-			Log.e("vortex","Failed to thaw module "+module.fileName+" due to "+res.errCode.name());
-
-			//Remove the corrupt file and remove version.
-			if (module.deleteFrozen())
-				debug.addYellowText("Corrupt file has been deleted");
-			//retry loading the file - don't set it loaded.
-			return false;
-		}
-		debug.addRow("Module "+module.getFileName()+" was thawed.");
-		return true;
 	}
 
 	//TODO:REMOVE

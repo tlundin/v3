@@ -143,7 +143,7 @@ public class Logger implements LoggerI {
 
 	@Override
 	public void removeLine() {
-		if (s!=null)
+		if (s!=null && myTxt.length()>=s.length())
 			myTxt = myTxt.delete(myTxt.length()-s.length(),myTxt.length());
 	}
 

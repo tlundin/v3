@@ -383,15 +383,23 @@ public class Start extends MenuActivity {
 	@Override
 	public void onDestroy() {
 		if (histT!=null) {
-			Log.d("nils","Trying to cancel histT");
 			histT.cancel(true);
 		}
+
+
+
+
 		if (GlobalState.getInstance()!=null) {
+
+			//kill tracker
+			GlobalState.getInstance().getTracker().stopSelf();
 
 			GlobalState.getInstance().getDb().closeDatabaseBeforeExit();
 
 			GlobalState.destroy();
 		}
+
+
 
 		super.onDestroy();
 	}

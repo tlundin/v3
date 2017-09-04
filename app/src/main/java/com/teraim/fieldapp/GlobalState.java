@@ -83,6 +83,7 @@ public class GlobalState  {
 	private VariableCache myVariableCache;
 	private static Account mAccount;
 	private GisObject selectedGop;
+	private CharSequence logTxt;
 	
 	public static GlobalState getInstance() {
 
@@ -91,18 +92,18 @@ public class GlobalState  {
 
 	public static GlobalState createInstance(Context applicationContext, PersistenceHelper globalPh,
 			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd) {
+			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt) {
 		singleton = null;
 		return new GlobalState(applicationContext,  globalPh,
 				ph, debugConsole,  myDb,
-				workflows, t, sd);
+				workflows, t, sd, logTxt);
 
 	}
 
 	//private GlobalState(Context ctx)  {
 	private GlobalState(Context applicationContext, PersistenceHelper globalPh,
 			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd) {
+			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt) {
 
 		myC = applicationContext;
 		this.globalPh=globalPh;		
@@ -135,7 +136,7 @@ public class GlobalState  {
 	
 		myBackupManager = new BackupManager(this);
 		
-
+		this.logTxt = logTxt;
 
 		Log.d("fennox","my ID is "+getMyId());
 		
@@ -599,6 +600,9 @@ public class GlobalState  {
 	}
 
 
+	public CharSequence getLogTxt() {
+		return logTxt;
+	}
 
 
 }

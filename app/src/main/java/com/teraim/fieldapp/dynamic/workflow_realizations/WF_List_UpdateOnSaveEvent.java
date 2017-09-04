@@ -51,13 +51,14 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
             @Override
             protected Void doInBackground(Void... params) {
                 super.doInBackground(params);
-                int i = 0;
+                int i = 0;cr=0;
                 for (List<String> r : rows) {
                     i++;
                     addEntryField(r, format);
                     if (i%10==0)
                         publishProgress("Creating list ("+i+"/"+rows.size()+")");
                 }
+                Log.d("baza",i+" cr:"+cr);
                 return null;
             }
 
@@ -65,8 +66,9 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
         }).execute();
 		this.myEntryFieldFormat = format;
 	}
-
+	int cr=0;
 	private void addEntryField(List<String> r,DisplayFieldBlock format) {
+
 		EntryField ef;
 		String entryLabel = al.getEntryLabel(r);
 		if (entryLabel==null||entryLabel.length()==0) {
@@ -75,7 +77,9 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		}
 		//Log.d("nils","ADD EntryField with label "+entryLabel);
 		ef = entryFields.get(entryLabel);
-		if (ef==null) 	{	
+		if (ef==null) 	{
+			cr++;
+			//Log.d("baza",entryLabel);
 			WF_ClickableField entryF = new WF_ClickableField_Selection(entryLabel,al.getDescription(r),myContext,this.getId()+"_"+index++,true,format);
 			get().add(entryF);
 			ef = new EntryField();

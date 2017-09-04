@@ -12,10 +12,6 @@
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\foto_deletemenu.xml"
     },
     {
-        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\activity_nils.xml",
-        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\activity_nils.xml"
-    },
-    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\menu\\gis_longpress_menu.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\menu\\gis_longpress_menu.xml"
     }

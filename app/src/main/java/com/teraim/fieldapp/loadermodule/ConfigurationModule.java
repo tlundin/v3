@@ -87,6 +87,17 @@ public abstract class ConfigurationModule {
 	//Freeze version number when load succesful
 	public void setLoaded(boolean loadStatus) {
 		IamLoaded=loadStatus;
+		isThawing=false;
+	}
+
+
+	boolean isThawing = false;
+
+	private void setThawActive() {
+		isThawing=true;
+	}
+	public boolean thawing() {
+		return isThawing;
 	}
 
 	public void setNotFound() {
@@ -188,24 +199,34 @@ public abstract class ConfigurationModule {
 			return isDatabaseModule;
 	}
 
-	public LoadResult thaw(){
+	public LoadResult thaw() {
+
 		//A database module is by default saved already.
 		if (isDatabaseModule)
 			return new LoadResult(this,ErrorCode.thawed);
-		try {
-			essence = Tools.readObjectFromFile(this.frozenPath);
-		} catch (IOException e) {
-			return new LoadResult(this,ErrorCode.IOError,"Failed to load frozen object");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			return new LoadResult(this,ErrorCode.ClassNotFound,"Failed to load frozen object");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new LoadResult(this,ErrorCode.IOError,"Frozen object corrupt!");
+		else {
+			//Unthaw asynchronously
+			Object result = Tools.readObjectFromFile(this.frozenPath);
+			setEssence(result);
+			return new LoadResult(this,result == null?ErrorCode.thawFailed:ErrorCode.thawed);
 		}
-		return new LoadResult(this,ErrorCode.thawed);
 
 	}
+
+	public void thaw(ModuleLoader caller) {
+
+		//A database module is by default saved already.
+		if (isDatabaseModule)
+			caller.onFileLoaded(new LoadResult(this,ErrorCode.thawed));
+        else {
+			//Unthaw asynchronously
+			Tools.readObjectFromFileAsync(this.frozenPath, this, caller);
+			this.setThawActive();
+		}
+
+	}
+
+
 
 	public Object getEssence() {
 		return essence;
@@ -213,6 +234,11 @@ public abstract class ConfigurationModule {
 
 	//Must set essence before freeze.
 	public abstract void setEssence();
+
+    //If thawed, set essence from file.
+    public void setEssence(Object result) {
+        this.essence=result;
+    }
 
 
 	public boolean deleteFrozen() {

@@ -32,6 +32,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,9 +50,11 @@ import java.net.URISyntaxException;
 
 public class ConfigMenu extends PreferenceActivity {
 	final SettingsFragment sf = new SettingsFragment();
-
+	static boolean askForRestart = false;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		askForRestart = false;
 		// Display the fragment as the main content.
 		getFragmentManager().beginTransaction()
 				.replace(android.R.id.content, sf)
@@ -344,7 +347,7 @@ public class ConfigMenu extends PreferenceActivity {
 						char[] strA = etp.getText().toCharArray();
 						strA[0] = Character.toUpperCase(strA[0]);
 						etp.setText(new String(strA));
-						askForRestart(pref);
+						askForRestart();
 
 
 					}
@@ -369,7 +372,7 @@ public class ConfigMenu extends PreferenceActivity {
 						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
 					}
 					if (gs != null)  {
-						askForRestart(letp);
+						askForRestart();
 
 					}
 
@@ -377,13 +380,13 @@ public class ConfigMenu extends PreferenceActivity {
 				} //change the sync state if user swapped method.
 				else if (letp.getKey().equals(PersistenceHelper.SYNC_METHOD)) {
 
-					askForRestart(letp);
+					askForRestart();
 
 				}
 
 				else if (letp.getKey().equals(PersistenceHelper.LOG_LEVEL)) {
 					if (gs != null)  {
-						askForRestart(letp);
+						askForRestart();
 
 					}
 				}
@@ -398,31 +401,47 @@ public class ConfigMenu extends PreferenceActivity {
 
 
 
-		private void askForRestart(final Preference letp) {
-			new AlertDialog.Builder(getActivity())
-					.setTitle(R.string.restart)
-					.setMessage(R.string.restartMessage)
-					.setIcon(android.R.drawable.ic_dialog_alert)
-					.setCancelable(false)
-					.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Tools.restart(getActivity());
-						}
 
-					})
-					.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-						}
-					})
-					.show();
+		private void askForRestart() {
+			askForRestart=true;
 		}
 
 
 
+	}
 
 
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+			if (askForRestart) {
+
+				new AlertDialog.Builder(this)
+						.setTitle(R.string.restart)
+						.setMessage(R.string.restartMessage)
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setCancelable(false)
+						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Tools.restart(ConfigMenu.this);
+							}
+
+						})
+						.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							}
+						})
+						.show();
+
+
+			}
+
+			Log.d(this.getClass().getName(), "back button pressed");
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 }

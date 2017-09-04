@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Handler;
 
 import android.app.Activity;
 import android.content.Context;
@@ -56,6 +57,9 @@ import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Numerable.Type;
+import com.teraim.fieldapp.loadermodule.ConfigurationModule;
+import com.teraim.fieldapp.loadermodule.LoadResult;
+import com.teraim.fieldapp.loadermodule.ModuleLoader;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.ConfigMenu;
@@ -163,25 +167,30 @@ public class Tools {
 		}
 	}
 
-
 	/**
 	 *
-	 * @param filename abc
+	 * @param fileName abc
 	 * @return abc
 	 * @throws IOException
 	 * @throws StreamCorruptedException
 	 * @throws ClassNotFoundException
+	 *
+	 *
 	 */
-	public static Object readObjectFromFile(String filename) throws IOException, ClassNotFoundException {
+
+	public static Object readObjectFromFile(String fileName) {
 		ObjectInputStream objectIn = null;
 		Object object = null;
+
 		try {
-			FileInputStream fileIn = new FileInputStream(filename);
+			FileInputStream fileIn = new FileInputStream(fileName);
 			objectIn = new ObjectInputStream(fileIn);
 			object = objectIn.readObject();
 
-		}
-		finally {
+		} catch (Exception e) {
+			Log.d("vortex","thaw failed");
+
+		}  finally {
 			if (objectIn != null) {
 				try {
 					objectIn.close();
@@ -193,6 +202,59 @@ public class Tools {
 
 		return object;
 	}
+
+
+	public static void readObjectFromFileAsync(String filename, final ConfigurationModule caller, final ModuleLoader callBack) {
+
+
+		class FileLoader extends AsyncTask<String, Void, Object> {
+
+			//fileName to load
+			protected Object doInBackground(String... params) {
+				String fileName = params[0];
+
+				ObjectInputStream objectIn = null;
+				Object object = null;
+
+				try {
+					FileInputStream fileIn = new FileInputStream(fileName);
+					objectIn = new ObjectInputStream(fileIn);
+					object = objectIn.readObject();
+
+				} catch (Exception e) {
+                    Log.d("vortex","thaw failed");
+                   return null;
+				}  finally {
+					if (objectIn != null) {
+						try {
+							objectIn.close();
+						} catch (IOException e) {
+							// do nowt
+						}
+					}
+				}
+
+				return object;
+
+
+			}
+
+
+
+
+			protected void onPostExecute(Object result) {
+
+				Log.d("vortex", "Object thawed ");
+                caller.setEssence(result);
+                LoadResult loadResult = new LoadResult(caller,result==null?
+                        LoadResult.ErrorCode.thawFailed:LoadResult.ErrorCode.thawed);
+				callBack.onFileLoaded(loadResult);
+			}
+		}
+		new FileLoader().execute(filename);
+	}
+
+
 
 
 

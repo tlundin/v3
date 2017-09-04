@@ -21,11 +21,6 @@
         <item>normal</item>
         <item>critical</item>
     </string-array>
-    <string-array name="menu">
-        <item>Description</item>
-        <item>On the Web</item>
-        <item>Delete</item>
-    </string-array>
     <string-array name="versionArray">
         <item>Update only when the version of your App changes (default)</item>
         <item>Check version for each configuration file individually</item>

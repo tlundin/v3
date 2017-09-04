@@ -159,65 +159,8 @@
                     "startLine": 10,
                     "startColumn": 4,
                     "startOffset": 578,
-                    "endColumn": 44,
-                    "endOffset": 618
-                },
-                "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-large\\dimens.xml",
-                    "position": {
-                        "startLine": 4,
-                        "startColumn": 4,
-                        "startOffset": 107,
-                        "endColumn": 44,
-                        "endOffset": 147
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 11,
-                    "startColumn": 4,
-                    "startOffset": 623,
-                    "endColumn": 45,
-                    "endOffset": 664
-                },
-                "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-large\\dimens.xml",
-                    "position": {
-                        "startLine": 3,
-                        "startColumn": 4,
-                        "startOffset": 61,
-                        "endColumn": 45,
-                        "endOffset": 102
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 12,
-                    "startColumn": 4,
-                    "startOffset": 669,
-                    "endColumn": 43,
-                    "endOffset": 708
-                },
-                "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-large\\dimens.xml",
-                    "position": {
-                        "startLine": 2,
-                        "startColumn": 4,
-                        "startOffset": 17,
-                        "endColumn": 43,
-                        "endOffset": 56
-                    }
-                }
-            },
-            {
-                "to": {
-                    "startLine": 13,
-                    "startColumn": 4,
-                    "startOffset": 713,
                     "endColumn": 54,
-                    "endOffset": 763
+                    "endOffset": 628
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\values-large\\values-large.xml",
@@ -232,11 +175,11 @@
             },
             {
                 "to": {
-                    "startLine": 14,
+                    "startLine": 11,
                     "startColumn": 4,
-                    "startOffset": 768,
+                    "startOffset": 633,
                     "endColumn": 103,
-                    "endOffset": 867
+                    "endOffset": 732
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\values-large\\values-large.xml",
@@ -251,11 +194,11 @@
             },
             {
                 "to": {
-                    "startLine": 15,
+                    "startLine": 12,
                     "startColumn": 4,
-                    "startOffset": 872,
+                    "startOffset": 737,
                     "endColumn": 115,
-                    "endOffset": 983
+                    "endOffset": 848
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\e05a0dbd908a95d6f8addf4d26cb22fe3b6a33f3\\output\\res\\values-large\\values-large.xml",

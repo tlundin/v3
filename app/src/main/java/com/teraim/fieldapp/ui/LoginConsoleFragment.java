@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,7 +58,7 @@ import com.teraim.fieldapp.utils.Tools;
 public class LoginConsoleFragment extends Fragment implements ModuleLoaderListener {
 
 	TextView log;
-	private final String License = "This sw uses 3rd party components that are under Apache 2.0 license.";
+
 	private LoggerI loginConsole,debugConsole;
 	private PersistenceHelper globalPh,ph;
 	private ModuleLoader myLoader=null,myDBLoader=null;
@@ -75,11 +76,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_login_console,
 				container, false);
-		TextView versionTxt,licenseTxt;
+		TextView versionTxt;
 		Log.e("vortex","oncreatevieww!");
 		log = (TextView)view.findViewById(R.id.logger);
 		versionTxt = (TextView)view.findViewById(R.id.versionTxt);
-		licenseTxt = (TextView)view.findViewById(R.id.licenseTxt);
+
 		final ImageView logo = (ImageView)view.findViewById(R.id.logo);
 		final ImageView bg = (ImageView)view.findViewById(R.id.bgImg);
 		appTxt = (TextView)view.findViewById(R.id.appTxt);
@@ -89,7 +90,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//log.setTypeface(type);
 		log.setMovementMethod(new ScrollingMovementMethod());
 		versionTxt.setText("Field Pad ver. "+Constants.VORTEX_VERSION);
-		licenseTxt.setText(License);
+
 		//Create global state
 
 
@@ -370,15 +371,14 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
         mActivity = activity;
     }
 
+    CharSequence logTxt="";
 
 	@Override
-	public void loadSuccess(String loaderId, final boolean majorVersionChange) {
+	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logTxt) {
 		Log.d("vortex","Arrives to loadsucc with ID: "+loaderId);
 		ph.put(PersistenceHelper.ALL_MODULES_FROZEN+loaderId,true);
-		if (mActivity==null) {
-			Log.e("vortex","No activity App cannot continue load. Must Restart...");
-			
-		}
+
+		this.logTxt = TextUtils.concat(this.logTxt,logTxt);
 		//If load successful, create database and import data into it. 
 		if (loaderId.equals("moduleLoader")) {
 			loginConsole.addRow("");
@@ -422,7 +422,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
 			if (mActivity!=null) {
 				final GlobalState gs =
-						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd);
+						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, logTxt);
+
+				//check if backup required.
 				if (gs.getBackupManager().timeToBackup()) {
 					final AlertDialog progD = new ProgressDialog.Builder(mActivity).setTitle("Backup")
 							.setMessage("Automatic backup in progress. Please wait")

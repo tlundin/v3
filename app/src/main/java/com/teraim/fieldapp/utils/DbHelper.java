@@ -2923,16 +2923,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public void persistQueue(Queue<Variable> dbQueue) {
-        beginTransaction();
-        Variable v;
-        while (!dbQueue.isEmpty()) {
-            v = dbQueue.poll();
-            Log.d("vortex", "inserting var " + v.getId());
-            this.insertVariable(v, v.getValue(), v.isSyncNext());
-        }
-        this.endTransactionSuccess();
-    }
+
 
 
 }

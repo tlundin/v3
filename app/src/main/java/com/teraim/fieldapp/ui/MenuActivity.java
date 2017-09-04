@@ -561,9 +561,18 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		return menuChoice(item);
 	}
 
-	private final static int NO_OF_MENU_ITEMS = 5;
+	private final static int NO_OF_MENU_ITEMS = 6;
 
 	MenuItem mnu[] = new MenuItem[NO_OF_MENU_ITEMS];
+	final static int MENU_ITEM_GPS_QUALITY 	= 0;
+	final static int MENU_ITEM_SYNC_TYPE 	= 1;
+	final static int MENU_ITEM_CONTEXT		= 2;
+	final static int MENU_ITEM_LOG_WARNING 	= 3;
+	final static int MENU_ITEM_SETTINGS 	= 4;
+	final static int MENU_ITEM_ABOUT 		= 5;
+
+
+
 	ImageView animView = null;
 
 	private void createMenu(Menu menu)
@@ -576,17 +585,17 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
 
-		mnu[0].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		mnu[1].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		mnu[2].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		mnu[3].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		mnu[3].setIcon(null);
-		mnu[mnu.length-1].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		mnu[2].setTitle(R.string.context);
-		mnu[3].setTitle(R.string.log);
-		mnu[mnu.length-1].setTitle(R.string.settings);
-		mnu[mnu.length-1].setIcon(android.R.drawable.ic_menu_preferences);
-
+		mnu[MENU_ITEM_GPS_QUALITY].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		mnu[MENU_ITEM_SYNC_TYPE].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		mnu[MENU_ITEM_CONTEXT].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		mnu[MENU_ITEM_LOG_WARNING].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		mnu[MENU_ITEM_LOG_WARNING].setIcon(null);
+		mnu[MENU_ITEM_SETTINGS].setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		mnu[MENU_ITEM_CONTEXT].setTitle(R.string.context);
+		mnu[MENU_ITEM_LOG_WARNING].setTitle(R.string.log);
+		mnu[MENU_ITEM_SETTINGS].setTitle(R.string.settings);
+		mnu[MENU_ITEM_SETTINGS].setIcon(android.R.drawable.ic_menu_preferences);
+		mnu[MENU_ITEM_ABOUT].setTitle("About");
 
 	}
 
@@ -597,46 +606,50 @@ public class MenuActivity extends Activity implements TrackerListener   {
 	}
 
 	protected void refreshStatusRow() {
+		//If init failed, show only log and settings
 		if (initfailed ) {
-			if (mnu[3]!=null) {
-				mnu[3].setVisible(true);
-				mnu[mnu.length - 1].setVisible(true);
-				mnu[mnu.length - 1].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			if (mnu[MENU_ITEM_LOG_WARNING]!=null) {
+				mnu[MENU_ITEM_LOG_WARNING].setVisible(true);
+				mnu[MENU_ITEM_SETTINGS].setVisible(true);
+				mnu[MENU_ITEM_SETTINGS].setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 			}
+			//Init done succesfully? Show all items.
 		} else 	if (GlobalState.getInstance()!=null && initdone) {
 
 			if (noGPS())
-				mnu[0].setVisible(false);
+				mnu[MENU_ITEM_GPS_QUALITY].setVisible(false);
 			else {
-				mnu[0].setVisible(true);
+				mnu[MENU_ITEM_GPS_QUALITY].setVisible(true);
 				//if (gpsSignalIsOld())
 				//	mnu[0].setIcon(R.drawable.btn_icon_none);
 				//else
 				{
 					GPSQuality GPSq = calculateGPSKQI();
 					if (GPSq == GPSQuality.green) {
-						mnu[0].setIcon(R.drawable.btn_icon_ready);
+						mnu[MENU_ITEM_GPS_QUALITY].setIcon(R.drawable.btn_icon_ready);
 					} else if (GPSq == GPSQuality.yellow)
-						mnu[0].setIcon(R.drawable.btn_icon_started);
+						mnu[MENU_ITEM_GPS_QUALITY].setIcon(R.drawable.btn_icon_started);
 					else
-						mnu[0].setIcon(R.drawable.btn_icon_started_with_errors);
-					mnu[0].setTitle(Math.round(latestSignal.accuracy)+"");
+						mnu[MENU_ITEM_GPS_QUALITY].setIcon(R.drawable.btn_icon_started_with_errors);
+					mnu[MENU_ITEM_GPS_QUALITY].setTitle(Math.round(latestSignal.accuracy)+"");
 				}
 			}
 
 			gs = GlobalState.getInstance();
 			if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE") || gs.isSolo())
-				mnu[1].setVisible(false);
+				mnu[MENU_ITEM_SYNC_TYPE].setVisible(false);
 			else
-				setSyncState(mnu[1]);
+				setSyncState(mnu[MENU_ITEM_SYNC_TYPE]);
 
-			mnu[2].setVisible(true);
+			mnu[MENU_ITEM_CONTEXT].setVisible(true);
 			mnu[3].setVisible(!globalPh.get(PersistenceHelper.LOG_LEVEL).equals("off"));
 			if (debugLogger!=null && debugLogger.hasRed()) {
-				mnu[3].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-				mnu[3].setIcon(R.drawable.warning);
+				mnu[MENU_ITEM_LOG_WARNING].setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+				mnu[MENU_ITEM_LOG_WARNING].setIcon(R.drawable.warning);
 			}
-			mnu[mnu.length-1].setVisible(true);
+			mnu[MENU_ITEM_SETTINGS].setVisible(true);
+			mnu[MENU_ITEM_ABOUT].setVisible(true);
+
 		}
 	}
 
@@ -732,11 +745,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 		int selection = item.getItemId();
 		//case must be constant..
-		if (selection == mnu.length-1)
-			selection = 99;
 
 		switch (selection) {
-			case 0:
+			case MENU_ITEM_GPS_QUALITY:
 				if (latestSignal!=null) {
 					new AlertDialog.Builder(this)
 							.setTitle("GPS Details")
@@ -756,10 +767,10 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				} else
 					refreshStatusRow();
 				break;
-			case 1:
+			case MENU_ITEM_SYNC_TYPE:
 				toggleSyncOnOff();
 				break;
-			case 2:
+			case MENU_ITEM_CONTEXT:
 				Log.d("vortex","gs is "+GlobalState.getInstance()+" gs "+gs);
 				//Log.d("vortex","in click for context: gs "+(gs==null)+" varc "+(gs.getVariableCache()==null));
 				if (gs!=null && gs.getVariableCache()!=null) {
@@ -780,8 +791,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				}
 				break;
 
-			case 3:
-				mnu[3].setIcon(null);
+			case MENU_ITEM_LOG_WARNING:
+				mnu[MENU_ITEM_LOG_WARNING].setIcon(null);
 				final Dialog dialog = new Dialog(this);
 				dialog.setContentView(R.layout.log_dialog_popup);
 				dialog.setTitle("Session Log");
@@ -860,7 +871,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				});
 				break;
 
-			case 99:
+			case MENU_ITEM_SETTINGS:
 				//close drawer menu if open
 				if (Start.singleton.getDrawerMenu()!=null)
 					Start.singleton.getDrawerMenu().closeDrawer();
@@ -869,6 +880,11 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				Intent intent = new Intent(getBaseContext(),ConfigMenu.class);
 				startActivity(intent);
 				return true;
+			case MENU_ITEM_ABOUT:
+                Intent myIntent = new Intent(this, AboutActivity.class);
+                startActivity(myIntent);
+
+				break;
 		}
 		return false;
 	}

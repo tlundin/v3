@@ -57,7 +57,13 @@
         <activity
             android:name="com.teraim.fieldapp.ui.ConfigMenu"
             android:label="@string/menu_settings"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.teraim.fieldapp.ui.AboutActivity"
+            android:label="@string/about"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.teraim.fieldapp.SendLog"
             android:textAppearance="@android:style/TextAppearance.Large"

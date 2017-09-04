@@ -45,6 +45,8 @@ public class SweLocation implements Location {
 	
 	@Override
 	public String toString() {
-		return getX()+","+getY();
+
+			return getX()+","+getY();
+
 	}
 }

@@ -134,16 +134,16 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 
 			//If list requires recalc, do it.
 			if (redraw) {
-				Log.d("vortex","redraw list "+this.getId());
 				this.reSortAndFilter();
 				prepareDraw();
 				redraw=false;
+				Log.d("baza","redraw list "+this.getId()+" filtered: "+filteredList.size()+" all: "+list.size());
 				for (Listable l:filteredList) {
 					//l.refreshInputFields();
 					l.refresh();
 					//Everything is WF_Widgets, so this is safe!
 					myW.addView(((WF_Widget)l).getWidget());
-					Log.d("vortex","Drawing: "+l.getLabel());
+					//Log.d("vortex","Drawing: "+l.getLabel());
 				}
 				//Log.d("nils","Settingdrawactive to false");
 

@@ -53,7 +53,13 @@
         <activity
             android:name=".ui.ConfigMenu"
             android:label="@string/menu_settings"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/about"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name="com.teraim.fieldapp.SendLog"
             android:theme="@android:style/Theme.Dialog"
@@ -64,6 +70,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".synchronization.framework.SyncService"
             android:exported="true"

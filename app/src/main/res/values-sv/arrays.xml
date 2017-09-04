@@ -21,11 +21,6 @@
         <item>normal</item>
         <item>critical</item>
     </string-array>
-    <string-array name="menu">
-        <item>Beskrivning</item>
-        <item>På nätet</item>
-        <item>Ta bort</item>
-    </string-array>
     <string-array name="versionArray">
         <item>Uppdatera filer bara när Appens version ändras (default)</item>
         <item>Kontrollera version för enskilda filer varje uppstart</item>

@@ -126,6 +126,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 	protected List<Rule> rules = new ArrayList<Rule>();
 	private List<Workflow> wfStack;
+	private Map<String,BlockCreateListEntriesFromFieldList> myListBlocks;
 
 	public WF_Context getCurrentContext() {
 		return myContext;
@@ -370,6 +371,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		//LinearLayout my_root = (LinearLayout) findViewById(R.id.myRoot);		
 		blocks = wf.getCopyOfBlocks();
 		jump.clear();
+		myListBlocks = new HashMap<>();
+
 		Log.d("vortex","*******EXECUTING: "+wf.getLabel());
 		Log.d("vortex","myHash: "+wfHash);
 		execute(0);
@@ -390,83 +393,81 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		myContext.clearExecutedBlocks();
 		try {
 
-			while(notDone) {
+			while (notDone) {
 
-				if (blockP>=blocks.size()) {
+				if (blockP >= blocks.size()) {
 
-					Log.d("vortex","EXECUTION STOPPED ON BLOCK "+(blockP-1));
-					if (wfStack!=null) {
-						wf = wfStack.remove(wfStack.size()-1);
-						if (wf==null)
-							Log.e("brexit","WF IS NULL AFTER STACK POP IN EXECUTOR");
+					Log.d("vortex", "EXECUTION STOPPED ON BLOCK " + (blockP - 1));
+					if (wfStack != null) {
+						wf = wfStack.remove(wfStack.size() - 1);
+						if (wf == null)
+							Log.e("brexit", "WF IS NULL AFTER STACK POP IN EXECUTOR");
 						else {
 							if (wfStack.isEmpty())
 								wfStack = null;
 
-							blockP = wf.getBlockPointer()+1;
+							blockP = wf.getBlockPointer() + 1;
 							blocks = wf.getCopyOfBlocks();
-							Log.d("vortex","popped to wf "+wf.getName()+" blockP is now "+blockP);
+							Log.d("vortex", "popped to wf " + wf.getName() + " blockP is now " + blockP);
 							continue;
 						}
 					} else {
-						notDone=false;
+						notDone = false;
 						Log.d("brexit", "wfStack was empty - exiting");
 						break;
 					}
 				}
 				Block b = blocks.get(blockP);
-				Log.d("vortex","In execute with block "+b.getClass().getSimpleName()+" ID: "+b.getBlockId());
+				Log.d("vortex", "In execute with block " + b.getClass().getSimpleName() + " ID: " + b.getBlockId());
 
 				//Add block to list of executed blocks.
-				try { myContext.addExecutedBlock(Integer.parseInt(b.getBlockId())); } catch (NumberFormatException e) {Log.e("vortex","blockId was not Integer");}
+				try {
+					myContext.addExecutedBlock(Integer.parseInt(b.getBlockId()));
+				} catch (NumberFormatException e) {
+					Log.e("vortex", "blockId was not Integer");
+				}
 
 				if (b instanceof PageDefineBlock) {
-					PageDefineBlock bl = (PageDefineBlock)b;
-					Log.d("vortex","Found pagedefine!");
+					PageDefineBlock bl = (PageDefineBlock) b;
+					Log.d("vortex", "Found pagedefine!");
 					if (bl.hasGPS()) {
 						myContext.enableGPS();
 						o.addRow("GPS scanning started");
-						Log.d("vortex","GPS scanning started");
+						Log.d("vortex", "GPS scanning started");
 
 						Tracker.ErrorCode code = gs.getTracker().startScan(gs.getContext());
-						o.addRow("GPS SCANNER RETURNS: "+code.name());
-						Log.d("vortex","got "+code.name());
+						o.addRow("GPS SCANNER RETURNS: " + code.name());
+						Log.d("vortex", "got " + code.name());
 					} //else
 					//	Log.e("vortex","This has no GPS");
 
 
-				}
-
-				else if (b instanceof ContainerDefineBlock) {
+				} else if (b instanceof ContainerDefineBlock) {
 					o.addRow("");
-					o.addYellowText("ContainerDefineBlock found "+b.getBlockId());
+					o.addYellowText("ContainerDefineBlock found " + b.getBlockId());
 					String id = (((ContainerDefineBlock) b).getContainerName());
-					if (id!=null) {
-						if (myContext.getContainer(id)!=null) {
-							o.addRow("found template container for "+id);
-						}
-						else {
+					if (id != null) {
+						if (myContext.getContainer(id) != null) {
+							o.addRow("found template container for " + id);
+						} else {
 							o.addRow("");
-							o.addRedText("Could not find container "+id+" in template!");
+							o.addRedText("Could not find container " + id + " in template!");
 						}
 
 					}
-				}			
-				else if (b instanceof ButtonBlock) {
+				} else if (b instanceof ButtonBlock) {
 					o.addRow("");
-					o.addYellowText("ButtonBlock found "+b.getBlockId());
+					o.addYellowText("ButtonBlock found " + b.getBlockId());
 					ButtonBlock bl = (ButtonBlock) b;
 					bl.create(myContext);
-				}			
-				else if (b instanceof BlockCreateTextField) {
+				} else if (b instanceof BlockCreateTextField) {
 					o.addRow("");
-					o.addYellowText("CreatTextBlock found "+b.getBlockId());
+					o.addYellowText("CreatTextBlock found " + b.getBlockId());
 					BlockCreateTextField bl = (BlockCreateTextField) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof CreateSortWidgetBlock) {
+				} else if (b instanceof CreateSortWidgetBlock) {
 					o.addRow("");
-					o.addYellowText("CreateSortWidgetBlock found "+b.getBlockId());
+					o.addYellowText("CreateSortWidgetBlock found " + b.getBlockId());
 					CreateSortWidgetBlock bl = (CreateSortWidgetBlock) b;
 					bl.create(myContext);
 				}/*
@@ -475,140 +476,129 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 				o.addYellowText("ListFilterBlock found");
 				ListFilterBlock bl = (ListFilterBlock)b;
 				bl.create(myContext);
-			}*/
-
-				else if (b instanceof CreateEntryFieldBlock) {
+			}*/ else if (b instanceof CreateEntryFieldBlock) {
 					o.addRow("");
-					o.addYellowText("CreateEntryFieldBlock found "+b.getBlockId());
-					CreateEntryFieldBlock bl = (CreateEntryFieldBlock)b;
-					Log.d("NILS","CreateEntryFieldBlock found");
-					Variable v=bl.create(myContext);
-					if (v!=null)
+					o.addYellowText("CreateEntryFieldBlock found " + b.getBlockId());
+					CreateEntryFieldBlock bl = (CreateEntryFieldBlock) b;
+					Log.d("NILS", "CreateEntryFieldBlock found");
+					Variable v = bl.create(myContext);
+					if (v != null)
 						visiVars.add(v);
-				}
-				else if (b instanceof CreateSliderEntryFieldBlock) {
+				} else if (b instanceof CreateSliderEntryFieldBlock) {
 					o.addRow("");
-					o.addYellowText("CreateEntryFieldBlock found "+b.getBlockId());
-					CreateSliderEntryFieldBlock bl = (CreateSliderEntryFieldBlock)b;
-					Log.d("NILS","CreateSliderEntryFieldBlock found");
-					Variable v=bl.create(myContext);
-					if (v!=null)
+					o.addYellowText("CreateEntryFieldBlock found " + b.getBlockId());
+					CreateSliderEntryFieldBlock bl = (CreateSliderEntryFieldBlock) b;
+					Log.d("NILS", "CreateSliderEntryFieldBlock found");
+					Variable v = bl.create(myContext);
+					if (v != null)
 						visiVars.add(v);
-				}
-				else if (b instanceof AddSumOrCountBlock) {
+				} else if (b instanceof AddSumOrCountBlock) {
 					o.addRow("");
-					o.addYellowText("AddSumOrCountBlock found "+b.getBlockId());
-					AddSumOrCountBlock bl = (AddSumOrCountBlock)b;
+					o.addYellowText("AddSumOrCountBlock found " + b.getBlockId());
+					AddSumOrCountBlock bl = (AddSumOrCountBlock) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof DisplayValueBlock) {
+				} else if (b instanceof DisplayValueBlock) {
 					o.addRow("");
-					o.addYellowText("DisplayValueBlock found "+b.getBlockId());
-					DisplayValueBlock bl = (DisplayValueBlock)b;
+					o.addYellowText("DisplayValueBlock found " + b.getBlockId());
+					DisplayValueBlock bl = (DisplayValueBlock) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof CoupledVariableGroupBlock) {
+				} else if (b instanceof CoupledVariableGroupBlock) {
 					o.addRow("");
-					o.addYellowText("Slidergroupblock found "+b.getBlockId());
+					o.addYellowText("Slidergroupblock found " + b.getBlockId());
 					CoupledVariableGroupBlock bl = (CoupledVariableGroupBlock) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof AddVariableToEveryListEntryBlock) {
+				} else if (b instanceof AddVariableToEveryListEntryBlock) {
 					o.addRow("");
-					o.addYellowText("AddVariableToEveryListEntryBlock found "+b.getBlockId());
-					AddVariableToEveryListEntryBlock bl = (AddVariableToEveryListEntryBlock)b;
+					o.addYellowText("AddVariableToEveryListEntryBlock found " + b.getBlockId());
+					AddVariableToEveryListEntryBlock bl = (AddVariableToEveryListEntryBlock) b;
+
+					if (myListBlocks.get(bl.getTarget()) != null) {
+						Log.d("vortex", "Addvariable: found target list");
+						myListBlocks.get(bl.getTarget()).associateVariableBlock(bl);
+
+					}
+					/*
 					if(!bl.create(myContext)) {
 						savedBlockPointer = blockP+1;
 						return;
 					}
+					*/
 
 
-				}
-				else if (b instanceof BlockCreateListEntriesFromFieldList) {
+				} else if (b instanceof BlockCreateListEntriesFromFieldList) {
 					o.addRow("");
-					o.addYellowText("BlockCreateListEntriesFromFieldList found "+b.getBlockId());
-					BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList)b;
+					o.addYellowText("BlockCreateListEntriesFromFieldList found " + b.getBlockId());
+					//delay creation until filters applied.
+					BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList) b;
+					bl.create(myContext);
+					myListBlocks.put(bl.getListId(), bl);
 
+					/*
 					if(!bl.create(myContext)) {
 						//Pause execution and wait for callback..
 						savedBlockPointer = blockP+1;
 						return;
 
 					}
-				}
-				else if (b instanceof BlockCreateTable) {
+					*/
+				} else if (b instanceof BlockCreateTable) {
 					o.addRow("");
-					o.addYellowText("BlockCreateTable found "+b.getBlockId());
-					BlockCreateTable bl = (BlockCreateTable)b;
+					o.addYellowText("BlockCreateTable found " + b.getBlockId());
+					BlockCreateTable bl = (BlockCreateTable) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof BlockCreateTableEntriesFromFieldList) {
+				} else if (b instanceof BlockCreateTableEntriesFromFieldList) {
 					o.addRow("");
-					o.addYellowText("BlockCreateTableEntriesFromFieldList found "+b.getBlockId());
-					BlockCreateTableEntriesFromFieldList bl = (BlockCreateTableEntriesFromFieldList)b;
+					o.addYellowText("BlockCreateTableEntriesFromFieldList found " + b.getBlockId());
+					BlockCreateTableEntriesFromFieldList bl = (BlockCreateTableEntriesFromFieldList) b;
 					bl.create(myContext);
-				}
-
-				else if (b instanceof BlockAddColumnsToTable) {
+				} else if (b instanceof BlockAddColumnsToTable) {
 					o.addRow("");
-					o.addYellowText("BlockAddColumn(s)ToTable found "+b.getBlockId());
-					BlockAddColumnsToTable bl = (BlockAddColumnsToTable)b;
+					o.addYellowText("BlockAddColumn(s)ToTable found " + b.getBlockId());
+					BlockAddColumnsToTable bl = (BlockAddColumnsToTable) b;
 					bl.create(myContext);
-				}
-
-				else if (b instanceof BlockAddAggregateColumnToTable) {
+				} else if (b instanceof BlockAddAggregateColumnToTable) {
 					o.addRow("");
-					o.addYellowText("BlockAddAggregateColumnToTable found "+b.getBlockId());
-					BlockAddAggregateColumnToTable bl = (BlockAddAggregateColumnToTable)b;
+					o.addYellowText("BlockAddAggregateColumnToTable found " + b.getBlockId());
+					BlockAddAggregateColumnToTable bl = (BlockAddAggregateColumnToTable) b;
 					bl.create(myContext);
-				}
-
-
-				else if (b instanceof BlockAddVariableToTable) {
+				} else if (b instanceof BlockAddVariableToTable) {
 					o.addRow("");
-					o.addYellowText("BlockAddVariableToTable(s)ToTable found "+b.getBlockId());
-					BlockAddVariableToTable bl = (BlockAddVariableToTable)b;
+					o.addYellowText("BlockAddVariableToTable(s)ToTable found " + b.getBlockId());
+					BlockAddVariableToTable bl = (BlockAddVariableToTable) b;
 					bl.create(myContext);
-				}
-
-				else if (b instanceof AddVariableToEntryFieldBlock) {
+				} else if (b instanceof AddVariableToEntryFieldBlock) {
 					o.addRow("");
-					o.addYellowText("AddVariableToEntryFieldBlock found "+b.getBlockId());
-					AddVariableToEntryFieldBlock bl = (AddVariableToEntryFieldBlock)b;
+					o.addYellowText("AddVariableToEntryFieldBlock found " + b.getBlockId());
+					AddVariableToEntryFieldBlock bl = (AddVariableToEntryFieldBlock) b;
 					Variable v = bl.create(myContext);
-					if (v!=null)
+					if (v != null)
 						visiVars.add(v);
 
-				}
-				else if (b instanceof AddVariableToListEntry) {
+				} else if (b instanceof AddVariableToListEntry) {
 					o.addRow("");
-					o.addYellowText("AddVariableToListEntry found "+b.getBlockId());
-					AddVariableToListEntry bl = (AddVariableToListEntry)b;
+					o.addYellowText("AddVariableToListEntry found " + b.getBlockId());
+					AddVariableToListEntry bl = (AddVariableToListEntry) b;
 					Variable v = bl.create(myContext);
 					//TODO: REMOVE THIS??
-				}
-				else if (b instanceof AddEntryToFieldListBlock) {
+				} else if (b instanceof AddEntryToFieldListBlock) {
 					o.addRow("");
-					o.addYellowText("AddEntryToFieldListBlock found "+b.getBlockId());
-					AddEntryToFieldListBlock bl = (AddEntryToFieldListBlock)b;
+					o.addYellowText("AddEntryToFieldListBlock found " + b.getBlockId());
+					AddEntryToFieldListBlock bl = (AddEntryToFieldListBlock) b;
 					bl.create(myContext);
 
-				}
-
-				else if (b instanceof NoOpBlock) {
+				} else if (b instanceof NoOpBlock) {
 					o.addRow("");
-					o.addYellowText("Noopblock found and skipped! "+b.getBlockId());
-				}
-				else if (b instanceof BlockGoSub) {
+					o.addYellowText("Noopblock found and skipped! " + b.getBlockId());
+				} else if (b instanceof BlockGoSub) {
 					o.addRow("");
-					o.addYellowText("BlockGoSub found "+b.getBlockId());
-					String target = ((BlockGoSub)b).getTarget();
-					Log.d("vortex","TARGET: "+target);
-					if (target!=null) {
+					o.addYellowText("BlockGoSub found " + b.getBlockId());
+					String target = ((BlockGoSub) b).getTarget();
+					Log.d("vortex", "TARGET: " + target);
+					if (target != null) {
 						Workflow sub = gs.getWorkflow(target);
-						if (sub!=null) {
-							Log.d("vortex","Executing gosub to "+target);
-							if (wfStack==null)
+						if (sub != null) {
+							Log.d("vortex", "Executing gosub to " + target);
+							if (wfStack == null)
 								wfStack = new ArrayList<Workflow>();
 							wfStack.add(wf);
 							wf.saveBlockPointer(blockP);
@@ -620,52 +610,49 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						}
 					}
 
-				}
-				else if (b instanceof JumpBlock) {
+				} else if (b instanceof JumpBlock) {
 					o.addRow("");
-					o.addYellowText("Jumpblock found "+b.getBlockId());
-					JumpBlock bl = (JumpBlock)b;			
+					o.addYellowText("Jumpblock found " + b.getBlockId());
+					JumpBlock bl = (JumpBlock) b;
 					jump.put(bl.getBlockId(), bl.getJumpTo());
-				}
-				else if (b instanceof CreateImageBlock) {
+				} else if (b instanceof CreateImageBlock) {
 					o.addRow("");
-					o.addYellowText("CreateImageBlock found "+b.getBlockId());
-					CreateImageBlock bl = (CreateImageBlock)b;			
+					o.addYellowText("CreateImageBlock found " + b.getBlockId());
+					CreateImageBlock bl = (CreateImageBlock) b;
 					bl.create(myContext);
-				}
-				else if (b instanceof SetValueBlock) {
-					final SetValueBlock bl = (SetValueBlock)b;
+				} else if (b instanceof SetValueBlock) {
+					final SetValueBlock bl = (SetValueBlock) b;
 					//final List<TokenizedItem> tokens = gs.getRuleExecutor().findTokens(bl.getFormula(),null);
-					if (bl.getBehavior()!=ExecutionBehavior.constant && bl.getBehavior()!= ExecutionBehavior.constant_value) {
+					if (bl.getBehavior() != ExecutionBehavior.constant && bl.getBehavior() != ExecutionBehavior.constant_value) {
 						EventListener tiva = new EventListener() {
 							@Override
 							public void onEvent(Event e) {
 								if (!e.getProvider().equals(bl.getBlockId())) {
 									Variable v = varCache.getVariable(bl.getMyVariable());
-									if (v!=null) {
+									if (v != null) {
 										//String	eval = bl.evaluate(gs,bl.getFormula(),tokens,v.getType()== DataType.text);
 										String val = v.getValue();
 										String eval = bl.getEvaluation();
 
-										o.addRow("Variable: "+v.getId()+" Current val: "+val+" New val: "+eval);
-										Log.d("vortex","Variable: "+v.getId()+" Current val: "+val+" New val: "+eval);
+										o.addRow("Variable: " + v.getId() + " Current val: " + val + " New val: " + eval);
+										Log.d("vortex", "Variable: " + v.getId() + " Current val: " + val + " New val: " + eval);
 										if (!(eval == null && val == null)) {
 											if (eval == null && val != null || val == null && eval != null || !val.equals(eval)) {
 												//Remove .0 
 
 												v.setValue(eval);
 												o.addRow("");
-												o.addYellowText("Value has changed to or from null in setvalueblock OnSave for block "+bl.getBlockId());
-												Log.d("Vortex","Value has changed to or from null in setvalueblock OnSave for block "+bl.getBlockId());
+												o.addYellowText("Value has changed to or from null in setvalueblock OnSave for block " + bl.getBlockId());
+												Log.d("Vortex", "Value has changed to or from null in setvalueblock OnSave for block " + bl.getBlockId());
 
 												o.addRow("");
-												o.addYellowText("BEHAVIOR: "+bl.getBehavior());
-												if (bl.getBehavior()==ExecutionBehavior.update_flow) {
+												o.addYellowText("BEHAVIOR: " + bl.getBehavior());
+												if (bl.getBehavior() == ExecutionBehavior.update_flow) {
 													if (myContext.myEndIsNear()) {
-														Log.d("vortex","Disregarding event since flow reexecute already in progress.");
+														Log.d("vortex", "Disregarding event since flow reexecute already in progress.");
 														return;
 													}
-													Log.d("nils","Variable has sideEffects...re-executing flow");
+													Log.d("nils", "Variable has sideEffects...re-executing flow");
 													myContext.setMyEndIsNear();
 													new Handler().postDelayed(new Runnable() {
 														public void run() {
@@ -673,56 +660,56 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 															Set<Variable> previouslyVisibleVars = visiVars;
 															Executor.this.run();
-															for (Variable v:previouslyVisibleVars) {
-																Log.d("nils","Previously visible: "+v.getId());
+															for (Variable v : previouslyVisibleVars) {
+																Log.d("nils", "Previously visible: " + v.getId());
 																boolean found = false;
-																for(Variable x:visiVars) {									
+																for (Variable x : visiVars) {
 																	found = x.getId().equals(v.getId());
 																	if (found)
 																		break;
 																}
 
 																if (!found) {
-																	Log.d("nils","Variable gone.Removing");
+																	Log.d("nils", "Variable gone.Removing");
 																	v.deleteValue();
 																	//here we need a onSave event.
 																	//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_setvalue"));
 																} else
-																	Log.d("nils","Still visible!");
+																	Log.d("nils", "Still visible!");
 
-															}	
+															}
 														}
 													}, 0);
 												}
 											}
 										}
 									} else {
-										Log.e("vortex","variable null in SetValueBlock");
-										o.addRow("Setvalueblock variable "+bl.getMyVariable()+" not found or missing columns");
+										Log.e("vortex", "variable null in SetValueBlock");
+										o.addRow("Setvalueblock variable " + bl.getMyVariable() + " not found or missing columns");
 									}
 
 								} else
-									o.addRow("Discarded onSave Event from myself in SetValueBlock "+bl.getBlockId());
+									o.addRow("Discarded onSave Event from myself in SetValueBlock " + bl.getBlockId());
 							}
 
 							@Override
 							public String getName() {
-								return "SETVALUE BLOCK "+bl.getBlockId();
+								return "SETVALUE BLOCK " + bl.getBlockId();
 							}
 						};
-						Log.d("nils","Adding eventlistener for the setvalue block");
+						Log.d("nils", "Adding eventlistener for the setvalue block");
 						myContext.registerEventListener(tiva, EventType.onSave);
 					}
 					//Evaluate
 					Variable v = varCache.getVariable(bl.getMyVariable());
-					if (v!=null) {
+					if (v != null) {
 						String eval = bl.getEvaluation();
 						o.addRow("");
-						o.addYellowText("SetValueBlock "+b.getBlockId()+" ["+bl.getMyVariable()+"]");
-						o.addRow("Evaluation: "+eval);
+						o.addYellowText("SetValueBlock " + b.getBlockId() + " [" + bl.getMyVariable() + "]");
+						o.addRow("Evaluation: " + eval);
 
-						if (eval==null) {
-							if (bl.getBehavior()==ExecutionBehavior.constant) {
+						if (eval == null) {
+							if (bl.getBehavior() == ExecutionBehavior.constant) {
 								o.addRow("");
 								o.addRow("Execution stopped on SetValueBlock " + bl.getBlockId() + ". Expression " + bl.getExpression() + "evaluates to null");
 								//jump.put(bl.getBlockId(), Executor.STOP_ID);
@@ -730,37 +717,31 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 							} else {
 
 							}
-						} 				
+						}
 
 						String val = v.getValue();
-						if ((val == null && eval == null)||
+						if ((val == null && eval == null) ||
 								(val != null && eval != null && val.equals(eval))) {
-							o.addRow("No change. Value: "+val+" Eval: "+eval);
-						}
-						else {	
+							o.addRow("No change. Value: " + val + " Eval: " + eval);
+						} else {
 							v.setValue(eval);
-							o.addRow(bl.getExpression()+" Eval: ["+eval+"]");
+							o.addRow(bl.getExpression() + " Eval: [" + eval + "]");
 							//Take care of any side effects before triggering redraw.
 							//Try to delay onSave.
 							//myContext.registerEvent(new WF_Event_OnSave(bl.getBlockId()));
 							delayedOnSave = new WF_Event_OnSave(bl.getBlockId());
-							Log.d("blubb","delayed onSaveEvent in SetValue block "+bl.getBlockId());
+							Log.d("blubb", "delayed onSaveEvent in SetValue block " + bl.getBlockId());
 						}
 					} else {
 						o.addRow("");
-						o.addRedText("Variable ["+bl.getMyVariable()+"] is missing in SetValueBlock "+bl.getBlockId());
+						o.addRedText("Variable [" + bl.getMyVariable() + "] is missing in SetValueBlock " + bl.getBlockId());
 					}
 
 
-
-
-
-
-				}
-				else if (b instanceof ConditionalContinuationBlock) {
+				} else if (b instanceof ConditionalContinuationBlock) {
 					o.addRow("");
-					o.addYellowText("ConditionalContinuationBlock "+b.getBlockId());
-					final ConditionalContinuationBlock bl = (ConditionalContinuationBlock)b;
+					o.addYellowText("ConditionalContinuationBlock " + b.getBlockId());
+					final ConditionalContinuationBlock bl = (ConditionalContinuationBlock) b;
 					final String formula = bl.getFormula();
 					//final List<TokenizedItem> vars = gs.getRuleExecutor().findTokens(formula,null);
 					if (bl.isExpressionOk()) {
@@ -769,11 +750,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 							public void onEvent(Event e) {
 								//discard if redraw is coming..
 								if (myContext.myEndIsNear()) {
-									Log.d("vortex","Disregarding onsave due to ongoing reexecute.");
+									Log.d("vortex", "Disregarding onsave due to ongoing reexecute.");
 									return;
 								}
 								//If evaluation different than earlier, re-render workflow.
-								if(bl.evaluate()) {
+								if (bl.evaluate()) {
 									//redraw! We block all other conditional blocks from triggering.
 									myContext.setMyEndIsNear();
 									//myContext.onResume();
@@ -782,24 +763,24 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 											//myContext.resetState();
 											Set<Variable> previouslyVisibleVars = visiVars;
 											Executor.this.run();
-											for (Variable v:previouslyVisibleVars) {
-												Log.d("nils","Previously visible: "+v.getId());
+											for (Variable v : previouslyVisibleVars) {
+												Log.d("nils", "Previously visible: " + v.getId());
 												boolean found = false;
-												for(Variable x:visiVars) {									
+												for (Variable x : visiVars) {
 													found = x.getId().equals(v.getId());
-													if (found) 
+													if (found)
 														break;
 												}
 
 												if (!found) {
-													Log.d("nils","Variable not found.Removing");
+													Log.d("nils", "Variable not found.Removing");
 													v.deleteValue();
 													//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_cond_cont"));
 
 												} else
-													Log.d("bortex","Still visible!");
+													Log.d("bortex", "Still visible!");
 
-											}	
+											}
 										}
 									}, 0);
 
@@ -809,60 +790,51 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 							@Override
 							public String getName() {
-								return "ConditionalContinuation BLOCK "+bl.getBlockId();
+								return "ConditionalContinuation BLOCK " + bl.getBlockId();
 							}
-						};		
-						Log.d("nils","Adding eventlistener for the conditional block");
+						};
+						Log.d("nils", "Adding eventlistener for the conditional block");
 						myContext.registerEventListener(tiva, EventType.onSave);
 						//trigger event.
 						bl.evaluate();
 
 						switch (bl.getCurrentEval()) {
-						case ConditionalContinuationBlock.STOP:
-							jump.put(bl.getBlockId(), Executor.STOP_ID);
-							break;
-						case ConditionalContinuationBlock.JUMP:
-							jump.put(bl.getBlockId(), bl.getElseId());						
-							break;
-						case ConditionalContinuationBlock.NEXT:
-							jump.remove(bl.getBlockId());
+							case ConditionalContinuationBlock.STOP:
+								jump.put(bl.getBlockId(), Executor.STOP_ID);
+								break;
+							case ConditionalContinuationBlock.JUMP:
+								jump.put(bl.getBlockId(), bl.getElseId());
+								break;
+							case ConditionalContinuationBlock.NEXT:
+								jump.remove(bl.getBlockId());
 						}
 
-					}
-					else {
+					} else {
 						o.addRow("");
-						o.addRedText("Cannot read formula: ["+formula+"] because of previous fail during the pre-Parse step. Please reimport the workflow configuration and check your log for the root cause.");
-						Log.d("nils","Parsing of formula failed - no variables: ["+formula+"]");
+						o.addRedText("Cannot read formula: [" + formula + "] because of previous fail during the pre-Parse step. Please reimport the workflow configuration and check your log for the root cause.");
+						Log.d("nils", "Parsing of formula failed - no variables: [" + formula + "]");
 					}
-				}
-				else if (b instanceof RuleBlock) {
+				} else if (b instanceof RuleBlock) {
 
-					((RuleBlock) b).create(myContext,blocks);
+					((RuleBlock) b).create(myContext, blocks);
 
-				}
-				else if (b instanceof MenuHeaderBlock) {
+				} else if (b instanceof MenuHeaderBlock) {
 					((MenuHeaderBlock) b).create(myContext);
 					myContext.setHasMenu();
-				}
-
-				else if (b instanceof MenuEntryBlock) {
+				} else if (b instanceof MenuEntryBlock) {
 					((MenuEntryBlock) b).create(myContext);
 					myContext.setHasMenu();
-				}
-				else if (b instanceof RoundChartBlock) {
+				} else if (b instanceof RoundChartBlock) {
 					((RoundChartBlock) b).create(myContext);
 
-				}
-				else if (b instanceof BarChartBlock) {
+				} else if (b instanceof BarChartBlock) {
 					((BarChartBlock) b).create(myContext);
 
-				}
-				else if (b instanceof CreateCategoryDataSourceBlock) {
+				} else if (b instanceof CreateCategoryDataSourceBlock) {
 					((CreateCategoryDataSourceBlock) b).create(myContext);
 
-				}
-				else if (b instanceof CreateGisBlock) {
-					pDialog = ProgressDialog.show(myContext.getContext(), "", 
+				} else if (b instanceof CreateGisBlock) {
+					pDialog = ProgressDialog.show(myContext.getContext(), "",
 							"Loading. Please wait...", true);
 
 					//Will callback to this object after image is loaded.
@@ -870,46 +842,51 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					if (bl.hasCarNavigation())
 						myContext.enableSatNav();
 					else
-						Log.e("vortex","This has no SATNAV");
-					if(!bl.create(myContext,this))
+						Log.e("vortex", "This has no SATNAV");
+					if (!bl.create(myContext, this))
 						//Pause execution and wait for callback..
-						savedBlockPointer = blockP+1;
-						return;
-				}
-
-				else if (b instanceof AddGisLayerBlock) {
+						savedBlockPointer = blockP + 1;
+					return;
+				} else if (b instanceof AddGisLayerBlock) {
 					((AddGisLayerBlock) b).create(myContext);
 
-				}
-				else if (b instanceof AddGisPointObjects) {
+				} else if (b instanceof AddGisPointObjects) {
 					((AddGisPointObjects) b).create(myContext);
-				}
-
-				else if (b instanceof AddGisFilter) {
+				} else if (b instanceof AddGisFilter) {
 					((AddGisFilter) b).create(myContext);
-				}
-				else if (b instanceof BlockDeleteMatchingVariables) {
+				} else if (b instanceof BlockDeleteMatchingVariables) {
 					((BlockDeleteMatchingVariables) b).create(myContext);
-				}
-
-
-				else if (b instanceof AddFilter) {
-					((AddFilter) b).create(myContext);
+				} else if (b instanceof AddFilter) {
+					AddFilter bl = ((AddFilter) b);
+					if (myListBlocks.get(bl.getTarget()) != null) {
+						Log.d("baza","Added filter to "+bl.getTarget());
+						myListBlocks.get(bl.getTarget()).associateFilterBlock(bl);
+					} else
+						Log.d("baza","failed to add filter");
 				}
 
 				String cId = b.getBlockId();
 				String jNext = jump.get(cId);
-				if (jNext!=null) {	
+				if (jNext != null) {
 					if (jNext.equals(Executor.STOP_ID))
 						notDone = false;
 					else
-						blockP = indexOf(jNext,blocks);
+						blockP = indexOf(jNext, blocks);
 				} else
 					blockP++;
 
 				if (!notDone)
-					Log.d("vortex","EXECUTION STOPPED ON BLOCK "+b.getBlockId());
+					Log.d("vortex", "EXECUTION STOPPED ON BLOCK " + b.getBlockId());
 			}
+
+
+			Log.d("baza", "I have lists...creating");
+			for (String key : myListBlocks.keySet()) {
+				myListBlocks.get(key).generate(myContext);
+				myListBlocks.get(key).createVariables(myContext);
+			}
+
+
 
 			//Remove loading popup if displayed.
 			removeLoadDialog();
@@ -971,7 +948,6 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			Tools.printErrorToLog(o,e);
 		}
 	}
-
 
 
 	private void removeLoadDialog() {

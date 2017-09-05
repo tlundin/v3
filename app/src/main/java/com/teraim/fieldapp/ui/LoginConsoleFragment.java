@@ -229,7 +229,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (GlobalState.getInstance() == null ) {
 			String storedBundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 			if (!storedBundleName.equals(bundleName)) {
-				if (!storedBundleName.isEmpty()) {
+				/*if (!storedBundleName.isEmpty()) {
 					Log.e("horcrux", "bundlename: " + bundleName + " inPHBN: " + globalPh.get(PersistenceHelper.BUNDLE_NAME));
 					Fragment frg = null;
 					frg = getFragmentManager().findFragmentById(R.id.content_frame);
@@ -237,7 +237,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					ft.detach(frg);
 					ft.attach(frg);
 					ft.commit();
-				}
+				}*/
+				Log.e("horcrux","gets");
+				//Tools.restart(this.getActivity());
 			} else {
 
 				Intent intent = new Intent();
@@ -260,7 +262,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			myLoader.stop();
 		if (myDBLoader!=null)
 			myDBLoader.stop();
-
 		super.onStop();
 	}
 
@@ -379,12 +380,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		ph.put(PersistenceHelper.ALL_MODULES_FROZEN+loaderId,true);
 
 		this.logTxt = TextUtils.concat(this.logTxt,logTxt);
+		Log.d("baza","logtxt now "+this.logTxt.toString());
 		//If load successful, create database and import data into it. 
 		if (loaderId.equals("moduleLoader")) {
-			loginConsole.addRow("");
-			//			loginConsole.addGreenText("All modules loaded...preparing database");
-			loginConsole.draw();
-
 			//Create or update database from Table object.
 			ConfigurationModule m = myModules.getModule(VariablesConfiguration.NAME);
 
@@ -399,7 +397,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 							String loaderId = "dbLoader";
 							boolean allFrozen = ph.getB(PersistenceHelper.ALL_MODULES_FROZEN+loaderId);
 							myDBLoader = new ModuleLoader(loaderId,dbModules,loginConsole,globalPh,allFrozen,debugConsole,LoginConsoleFragment.this,mActivity);
-							loginConsole.addRow("Defaults & GIS modules");			
+							LoginConsoleFragment.this.logTxt = TextUtils.concat(LoginConsoleFragment.this.logTxt,"\nDefaults & GIS modules");
 							myDBLoader.loadModules(majorVersionChange);
 						} else 
 							Log.e("vortex","null returned from getDBImportModules");
@@ -422,28 +420,17 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
 			if (mActivity!=null) {
 				final GlobalState gs =
-						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, logTxt);
+						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt);
 
 				//check if backup required.
 				if (gs.getBackupManager().timeToBackup()) {
-					final AlertDialog progD = new ProgressDialog.Builder(mActivity).setTitle("Backup")
-							.setMessage("Automatic backup in progress. Please wait")
-							.setCancelable(false)
-							.show();
-					final Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							long t1 = System.currentTimeMillis();
-							gs.getBackupManager().backUp();
-							Log.d("vortex","Backup took "+(System.currentTimeMillis()-t1)+" ms");
-							progD.dismiss();
-							start(gs);
-						}
-					}, 100);
-
-				} else
-					start(gs);
+					loginConsole.addRow("Backing up data");
+					gs.getBackupManager().backUp();
+				}
+				loginConsole.clear();
+				loginConsole.addRow("Done loading. See 'About' page for details");
+				loginConsole.draw();
+				start(gs);
 
 			} else {
 				Log.e("vortex","No activity.");

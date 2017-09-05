@@ -54,7 +54,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	private final String objectContextS;
 	private final boolean useIconOnMap;
 	private String nName,
-	target, coordType,locationVariables,imgSource,refreshRate;
+			target, coordType,locationVariables,imgSource,refreshRate;
 
 	private Bitmap icon=null;
 	private boolean isVisible;
@@ -80,10 +80,10 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	private String creator;
 
 	public AddGisPointObjects(String id, String nName, String label,
-			String target, String objectContext,String coordType, String locationVars, 
-			String imgSource,boolean use_image_icon_on_map, String refreshRate, String radius, boolean isVisible, 
-			GisObjectType type, String color, String polyType, String fillType, 
-			String onClick, String statusVariable, boolean isUser, boolean createAllowed, String palette, LoggerI o) {
+							  String target, String objectContext,String coordType, String locationVars,
+							  String imgSource,boolean use_image_icon_on_map, String refreshRate, String radius, boolean isVisible,
+							  GisObjectType type, String color, String polyType, String fillType,
+							  String onClick, String statusVariable, boolean isUser, boolean createAllowed, String palette, LoggerI o) {
 		super();
 		this.blockId = id;
 		this.nName = nName;
@@ -120,7 +120,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		this.radius=10;
 		if (polyType!=null) {
 			try {
-			this.polyType=PolyType.valueOf(polyType);
+				this.polyType=PolyType.valueOf(polyType);
 			} catch (IllegalArgumentException e) {
 				if (polyType.toUpperCase().equals("SQUARE")||polyType.toUpperCase().equals("RECT")||polyType.toUpperCase().equals("RECTANGLE"))
 					this.polyType=PolyType.rect;
@@ -137,7 +137,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			this.radius=Float.parseFloat(radius);
 
 		}
-		
+
 		labelE = Expressor.preCompileExpression(label);
 		this.unevaluatedLabel=label;
 		objContextE = Expressor.preCompileExpression(objectContext);
@@ -149,9 +149,9 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	public void create(WF_Context myContext) {
 		create(myContext, false);
 	}
-	
+
 	//Refresh: only add new objects created after last check. 
-	
+
 	public void create(WF_Context myContext, boolean refresh) {
 		setDefaultBitmaps(myContext);
 		o = GlobalState.getInstance().getLogger();
@@ -191,7 +191,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 				String fullPicURL = Constants.VORTEX_ROOT_DIR+GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME)+"/extras/"+imgSource;
 				Log.d("vortex","IMGURL: "+imgSource);
 				new DownloadImageTask()
-				.execute(fullPicURL);
+						.execute(fullPicURL);
 			} else {
 				try {
 					icon = BitmapFactory.decodeStream(new FileInputStream(cached));
@@ -200,7 +200,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 					e.printStackTrace();
 				}
 			}
-		}		
+		}
 
 
 
@@ -258,13 +258,13 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 
 		Selection coordVar1S=null,coordVar2S=null,statusVarS = null;
-		DBColumnPicker pickerLocation1,pickerLocation2=null,pickerStatusVars=null;  
-		
+		DBColumnPicker pickerLocation1,pickerLocation2=null,pickerStatusVars=null;
+
 		//save timestamp for refresh.
 		thisCheck = System.currentTimeMillis()+"";
 		if (lastCheckTimeStamp == null)
 			lastCheckTimeStamp = thisCheck;
-		
+
 		if (this.getStatusVariable()!=null) {
 
 			statusVarS = GlobalState.getInstance().getDb().createSelection(currYearH, this.getStatusVariable().trim());
@@ -339,7 +339,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		final Pair nullPair = new Pair<String, String>(null,null);
 
 		if (pickerLocation1 !=null ) {
-			
+
 			myGisObjects = new HashSet<GisObject> ();
 			boolean hasValues = pickerLocation1.moveToFirst();
 			//No values! A dynamic variable can create new ones, so create object anyway.
@@ -406,7 +406,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 						//Log.d("vortex","bitmap null? "+(icon==null));
 						Variable v1=null,v2=null;
 						//If status variable has a value in database, use it. 
-						if (statusVarM!=null) 
+						if (statusVarM!=null)
 							statusVarP = statusVarM.get(map1.get("uid"));
 						//if there is a statusvariable defined, but no value found, create a new empty variable.
 						if (statusVariable !=null && statusVarP == null) {
@@ -434,7 +434,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 								else {
 									String value = pickerLocation2.getVariable().value;
 									v2 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar2.name,value,true);
-									if (v1!=null && v2!=null) 
+									if (v1!=null && v2!=null)
 										myGisObjects.add(new DynamicGisPoint(this,map1, v1,v2,statusVarP.first,statusVarP.second));
 									else {
 										Log.e("vortex","cannot create dyna 2 gis obj. One or both vars is null: "+v1+","+v2);
@@ -448,8 +448,10 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							String myTypeS = myType.toString();
 							this.creator = storedVar1.creator;
 							if (myTypeS.equalsIgnoreCase(GisObjectType.Point.toString())) {
-								if (!dynamic)
-									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value),statusVarP.first,statusVarP.second));
+								if (!dynamic) {
+									Log.d("vortex","adding "+this.getName());
+									myGisObjects.add(new StaticGisPoint(this, map1, new SweLocation(storedVar1.value), statusVarP.first, statusVarP.second));
+								}
 								else
 									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
 							}
@@ -490,19 +492,19 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 	}
 
-	
+
 	public boolean useIconOnMap() {
 		return useIconOnMap;
 	}
 
 	private void setDefaultBitmaps(WF_Context myContext) {
 		if (icon==null) {
-			
+
 			if (myType == GisObjectType.Polygon) {
-				
+
 				icon = BitmapFactory.decodeResource(myContext.getContext().getResources(), R.drawable.poly);
-				
-				
+
+
 			}
 
 		}
@@ -510,7 +512,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
-		
+
 		protected Bitmap doInBackground(String... urls) {
 			String urldisplay = urls[0];
 			Bitmap mIcon11 = null;
@@ -591,7 +593,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		return res;
 	}
 
-	
+
 
 
 
@@ -635,12 +637,12 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	 */
 	@Override
 	public String getRawLabel() {
-		
+
 		return unevaluatedLabel;
 	}
 
-	
-	
+
+
 	public String getCreator() {
 		return creator;
 	}

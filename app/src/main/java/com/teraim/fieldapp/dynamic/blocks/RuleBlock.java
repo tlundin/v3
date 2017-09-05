@@ -13,7 +13,7 @@ public  class RuleBlock extends Block {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2045031005203874391L;
+	private static final long serialVersionUID = 2045031005203874392L;
 	private Rule r;
 	private enum Scope {
 		block,
@@ -37,12 +37,13 @@ public  class RuleBlock extends Block {
 	}
 
 	public void create(WF_Context myContext, List<Block> blocks) {
-		Log.d("nils","Create called in addRuleBlock. Target name: "+r.targetName);
+		Log.d("nils","Create called in addRuleBlock. Target name: "+r.targetName+" my scope"+myScope);
+		o = GlobalState.getInstance().getLogger();
 		//Add rules that will be executed att flow exit.
 		if (myScope == Scope.flow || myScope == Scope.both)
 			myContext.addRule(r);
 		//If target mentions specific block, find it and attach rule to EntryField.
-		if (myScope!=Scope.flow && r.getTarget()!=-1) {
+		if (r.getTarget()!=-1) {
 			 int index = findBlockIndex(r.targetName,blocks);
 			 if (index==-1) {
 				 o.addRow("");
@@ -53,12 +54,16 @@ public  class RuleBlock extends Block {
 			 if (b instanceof CreateEntryFieldBlock) {
 				 Log.d("vortex","target ok");
 				 ((CreateEntryFieldBlock)b).attachRule(r);
-			 } else {
-				 Log.e("vortex","target for rule with scope 'both' or 'block' can only be a createentryfield block");
-				 o = GlobalState.getInstance().getLogger();
-				 o.addRow("");
-				 o.addRedText("target for rule "+blockId+" with scope 'both' or 'block' can only be a createentryfield block");
-			 }
+			 } else if (b instanceof BlockCreateListEntriesFromFieldList) {
+				BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList)b;
+				r.setTarget(myContext,bl);
+
+			} else {
+				Log.e("vortex","target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.targetName);
+				o = GlobalState.getInstance().getLogger();
+				o.addRow("");
+				o.addRedText("target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.targetName);
+			}
 		}
 		
 	}

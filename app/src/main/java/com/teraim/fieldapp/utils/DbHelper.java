@@ -1592,6 +1592,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
 
             }
+            /*
             else if (s.isDelete()) {
 
                 //Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
@@ -1630,13 +1631,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 //} else {
                 //   Log.d("papp","Delete: "+s.getChange()+" TS: "+s.getTimeStamp()+" target: "+s.getTarget());
 
-                /*
-                if (uid.equals("EC2A0B3B-C526-4E50-87B5-40665D06858B")) {
-                    Log.d("maggan","DELETE for TEAM: "+team+"syncTeam: "+syncTeam+" variable: "+variableName);
-                    Log.d("maggan",s.getChange());
 
-                }
-                */
 
                 if (!wrongTeam && !tsMap.delete(uid, variableName)) {
                     try {
@@ -1667,7 +1662,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
             }
 
-
+            */
+            /*
             else if (s.isDeleteMany()) {
 
                 String keyPairs = s.getChange();
@@ -1699,6 +1695,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 Log.d("maggan","sync refuse - wrong team: "+syncTeam);
                 changes.refused++;
             }
+            */
         }
         endTransactionSuccess();
 

@@ -20,7 +20,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
 public abstract class WF_Static_List extends WF_List {
 
 
-	protected final List<List<String>> myRows;
+	protected List<List<String>> myRows;
 	//protected String group;
 	//How about using the Container's panel?? TODO
 	public WF_Static_List(String id, WF_Context ctx,List<List<String>> rows,boolean isVisible) {
@@ -36,6 +36,8 @@ public abstract class WF_Static_List extends WF_List {
 	public abstract Variable addVariableToListEntry(String varNameSuffix,boolean displayOut,String targetField,
 			String format, boolean isVisible,boolean showHistorical,String initialValue);
 
+	public abstract void setRows(List<List<String>> rows);
 
-
+    public List<List<String>> getRows() {return myRows;
+    }
 }

@@ -135,7 +135,7 @@ public class Logger implements LoggerI {
 
 	@Override
 	public void removeTicky() {
-		if (tickyIs!=null) {
+		if (tickyIs!=null && myTxt.length()>=tickyIs.length()) {
 			myTxt=myTxt.delete(myTxt.length()-tickyIs.length(), myTxt.length());
 			tickyIs=null;
 		}

@@ -53,7 +53,9 @@ import com.teraim.fieldapp.non_generics.NamedVariables;
 public class Expressor {
 
 
-	//Types of tokens recognized by the Engine. 
+	private static List<List<String>>  targetList = null;
+
+	//Types of tokens recognized by the Engine.
 	//Some of these are operands, some functions, etc as denoted by the first argument.
 	//Last argument indicates Cardinality or prescedence in case of Operands (Operands are X op Y)
 	public enum TokenType {
@@ -384,34 +386,41 @@ public class Expressor {
 			return endResult.toString();
 	}
 
+	//Analyze expression using a targetlist.
 
+	public static Boolean analyzeBooleanExpression(EvalExpr expr, List<List<String>> target) {
+		return analyzeBooleanExpression(expr,GlobalState.getInstance().getVariableCache().getContext().getContext(),target);
+	}
 
+	//Analyze expression with current full table as target.
 
 	public static Boolean analyzeBooleanExpression(EvalExpr expr) {
-		return analyzeBooleanExpression(expr,GlobalState.getInstance().getVariableCache().getContext().getContext());
+		return analyzeBooleanExpression(expr,GlobalState.getInstance().getVariableCache().getContext().getContext(),null);
 	}
 
 
 	//analyze within a given variable set as context. This allows for incomplete variable references.
 	//Eg. cars:Vovlo_lot_count can be referred to as "lot_count".
+
 	public static Boolean analyzeBooleanExpression(EvalExpr expression, Set<Variable> variablez) {
 		if (variablez==null || variablez.isEmpty()) {
 			Log.e("vortex","Empty variable set in analyze:Expressor. Will use current context");
-			return analyzeBooleanExpression(expression, GlobalState.getInstance().getVariableCache().getContext().getContext());
+			return analyzeBooleanExpression(expression, GlobalState.getInstance().getVariableCache().getContext().getContext(),null);
 		} else {
 			variables = variablez;
-			return analyzeBooleanExpression(expression, variablez.iterator().next().getKeyChain());
+			return analyzeBooleanExpression(expression, variablez.iterator().next().getKeyChain(),null);
 
 		}
 	}
 
 
-	public static Boolean analyzeBooleanExpression(EvalExpr expr, Map<String,String> evalContext) {
+	public static Boolean analyzeBooleanExpression(EvalExpr expr, Map<String,String> evalContext, List<List<String>> targetList) {
 		//tret=null;
 		if (expr==null) {
 			variables = null;
 			return null;
 		}
+		Expressor.targetList=targetList;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		currentKeyChain = evalContext;
@@ -1996,7 +2005,13 @@ public class Expressor {
 						//Apply filter parameter <filter> on all variables in current table. Return those that match.
 						float failC = 0;
 						//If any of the variables matching filter doesn't have a value, return 0. Otherwise 1.
-						List<List<String>> rows = al.getTable().getRowsContaining(VariableConfiguration.Col_Variable_Name, evalArgs.get(0).toString());
+						List<List<String>> rows=null;
+						if (targetList==null)
+							rows = al.getTable().getRowsContaining(VariableConfiguration.Col_Variable_Name, evalArgs.get(0).toString());
+						else {
+							rows = targetList;
+							Log.d("bortex","used targetlist for hasX!");
+						}
 						if (rows == null || rows.size() == 0) {
 							o.addRow("");
 							o.addRedText("Filter returned empty list in HASx construction. Filter: " + getType());

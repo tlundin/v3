@@ -47,9 +47,13 @@ public class AddVariableToEveryListEntryBlock extends Block {
 			o.addRedText("Couldn't find list with ID "+target+" in AddVariableToEveryListEntryBlock");
 			return true;
 		} else {
-			Log.d("nils","Calling AddVariableToEveryListEntry for "+variableSuffix);
+			Log.d("nils","Calling AddVariableToEveryListEntry for list "+l.getId()+"and suffix "+variableSuffix);
 			return l.addVariableToEveryListEntry(variableSuffix, displayOut,format,isVisible,showHistorical,initialValue);
 		}
 
+	}
+
+	public String getTarget() {
+		return target;
 	}
 }

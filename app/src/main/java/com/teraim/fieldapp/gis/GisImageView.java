@@ -742,7 +742,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 											//Log.d("vortex","Filter active!");
 
 											if (!gop.hasCachedFilterResult(filter)) {
-												Boolean result = Expressor.analyzeBooleanExpression(filter.getExpression(),gop.getKeyHash());
+												Boolean result = Expressor.analyzeBooleanExpression(filter.getExpression(),gop.getKeyHash(),null);
 												gop.setCachedFilterResult(filter,result);
 											}
 											if ( gop.getCachedFilterResult(filter)) {

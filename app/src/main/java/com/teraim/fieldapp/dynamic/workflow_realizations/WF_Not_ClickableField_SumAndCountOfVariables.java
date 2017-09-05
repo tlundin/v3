@@ -16,13 +16,13 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
-	public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_ClickableField implements EventListener {
+public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_ClickableField implements EventListener {
 
-		private final DisplayFieldBlock format;
-		private WF_Static_List targetList;
+	private final DisplayFieldBlock format;
+	private WF_Static_List targetList;
 	private WF_Context myContext;
 	String myPattern;
-	private Set<Variable> allMatchingVariables;
+	private Set<Variable> allMatchingVariables=null;
 
 	public enum Type {
 		sum,
@@ -38,7 +38,7 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 		targetList = myContext.getList(myTarget);
 		myType = sumOrCount;
 		myPattern = pattern;
-		allMatchingVariables=new HashSet<Variable>();
+
 		//TextView text = (TextView)getWidget().findViewById(R.id.editfieldtext);
 		//LinearLayout bg = (LinearLayout)getWidget().findViewById(R.id.background);
 		//if (bgColor!=null)
@@ -51,24 +51,9 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 			o.addRedText("Couldn't create "+header+" since target list: "+myTarget+" does not exist");
 			Log.e("parser","couldn't create SumAndCountOfVariables - could not find target list "+myTarget);
 		} else {
-
-			for (Listable l:targetList.get()) {
-				Set<Variable> vars = l.getAssociatedVariables();
-				for (Variable v:vars) {
-					//Log.e("vortex","VAR: "+v.getId());
-					if (v.getId().matches(myPattern))
-						allMatchingVariables.add(v);
-					//else
-						//Log.e("vortex","DIDNT MATCH: "+v.getId());
-				}
-			}
-
 			myContext.registerEventListener(this,EventType.onRedraw);
-			if (allMatchingVariables.isEmpty()) {
-				Log.e("vortex","no variables matching pattern "+myPattern+" in block_add_sum_of_selected_variables_display with target "+myTarget);
-				o.addRow("");
-				o.addRedText("no variables matching pattern "+myPattern+" in block_add_sum_of_selected_variables_display with target "+myTarget);
-			}
+			myContext.registerEventListener(this,EventType.onFlowExecuted);
+
 		}
 		this.format = format;
 
@@ -77,20 +62,24 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 	@Override
 	public LinearLayout getFieldLayout() {
 
-			return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_selection_element,null);
+		return (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_selection_element,null);
 	}
 
-		@Override
-		protected boolean shouldHideOutputView() {
-			return true;
-		}
+	@Override
+	protected boolean shouldHideOutputView() {
+		return true;
+	}
 
 
-		@Override
+	@Override
 	public void onEvent(Event e) {
 		Log.d("nils","In ADDNUMBER event targetListId: "+targetList.getId()+" e.getProvider: "+e.getProvider()+
 				"type of event: "+e.getType().name());
-		if (e.getProvider().equals(targetList.getId())) {
+		if (e.getType().equals(EventType.onFlowExecuted)) {
+			matchAndRecalculateMe();
+			refresh();
+		} else
+			if (e.getProvider().equals(targetList.getId())) {
 			//Log.d("nils","This is my list!");
 			matchAndRecalculateMe();
 			refresh();
@@ -99,20 +88,40 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
 	}
 
-		@Override
-		public String getName() {
-			return "SUM_AND_COUNT "+this.getId();
-		}
+	@Override
+	public String getName() {
+		return "SUM_AND_COUNT "+this.getId();
+	}
 
-		public void matchAndRecalculateMe() {
+	public void matchAndRecalculateMe() {
 		String variablesWithNoValue = "[";
 		Long sum=Long.valueOf(0);
-		if (targetList==null) 
+		if (targetList==null)
 			return;
+		if (allMatchingVariables==null) {
+			allMatchingVariables = new HashSet<Variable>();
+			for (Listable l : targetList.get()) {
+				Set<Variable> vars = l.getAssociatedVariables();
+				for (Variable v : vars) {
+					//Log.e("vortex","VAR: "+v.getId());
+					if (v.getId().matches(myPattern))
+						allMatchingVariables.add(v);
+					//else
+					//Log.e("vortex","DIDNT MATCH: "+v.getId());
+				}
+			}
+		}
+
+
+		if (allMatchingVariables.isEmpty()) {
+			Log.e("vortex","no variables matching pattern "+myPattern+" in block_add_sum_of_selected_variables_display with target "+targetList.getId());
+			o.addRow("");
+			o.addRedText("no variables matching pattern "+myPattern+" in block_add_sum_of_selected_variables_display with target "+targetList.getId());
+		}
 
 		for (Variable v:allMatchingVariables) {
 			String val=v.getValue();
-			
+
 			if (val!=null&&!val.isEmpty()) {
 				//Log.d("nils","VAR: "+v.getId()+"VALUE: "+v.getValue());
 				if (myType == Type.count) {

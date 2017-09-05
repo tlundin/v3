@@ -77,8 +77,7 @@ public  class AddSumOrCountBlock extends DisplayFieldBlock {
 			 */
 
 
-			field.matchAndRecalculateMe();
-			field.refresh();
+
 			myContainer.add(field);
 		} else {
 			o.addRow("");

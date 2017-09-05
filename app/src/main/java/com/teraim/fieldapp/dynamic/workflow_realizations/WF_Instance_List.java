@@ -46,10 +46,10 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 	private boolean showHistorical;
 
 
-	public WF_Instance_List(String id, WF_Context ctx, List<List<String>> rows, String variatorColumn, boolean isVisible, DisplayFieldBlock format) {
-		super(id, ctx,rows,isVisible);
+	public WF_Instance_List(String id, WF_Context ctx, String variatorColumn, boolean isVisible, DisplayFieldBlock format) {
+		super(id, ctx,null,isVisible);
 		suffices.clear();
-		namePrefix = al.getFunctionalGroup(rows.get(0));
+
 		myKeyHash = new HashMap<String,String>(gs.getVariableCache().getContext().getContext());
 		myKeyHash.remove(variatorColumn);
 		ctx.registerEventListener(this, EventType.onFlowExecuted);
@@ -57,32 +57,24 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 		o = GlobalState.getInstance().getLogger();
 		this.variatorColumn=variatorColumn;
 		this.entryFormat = format;
-		Log.d("nils","INSTANCE LIST CREATED. ROWS: "+rows.size()+" VARIATOR: "+variatorColumn);
+		Log.d("nils","INSTANCE LIST CREATED. VARIATOR: "+variatorColumn);
+	}
+
+	public void setRows(List<List<String>> rows) {
+		namePrefix = al.getFunctionalGroup(rows.get(0));
+		myRows = rows;
 	}
 
 
 	//A set containing all variable suffices used in EntryFields.
 	Set<String> suffices = new HashSet<String>();
 
+
+
 	@Override
 	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
 		this.showHistorical = showHistorical;
-/*
-		Set<String> vars = findAllVarsEndingWith(varSuffix,myRows);
-		Log.d("nils","Addvartolistentry found "+vars.size()+" entries for varSuffix "+varSuffix);
-		if (vars.size()!=0) {
-			list.clear();
-			myVars.addAll(vars);
-			updateEntryFields();
-		} else {
-			Log.e("nils","Addvariable - did not find any new variables to add for "+varSuffix);
-			o.addRow("");
-			o.addRedText("Addvariable - did not find any new variables to add for "+varSuffix);
-		}
 
-		//mySuffixes.add(varSuffix);
-		return null;
-*/
 		suffices.add(varSuffix);
 		Log.d("vortex","In addvariabletoEverylist! Suffices now: "+suffices.toString());
 		return true;

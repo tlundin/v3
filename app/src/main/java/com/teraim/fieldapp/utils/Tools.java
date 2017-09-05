@@ -800,6 +800,8 @@ public class Tools {
 
 	public static void restart(Activity context) {
 		Log.d("vortex","restarting...");
+		if (GlobalState.getInstance()!=null)
+			GlobalState.getInstance().destroy();
 		android.app.FragmentManager fm = context.getFragmentManager();
 		for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
 			fm.popBackStack();

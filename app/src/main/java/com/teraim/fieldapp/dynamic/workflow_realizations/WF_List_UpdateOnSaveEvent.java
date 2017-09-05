@@ -39,34 +39,28 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 	private Map<String,EntryField> entryFields = new HashMap<String,EntryField>();
 	int index = 0;
 
-	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, final List<List<String>> rows, boolean isVisible, final DisplayFieldBlock format) {
-		super(id, ctx,rows,isVisible);
-		String namePrefix = al.getFunctionalGroup(rows.get(0));
-		Log.d("nils","SkarmGrupp: "+namePrefix);
-		varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
-		ctx.registerEventListener(this, EventType.onSave);
+	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, boolean isVisible, final DisplayFieldBlock format) {
+		super(id, ctx,null,isVisible);
+			ctx.registerEventListener(this, EventType.onSave);
 		o = GlobalState.getInstance().getLogger();
         long t1 = System.currentTimeMillis();
-        (new CreateListAsyncTask() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                super.doInBackground(params);
-                int i = 0;cr=0;
-                for (List<String> r : rows) {
-                    i++;
-                    addEntryField(r, format);
-                    if (i%10==0)
-                        publishProgress("Creating list ("+i+"/"+rows.size()+")");
-                }
-                Log.d("baza",i+" cr:"+cr);
-                return null;
-            }
-
-
-        }).execute();
 		this.myEntryFieldFormat = format;
 	}
 	int cr=0;
+
+	public void setRows(List<List<String>> rows) {
+		//if (myRows==null && entryFields==null) {
+			myRows = rows;
+			String namePrefix = al.getFunctionalGroup(rows.get(0));
+
+			varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
+			Log.d("baza","entryFields has "+entryFields.size()+" elements");
+
+			for (List<String> row : rows) {
+				addEntryField(row, myEntryFieldFormat);
+			}
+		//}
+	}
 	private void addEntryField(List<String> r,DisplayFieldBlock format) {
 
 		EntryField ef;
@@ -146,7 +140,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 
 
-
+/*
     private class CreateListAsyncTask extends AsyncTask<Void,String,Void> {
 
         ProgressDialog pDialog;
@@ -177,10 +171,50 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
         }
     }
 
-
+*/
 	private void createAsync(final Map<String, EntryField> mapmap,final  boolean displayOut,final  String format,final  boolean isVisible,final boolean showHistorical,final String initialValue) {
 
-        Log.d("beezo", myContext.getContext() + "");
+		Log.d("beezo", myContext.getContext() + "");
+		Variable v;
+		long t = System.currentTimeMillis(), t2 = 0;
+		int i = 0;
+		int tot = mapmap.keySet().size();
+		WF_ClickableField.clearStaticGlobals();
+		for (String vs : mapmap.keySet()) {
+			long t1 = System.currentTimeMillis();
+			//If variabel has value in db, use it.
+			if (varValueMap != null && varValueMap.containsKey(vs))
+				v = varCache.getCheckedVariable(vs, varValueMap.get(vs), true);
+			else
+				//Otherwise use default.
+				v = varCache.getCheckedVariable(vs, initialValue, false);
+			i++;
+
+			//Defaultvalue is either the historical value, null or the current value.
+			//Historical value will be set if the variable does not exist already. If it exists, the current value is used, even if it is null.
+			t2 += (System.currentTimeMillis() - t1);
+			if (v != null) {
+				//Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
+				mapmap.get(vs).cfs.addVariable(v, displayOut, format, isVisible, showHistorical, true);
+			} else {
+				o.addRow("");
+				o.addRedText("Variable with suffix " + vs + " was not found when creating list with id " + getId());
+				Log.e("nils", "Variable with suffix " + vs + " was not found when creating list with id " + getId());
+			}
+			//if (i % 10 == 0) {
+			//		publishProgress("Adding variables (" + i + "/" + tot + ")");
+			}
+
+		//clear static opt-val variables.
+		Log.d("beezo", "Time: " + (System.currentTimeMillis() - t) + " t2: " + t2);
+
+	}
+
+
+
+
+
+		/*
 
         (new CreateListAsyncTask() {
 
@@ -225,7 +259,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
             }
         }).execute();
     }
-
+*/
 
 
 

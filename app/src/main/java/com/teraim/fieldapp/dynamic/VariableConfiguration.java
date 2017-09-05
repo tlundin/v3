@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.provider.SyncStateContract;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -43,6 +44,15 @@ public class VariableConfiguration implements Serializable {
 
 	public static final List<String>requiredColumns=Arrays.asList(Col_Variable_Keys,Col_Functional_Group,Col_Variable_Name,Col_Variable_Label,Type,"Unit","List Values","Description",Col_Variable_Scope,Col_Variable_Limits,Col_Variable_Dynamic_Limits,Col_Group_Label,Col_Group_Description);
 	private static int KEY_CHAIN=0,FUNCTIONAL_GROUP=1,VARIABLE_NAME=2,VARIABLE_LABEL=3,TYPE=4,UNIT=5,LIST_VALUES=6,DESCRIPTION=7,SCOPE=8,LIMIT=9,D_LIMIT=10,GROUP_LABEL=11, GROUP_DESCRIPTION = 12;
+
+	public String getColumn(String columnName, List<String> row) {
+		int cIndex = getTable().getColumnIndex(columnName);
+		if (cIndex!=-1)
+			return row.get(cIndex);
+		else
+			return null;
+	}
+
 
 	public enum Scope {
 		local_sync,

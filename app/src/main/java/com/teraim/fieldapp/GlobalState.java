@@ -515,7 +515,12 @@ public class GlobalState  {
 
 
 	public static void destroy() {
+		if (singleton.getTracker()!=null)
+			singleton.getTracker().stopSelf();
+
 		singleton=null;
+
+
 	}
 
 	public Tracker getTracker() {

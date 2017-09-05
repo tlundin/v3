@@ -62,11 +62,12 @@ public class ModuleLoader implements FileLoadedCb{
 		//If all frozen, simply load from memory and check version later on. 
 
 		//check if any module needs to load.
+		frontPageLog.clear();
 		module = myModules.next();
 		if (module!=null) {
 			if (!module.isThawing) {
 				o.addRow(module.getLabel() + " :");
-				frontPageLog.addRow(module.getLabel()+ " :");
+				frontPageLog.addRow("Loading "+module.getLabel());
 				Log.d("amazon", module.getLabel() + " :");
 				boolean forced = module.versionControl.equals("Forced");
 				//Check if connection is slow. If so, use existing version IF versioncontrol is not set to "Always load".
@@ -89,7 +90,8 @@ public class ModuleLoader implements FileLoadedCb{
 			} else
 				Log.d("vortex","wait for thawing of "+module.getLabel());
 		} else {
-
+			frontPageLog.clear();
+			frontPageLog.addRow("Loaded ["+loaderId+"]. See 'About' page for details");
 			caller.loadSuccess(loaderId, majorVersionChange, o.getLogText());
 		}
 
@@ -115,7 +117,7 @@ public class ModuleLoader implements FileLoadedCb{
 
 
 		frontPageLog.removeTicky();
-		frontPageLog.removeLine();
+
 		ConfigurationModule module = res.module;
 		if (module != null) {
 			debug.addRow("Module "+res.module.fileName+" loaded. Returns code "+res.errCode.name()+(res.errorMessage!=null?" and errorMessage: "+res.errorMessage:""));
@@ -128,7 +130,8 @@ public class ModuleLoader implements FileLoadedCb{
 					if (allFrozen) {
 						//majorVersionChange = false;
 						o.removeLine();
-						o.addRow("Use existing configuration");
+						o.addRow("No updates");
+						o.addRow("**********");
 
 					}
 					break;
@@ -143,10 +146,8 @@ public class ModuleLoader implements FileLoadedCb{
                         o.addText("]");
                     }
                     float frozenModuleVersion = module.getFrozenVersion();
-                    String frozenModuleVersionS = frozenModuleVersion+"";
-                    if (frozenModuleVersion==-1)
-                        frozenModuleVersionS="unknown";
-                    o.addText(" ["+frozenModuleVersionS+"]");
+                    if (frozenModuleVersion!=-1)
+                   		o.addText(" ["+frozenModuleVersion+"]");
 					break;
 
 				case sameold:
@@ -175,10 +176,10 @@ public class ModuleLoader implements FileLoadedCb{
                     //if thaw failed, remove file and try again.
                     Log.d("vortex","Retrying.");
                     o.addYellowText(" corrupt..reload..");
+					frontPageLog.writeTicky("file corrupt. reload..");
                     module.deleteFrozen();
                     module.setFrozenVersion(-1);
                     module.load(this);
-                    o.draw();
                     break;
 
 				case Unsupported:
@@ -192,9 +193,9 @@ public class ModuleLoader implements FileLoadedCb{
 
 					if (module.isRequired()&&!module.frozenFileExists()) {
 						o.addRedText(" !");o.addText(res.errCode.name());o.addRedText("!");
-						o.addRow("Upstart aborted..Unable to load mandatory file.");
+						frontPageLog.writeTicky("Upstart aborted..Unable to load ["+module.getFileName()+"]");
 						//printError(res);
-						o.draw();
+
 						//Need to enable the settings menu.
 						caller.loadFail(loaderId);
 						return;
@@ -225,7 +226,7 @@ public class ModuleLoader implements FileLoadedCb{
 							//o.addGreenText("Reload required for dependant "+res.errorMessage);
 							//majorVersionChange=true;
 							reloadModule.load(this);
-							o.draw();
+
 
 						}
 						return;
@@ -235,7 +236,7 @@ public class ModuleLoader implements FileLoadedCb{
 					o.addText("?: "+res.errCode.name());
 					break;
 			}
-			o.draw();
+			frontPageLog.draw();
 			if (res.errCode!=ErrorCode.sameold)
 				loadModules(!allFrozen);
 

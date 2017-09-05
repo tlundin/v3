@@ -246,6 +246,8 @@ public class Table implements Serializable {
 	}
 	
 	
-
+	public Map<String,List<String>> getColumnTable() {
+		return colTable;
+	}
 
 }

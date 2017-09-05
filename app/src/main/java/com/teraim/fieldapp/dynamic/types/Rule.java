@@ -6,6 +6,9 @@ import java.util.List;
 import android.content.Context;
 import android.util.Log;
 
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateListEntriesFromFieldList;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.Expressor;
@@ -49,6 +52,15 @@ public class Rule implements Serializable {
         } catch (NumberFormatException e) {};
     }
 
+    WF_Context ruleContext=null;
+    BlockCreateListEntriesFromFieldList myBlock=null;
+
+    public void setTarget(WF_Context myContext, BlockCreateListEntriesFromFieldList bl) {
+        ruleContext=myContext;
+        myBlock=bl;
+
+    }
+
 
     public enum Type {
         ERROR,
@@ -63,7 +75,17 @@ public class Rule implements Serializable {
     	   System.err.println("BANANA: CALING BOOL ANALYSIS WITH "+condition.toString());
        
         //Log.d("NILS", "Result of rule eval was: " + Expressor.analyzeBooleanExpression(condition));
-        return Expressor.analyzeBooleanExpression(condition);
+           if (ruleContext!=null && myBlock!=null) {
+               WF_Static_List list = ruleContext.getList(myBlock.getListId());
+
+               //target list for rule.
+               List<List<String>> l = list.getRows();
+               if (l!=null)
+                   Log.d("vortex","jaaaaa");
+               return Expressor.analyzeBooleanExpression(condition,l);
+
+           }
+           return Expressor.analyzeBooleanExpression(condition);
        } 
        return false;
     }

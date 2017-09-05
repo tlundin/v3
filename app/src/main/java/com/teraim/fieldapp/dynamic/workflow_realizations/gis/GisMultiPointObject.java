@@ -60,8 +60,6 @@ public class GisMultiPointObject extends GisPathObject {
 			return false;
 		}
 		distanceToClick = ClickThresholdInMeters;
-		if (this.getLabel().equals("DV0"))
-			Log.d("vortex","thresh "+ClickThresholdInMeters+" distances for poly "+this.getLabel()+" This: "+this.getGisPolyType()+" shape "+this.getShape()+" noof coords: "+this.getCoordinates().size());
 		for (int i=0;i<myCoordinates.size()-1;i++) {
 
 			//Location A = Geomatte.subtract(myCoordinates.get(i),mapLocationForClick);
@@ -70,16 +68,12 @@ public class GisMultiPointObject extends GisPathObject {
 			Location B = myCoordinates.get(i+1);
 			//double dist = Geomatte.pointToLineDistance(A, B, origo);
 			double dist2 = Geomatte.pointToLineDistance4(mapLocationForClick.getX(),mapLocationForClick.getY(),A.getX(),A.getY(),B.getX(),B.getY());
-			if (this.getLabel().equals("DV0")) {
-				Log.d("vortex", "A: " + A + " B: " + B + " click: " + mapLocationForClick + " dist2: " + dist2);
-				Log.d("vortex", " Distance N: " + dist2);
-			}
+
 			if (dist2<distanceToClick)
 				distanceToClick=dist2;
 			
 		}
-		if (this.getLabel().equals("DV0"))
-			Log.d("vortex","**************");
+
 		if (distanceToClick<ClickThresholdInMeters) 
 			return true;
 		

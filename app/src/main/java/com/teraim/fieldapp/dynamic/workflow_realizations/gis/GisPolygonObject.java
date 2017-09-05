@@ -138,6 +138,27 @@ public class GisPolygonObject extends GisPathObject {
 			Log.d("vortex", "found no coordinates...exiting");
 			return false;
 		}
+		distanceToClick = ClickThresholdInMeters;
+		for (int i=0;i<myCoordinates.size()-1;i++) {
+
+			//Location A = Geomatte.subtract(myCoordinates.get(i),mapLocationForClick);
+			//Location B = Geomatte.subtract(myCoordinates.get(i+1),mapLocationForClick);
+			Location A = myCoordinates.get(i);
+			Location B = myCoordinates.get(i+1);
+			//double dist = Geomatte.pointToLineDistance(A, B, origo);
+			double dist2 = Geomatte.pointToLineDistance4(mapLocationForClick.getX(),mapLocationForClick.getY(),A.getX(),A.getY(),B.getX(),B.getY());
+
+			if (dist2<distanceToClick)
+				distanceToClick=dist2;
+
+		}
+
+		if (distanceToClick<ClickThresholdInMeters)
+			return true;
+
+
+		return false;
+		/*
 		distanceToClick=ClickThresholdInMeters;
 		for (int i=0;i<myCoordinates.size()-1;i++) {
 
@@ -151,6 +172,7 @@ public class GisPolygonObject extends GisPathObject {
 		if (distanceToClick<ClickThresholdInMeters)
 			return true;
 		return false;
+		*/
 	}
 	
 

@@ -26,7 +26,14 @@ public class AddFilter extends Block {
 		this.selectionField = selectionField;
 		this.selectionPattern=selectionPattern;
 	}
-	
+
+	public String getSelectionField() {
+		return selectionField;
+	}
+
+	public String getSelectionPattern() {
+		return selectionPattern;
+	}
 	
 	
 	/**
@@ -57,4 +64,7 @@ public class AddFilter extends Block {
 			myList.addFilter(new WF_Column_Name_Filter(blockId,selectionPattern,selectionField,FilterType.prefix));
 	}
 
+	public String getTarget() {
+		return target;
+	}
 }

@@ -112,7 +112,14 @@ public class SyncService extends Service {
             }
         }
     }
-    /**
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d("tortex","sync service destroyed");
+	}
+
+	/**
      * Return an object that allows the system to invoke
      * the sync adapter.
      *

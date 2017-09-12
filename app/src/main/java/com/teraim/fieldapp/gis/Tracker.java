@@ -164,6 +164,12 @@ public class Tracker extends Service implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		try {
+			if (GlobalState.getInstance()==null || !GlobalState.getInstance().getDb().db.isOpen()) {
+				Log.e("vortex","No db anymore in Tracker. I will kill myself.");
+				this.stopUsingGPS();
+				this.stopSelf();
+				return;
+			}
 			//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
 			if (myX!=null) {
 				//Log.d("vortex","setting sweref location");

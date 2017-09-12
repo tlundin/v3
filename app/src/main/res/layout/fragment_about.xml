@@ -39,19 +39,29 @@
             android:text="Details"
             android:layout_weight="0.25" />
     </LinearLayout>
-
-    <TextView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
             android:id="@+id/LoadDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:text="" />
-
+    </ScrollView>
     <TextView
+        android:id="@+id/fieldpad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FIELD PAD"
         android:textAppearance="@android:style/TextAppearance.Medium" />
+
+    <TextView
+        android:id="@+id/fieldpad_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -61,10 +71,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="Field Pad is an app for collection of earth data in the field. It is configured using a bundle of control files. An optional back-end can be used to sync collected data between team members."
+        android:text="@string/fieldpad_description"
         android:textAppearance="@android:style/TextAppearance.Small" />
-
-
 
     <TextView
         android:layout_width="match_parent"
@@ -81,12 +89,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="We are a software house that started out serving the environmental science community, with functionality for collecting data about species in the field."
+        android:text="@string/teraim_description"
         android:textAppearance="@android:style/TextAppearance.Small" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FEEDBACK"
+        android:text="@string/feedback_header"
         android:textAppearance="@android:style/TextAppearance.Medium" />
 
     <View
@@ -98,7 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="We’d love to hear about your data collection experiences. Information about problems you’ve seen and suggestions for improvements are key to making Field Pad even better."
+        android:text="@string/feedback_txt"
         android:textAppearance="@android:style/TextAppearance.Small" />
 
     <Button
@@ -108,6 +116,6 @@
         android:layout_height="wrap_content"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:text="Contact us" />
+        android:text="@string/contact_us_button_text" />
 
 </LinearLayout>

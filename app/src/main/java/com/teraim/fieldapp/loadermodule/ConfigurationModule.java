@@ -24,7 +24,8 @@ public abstract class ConfigurationModule {
 	public enum Type {
 		json,
 		xml,
-		csv
+		csv,
+		raw
 	}
 
 	public enum Source {

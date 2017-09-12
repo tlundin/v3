@@ -66,7 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private static final int NO_OF_KEYS = 10;
     private static final String SYNC_SPLIT_SYMBOL = "_$_";
-    private SQLiteDatabase db;
+    public SQLiteDatabase db;
     private PersistenceHelper globalPh = null;
 
     private final Map<String, String> realColumnNameToDB = new HashMap<String, String>();
@@ -1592,7 +1592,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
 
             }
-            /*
+
             else if (s.isDelete()) {
 
                 //Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
@@ -1662,8 +1662,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
             }
 
-            */
-            /*
+
+
             else if (s.isDeleteMany()) {
 
                 String keyPairs = s.getChange();
@@ -1695,7 +1695,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 Log.d("maggan","sync refuse - wrong team: "+syncTeam);
                 changes.refused++;
             }
-            */
+
         }
         endTransactionSuccess();
 
@@ -2499,7 +2499,7 @@ public class DbHelper extends SQLiteOpenHelper {
             ret = map.get(keyChain);
 
             if (ret!=null) {
-                Log.d("timex", "returning cached object.");
+                Log.d("baza", "returning cached object.");
                 return ret;
             }
         }

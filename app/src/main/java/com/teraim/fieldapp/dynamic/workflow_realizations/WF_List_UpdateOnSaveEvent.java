@@ -41,24 +41,25 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, boolean isVisible, final DisplayFieldBlock format) {
 		super(id, ctx,null,isVisible);
-			ctx.registerEventListener(this, EventType.onSave);
+		ctx.registerEventListener(this, EventType.onSave);
 		o = GlobalState.getInstance().getLogger();
-        long t1 = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis();
 		this.myEntryFieldFormat = format;
 	}
 	int cr=0;
 
 	public void setRows(List<List<String>> rows) {
 		//if (myRows==null && entryFields==null) {
-			myRows = rows;
-			String namePrefix = al.getFunctionalGroup(rows.get(0));
+		myRows = rows;
+		String namePrefix = al.getFunctionalGroup(rows.get(0));
+		Log.d("baza","prefetch for "+gs.getVariableCache().getContext().getContext()+" , "+ namePrefix);
+		varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
 
-			varValueMap = gs.getDb().preFetchValuesForAllMatchingKey(gs.getVariableCache().getContext().getContext(), namePrefix);
-			Log.d("baza","entryFields has "+entryFields.size()+" elements");
+		for (List<String> row : rows) {
+			addEntryField(row, myEntryFieldFormat);
+		}
+		Log.d("baza","entryFields has "+entryFields.size()+" elements");
 
-			for (List<String> row : rows) {
-				addEntryField(row, myEntryFieldFormat);
-			}
 		//}
 	}
 	private void addEntryField(List<String> r,DisplayFieldBlock format) {
@@ -79,20 +80,20 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			ef = new EntryField();
 			entryFields.put(entryLabel, ef);
 			ef.cfs = entryF;
-		}		
+		}
 		ef.varIDs.add(al.getVarName(r));
 		//Log.d("vortex","added "+al.getVarName(r)+" to varIDs");
 	}
 
 
 
-	@Override 
+	@Override
 	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
 
 		Log.d("nils","in AddVariableToEveryListEntry for "+varSuffix);
 		EntryField ef;
 		Map<String,EntryField> mapmap = new HashMap<String,EntryField>();
-        boolean success;
+		boolean success;
 		for (String key:entryFields.keySet()) {
 			ef = entryFields.get(key);
 
@@ -108,15 +109,15 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 					break;
 				}
 
-			} 
+			}
 
 			if (!success) {
 				//This variable is either wrong or global.
 				Log.d("nils","DID NOT FIND MATCH for suffix: "+varSuffix);
 				Variable v= varCache.getVariable(varSuffix,initialValue,-1);
 				//add global variable
-                if (v!=null)
-					ef.cfs.addVariable(v, displayOut,format,isVisible,showHistorical);	
+				if (v!=null)
+					ef.cfs.addVariable(v, displayOut,format,isVisible,showHistorical);
 				else {
 					o.addRow("");
 					o.addRedText("Variable with suffix "+varSuffix+" was not found when creating list "+this.getId());
@@ -140,38 +141,38 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 
 
-/*
-    private class CreateListAsyncTask extends AsyncTask<Void,String,Void> {
+	/*
+        private class CreateListAsyncTask extends AsyncTask<Void,String,Void> {
 
-        ProgressDialog pDialog;
+            ProgressDialog pDialog;
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
+            @Override
+            protected Void doInBackground(Void... params) {
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                pDialog.dismiss();
+                WF_List_UpdateOnSaveEvent.listReady();
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                pDialog = ProgressDialog.show(myContext.getContext(), "",
+                        "Loading. Please wait...", true);
+
+            }
+
+            @Override
+            protected void onProgressUpdate(String ...value) {
+                super.onProgressUpdate(null);
+                pDialog.setMessage(value[0]);
+            }
         }
 
-        @Override
-        protected void onPostExecute(Void result) {
-            pDialog.dismiss();
-            WF_List_UpdateOnSaveEvent.listReady();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = ProgressDialog.show(myContext.getContext(), "",
-                    "Loading. Please wait...", true);
-
-        }
-
-        @Override
-        protected void onProgressUpdate(String ...value) {
-            super.onProgressUpdate(null);
-            pDialog.setMessage(value[0]);
-        }
-    }
-
-*/
+    */
 	private void createAsync(final Map<String, EntryField> mapmap,final  boolean displayOut,final  String format,final  boolean isVisible,final boolean showHistorical,final String initialValue) {
 
 		Log.d("beezo", myContext.getContext() + "");
@@ -203,7 +204,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			}
 			//if (i % 10 == 0) {
 			//		publishProgress("Adding variables (" + i + "/" + tot + ")");
-			}
+		}
 
 		//clear static opt-val variables.
 		Log.d("beezo", "Time: " + (System.currentTimeMillis() - t) + " t2: " + t2);
@@ -265,7 +266,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 
 	@Override
-	public void addFieldListEntry(String listEntryID,String label,String description) {		
+	public void addFieldListEntry(String listEntryID,String label,String description) {
 		WF_ClickableField entryF = new WF_ClickableField_Selection(label,description,myContext,this.getId()+listEntryID,true,myEntryFieldFormat);
 		get().add(entryF);
 		EntryField ef = new EntryField();
@@ -275,7 +276,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 	}
 
 	public Variable addVariableToListEntry(String varNameSuffix,boolean displayOut,String targetField,
-			String format, boolean isVisible, boolean showHistorical, String initialValue) {
+										   String format, boolean isVisible, boolean showHistorical, String initialValue) {
 		String tfName = this.getId()+targetField;
 		EntryField ef = entryFields.get(tfName);
 		if (ef==null) {

@@ -76,8 +76,10 @@ public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_Clickab
 		Log.d("nils","In ADDNUMBER event targetListId: "+targetList.getId()+" e.getProvider: "+e.getProvider()+
 				"type of event: "+e.getType().name());
 		if (e.getType().equals(EventType.onFlowExecuted)) {
+			long t = System.currentTimeMillis();
 			matchAndRecalculateMe();
 			refresh();
+			Log.d("vortex","sum calc time "+(System.currentTimeMillis()-t));
 		} else
 			if (e.getProvider().equals(targetList.getId())) {
 			//Log.d("nils","This is my list!");
@@ -103,11 +105,11 @@ public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_Clickab
 			for (Listable l : targetList.get()) {
 				Set<Variable> vars = l.getAssociatedVariables();
 				for (Variable v : vars) {
-					//Log.e("vortex","VAR: "+v.getId());
+//					Log.e("vortex","VAR: "+v.getId());
 					if (v.getId().matches(myPattern))
 						allMatchingVariables.add(v);
-					//else
-					//Log.e("vortex","DIDNT MATCH: "+v.getId());
+//					else
+//						Log.e("vortex","DIDNT MATCH: "+v.getId());
 				}
 			}
 		}

@@ -165,12 +165,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		survivedCreate = false;
 		//If app has been murdered brutally, restart it. 
 		if(!Start.alive) {
-			Intent intent = new Intent(this.getActivity(), Start.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
+			Tools.restart(getActivity());
 		} else {
-
-
 			gs = GlobalState.getInstance();
 			if (gs == null) {
 				Log.e("vortex","globalstate null in executor, exit");
@@ -196,9 +192,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
                         Log.d("vortex","callAfterSUB: "+callAfterSub);
                         if (!callAfterSub || callAfterSub && myContext.isCaller()) {
 
-                            Log.d("vortex","this is the right place.");
-
-
+                            Log.d("vortex","Setting DB context in broadcastreceiver");
                             gs.setDBContext(myContext.getHash());
                             Log.d("vortex","Redraw page received in Executor. Sending onSave event.");
                             Log.d("vortex","my parent: "+Executor.this.getClass().getCanonicalName());
@@ -255,13 +249,26 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 					gs.getTracker().startScan(gs.getContext());
 				else
 					gs.getTracker().stopUsingGPS();
-			}
+
+                resetContext();
+ 			}
 		}
 		super.onResume();
 	}
 
+    private void resetContext() {
+        Log.d("hash","resetting global context");
+        Log.d("hash","local: "+myContext.getHash());
+        Log.d("hash","global: "+gs.getVariableCache().getContext());
+        if (myContext.getHash()==null) {
+            myContext.setHash(DB_Context.evaluate(wf.getContext()));
+        }
+        gs.setDBContext(myContext.getHash());
 
-	@Override
+    }
+
+
+    @Override
 	public void onPause()
 	{
 		super.onPause();
@@ -343,13 +350,17 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		Log.d("vortex","in Executor run()");
 		
 		myContext.resetState();
-		DB_Context wfHash = DB_Context.evaluate(wf.getContext());
-		gs.setCurrentWorkflowContext(myContext);
-		gs.setDBContext(wfHash);
-		myContext.setHash(wfHash);
+        resetContext();
+		//DB_Context wfHash = DB_Context.evaluate(wf.getContext());
+        /*if (myContext.getHash() ==null) {
+            Log.d("hash","setting mycontext hash to "+gs.getVariableCache().getContext());
+            myContext.setHash(gs.getVariableCache().getContext());
+        }
+        */
+		//gs.setCurrentWorkflowContext(myContext);
+		//gs.setDBContext(wfHash);
 		getFlow();
 		myContext.setWorkflow(wf);
-
 		//Need to write down all variables in wf context keyhash.
 		List<String> contextVars=null;
 		if (wf.getContext()!=null) {
@@ -373,8 +384,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 		jump.clear();
 		myListBlocks = new HashMap<>();
 
-		Log.d("vortex","*******EXECUTING: "+wf.getLabel());
-		Log.d("vortex","myHash: "+wfHash);
+		Log.d("hash","*******EXECUTING: "+wf.getLabel());
+		Log.d("hash","myHash: "+myContext.getHash());
 		execute(0);
 	}
 

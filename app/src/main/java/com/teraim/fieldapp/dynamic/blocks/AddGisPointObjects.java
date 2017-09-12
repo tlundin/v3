@@ -213,7 +213,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			Log.e("vortex","keychain  null or faulty: "+objectKeyHash);
 			return;
 		}
-		Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
+		//Log.d("vortex","OBJ CONTEXTS: "+objectContextS+" OBJ KEYHASH "+objectKeyHash.toString());
 		Map<String, String> currYearH = Tools.copyKeyHash(objectKeyHash.getContext());
 		//TODO: FIX THIS.
 		currYearH.put("år",Constants.getYear());
@@ -456,7 +456,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
 							}
 							else if (myTypeS.equals(GisObjectType.Multipoint.toString())||myTypeS.equalsIgnoreCase(GisObjectType.Linestring.toString()))
-								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType)));
+								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType),statusVarP.first,statusVarP.second));
 
 							else if (myTypeS.equalsIgnoreCase(GisObjectType.Polygon.toString())) {
 								Log.d("vortex","Adding polygon");

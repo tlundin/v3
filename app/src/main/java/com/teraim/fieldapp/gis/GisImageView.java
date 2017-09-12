@@ -563,7 +563,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			switch (gisTypeToCreate.getGisPolyType()) {
 
 				case Point:
-					ret = new StaticGisPoint(gisTypeToCreate,keyHash,mapLocationForClick, null,null);
+					ret = new StaticGisPoint(gisTypeToCreate,keyHash,mapLocationForClick, gisTypeToCreate.getStatusVariable(),null);
 					int[] xy = intBuffer.getIntBuf();
 					translateMapToRealCoordinates(mapLocationForClick,xy);
 					((StaticGisPoint)ret).setTranslatedLocation(xy);
@@ -571,11 +571,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				case Linestring:
 					myDots = new ArrayList<Location>();
-					ret = new GisMultiPointObject(gisTypeToCreate, keyHash,myDots);
+					ret = new GisMultiPointObject(gisTypeToCreate, keyHash,myDots,gisTypeToCreate.getStatusVariable(),null);
 					break;
 				case Polygon:
 					ret = new GisPolygonObject(gisTypeToCreate, keyHash,
-							"",GisConstants.SWEREF,null,null);
+							"",GisConstants.SWEREF,gisTypeToCreate.getStatusVariable(),null);
 					break;
 
 			}
@@ -600,8 +600,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 			} else if (newGisObj instanceof GisPathObject) {
 				List<Location> myDots = newGisObj.getCoordinates();
-				if (myDots!=null && !myDots.isEmpty())
-					myDots.remove(myDots.size()-1);
+				if (myDots!=null && !myDots.isEmpty()) {
+					myDots.remove(myDots.size() - 1);
+					((GisPathObject) newGisObj).clearCache();
+				}
 
 				if (myDots==null ||myDots.isEmpty()) {
 					cancelGisObjectCreation();
@@ -1068,8 +1070,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		handler.postDelayed(runnable, interval);
 	}
 	 */
-	private String colorShiftOnStatus(String statusValue) {
-
+	private static String colorShiftOnStatus(String statusValue) {
+	//Log.d("vortex","colorshift "+statusValue);
 		String color=null;
 		if (statusValue!=null ) {
 
@@ -1091,8 +1093,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		boolean beingDrawn = false;
 		int[] xy;
 
-		if (newGisObj != null)
+		if (newGisObj != null) {
 			beingDrawn = go.equals(newGisObj);
+			//Log.d("blommor","beingdrawn "+beingDrawn+" for "+go.getLabel());
+		}
 		//will only be called from here if selected.
 		GisPointObject gop = null;
 		//Only gets her for Gispoint, if it is selected.
@@ -1433,10 +1437,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		if (touchedGop!=null)
 			runSelectedWf(touchedGop);
 		unSelectGop();
+
 	}
 	public void runSelectedWf(GisObject gop) {
-		GlobalState.getInstance().setDBContext(new DB_Context(null,gop.getKeyHash()));
 
+		GlobalState.getInstance().setDBContext(new DB_Context(null,gop.getKeyHash()));
 		Log.d("vortex","Setting current keyhash to "+gop.getKeyHash());
 		String target = gop.getWorkflow();
 		Workflow wf = GlobalState.getInstance().getWorkflow(target);
@@ -1455,8 +1460,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					} )
 					.show();
 		} else {
-
-
 			if (gop.getStatusVariableId()!=null) {
 				Map<String, String> keyHash = gop.getKeyHash();
 				if (keyHash!=null)

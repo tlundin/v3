@@ -120,7 +120,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 	protected LoadResult parse(ConfigurationModule m) throws IOException, XmlPullParserException, JSONException, Dependant_Configuration_Missing {
-		if (m.type==Type.csv)
+		if (m.type==Type.csv||m.type==Type.raw)
 			return parseCSV((CSVConfigurationModule)m);
 		else if (m.type==Type.json)
 			return parseJSON((JSONConfigurationModule)m);

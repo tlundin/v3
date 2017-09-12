@@ -45,6 +45,7 @@ import com.teraim.fieldapp.loadermodule.ModuleLoader;
 import com.teraim.fieldapp.loadermodule.ModuleLoader.ModuleLoaderListener;
 import com.teraim.fieldapp.loadermodule.configurations.SpinnerConfiguration;
 import com.teraim.fieldapp.loadermodule.configurations.VariablesConfiguration;
+import com.teraim.fieldapp.loadermodule.configurations.WorkFlowBundleConfiguration;
 import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -415,12 +416,17 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			//PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
 			//Map<String, Workflow> workflows,Table t,SpinnerDefinition sd
 
-			List<Workflow> workflows = (List<Workflow>)(myModules.getModule(bundleName).getEssence());
+
+			WorkFlowBundleConfiguration wfC = ((WorkFlowBundleConfiguration)myModules.getModule(bundleName));
+			List<Workflow> workflows = (List<Workflow>)wfC.getEssence();
+			String imgMetaFormat = wfC.getImageMetaFormat();
+			if (imgMetaFormat!=null)
+				Log.d("franzon",imgMetaFormat);
 			Table t = (Table)(myModules.getModule(VariablesConfiguration.NAME).getEssence());
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
 			if (mActivity!=null) {
 				final GlobalState gs =
-						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt);
+						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt,imgMetaFormat);
 
 				//check if backup required.
 				if (gs.getBackupManager().timeToBackup()) {

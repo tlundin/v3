@@ -435,27 +435,20 @@
                     "startLine": 69,
                     "startColumn": 4,
                     "startOffset": 3814,
-                    "endColumn": 39,
-                    "endOffset": 3849
+                    "endColumn": 42,
+                    "endOffset": 3852
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
-                    "position": {
-                        "startLine": 4,
-                        "startColumn": 1,
-                        "startOffset": 167,
-                        "endColumn": 36,
-                        "endOffset": 202
-                    }
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 70,
                     "startColumn": 4,
-                    "startOffset": 3854,
+                    "startOffset": 3857,
                     "endColumn": 91,
-                    "endOffset": 3941
+                    "endOffset": 3944
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -465,9 +458,9 @@
                 "to": {
                     "startLine": 71,
                     "startColumn": 4,
-                    "startOffset": 3946,
+                    "startOffset": 3949,
                     "endColumn": 46,
-                    "endOffset": 3988
+                    "endOffset": 3991
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -477,9 +470,9 @@
                 "to": {
                     "startLine": 72,
                     "startColumn": 4,
-                    "startOffset": 3993,
+                    "startOffset": 3996,
                     "endColumn": 50,
-                    "endOffset": 4039
+                    "endOffset": 4042
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -489,9 +482,9 @@
                 "to": {
                     "startLine": 73,
                     "startColumn": 4,
-                    "startOffset": 4044,
+                    "startOffset": 4047,
                     "endColumn": 46,
-                    "endOffset": 4086
+                    "endOffset": 4089
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -501,9 +494,9 @@
                 "to": {
                     "startLine": 74,
                     "startColumn": 4,
-                    "startOffset": 4091,
+                    "startOffset": 4094,
                     "endColumn": 41,
-                    "endOffset": 4128
+                    "endOffset": 4131
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -513,9 +506,9 @@
                 "to": {
                     "startLine": 75,
                     "startColumn": 4,
-                    "startOffset": 4133,
+                    "startOffset": 4136,
                     "endColumn": 39,
-                    "endOffset": 4168
+                    "endOffset": 4171
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -525,9 +518,9 @@
                 "to": {
                     "startLine": 76,
                     "startColumn": 4,
-                    "startOffset": 4173,
+                    "startOffset": 4176,
                     "endColumn": 190,
-                    "endOffset": 4359
+                    "endOffset": 4362
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -537,9 +530,9 @@
                 "to": {
                     "startLine": 77,
                     "startColumn": 4,
-                    "startOffset": 4364,
+                    "startOffset": 4367,
                     "endColumn": 175,
-                    "endOffset": 4535
+                    "endOffset": 4538
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -549,9 +542,9 @@
                 "to": {
                     "startLine": 78,
                     "startColumn": 4,
-                    "startOffset": 4540,
+                    "startOffset": 4543,
                     "endColumn": 113,
-                    "endOffset": 4649
+                    "endOffset": 4652
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -561,9 +554,9 @@
                 "to": {
                     "startLine": 79,
                     "startColumn": 4,
-                    "startOffset": 4654,
+                    "startOffset": 4657,
                     "endColumn": 269,
-                    "endOffset": 4919
+                    "endOffset": 4922
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -573,9 +566,9 @@
                 "to": {
                     "startLine": 80,
                     "startColumn": 4,
-                    "startOffset": 4924,
+                    "startOffset": 4927,
                     "endColumn": 129,
-                    "endOffset": 5049
+                    "endOffset": 5052
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -585,9 +578,9 @@
                 "to": {
                     "startLine": 81,
                     "startColumn": 4,
-                    "startOffset": 5054,
+                    "startOffset": 5057,
                     "endColumn": 188,
-                    "endOffset": 5238
+                    "endOffset": 5241
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -597,9 +590,9 @@
                 "to": {
                     "startLine": 82,
                     "startColumn": 4,
-                    "startOffset": 5243,
+                    "startOffset": 5246,
                     "endColumn": 127,
-                    "endOffset": 5366
+                    "endOffset": 5369
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -609,9 +602,9 @@
                 "to": {
                     "startLine": 83,
                     "startColumn": 4,
-                    "startOffset": 5371,
+                    "startOffset": 5374,
                     "endColumn": 167,
-                    "endOffset": 5534
+                    "endOffset": 5537
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -621,9 +614,9 @@
                 "to": {
                     "startLine": 84,
                     "startColumn": 4,
-                    "startOffset": 5539,
+                    "startOffset": 5542,
                     "endColumn": 127,
-                    "endOffset": 5662
+                    "endOffset": 5665
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -633,9 +626,9 @@
                 "to": {
                     "startLine": 85,
                     "startColumn": 4,
-                    "startOffset": 5667,
+                    "startOffset": 5670,
                     "endColumn": 209,
-                    "endOffset": 5872
+                    "endOffset": 5875
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -645,9 +638,9 @@
                 "to": {
                     "startLine": 86,
                     "startColumn": 4,
-                    "startOffset": 5877,
+                    "startOffset": 5880,
                     "endColumn": 213,
-                    "endOffset": 6086
+                    "endOffset": 6089
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -657,9 +650,9 @@
                 "to": {
                     "startLine": 87,
                     "startColumn": 4,
-                    "startOffset": 6091,
+                    "startOffset": 6094,
                     "endColumn": 124,
-                    "endOffset": 6211
+                    "endOffset": 6214
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -669,9 +662,9 @@
                 "to": {
                     "startLine": 88,
                     "startColumn": 4,
-                    "startOffset": 6216,
+                    "startOffset": 6219,
                     "endColumn": 178,
-                    "endOffset": 6390
+                    "endOffset": 6393
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -681,9 +674,9 @@
                 "to": {
                     "startLine": 89,
                     "startColumn": 4,
-                    "startOffset": 6395,
+                    "startOffset": 6398,
                     "endColumn": 122,
-                    "endOffset": 6513
+                    "endOffset": 6516
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -693,9 +686,9 @@
                 "to": {
                     "startLine": 90,
                     "startColumn": 4,
-                    "startOffset": 6518,
+                    "startOffset": 6521,
                     "endColumn": 171,
-                    "endOffset": 6685
+                    "endOffset": 6688
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -705,9 +698,9 @@
                 "to": {
                     "startLine": 91,
                     "startColumn": 4,
-                    "startOffset": 6690,
+                    "startOffset": 6693,
                     "endColumn": 172,
-                    "endOffset": 6858
+                    "endOffset": 6861
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -717,9 +710,9 @@
                 "to": {
                     "startLine": 92,
                     "startColumn": 4,
-                    "startOffset": 6863,
+                    "startOffset": 6866,
                     "endColumn": 117,
-                    "endOffset": 6976
+                    "endOffset": 6979
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -729,9 +722,9 @@
                 "to": {
                     "startLine": 93,
                     "startColumn": 4,
-                    "startOffset": 6981,
+                    "startOffset": 6984,
                     "endColumn": 179,
-                    "endOffset": 7156
+                    "endOffset": 7159
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -741,9 +734,9 @@
                 "to": {
                     "startLine": 94,
                     "startColumn": 4,
-                    "startOffset": 7161,
+                    "startOffset": 7164,
                     "endColumn": 133,
-                    "endOffset": 7290
+                    "endOffset": 7293
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -753,9 +746,9 @@
                 "to": {
                     "startLine": 95,
                     "startColumn": 4,
-                    "startOffset": 7295,
+                    "startOffset": 7298,
                     "endColumn": 179,
-                    "endOffset": 7470
+                    "endOffset": 7473
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -765,9 +758,9 @@
                 "to": {
                     "startLine": 96,
                     "startColumn": 4,
-                    "startOffset": 7475,
+                    "startOffset": 7478,
                     "endColumn": 133,
-                    "endOffset": 7604
+                    "endOffset": 7607
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -777,9 +770,9 @@
                 "to": {
                     "startLine": 97,
                     "startColumn": 4,
-                    "startOffset": 7609,
+                    "startOffset": 7612,
                     "endColumn": 138,
-                    "endOffset": 7743
+                    "endOffset": 7746
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -789,9 +782,9 @@
                 "to": {
                     "startLine": 98,
                     "startColumn": 4,
-                    "startOffset": 7748,
+                    "startOffset": 7751,
                     "endColumn": 244,
-                    "endOffset": 7988
+                    "endOffset": 7991
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -801,9 +794,9 @@
                 "to": {
                     "startLine": 99,
                     "startColumn": 4,
-                    "startOffset": 7993,
+                    "startOffset": 7996,
                     "endColumn": 124,
-                    "endOffset": 8113
+                    "endOffset": 8116
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -813,9 +806,9 @@
                 "to": {
                     "startLine": 100,
                     "startColumn": 4,
-                    "startOffset": 8118,
+                    "startOffset": 8121,
                     "endColumn": 109,
-                    "endOffset": 8223
+                    "endOffset": 8226
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -825,9 +818,9 @@
                 "to": {
                     "startLine": 101,
                     "startColumn": 4,
-                    "startOffset": 8228,
+                    "startOffset": 8231,
                     "endColumn": 192,
-                    "endOffset": 8416
+                    "endOffset": 8419
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -837,9 +830,9 @@
                 "to": {
                     "startLine": 102,
                     "startColumn": 4,
-                    "startOffset": 8421,
+                    "startOffset": 8424,
                     "endColumn": 129,
-                    "endOffset": 8546
+                    "endOffset": 8549
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -849,9 +842,9 @@
                 "to": {
                     "startLine": 103,
                     "startColumn": 4,
-                    "startOffset": 8551,
+                    "startOffset": 8554,
                     "endColumn": 212,
-                    "endOffset": 8759
+                    "endOffset": 8762
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -861,9 +854,9 @@
                 "to": {
                     "startLine": 104,
                     "startColumn": 4,
-                    "startOffset": 8764,
+                    "startOffset": 8767,
                     "endColumn": 133,
-                    "endOffset": 8893
+                    "endOffset": 8896
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -873,9 +866,9 @@
                 "to": {
                     "startLine": 105,
                     "startColumn": 4,
-                    "startOffset": 8898,
+                    "startOffset": 8901,
                     "endColumn": 94,
-                    "endOffset": 8988
+                    "endOffset": 8991
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -885,9 +878,9 @@
                 "to": {
                     "startLine": 106,
                     "startColumn": 4,
-                    "startOffset": 8993,
+                    "startOffset": 8996,
                     "endColumn": 92,
-                    "endOffset": 9081
+                    "endOffset": 9084
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -897,9 +890,9 @@
                 "to": {
                     "startLine": 107,
                     "startColumn": 4,
-                    "startOffset": 9086,
+                    "startOffset": 9089,
                     "endColumn": 108,
-                    "endOffset": 9190
+                    "endOffset": 9193
                 },
                 "from": {
                     "file": "C:\\Users\\Terje\\.android\\build-cache\\1fad7fecd5406d5db49dbb4a69e8305b08502181\\output\\res\\values-sv\\common_strings.xml"
@@ -909,9 +902,9 @@
                 "to": {
                     "startLine": 108,
                     "startColumn": 4,
-                    "startOffset": 9195,
+                    "startOffset": 9198,
                     "endColumn": 66,
-                    "endOffset": 9257
+                    "endOffset": 9260
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -921,9 +914,9 @@
                 "to": {
                     "startLine": 109,
                     "startColumn": 4,
-                    "startOffset": 9262,
-                    "endColumn": 43,
-                    "endOffset": 9301
+                    "startOffset": 9265,
+                    "endColumn": 63,
+                    "endOffset": 9324
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -933,9 +926,9 @@
                 "to": {
                     "startLine": 110,
                     "startColumn": 4,
-                    "startOffset": 9306,
-                    "endColumn": 72,
-                    "endOffset": 9374
+                    "startOffset": 9329,
+                    "endColumn": 43,
+                    "endOffset": 9368
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -945,21 +938,28 @@
                 "to": {
                     "startLine": 111,
                     "startColumn": 4,
-                    "startOffset": 9379,
-                    "endColumn": 42,
-                    "endOffset": 9417
+                    "startOffset": 9373,
+                    "endColumn": 46,
+                    "endOffset": 9415
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 67,
+                        "startColumn": 1,
+                        "startOffset": 3775,
+                        "endColumn": 43,
+                        "endOffset": 3817
+                    }
                 }
             },
             {
                 "to": {
                     "startLine": 112,
                     "startColumn": 4,
-                    "startOffset": 9422,
-                    "endColumn": 51,
-                    "endOffset": 9469
+                    "startOffset": 9420,
+                    "endColumn": 72,
+                    "endOffset": 9488
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -969,9 +969,9 @@
                 "to": {
                     "startLine": 113,
                     "startColumn": 4,
-                    "startOffset": 9474,
-                    "endColumn": 68,
-                    "endOffset": 9538
+                    "startOffset": 9493,
+                    "endColumn": 42,
+                    "endOffset": 9531
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -981,9 +981,9 @@
                 "to": {
                     "startLine": 114,
                     "startColumn": 4,
-                    "startOffset": 9543,
-                    "endColumn": 46,
-                    "endOffset": 9585
+                    "startOffset": 9536,
+                    "endColumn": 51,
+                    "endOffset": 9583
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -993,9 +993,9 @@
                 "to": {
                     "startLine": 115,
                     "startColumn": 4,
-                    "startOffset": 9590,
-                    "endColumn": 45,
-                    "endOffset": 9631
+                    "startOffset": 9588,
+                    "endColumn": 44,
+                    "endOffset": 9628
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1005,9 +1005,9 @@
                 "to": {
                     "startLine": 116,
                     "startColumn": 4,
-                    "startOffset": 9636,
-                    "endColumn": 42,
-                    "endOffset": 9674
+                    "startOffset": 9633,
+                    "endColumn": 68,
+                    "endOffset": 9697
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1017,9 +1017,9 @@
                 "to": {
                     "startLine": 117,
                     "startColumn": 4,
-                    "startOffset": 9679,
-                    "endColumn": 40,
-                    "endOffset": 9715
+                    "startOffset": 9702,
+                    "endColumn": 46,
+                    "endOffset": 9744
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1029,9 +1029,9 @@
                 "to": {
                     "startLine": 118,
                     "startColumn": 4,
-                    "startOffset": 9720,
-                    "endColumn": 43,
-                    "endOffset": 9759
+                    "startOffset": 9749,
+                    "endColumn": 45,
+                    "endOffset": 9790
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1041,9 +1041,9 @@
                 "to": {
                     "startLine": 119,
                     "startColumn": 4,
-                    "startOffset": 9764,
-                    "endColumn": 99,
-                    "endOffset": 9859
+                    "startOffset": 9795,
+                    "endColumn": 56,
+                    "endOffset": 9847
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1053,9 +1053,9 @@
                 "to": {
                     "startLine": 120,
                     "startColumn": 4,
-                    "startOffset": 9864,
-                    "endColumn": 36,
-                    "endOffset": 9896
+                    "startOffset": 9852,
+                    "endColumn": 206,
+                    "endOffset": 10054
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1065,9 +1065,9 @@
                 "to": {
                     "startLine": 121,
                     "startColumn": 4,
-                    "startOffset": 9901,
-                    "endColumn": 55,
-                    "endOffset": 9952
+                    "startOffset": 10059,
+                    "endColumn": 228,
+                    "endOffset": 10283
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1077,81 +1077,81 @@
                 "to": {
                     "startLine": 122,
                     "startColumn": 4,
-                    "startOffset": 9957,
-                    "endColumn": 116,
-                    "endOffset": 10069
+                    "startOffset": 10288,
+                    "endColumn": 42,
+                    "endOffset": 10326
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 123,
                     "startColumn": 4,
-                    "startOffset": 10074,
-                    "endColumn": 114,
-                    "endOffset": 10184
+                    "startOffset": 10331,
+                    "endColumn": 54,
+                    "endOffset": 10381
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 124,
                     "startColumn": 4,
-                    "startOffset": 10189,
-                    "endColumn": 104,
-                    "endOffset": 10289
+                    "startOffset": 10386,
+                    "endColumn": 40,
+                    "endOffset": 10422
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 125,
                     "startColumn": 4,
-                    "startOffset": 10294,
-                    "endColumn": 105,
-                    "endOffset": 10395
+                    "startOffset": 10427,
+                    "endColumn": 43,
+                    "endOffset": 10466
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 126,
                     "startColumn": 4,
-                    "startOffset": 10400,
-                    "endColumn": 85,
-                    "endOffset": 10481
+                    "startOffset": 10471,
+                    "endColumn": 99,
+                    "endOffset": 10566
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 127,
                     "startColumn": 4,
-                    "startOffset": 10486,
-                    "endColumn": 93,
-                    "endOffset": 10575
+                    "startOffset": 10571,
+                    "endColumn": 36,
+                    "endOffset": 10603
                 },
                 "from": {
-                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 128,
                     "startColumn": 4,
-                    "startOffset": 10580,
-                    "endColumn": 34,
-                    "endOffset": 10610
+                    "startOffset": 10608,
+                    "endColumn": 55,
+                    "endOffset": 10659
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1161,81 +1161,81 @@
                 "to": {
                     "startLine": 129,
                     "startColumn": 4,
-                    "startOffset": 10615,
-                    "endColumn": 33,
-                    "endOffset": 10644
+                    "startOffset": 10664,
+                    "endColumn": 116,
+                    "endOffset": 10776
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 130,
                     "startColumn": 4,
-                    "startOffset": 10649,
-                    "endColumn": 46,
-                    "endOffset": 10691
+                    "startOffset": 10781,
+                    "endColumn": 114,
+                    "endOffset": 10891
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 131,
                     "startColumn": 4,
-                    "startOffset": 10696,
-                    "endColumn": 58,
-                    "endOffset": 10750
+                    "startOffset": 10896,
+                    "endColumn": 104,
+                    "endOffset": 10996
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 132,
                     "startColumn": 4,
-                    "startOffset": 10755,
-                    "endColumn": 63,
-                    "endOffset": 10814
+                    "startOffset": 11001,
+                    "endColumn": 105,
+                    "endOffset": 11102
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 133,
                     "startColumn": 4,
-                    "startOffset": 10819,
-                    "endColumn": 43,
-                    "endOffset": 10858
+                    "startOffset": 11107,
+                    "endColumn": 85,
+                    "endOffset": 11188
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 134,
                     "startColumn": 4,
-                    "startOffset": 10863,
-                    "endColumn": 101,
-                    "endOffset": 10960
+                    "startOffset": 11193,
+                    "endColumn": 93,
+                    "endOffset": 11282
                 },
                 "from": {
-                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                    "file": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\values-sv\\values-sv.xml"
                 }
             },
             {
                 "to": {
                     "startLine": 135,
                     "startColumn": 4,
-                    "startOffset": 10965,
-                    "endColumn": 69,
-                    "endOffset": 11030
+                    "startOffset": 11287,
+                    "endColumn": 34,
+                    "endOffset": 11317
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1245,9 +1245,9 @@
                 "to": {
                     "startLine": 136,
                     "startColumn": 4,
-                    "startOffset": 11035,
-                    "endColumn": 79,
-                    "endOffset": 11110
+                    "startOffset": 11322,
+                    "endColumn": 33,
+                    "endOffset": 11351
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1257,9 +1257,9 @@
                 "to": {
                     "startLine": 137,
                     "startColumn": 4,
-                    "startOffset": 11115,
-                    "endColumn": 38,
-                    "endOffset": 11149
+                    "startOffset": 11356,
+                    "endColumn": 46,
+                    "endOffset": 11398
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1269,9 +1269,9 @@
                 "to": {
                     "startLine": 138,
                     "startColumn": 4,
-                    "startOffset": 11154,
-                    "endColumn": 50,
-                    "endOffset": 11200
+                    "startOffset": 11403,
+                    "endColumn": 58,
+                    "endOffset": 11457
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1281,9 +1281,9 @@
                 "to": {
                     "startLine": 139,
                     "startColumn": 4,
-                    "startOffset": 11205,
-                    "endColumn": 73,
-                    "endOffset": 11274
+                    "startOffset": 11462,
+                    "endColumn": 63,
+                    "endOffset": 11521
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1293,9 +1293,9 @@
                 "to": {
                     "startLine": 140,
                     "startColumn": 4,
-                    "startOffset": 11279,
-                    "endColumn": 55,
-                    "endOffset": 11330
+                    "startOffset": 11526,
+                    "endColumn": 43,
+                    "endOffset": 11565
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1305,9 +1305,9 @@
                 "to": {
                     "startLine": 141,
                     "startColumn": 4,
-                    "startOffset": 11335,
-                    "endColumn": 33,
-                    "endOffset": 11364
+                    "startOffset": 11570,
+                    "endColumn": 101,
+                    "endOffset": 11667
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1317,9 +1317,9 @@
                 "to": {
                     "startLine": 142,
                     "startColumn": 4,
-                    "startOffset": 11369,
-                    "endColumn": 33,
-                    "endOffset": 11398
+                    "startOffset": 11672,
+                    "endColumn": 69,
+                    "endOffset": 11737
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
@@ -1329,9 +1329,124 @@
                 "to": {
                     "startLine": 143,
                     "startColumn": 4,
-                    "startOffset": 11403,
+                    "startOffset": 11742,
+                    "endColumn": 79,
+                    "endOffset": 11817
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 144,
+                    "startColumn": 4,
+                    "startOffset": 11822,
+                    "endColumn": 38,
+                    "endOffset": 11856
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 145,
+                    "startColumn": 4,
+                    "startOffset": 11861,
+                    "endColumn": 50,
+                    "endOffset": 11907
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 146,
+                    "startColumn": 4,
+                    "startOffset": 11912,
+                    "endColumn": 73,
+                    "endOffset": 11981
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 147,
+                    "startColumn": 4,
+                    "startOffset": 11986,
+                    "endColumn": 55,
+                    "endOffset": 12037
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 148,
+                    "startColumn": 4,
+                    "startOffset": 12042,
+                    "endColumn": 40,
+                    "endOffset": 12078
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml",
+                    "position": {
+                        "startLine": 66,
+                        "startColumn": 4,
+                        "startOffset": 3737,
+                        "endColumn": 40,
+                        "endOffset": 3773
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 149,
+                    "startColumn": 4,
+                    "startOffset": 12083,
+                    "endColumn": 226,
+                    "endOffset": 12305
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 150,
+                    "startColumn": 4,
+                    "startOffset": 12310,
+                    "endColumn": 33,
+                    "endOffset": 12339
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 151,
+                    "startColumn": 4,
+                    "startOffset": 12344,
+                    "endColumn": 33,
+                    "endOffset": 12373
+                },
+                "from": {
+                    "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"
+                }
+            },
+            {
+                "to": {
+                    "startLine": 152,
+                    "startColumn": 4,
+                    "startOffset": 12378,
                     "endColumn": 34,
-                    "endOffset": 11433
+                    "endOffset": 12408
                 },
                 "from": {
                     "file": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\values-sv\\strings.xml"

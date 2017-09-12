@@ -59,7 +59,15 @@
 
     <string name="local_config_s">Loads configuration from project folder in file system</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fieldpad_description">Field Pad is an app for collection of earth data in the field. It is configured using a bundle of control files. An optional back-end can be used to sync collected data between team members."</string>
+    <string name="teraim_description">We are a software house that started out serving the environmental science community, with functionality for collecting data about species in the field.</string>
+    <string name="feedback_txt">"We’d love to hear about your data collection experiences. Information about problems you’ve seen and suggestions for improvements are key to making Field Pad even better."</string>
+    <string name="feedback_header">FEEDBACK</string>
+    <string name="hide_details">Hide details </string>
+    <string name="details">Details</string>
+    <string name="contact_us_button_text">Contact us</string>
+    <string name="start">Start</string>
+    <string name="continue_">Continue</string>
+
 
 </resources>

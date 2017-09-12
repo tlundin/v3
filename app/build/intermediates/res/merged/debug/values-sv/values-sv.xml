@@ -67,7 +67,7 @@
     <string msgid="893419373245838918" name="abc_searchview_description_voice">"Röstsökning"</string>
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Dela med"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Dela med %s"</string>
-    <string name="about">About</string>
+    <string name="about">Om appen</string>
     <string name="appDialMsg">Appens namn utan \'.xml\'\n (ändring kräver omstart)</string>
     <string name="app_name">Field Pad</string>
     <string name="app_name_t">Appens namn</string>
@@ -107,14 +107,21 @@
     <string msgid="9071884888741449141" name="common_signin_button_text">"Logga in"</string>
     <string msgid="2429381841831957106" name="common_signin_button_text_long">"Logga in med Google"</string>
     <string name="config_from_server">Lokal konfiguration</string>
+    <string name="contact_us_button_text">Kontakta oss</string>
     <string name="context">Context</string>
+    <string name="continue_">Fortsätt</string>
     <string name="debug_summary">Extra debug information i logg</string>
     <string name="delete">Ta bort</string>
     <string name="description">Beskrivning</string>
+    <string name="details">Detaljer</string>
     <string name="developer_functions">Avlusningsfunktioner</string>
     <string name="drawer_close">Stäng</string>
     <string name="drawer_open">Öppna</string>
+    <string name="feedback_header">ÅTERKOPPLING</string>
+    <string name="feedback_txt">Vi vill gärna höra om dina erfarenheter från arbetet med appen. Information om problem och förslag till förbättringar är nyckeln till att göra Field Pad ännu bättre.</string>
+    <string name="fieldpad_description">Field Pad är en app för insamling av miljödata i fält. Den konfigureras med ett antal styrfiler. En server kan användas för att synkronisera insamlat data mellan lagets medlemmar.</string>
     <string name="filters">Filter</string>
+    <string name="hide_details">Dölj detaljer</string>
     <string name="layers">Lager</string>
     <string name="length_">Length:</string>
     <string name="local_config_s">Laddar konfigurationen från projektfoldern i filsystemet</string>
@@ -139,6 +146,8 @@
     <string name="settings">Inställningar</string>
     <string name="show_author_s">Visa vem som gjort en inmatning</string>
     <string name="show_author_t">Visa inmatare</string>
+    <string name="start">Starta</string>
+    <string name="teraim_description">Vi är ett företag som började med att leverera programvara för nationella miljöinventeringar, med funktionalitet för att samla in uppgifter om förekomst och position arter i fält.</string>
     <string name="u1">u1</string>
     <string name="u2">u2</string>
     <string name="yes">Ja</string>

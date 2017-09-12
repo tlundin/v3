@@ -90,18 +90,21 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
 
         VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
-        List<List<String>> rows = cacheMap == null ? null : cacheMap.get(selectionField + selectionPattern);
+        List<List<String>> rows = cacheMap == null ? null : cacheMap.get(blockId);
+        Log.d("baza", "selectionField: "+selectionField+" selectionPattern: "+selectionPattern+" rows: " + (rows==null?"null":rows.size()));
+
         if (rows == null) {
 
             rows = al.getTable().getRowsContaining(selectionField, selectionPattern);
-            Log.d("baza", "rows: " + rows.size());
+            Log.d("baza", " rows: " + rows.size());
+
             if (associatedFiltersList!=null) {
                 for (AddFilter f : associatedFiltersList) {
                     rows = getRowsContaining(al, rows, f.getSelectionField(), f.getSelectionPattern());
                     Log.d("baza", "filtered rows size: " + rows.size());
                 }
             }
-            cacheMap.put(selectionField + selectionPattern, rows);
+            cacheMap.put(blockId, rows);
 
         }
         if (rows == null || rows.size() == 0) {

@@ -93,7 +93,7 @@ public class Start extends MenuActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		// Setup handler for uncaught exceptions.
-/*
+
 		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
@@ -104,7 +104,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-*/
+
 
 		Log.d("nils","in START onCreate");
 		singleton = this;
@@ -305,7 +305,7 @@ public class Start extends MenuActivity {
 
 		//if Ok err is null.
 		if (cHash.isOk()) {
-
+			Log.d("hash","setting global context to "+cHash);
 			gs.setDBContext(cHash);
 
 			debugLogger.addRow("Context now [");

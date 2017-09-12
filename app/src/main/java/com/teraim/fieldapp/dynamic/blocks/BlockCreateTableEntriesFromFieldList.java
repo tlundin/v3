@@ -57,7 +57,7 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 			return;
 		}
 		VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
-			List<List<String>>rows = cacheMap==null?null:cacheMap.get(selectionField+selectionPattern);
+			List<List<String>>rows = cacheMap==null?null:cacheMap.get(blockId);
 			if (rows==null)
 				rows  = al.getTable().getRowsContaining(selectionField, selectionPattern);
 			if (rows==null||rows.size()==0) {
@@ -65,7 +65,7 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 				o.addRow("");
 				o.addRedText("Selectionfield: "+selectionField+" selectionPattern: "+selectionPattern+" returns zero rows! List cannot be created");
 			} else {		
-				cacheMap.put(selectionField+selectionPattern, rows);
+				cacheMap.put(blockId, rows);
 				Log.d("vortex","Number of rows in CreateEntrieFromList "+rows.size());
 				//prefetch values from db.
 

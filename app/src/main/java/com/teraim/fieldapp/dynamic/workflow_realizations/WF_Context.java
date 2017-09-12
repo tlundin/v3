@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
@@ -376,6 +377,9 @@ public class WF_Context {
 		hasSatNav=true;
 	}
 	public void reload() {
+		Log.d("hash","reloading mycontext to "+DB_Context.evaluate(getWorkflow().getContext()));
+		setHash(DB_Context.evaluate(getWorkflow().getContext()));
+		GlobalState.getInstance().setDBContext(getHash());
 		myTemplate.restart();
 	}
 	

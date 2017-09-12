@@ -84,7 +84,7 @@ public class GlobalState  {
 	private static Account mAccount;
 	private GisObject selectedGop;
 	private CharSequence logTxt;
-	
+	private boolean imgMetaIsFile=false;
 	public static GlobalState getInstance() {
 
 		return singleton;
@@ -92,18 +92,18 @@ public class GlobalState  {
 
 	public static GlobalState createInstance(Context applicationContext, PersistenceHelper globalPh,
 			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt) {
+			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt, String imgMetaFormat) {
 		singleton = null;
 		return new GlobalState(applicationContext,  globalPh,
 				ph, debugConsole,  myDb,
-				workflows, t, sd, logTxt);
+				workflows, t, sd, logTxt,imgMetaFormat);
 
 	}
 
 	//private GlobalState(Context ctx)  {
 	private GlobalState(Context applicationContext, PersistenceHelper globalPh,
 			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt) {
+			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt,String imgMetaFormat) {
 
 		myC = applicationContext;
 		this.globalPh=globalPh;		
@@ -139,8 +139,10 @@ public class GlobalState  {
 		this.logTxt = logTxt;
 
 		Log.d("fennox","my ID is "+getMyId());
+
+		imgMetaIsFile = imgMetaFormat!=null && "file".equalsIgnoreCase(imgMetaFormat);
 		
-		sendEvent(MenuActivity.REDRAW);
+
 	}
 
 
@@ -334,6 +336,10 @@ public class GlobalState  {
 
 	public void setSelectedGop(GisObject go) {
 		selectedGop=go;
+	}
+
+	public boolean isFileMetaFormat() {
+		return imgMetaIsFile;
 	}
 
 	//Map<String,WF_Static_List> listCache = new HashMap<>();

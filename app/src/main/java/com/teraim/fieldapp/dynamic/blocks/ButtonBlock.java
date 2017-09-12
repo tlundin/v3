@@ -288,10 +288,16 @@ public  class ButtonBlock extends Block  implements EventListener {
 								final Variable statusVariable;
 								String statusVar = myContext.getStatusVariable();
 
-								if (statusVar != null)
-									statusVariable = varCache.getVariable(buttonContext.getContext(),statusVar);
+								if (statusVar != null) {
+									Log.d("vorto","found statusvar named "+statusVar);
+									statusVariable = varCache.getVariable(buttonContext.getContext(), statusVar);
+								}
 								 else
 									statusVariable = null;
+								if (statusVariable==null)
+									Log.d("vorto","statusvar is null! "+statusVariable);
+								else
+									Log.d("vorto","statusvar is not null! "+statusVariable.getValue());
 								Set<Rule> myRules = myContext.getRulesThatApply();
 								boolean showPop=false;
 
@@ -664,7 +670,6 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 					//Check if a sync is required. Pop current fragment.
 					private void goBack() {
-
 						myContext.getActivity().getFragmentManager().popBackStackImmediate();
 						//myContext.reload();
 						if (syncRequired)

@@ -317,6 +317,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					syncDataArriving=true;
 					z_totalSynced = msg.arg1;
 					z_totalToSync = msg.arg2;
+					Log.d("vortex","MSG_SYNC_DATA_ARRIVING...total rows to sync is "+z_totalToSync);
 					break;
 				case SyncService.MSG_SYNC_ERROR_STATE:
 					String toastMsg = "";
@@ -427,93 +428,108 @@ public class MenuActivity extends Activity implements TrackerListener   {
 							final UIProvider ui = new UIProvider(MenuActivity.this);
 
 							Log.d("vortex", "total rows to sync is: " + z_totalToSync);
-							if (t == null) {
-								t = new MThread() {
-									final int increment = z_totalToSync;
+							if (z_totalToSync==0) {
+								Log.e("vortex","sync table is empty! Aborting sync");
+								syncDbInsert=false;
 
-									@Override
-									public void stopMe() {
-										control.flag = true;
-										this.interrupt();
-									}
-
-									@Override
-									public void run() {
-										boolean threadDone = false;
-										while (!control.flag) {
-
-											threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment,ui);
-											Log.d("vortex", "done scanning syncs...threaddone is " + threadDone + " this is thread " + this.getId());
-											if (control.error) {
-												Log.d("vortex", "Uppsan...exiting");
-												syncError = true;
-												syncActive = false;
-												syncDbInsert = false;
-												break;
-											}
-											if (!control.flag && !threadDone) {
-												z_totalSynced += increment;
-											} else {
-												control.flag = threadDone;
-												gs.sendEvent(REDRAW_PAGE);
-												Log.d("vortex", "End reached for sync. Sending msg safely_stored");
-												if (uiLock != null)
-													uiLock.cancel();
-												control.flag = true;
-												uiLock = null;
-
-												reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-												syncError = false;
-												syncActive = false;
-												syncDataArriving=false;
-
-												try {
+								reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+								try {
 
 
-													mService.send(reply);
-												} catch (RemoteException e) {
-													e.printStackTrace();
+									mService.send(reply);
+								} catch (RemoteException e) {
+									e.printStackTrace();
+								}
+
+							} else {
+								if (t == null) {
+									t = new MThread() {
+										final int increment = z_totalToSync;
+
+										@Override
+										public void stopMe() {
+											control.flag = true;
+											this.interrupt();
+										}
+
+										@Override
+										public void run() {
+											boolean threadDone = false;
+											while (!control.flag) {
+
+												threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment, ui);
+												Log.d("vortex", "done scanning syncs...threaddone is " + threadDone + " this is thread " + this.getId());
+												if (control.error) {
+													Log.d("vortex", "Uppsan...exiting");
 													syncError = true;
 													syncActive = false;
 													syncDbInsert = false;
-													syncDataArriving=false;
-													Object fuck=null;
-													fuck.equals(fuck);
+													break;
+												}
+												if (!control.flag && !threadDone) {
+													z_totalSynced += increment;
+												} else {
+													control.flag = threadDone;
+													gs.sendEvent(REDRAW_PAGE);
+													Log.d("vortex", "End reached for sync. Sending msg safely_stored");
+													if (uiLock != null)
+														uiLock.cancel();
+													control.flag = true;
+													uiLock = null;
+
+													reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+													syncError = false;
+													syncActive = false;
+													syncDataArriving = false;
+
+													try {
+
+
+														mService.send(reply);
+													} catch (RemoteException e) {
+														e.printStackTrace();
+														syncError = true;
+														syncActive = false;
+														syncDbInsert = false;
+														syncDataArriving = false;
+														Object fuck = null;
+														fuck.equals(fuck);
+													}
+
+												}
+												if (!control.error) {
+													runOnUiThread(new Runnable() {
+														@Override
+														public void run() {
+															setSyncState(mnu[1]);
+														}
+													});
 												}
 
+
 											}
+											Log.d("vortex", "I escaped infite");
+
+											syncDbInsert = false;
+											t = null;
+											ui.closeProgress();
 											if (!control.error) {
 												runOnUiThread(new Runnable() {
 													@Override
 													public void run() {
-														setSyncState(mnu[1]);
+														refreshStatusRow();
 													}
 												});
 											}
-
-
 										}
-										Log.d("vortex", "I escaped infite");
+									};
 
-										syncDbInsert = false;
-										t = null;
-										ui.closeProgress();
-										if (!control.error) {
-											runOnUiThread(new Runnable() {
-												@Override
-												public void run() {
-													refreshStatusRow();
-												}
-											});
-										}
-									}
-								};
+									t.setPriority(Thread.MIN_PRIORITY);
+									t.start();
 
-								t.setPriority(Thread.MIN_PRIORITY);
-								t.start();
-
-							} else
-								Log.e("vortex", "EXTRA CALL ON THREADSTART");
+								} else
+									Log.e("vortex", "EXTRA CALL ON THREADSTART");
+							}
 
 						} else {
 							Log.e("vortex", "Extra call made to SYNC RELEASE DB LOCK");
@@ -595,7 +611,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		mnu[MENU_ITEM_LOG_WARNING].setTitle(R.string.log);
 		mnu[MENU_ITEM_SETTINGS].setTitle(R.string.settings);
 		mnu[MENU_ITEM_SETTINGS].setIcon(android.R.drawable.ic_menu_preferences);
-		mnu[MENU_ITEM_ABOUT].setTitle("About");
+		mnu[MENU_ITEM_ABOUT].setTitle(R.string.about);
 
 	}
 

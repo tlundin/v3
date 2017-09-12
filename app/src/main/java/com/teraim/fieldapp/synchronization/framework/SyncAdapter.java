@@ -247,8 +247,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			int icount = c.getInt(0);
 			if (icount > 0) {
 				Log.d("vortex", "sync table has entries: " + icount);
+				c.close();
 				return true;
 			}
+			c.close();
 			return false;
 		}
 		Log.e("vortex","cursor empty in syncDataAlreadyexist()");

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
 
@@ -42,6 +43,8 @@ public class AboutActivity extends Activity {
             ver.setText(bName+" "+((version==-1)?"":version));
            Button feedbackButton = (Button)findViewById(R.id.feedbackButton);
            final Button buttonDetails = (Button)findViewById(R.id.buttonDetails);
+           ((TextView)findViewById(R.id.fieldpad)).setText("FIELD PAD");
+           ((TextView)findViewById(R.id.fieldpad_version)).setText("Version "+Constants.VORTEX_VERSION);
 
            feedbackButton.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -49,17 +52,18 @@ public class AboutActivity extends Activity {
                    endMail();
                }
            });
+           buttonDetails.setText(R.string.details);
            buttonDetails.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
                    if (gone) {
                        gone=false;
                        logView.setVisibility(View.VISIBLE);
-                       buttonDetails.setText("Hide details");
+                       buttonDetails.setText(R.string.hide_details);
                    } else {
                        gone=true;
                        logView.setVisibility(View.GONE);
-                       buttonDetails.setText("Details");
+                       buttonDetails.setText(R.string.details);
                    }
 
 

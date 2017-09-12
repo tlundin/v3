@@ -128,8 +128,10 @@ public class GisObject {
 	}
 
 	public String getStatus() {
-		if (statusVariable==null)
+		if (statusVariable==null) {
+			//Log.d("vortex","value only");
 			return statusVariableValue;
+		}
 		else
 			return statusVariable.getValue();
 	}

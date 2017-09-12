@@ -11,9 +11,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
 import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.GlobalState;
@@ -33,7 +31,7 @@ import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.WebLoader;
-import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaData;
+import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataXML;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.Expressor;
@@ -322,7 +320,8 @@ public class CreateGisBlock extends Block {
 		if (tmp!=null && tmp.length!=0) {
 			final String metaFileName = tmp[0];			
 			Log.d("vortex","metafilename: "+metaFileName);
-			final ConfigurationModule meta = new AirPhotoMetaData(GlobalState.getInstance().getGlobalPreferences(),
+			Log.d("franzon","imgmetaformatisfile: "+gs.isFileMetaFormat());
+			final ConfigurationModule meta = new AirPhotoMetaDataXML(GlobalState.getInstance().getGlobalPreferences(),
 					GlobalState.getInstance().getPreferences(),Source.internet,
 					serverFileRootDir,metaFileName,""); 
 			if (meta.thaw().errCode!=ErrorCode.thawed) {

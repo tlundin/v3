@@ -73,6 +73,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	private String cacheFolder;
 	private String language="se";
 	public static LoggerI debugConsole;
+	private String imageMetaFormat=null;
 
 	public WorkFlowBundleConfiguration(Source source,PersistenceHelper globalPh,PersistenceHelper ph,
 			String urlOrPath, String bundle,LoggerI debugConsole) {
@@ -103,7 +104,6 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	@Override
 	public boolean isRequired() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -128,6 +128,10 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			o.addRedText("No appversion and/or workflow-version. Will default to 0. Please add.");
 		}
 		String minVersion = parser.getAttributeValue(null, "minVortexVersion");
+		//this determines if the image meta data is in file or xml format.
+		imageMetaFormat = parser.getAttributeValue(null,"img_meta_format");
+		Log.d("franzon","imagemetaformat "+(imageMetaFormat==null?"null":imageMetaFormat));
+		Log.d("franzon","minvortexversion "+(minVersion==null?"null":minVersion));
 		Log.d("vortex","Version field of workflow file contains "+newWorkflowVersion+" verscontrol: "+versionControl);
 		if (versionControl==null || !versionControl.equals("Forced")) {
 			if (minVersion!=null) {
@@ -850,6 +854,10 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		if (args==null || args.isEmpty())
 			return null;
 		return args.split(",");
+	}
+
+	public String getImageMetaFormat() {
+		return imageMetaFormat;
 	}
 
 	private enum ChartType {

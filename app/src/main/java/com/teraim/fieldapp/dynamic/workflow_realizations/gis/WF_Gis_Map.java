@@ -458,6 +458,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 		startB = (Button)avstRL.findViewById(R.id.startB);
 
+
+
 		startB.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -722,6 +724,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		Log.d("vortex","Entering setVisibleAvstRikt..");
 		if (isVisible) {
 			avstRL.setVisibility(View.VISIBLE);
+			startB.setText((touchedGop.getStatus())!=null?R.string.continue_:R.string.start);
 			areaT.setVisibility(View.GONE);
 			circumT.setVisibility(View.GONE);
 			setSelectedObjectText(touchedGop.getLabel());

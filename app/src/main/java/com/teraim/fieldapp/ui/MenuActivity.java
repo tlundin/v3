@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +27,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -666,9 +668,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 			mnu[MENU_ITEM_SETTINGS].setVisible(true);
 			mnu[MENU_ITEM_ABOUT].setVisible(true);
 
+
 		}
 	}
-
 
 
 
@@ -896,6 +898,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				Intent intent = new Intent(getBaseContext(),ConfigMenu.class);
 				startActivity(intent);
 				return true;
+
 			case MENU_ITEM_ABOUT:
                 Intent myIntent = new Intent(this, AboutActivity.class);
                 startActivity(myIntent);

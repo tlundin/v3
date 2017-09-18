@@ -1056,8 +1056,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		layersF.addView(layersL);
 		View layersRow=null;
 
-		String[] filterNames = new String[] {"Not Started","Started (Yellow)","Faulty (Red)","Status Done (Green)"};
-
+        //String[] filterNames = new String[] {"Not Started","Started (Yellow)","Faulty (Red)","Status Done (Green)"};
+        String[] filterNames = ctx.getResources().getStringArray(R.array.filter_array);
 
 		int i=0;
 		for (String filterName:filterNames) {
@@ -1252,6 +1252,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
 	public void showCandidates(List<GisObject> candidates) {
 		if (candidates!=null) {
+			wasShowingPopup();
 			candidatesButtonL.removeAllViews();
 			candidatesL.setVisibility(View.VISIBLE);
 			LayoutInflater li = LayoutInflater.from(ctx);

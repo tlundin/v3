@@ -698,7 +698,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							}
 							if (go instanceof GisPointObject) {
 								GisPointObject gop = (GisPointObject)go;
-
 								if (gop.isDynamic()) {
 									//Log.d("bortex","found dynamic object");
 									int[] xy = intBuffer.getIntBuf();;
@@ -731,9 +730,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								String statusValue = gop.getStatus();
 								//Log.d("bortex", "LBL: "+gop.getLabel()+" STAT: "+statusValue+" POLLY "+polyType.name());
 
-								String statusColor = colorShiftOnStatus(gop.getStatus());
-								if (statusColor!=null)
-									color = statusColor;
+								//String statusColor = colorShiftOnStatus(gop.getStatus());
+								//if (statusColor!=null)
+								//	color = statusColor;
 
 								if (filters!=null&&!filters.isEmpty()) {
 
@@ -751,7 +750,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 												Log.d("vortex","FILTER MATCH FOR FILTER: "+filter.getLabel());
 												bitmap = filter.getBitmap();
 												radius = filter.getRadius();
-												color = filter.getColor();
+												//color = filter.getColor();
 												style = filter.getStyle();
 												polyType = filter.getShape();
 											}
@@ -826,8 +825,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					for (GisObject go : candidates) {
 						//Log.d("vortex","candidate: "+go.getLabel()+" id: "+go.getId());
 						candies.add(go);
-						candMenuVisible = true;
+
 					}
+					candMenuVisible = true;
 
 					myMap.showCandidates(candies);
 				}
@@ -1071,7 +1071,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	}
 	 */
 	private static String colorShiftOnStatus(String statusValue) {
-	//Log.d("vortex","colorshift "+statusValue);
 		String color=null;
 		if (statusValue!=null ) {
 
@@ -1177,9 +1176,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			canvas.drawPath(p, paintBlur);
 			canvas.drawPath(p, paintSimple);
 		} else {
-			String color = colorShiftOnStatus(go.getStatus());
-			if (color == null)
-				color = go.getColor();
+			//String color = colorShiftOnStatus(go.getStatus());
+			//if (color == null)
+			String color = go.getColor();
 			canvas.drawPath(p, createPaint(color, Paint.Style.STROKE, 0));
 		}
 	}
@@ -1576,7 +1575,15 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	public void deleteSelectedGop() {
 		if (touchedGop!=null) {
 			//GlobalState.getInstance().getDb().deleteAllVariablesUsingKey(touchedGop.getKeyHash());
-			GlobalState.getInstance().getVariableCache().deleteAll(touchedGop.getKeyHash());
+
+			String keyPairs = Tools.convertToKeyPairs(touchedGop.getKeyHash());
+			int rowsAffected = GlobalState.getInstance().getDb().erase(keyPairs,null);
+			if (rowsAffected>0) {
+				GlobalState.getInstance().getLogger().addRow(" erased " + rowsAffected + " entries for GIS object [" + touchedGop.getLabel() + "]");
+				//Create sync entry for all variables with matching keys (no pattern)
+				GlobalState.getInstance().getDb().insertEraseAuditEntry(keyPairs,null);
+			}
+			//GlobalState.getInstance().getVariableCache().deleteAll(touchedGop.getKeyHash());
 			touchedBag.remove(touchedGop);
 			//Dont need to keep track of the bag anymore.
 			invalidate();

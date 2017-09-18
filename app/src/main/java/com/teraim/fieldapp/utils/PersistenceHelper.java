@@ -81,6 +81,7 @@ public class PersistenceHelper {
 
 	public void put(String key, String value) {
 		sp.edit().putString(key,value).commit();
+
 	}
 	public void put(String key, boolean value) {
 		sp.edit().putBoolean(key,value).commit();

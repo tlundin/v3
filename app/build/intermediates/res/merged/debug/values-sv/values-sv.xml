@@ -10,6 +10,12 @@
         <item>Client</item>
         <item>Solo</item>
     </string-array>
+    <string-array name="filter_array">
+        <item>Inte startade</item>
+        <item>Startade (gula)</item>
+        <item>Fel (röda)</item>
+        <item>Klara (gröna)</item>
+    </string-array>
     <string-array name="log_level_values">
         <item>off</item>
         <item>normal</item>
@@ -41,13 +47,12 @@
         <item>Forced</item>
     </string-array>
     <string name="Automatic_backup">Säkerhetskopiering</string>
-    <string name="Automatic_backup_s">Slå på eller av säkerthetskopiering</string>
+    <string name="Automatic_backup_s">Slå på eller av säkerhetskopiering</string>
     <string name="Backup_dm">Export och säkerhetskopior hamnar här. Om du inte anger något värde så hamnar dessa filer under folder \'backup\' i Appens hemfolder</string>
     <string name="Backup_folder">Plats för säkerhetskopia</string>
     <string name="Backup_folder_s">Om inget värde anges så används foldern \'backup\' under Appens hem</string>
     <string name="DevOp">Utvecklarfunktioner</string>
     <string name="DeviceType">Dosans typ</string>
-    <string name="LogLevels">Logg-nivåer</string>
     <string name="Sync_method">Synkningsmetod</string>
     <string name="Team">Lag</string>
     <string name="Team_s">Name på ditt lag och synkgrupp</string>
@@ -115,6 +120,7 @@
     <string name="description">Beskrivning</string>
     <string name="details">Detaljer</string>
     <string name="developer_functions">Avlusningsfunktioner</string>
+    <string name="done_loading">"Appen är laddad. Se 'Om appen' för detaljer"</string>
     <string name="drawer_close">Stäng</string>
     <string name="drawer_open">Öppna</string>
     <string name="feedback_header">ÅTERKOPPLING</string>
@@ -126,6 +132,8 @@
     <string name="length_">Length:</string>
     <string name="local_config_s">Laddar konfigurationen från projektfoldern i filsystemet</string>
     <string name="log">Logg</string>
+    <string name="log_levels_d">Bestämmer om meddelanden visas i loggen eller inte</string>
+    <string name="log_levels_h">Logg-nivåer</string>
     <string name="menu_settings">Inställningar</string>
     <string msgid="4271159405637008602" name="mr_media_route_button_content_description">"Medieuppspelning"</string>
     <string msgid="7553005460920830010" name="mr_media_route_chooser_searching">"Söker efter enheter ..."</string>
@@ -136,13 +144,19 @@
     <string name="no">Nej</string>
     <string name="ok">OK</string>
     <string name="reference">Referens</string>
+    <string name="resetCache">Töm cache</string>
     <string name="resetSyncButton">Nollställ synk</string>
+    <string name="reset_cache_d">Ta bort alla cacheade filer</string>
+    <string name="reset_cache_toast">filer borttagna</string>
+    <string name="reset_cache_warn">Alla cacheade filer kommer att suddas. Vill du fortsätta?</string>
     <string name="reset_sync_d">Raderar allt synkdata </string>
     <string name="restart">Omstart</string>
     <string name="restartMessage">Du måste starta om för att ändringen ska gälla. Starta om?</string>
     <string name="s_folder_summary">Folder för konfiguration</string>
     <string name="s_summary">Enheten laddar sin konfiguration härifrån</string>
     <string name="save">Spara</string>
+    <string name="scan_QR_code">Om du har fått inställningar via QR kod så kan du skanna den här</string>
+    <string name="scan_QR_code_h">Skanna QR</string>
     <string name="settings">Inställningar</string>
     <string name="show_author_s">Visa vem som gjort en inmatning</string>
     <string name="show_author_t">Visa inmatare</string>

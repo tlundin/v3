@@ -411,7 +411,7 @@ public class Variable implements Serializable {
 	}
 
 	public void invalidate() {
-		Log.d("vortex","Invalidating variable: "+this.getId());
+		//Log.d("vortex","Invalidating variable: "+this.getId());
 		unknown=true;
 		usingDefault = false;
 		timeStamp=null;

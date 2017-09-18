@@ -46,6 +46,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -104,6 +105,42 @@ public class Tools {
 
 		return null;
 	}
+
+	public static int eraseFolder(String s) {
+		Log.d("franzon","Erasing cache folder");
+		File dir = new File(s);
+		if (dir.isDirectory())
+		{
+			String[] children = dir.list();
+			if (children!=null && children.length>0) {
+				for (int i = 0; i < children.length; i++) {
+					new File(dir, children[i]).delete();
+				}
+				Log.d("vortex", "erased " + children.length + " files from cache");
+				return children.length;
+			}
+		}
+		return 0;
+	}
+
+	public static String printIfNotNull(String s, String parameter) {
+		if (parameter==null)
+			return "";
+		return s+parameter;
+	}
+
+	public static String convertToKeyPairs(Map<String, String> keyChain) {
+		if (keyChain==null||keyChain.isEmpty())
+			return null;
+		StringBuilder result = new StringBuilder();
+		int i=1;
+		for (String key:keyChain.keySet()) {
+			result.append(key+"="+keyChain.get(key)+(i<keyChain.keySet().size()?",":""));
+			i++;
+		}
+		return result.toString();
+	}
+
 
 	public enum Unit {
 		percentage,
@@ -189,7 +226,7 @@ public class Tools {
 
 		} catch (Exception e) {
 			Log.d("vortex","thaw failed");
-
+			object=null;
 		}  finally {
 			if (objectIn != null) {
 				try {
@@ -246,6 +283,7 @@ public class Tools {
 
 				Log.d("vortex", "Object thawed ");
                 caller.setEssence(result);
+				caller.thawing();
                 LoadResult loadResult = new LoadResult(caller,result==null?
                         LoadResult.ErrorCode.thawFailed:LoadResult.ErrorCode.thawed);
 				callBack.onFileLoaded(loadResult);

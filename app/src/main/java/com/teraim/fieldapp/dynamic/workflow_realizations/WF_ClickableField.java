@@ -859,7 +859,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                 if (res != null && !res)
                     return r;
             } catch (SyntaxException e) {
-                Log.e("vortex", "Syntax exception on rule " + r.id);
+                Log.e("vortex", "Syntax exception on rule " + r.getId());
 
             }
         }

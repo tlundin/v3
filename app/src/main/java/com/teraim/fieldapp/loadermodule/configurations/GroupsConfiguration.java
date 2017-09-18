@@ -39,7 +39,7 @@ public class GroupsConfiguration extends CSVConfigurationModule {
 	}
 
 	@Override
-	protected LoadResult prepare() throws IOException {		
+    public LoadResult prepare() throws IOException {
 		scanHeader=true;
 		groups=new HashMap<String,List<List<String>>>();
 		groupIndex = -1;
@@ -114,6 +114,8 @@ public class GroupsConfiguration extends CSVConfigurationModule {
 		}
 		return null;
 	}
+
+
 
 	@Override
 	public float getFrozenVersion() {

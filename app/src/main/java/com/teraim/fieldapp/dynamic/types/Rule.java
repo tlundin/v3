@@ -19,13 +19,13 @@ public class Rule implements Serializable {
      *
      */
     private static final long serialVersionUID = -1965204853256767316L;
-    public String targetName,  action, errorMsg,label,id;
+    private String target,  action, errorMsg,label,id;
     private Expressor.EvalExpr condition;
     private Context ctx;
     private Type myType;
     private boolean initDone = false;
     private LoggerI o;
-    private int myTarget=-1;
+    private int myTargetBlockId=-1;
     private String conditionS=null;
     //Old rule engine for back compa.
     private boolean oldStyle = false;
@@ -35,7 +35,7 @@ public class Rule implements Serializable {
 
         this.label=ruleLabel;
         this.id=id;
-        this.targetName=target;
+        this.target=target;
         //
         List<Expressor.EvalExpr> tmp = Expressor.preCompileExpression(condition);
         if (tmp!=null) {
@@ -48,7 +48,7 @@ public class Rule implements Serializable {
         if (action!=null && action.equalsIgnoreCase("Error_severity"))
             myType = Type.ERROR;
         try {
-            myTarget = Integer.parseInt(target);
+            myTargetBlockId = Integer.parseInt(target);
         } catch (NumberFormatException e) {};
     }
 
@@ -59,6 +59,10 @@ public class Rule implements Serializable {
         ruleContext=myContext;
         myBlock=bl;
 
+    }
+
+    public String getTargetString() {
+        return target;
     }
 
 
@@ -75,6 +79,7 @@ public class Rule implements Serializable {
     	   System.err.println("BANANA: CALING BOOL ANALYSIS WITH "+condition.toString());
        
         //Log.d("NILS", "Result of rule eval was: " + Expressor.analyzeBooleanExpression(condition));
+           Log.d("vortex","rule context: "+(ruleContext==null?"null":ruleContext)+" myBlock: "+(myBlock==null?"null":myBlock));
            if (ruleContext!=null && myBlock!=null) {
                WF_Static_List list = ruleContext.getList(myBlock.getListId());
 
@@ -102,8 +107,12 @@ public class Rule implements Serializable {
         return myType;
     }
 
-    public int getTarget() {
-        return myTarget;
+    public int getMyTargetBlockId() {
+        return myTargetBlockId;
+    }
+
+    public String getId() {
+        return id;
     }
     public String getCondition() {
         return conditionS;

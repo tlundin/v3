@@ -424,6 +424,10 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				Log.d("franzon",imgMetaFormat);
 			Table t = (Table)(myModules.getModule(VariablesConfiguration.NAME).getEssence());
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
+			if (t==null) {
+				Log.e("vortex","table null - load fail");
+				return;
+			}
 			if (mActivity!=null) {
 				final GlobalState gs =
 						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt,imgMetaFormat);
@@ -434,7 +438,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					gs.getBackupManager().backUp();
 				}
 				loginConsole.clear();
-				loginConsole.addRow("Done loading. See 'About' page for details");
+				loginConsole.addRow(getString(R.string.done_loading));
 				loginConsole.draw();
 				start(gs);
 

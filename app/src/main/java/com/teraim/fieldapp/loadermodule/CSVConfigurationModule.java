@@ -5,17 +5,19 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.teraim.fieldapp.loadermodule.configurations.CI_ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
-public abstract class CSVConfigurationModule extends ConfigurationModule {
+public abstract class CSVConfigurationModule extends CI_ConfigurationModule {
 
-	public CSVConfigurationModule(PersistenceHelper gPh,PersistenceHelper ph,
-			Source source, String urlOrPath, String fileName, String moduleName) {
-		super(gPh,ph, Type.csv, source, urlOrPath, fileName, moduleName);
+	public CSVConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph,
+								  ConfigurationModule.Source source, String urlOrPath, String fileName, String moduleName) {
+		super(gPh,ph, ConfigurationModule.Type.csv, source, urlOrPath, fileName, moduleName);
+	}
+	@Override
+	public LoadResult finalizeMe() throws IOException {
+		return null;
 	}
 
-	protected abstract LoadResult prepare() throws IOException, Dependant_Configuration_Missing;
-	public abstract LoadResult parse(String row, Integer currentRow) throws IOException;
-	
 }

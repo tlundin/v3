@@ -28,7 +28,7 @@
     <string name="Team">Team</string>
     <string name="UserName">Username</string>
     <string name="DevOp">Developer Options</string>
-    <string name="LogLevels">Log Levels</string>
+    <string name="log_levels_h">Log Levels</string>
     <string name="UserName_dm">Write your name here!</string>
     <string name="Team_s">Name of team and sync group</string>
 
@@ -68,6 +68,13 @@
     <string name="contact_us_button_text">Contact us</string>
     <string name="start">Start</string>
     <string name="continue_">Continue</string>
-
+    <string name="reset_cache_d">Erase all cached files to force reload</string>
+    <string name="resetCache">Reset Cache</string>
+    <string name="reset_cache_warn">"This will erase all cached images and configuration files. Are you sure?"</string>
+    <string name="reset_cache_toast">files deleted from cache</string>
+    <string name="scan_QR_code_h">Scan QR</string>
+    <string name="scan_QR_code">If you have received settings via a QR code, you can scan it here</string>
+    <string name="log_levels_d">Determines granularity of information shown in log</string>
+    <string name="done_loading">"App is ready to run. 'About' page for details"</string>
 
 </resources>

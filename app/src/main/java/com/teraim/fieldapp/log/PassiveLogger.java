@@ -118,8 +118,7 @@ public class PassiveLogger implements LoggerI {
         draw();
     }
 
-    @Override
-    public void removeTicky() {
+    private void removeTicky() {
         if (tickyIs!=null && myTxt.length()>=tickyIs.length()) {
             myTxt=myTxt.delete(myTxt.length()-tickyIs.length(), myTxt.length());
             tickyIs=null;

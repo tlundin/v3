@@ -9,7 +9,6 @@
             android:entryValues="@array/deviceTypes_values"
             android:key="device_type"
             android:title="@string/DeviceType" />
-
         <EditTextPreference
             android:dialogMessage="@string/Team_s"
             android:dialogTitle="@string/Team"
@@ -95,16 +94,21 @@
             android:entries="@array/log_levels"
             android:entryValues="@array/log_level_values"
             android:key="log_levels"
-            android:title="@string/LogLevels" />
+            android:title="@string/log_levels_h"
+            android:summary="@string/log_levels_d"/>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="show_author"
             android:summary="@string/show_author_s"
             android:title="@string/show_author_t" />
         <Preference
-            android:title="@string/resetSyncButton"
-            android:key="reset_sync"
-            android:summary="@string/reset_sync_d"/>
+            android:title="@string/resetCache"
+            android:key="reset_cache"
+            android:summary="@string/reset_cache_d"/>
+        <Preference
+            android:title="@string/scan_QR_code_h"
+            android:key="scan_qr_code"
+            android:summary="@string/scan_QR_code" />
 
     </PreferenceCategory>
 

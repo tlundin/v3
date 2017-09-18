@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule.Type;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
+import com.teraim.fieldapp.loadermodule.configurations.CI_ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.Tools;
@@ -120,15 +121,15 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 	protected LoadResult parse(ConfigurationModule m) throws IOException, XmlPullParserException, JSONException, Dependant_Configuration_Missing {
-		if (m.type==Type.csv||m.type==Type.raw)
-			return parseCSV((CSVConfigurationModule)m);
+		if (m.type==Type.csv||m.type==Type.ini)
+			return parseCSV((CI_ConfigurationModule)m);
 		else if (m.type==Type.json)
 			return parseJSON((JSONConfigurationModule)m);
 		else
 			return parseXML((XMLConfigurationModule)m);
 	}
 
-	protected LoadResult parseCSV(CSVConfigurationModule m) throws IOException, Dependant_Configuration_Missing {
+	protected LoadResult parseCSV(CI_ConfigurationModule m) throws IOException, Dependant_Configuration_Missing {
 		String[] myRows=null;
 		int noOfRows=rowC;
 		LoadResult res = null;
@@ -152,6 +153,8 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 				this.publishProgress(rowC,noOfRows);
 
 		}
+		if (res==null)
+			m.finalizeMe();
 		if (res==null)
 			res = new LoadResult(m,ErrorCode.parsed);
 		this.publishProgress(rowC,noOfRows);

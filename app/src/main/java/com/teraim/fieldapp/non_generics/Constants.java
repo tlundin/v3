@@ -42,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 5.69f;
+	public final static float VORTEX_VERSION = 5.76f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -208,6 +208,7 @@ public class Constants {
 
 
 	public final static int TAKE_PICTURE = 133;
+	public final static int QR_SCAN_REQUEST = 1111;
 
 
 	private static final String GPS_LIST_FILE_NAME = "content.txt";

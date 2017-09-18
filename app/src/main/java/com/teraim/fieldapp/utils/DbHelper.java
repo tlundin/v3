@@ -2207,11 +2207,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public int erase(String keyPairs, String pattern) {
         if (keyPairs == null || keyPairs.isEmpty()) {
-            Log.e("vortex", "keypairs null or empty in erase! Not allowed!");
+            Log.e("err", "keypairs null or empty in erase! Not allowed!");
             return 0;
         }
 
-//        Log.d("vortex", "In erase with keyPairs: " + keyPairs+" and pattern "+pattern);
+       Log.d("err", "In erase with keyPairs: " + keyPairs+" and pattern "+pattern);
 
         //map keypairs. Create delete statement.
         StringBuilder delStmt = new StringBuilder("");
@@ -2231,7 +2231,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 column = realColumnNameToDB.get(keyValue[0]);
   //              Log.d("vortex","column: "+column+" value: "+keyValue[1]);
                 if (Constants.NOT_NULL.equals(keyValue[1])) {
-                    Log.d("vortex","match for NN!");
+                    Log.d("err","match for NN!");
                     delStmt.append(column + " IS NOT NULL");
                     //erase in cache will erase all keys containing pairs that have value.
                     exact = false;
@@ -2241,7 +2241,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     delStmt.append(column + "= ?");
                 }
             } else
-                Log.e("vortex", "failed to split " + pair);
+                Log.e("err", "failed to split " + pair);
             if (!last)
                 delStmt.append(" AND ");
             i++;
@@ -2256,15 +2256,15 @@ public class DbHelper extends SQLiteOpenHelper {
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         //Invalidate affected cache variables
         if (affected > 0) {
-            Log.d("papp", "Deleted rows count: " + affected+" keys: "+keyPairs);
+            Log.d("err", "Deleted rows count: " + affected+" keys: "+keyPairs);
 
    //         Log.d("vortex", "cleaning up cache. Exact: " + exact);
             GlobalState.getInstance().getVariableCache().invalidateOnKey(map, exact);
-        } else
-            dr0++;
+        } //else
+            //dr0++;
         return affected;
     }
-    static int dr0 = 0;
+    //static int dr0 = 0;
     public void eraseDelytor(String currentRuta, String currentProvyta) {
 
         //create WHERE part of delete statement.

@@ -31,6 +31,7 @@ import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.WebLoader;
+import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataFile;
 import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataXML;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -44,7 +45,7 @@ import com.teraim.fieldapp.utils.Tools.WebLoaderCb;
 public class CreateGisBlock extends Block {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2013870148670474254L;
 	private static final int MAX_NUMBER_OF_PICS = 100;
@@ -68,8 +69,8 @@ public class CreateGisBlock extends Block {
 		return hasSatNav;
 	}
 	public boolean isTeamVisible() { return showTeam;}
-	public CreateGisBlock(String id,String name, 
-			String containerId,boolean isVisible,String source,String N,String E, String S,String W, boolean hasSatNav,boolean showTeam) {
+	public CreateGisBlock(String id,String name,
+						  String containerId,boolean isVisible,String source,String N,String E, String S,String W, boolean hasSatNav,boolean showTeam) {
 		super();
 
 		this.name = name;
@@ -98,7 +99,7 @@ public class CreateGisBlock extends Block {
 
 
 	/**
-	 * 
+	 *
 	 * @param myContext
 	 * @param cb
 	 * @return true if loaded. False if executor should pause.
@@ -168,10 +169,10 @@ public class CreateGisBlock extends Block {
 							mapLayers.add(mapLayer);
 						} else {
 							Log.e("vortex", "Picture not found. "+serverFileRootDir+picName);
-                            if (gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH)) {
-                                o.addRow("");
-                                o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
-                            }
+							if (gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH)) {
+								o.addRow("");
+								o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+							}
 							if (picName.equals(masterPicName)) {
 								aborted = true;
 								cb.abortExecution("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
@@ -193,7 +194,7 @@ public class CreateGisBlock extends Block {
 	Rect r = null;
 	PhotoMeta photoMetaData;
 	String cachedImgFilePath="";
-	
+
 	public void createAfterLoad(PhotoMeta photoMeta, final String cacheFolder, final String fileName) {
 		this.photoMetaData=photoMeta;
 		cachedImgFilePath = cacheFolder+fileName;
@@ -247,7 +248,7 @@ public class CreateGisBlock extends Block {
 				cutOut=null;
 				mapLayers.clear();
 			}
-			
+
 			new Handler().postDelayed(new Runnable() {
 				public void run() {
 
@@ -267,19 +268,19 @@ public class CreateGisBlock extends Block {
 						avstRL.setVisibility(View.INVISIBLE);
 
 
-                        for (GisLayer gl:mapLayers) {
-								gis.addLayer(gl);
-                        }
+						for (GisLayer gl:mapLayers) {
+							gis.addLayer(gl);
+						}
 
 
 						cb.continueExecution();
 					} else {
 						Log.e("vortex","Failed to create map image. Will exit");
 						cb.abortExecution("Failed to create Gis page. The map image ["+cachedImgFilePath+"] could not be found" );
-					} 
+					}
 				}
 			}, 0);
-			
+
 		} else {
 			o.addRow("");
 			if (photoMetaData ==null) {
@@ -298,7 +299,7 @@ public class CreateGisBlock extends Block {
 	}
 
 
-	private void loadImageMetaData(String picName,String serverFileRootDir,String cacheFolder) {		
+	private void loadImageMetaData(String picName,String serverFileRootDir,String cacheFolder) {
 
 		if (N==null||E==null||S==null||W==null||N.length()==0) {
 			//Parse and cache the metafile.
@@ -318,13 +319,18 @@ public class CreateGisBlock extends Block {
 		String[]tmp = fileName.split("\\.");
 
 		if (tmp!=null && tmp.length!=0) {
-			final String metaFileName = tmp[0];			
+			final String metaFileName = tmp[0];
 			Log.d("vortex","metafilename: "+metaFileName);
 			Log.d("franzon","imgmetaformatisfile: "+gs.isFileMetaFormat());
-			final ConfigurationModule meta = new AirPhotoMetaDataXML(GlobalState.getInstance().getGlobalPreferences(),
-					GlobalState.getInstance().getPreferences(),Source.internet,
-					serverFileRootDir,metaFileName,""); 
-			if (meta.thaw().errCode!=ErrorCode.thawed) {
+			final ConfigurationModule meta = gs.isFileMetaFormat()?
+					new AirPhotoMetaDataFile(GlobalState.getInstance().getGlobalPreferences(),
+							GlobalState.getInstance().getPreferences(),Source.internet,
+							serverFileRootDir,metaFileName,"")
+					:
+					new AirPhotoMetaDataXML(GlobalState.getInstance().getGlobalPreferences(),
+							GlobalState.getInstance().getPreferences(),Source.internet,
+							serverFileRootDir,metaFileName,"");
+			if (meta.thawSynchronously().errCode!=ErrorCode.thawed) {
 				Log.d("vortex","no frozen metadata. will try to download.");
 				new WebLoader(null, null, new FileLoadedCb(){
 					@Override
@@ -339,7 +345,7 @@ public class CreateGisBlock extends Block {
 							o.addRow("");
 							o.addRedText("Could not find GIS image "+metaFileName);
 							Log.e("vortex","Failed to parse image meta. Errorcode "+res.errCode.name());
-							cb.abortExecution("Could not load GIS image meta file ["+metaFileName+"]. Likely reason: File missing under 'extras' folder or no connection");
+							cb.abortExecution("Could not load GIS image meta file ["+metaFileName+(gs.isFileMetaFormat()?".ini":".xml")+"].");
 						}
 					}
 					@Override
@@ -349,7 +355,7 @@ public class CreateGisBlock extends Block {
 					@Override
 					public void onUpdate(Integer... args) {
 					}},
-					"Forced").execute(meta);
+						"Forced").execute(meta);
 			} else {
 				Log.d("vortex","Found frozen metadata. Will use it");
 				PhotoMeta pm = (PhotoMeta)meta.getEssence();
@@ -380,13 +386,13 @@ public class CreateGisBlock extends Block {
 	public String server(String serverUrl) {
 		if (!serverUrl.endsWith("/"))
 			serverUrl+="/";
-		if (!serverUrl.startsWith("http://")) 
+		if (!serverUrl.startsWith("http://"))
 			serverUrl = "http://"+serverUrl;
 		return serverUrl;
 	}
 
-	
-	
+
+
 
 
 }

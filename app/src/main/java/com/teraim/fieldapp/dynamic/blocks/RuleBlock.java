@@ -23,6 +23,7 @@ public  class RuleBlock extends Block {
 	private Scope myScope = Scope.flow;
 
 	public RuleBlock(String id,String ruleName,String target, String condition, String action, String errorMsg, String myScope) {
+		Log.d("basap","in new ruleblock for block "+id+" with target "+target);
 		this.r = new Rule(id,ruleName,target,condition,action,errorMsg);
 		this.blockId=id;
 		if (myScope!=null && myScope.length()>0)
@@ -37,17 +38,17 @@ public  class RuleBlock extends Block {
 	}
 
 	public void create(WF_Context myContext, List<Block> blocks) {
-		Log.d("nils","Create called in addRuleBlock. Target name: "+r.targetName+" my scope"+myScope);
+		Log.d("nils","Create called in addRuleBlock, id "+blockId+" Target name: "+r.getTargetString()+" my scope: "+myScope+" Target Block: "+r.getMyTargetBlockId());
 		o = GlobalState.getInstance().getLogger();
 		//Add rules that will be executed att flow exit.
 		if (myScope == Scope.flow || myScope == Scope.both)
 			myContext.addRule(r);
 		//If target mentions specific block, find it and attach rule to EntryField.
-		if (r.getTarget()!=-1) {
-			 int index = findBlockIndex(r.targetName,blocks);
+		if (r.getMyTargetBlockId()!=-1) {
+			 int index = findBlockIndex(r.getTargetString(),blocks);
 			 if (index==-1) {
 				 o.addRow("");
-				 o.addRedText("target block for rule "+blockId+" not found ("+r.getTarget()+")");
+				 o.addRedText("target block for rule "+blockId+" not found ("+r.getMyTargetBlockId()+")");
 				 return;
 			 } 
 			 Block b = blocks.get(index);
@@ -59,10 +60,10 @@ public  class RuleBlock extends Block {
 				r.setTarget(myContext,bl);
 
 			} else {
-				Log.e("vortex","target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.targetName);
+				Log.e("vortex","target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.getTargetString());
 				o = GlobalState.getInstance().getLogger();
 				o.addRow("");
-				o.addRedText("target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.targetName);
+				o.addRedText("target for rule doesnt seem correct: "+b.getClass()+" blId: "+r.getTargetString());
 			}
 		}
 		

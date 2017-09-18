@@ -28,7 +28,7 @@
 	<string name="Team">Lag</string>
 	<string name="UserName">Användare</string>
 	<string name="DevOp">Utvecklarfunktioner</string>
-	<string name="LogLevels">Logg-nivåer</string>
+	<string name="log_levels_h">Logg-nivåer</string>
 	<string name="UserName_dm">Skriv ditt namn här!</string>
 	<string name="Team_s">Name på ditt lag och synkgrupp</string>
 	
@@ -44,7 +44,7 @@
 	<string name="appDialMsg">Appens namn utan \'.xml\'\n (ändring kräver omstart)</string>
 	<string name="Backup_folder_s">Om inget värde anges så används foldern \'backup\' under Appens hem</string>
 	<string name="Backup_dm">Export och säkerhetskopior hamnar här. Om du inte anger något värde så hamnar dessa filer under folder \'backup\' i Appens hemfolder</string>
-	<string name="Automatic_backup_s">Slå på eller av säkerthetskopiering</string>
+	<string name="Automatic_backup_s">Slå på eller av säkerhetskopiering</string>
 	<string name="show_author_s">Visa vem som gjort en inmatning</string>
 	<string name="show_author_t">Visa inmatare</string>
 	<string name="reset_sync_d">Raderar allt synkdata </string>
@@ -66,5 +66,12 @@
 	<string name="contact_us_button_text">Kontakta oss</string>
     <string name="start">Starta</string>
 	<string name="continue_">Fortsätt</string>
-
+    <string name="reset_cache_d">Ta bort alla cacheade filer</string>
+	<string name="resetCache">Töm cache</string>
+    <string name="reset_cache_warn">Alla cacheade filer kommer att suddas. Vill du fortsätta?</string>
+	<string name="reset_cache_toast">filer borttagna</string>
+    <string name="scan_QR_code_h">Skanna QR</string>
+	<string name="scan_QR_code">Om du har fått inställningar via QR kod så kan du skanna den här</string>
+	<string name="log_levels_d">Bestämmer om meddelanden visas i loggen eller inte</string>
+	<string name="done_loading">"Appen är laddad. Se 'Om appen' för detaljer"</string>
 </resources>

@@ -18,7 +18,7 @@ public class LoadResult {
 		LoadInBackground, newConfigVersionLoaded, 
 		BadURL,frozen, parsed, noData, thawed, 
 		ClassNotFound, nothingToFreeze, Unsupported, 
-		reloadDependant, existingVersionIsMoreCurrent, slowConnection, thawFailed, majorVersionNotUpdated
+		reloadDependant, existingVersionIsMoreCurrent, slowConnection, thawFailed, tick, majorVersionNotUpdated
 	}
 	
 	

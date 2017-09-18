@@ -72,7 +72,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	GroupsConfiguration gc=null;
 	
 	@Override
-	protected LoadResult prepare() throws IOException, Dependant_Configuration_Missing {		
+    public LoadResult prepare() throws IOException, Dependant_Configuration_Missing {
 
 		cheaderL = new ArrayList<String>();
 

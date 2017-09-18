@@ -26,6 +26,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -41,6 +42,7 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -65,6 +67,104 @@ public class ConfigMenu extends PreferenceActivity {
 	}
 
 	public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+
+		private EditTextPreference serverPref;
+		private ListPreference versionControlPref;
+		private ListPreference syncPref;
+		private EditTextPreference teamPref;
+		private EditTextPreference userPref;
+		private EditTextPreference appPref;
+
+		@Override
+		public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			super.onActivityResult(requestCode,resultCode,data);
+			Log.d("vortex", "IN ONACTIVITY RESULT ");
+
+			Log.d("vortex", "request code " + requestCode + " result code " + resultCode);
+			if (requestCode == Constants.QR_SCAN_REQUEST) {
+				if (Activity.RESULT_OK == resultCode) {
+					Log.d("vortex", "code img taken...scan!");
+					String url = (new BarcodeReader(this.getActivity())).analyze();
+
+					Log.d("vortex", "GOT " + (url == null ? "null" : url));
+
+
+					//www.teraim.com?project=Rlotst&team=Rlo2017&name=Lotta&sync=Internet&control=major
+					if (url != null) {
+						Uri uri = Uri.parse(url);
+
+						final String application = uri.getQueryParameter("application");
+						final String team = uri.getQueryParameter("team");
+						final String name = uri.getQueryParameter("name");
+						final String sync = uri.getQueryParameter("sync");
+						final String control = uri.getQueryParameter("control");
+						//got null on host.
+						String host = uri.getHost();
+						final String server = uri.getPath();
+
+						(new AlertDialog.Builder(this.getActivity())).setTitle("Recieved QR configuration")
+								.setMessage("The following QR setting was received:" +
+										Tools.printIfNotNull("\nApplication: ", application) +
+										Tools.printIfNotNull("\nTeam: ", team) +
+										Tools.printIfNotNull("\nName: ", name) +
+										Tools.printIfNotNull("\nSync: ", sync) +
+										Tools.printIfNotNull("\nVersion Control: ", control) +
+										Tools.printIfNotNull("\nServer: ", server) +
+										"\n********************" +
+										"\nApply these changes?"
+
+								)
+								.setCancelable(false)
+								.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+
+									}
+								})
+								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+
+
+										if (team != null)
+											 teamPref.setText(team);
+
+										if (application != null) {
+											appPref.setText(application);
+										}
+										if (name != null)
+											userPref.setText(name);
+										if (sync != null) {
+											syncPref.setValue(sync);
+											syncPref.setSummary(sync);
+										}
+										if (control != null) {
+											versionControlPref.setValue(control);
+											versionControlPref.setSummary(control);
+										}
+										if (server != null)
+											serverPref.setText(server);
+									}
+								})
+								.show();
+						askForRestart();
+
+					} else {
+						new AlertDialog.Builder(this.getActivity()).setTitle("Bummer")
+								.setMessage("NO QR code found in image.")
+								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog, int which) {
+
+
+									}
+								})
+
+								.setCancelable(false)
+								.setIcon(android.R.drawable.ic_dialog_alert)
+								.show();
+					}
+				}
+			}
+		}
 
 
 		@Override
@@ -111,69 +211,58 @@ public class ConfigMenu extends PreferenceActivity {
 			};
 
 
-			EditTextPreference epref = (EditTextPreference) findPreference(PersistenceHelper.LAG_ID_KEY);
-			epref.setSummary(epref.getText());
+			teamPref = (EditTextPreference) findPreference(PersistenceHelper.LAG_ID_KEY);
+			teamPref.setSummary(teamPref.getText());
 
 			ListPreference color = (ListPreference)findPreference(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
 			color.setSummary(color.getValue());
 
-			ListPreference versionControl = (ListPreference)findPreference(PersistenceHelper.VERSION_CONTROL);
-			versionControl.setSummary(versionControl.getValue());
+			versionControlPref = (ListPreference)findPreference(PersistenceHelper.VERSION_CONTROL);
+			versionControlPref.setSummary(versionControlPref.getValue());
 
-			ListPreference sync = (ListPreference)findPreference(PersistenceHelper.SYNC_METHOD);
-			sync.setSummary(sync.getValue());
+			syncPref = (ListPreference)findPreference(PersistenceHelper.SYNC_METHOD);
+			syncPref.setSummary(syncPref.getValue());
 
-			epref = (EditTextPreference) findPreference(PersistenceHelper.USER_ID_KEY);
-			epref.setSummary(epref.getText());
+			userPref = (EditTextPreference) findPreference(PersistenceHelper.USER_ID_KEY);
+			userPref.setSummary(userPref.getText());
 
 
-			epref = (EditTextPreference) findPreference(PersistenceHelper.SERVER_URL);
-			epref.setSummary(epref.getText());
-			epref.getEditText().setFilters(new InputFilter[] {filter});
+			serverPref = (EditTextPreference) findPreference(PersistenceHelper.SERVER_URL);
+			serverPref.setSummary(serverPref.getText());
+			serverPref.getEditText().setFilters(new InputFilter[] {filter});
 
-			epref = (EditTextPreference) findPreference(PersistenceHelper.BUNDLE_NAME);
-			epref.setSummary(epref.getText());
-			epref.getEditText().setFilters(new InputFilter[] {filter});
+			appPref = (EditTextPreference) findPreference(PersistenceHelper.BUNDLE_NAME);
+			appPref.setSummary(appPref.getText());
+			appPref.getEditText().setFilters(new InputFilter[] {filter});
 
-			epref = (EditTextPreference) findPreference(PersistenceHelper.BACKUP_LOCATION);
-			if (epref.getText()==null) {
-				epref.setText(Constants.DEFAULT_EXT_BACKUP_DIR);
+			EditTextPreference backupPref = (EditTextPreference) findPreference(PersistenceHelper.BACKUP_LOCATION);
+			if (backupPref.getText()==null) {
+				backupPref.setText(Constants.DEFAULT_EXT_BACKUP_DIR);
 			}
-			epref.setSummary(epref.getText());
+			backupPref.setSummary(backupPref.getText());
 
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
-
-
-			Preference button = (Preference)findPreference("reset_sync");
+			Preference button = (Preference)findPreference("reset_cache");
 			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 					new AlertDialog.Builder(getActivity())
-							.setTitle("Reset Sync")
-							.setMessage("Pressing ok will erase all sync data. This is only required if this device is using a backup image.")
+							.setTitle(getResources().getString(R.string.resetCache))
+							.setMessage(getResources().getString(R.string.reset_cache_warn))
 							.setIcon(android.R.drawable.ic_dialog_alert)
 							.setCancelable(false)
 							.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
-									String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
-									Log.d("vortex","syncPValue is "+syncPValue);
-									if (bName!=null && syncPValue!=null) {
-										getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).edit().remove(PersistenceHelper.TIME_OF_LAST_SYNC).commit();
-
-										if (GlobalState.getInstance()!=null)
-											GlobalState.getInstance().getDb().eraseSyncObjects();
-
-										Intent intent = new Intent();
-										intent.setAction(MenuActivity.REDRAW);
-										LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-
+									String bundleName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
+									if (bundleName != null && !bundleName.isEmpty()) {
+										int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
+										Toast.makeText(getActivity(),n+" "+getResources().getString(R.string.reset_cache_toast),Toast.LENGTH_LONG).show();
+										askForRestart();
 									}
+								};
 
-
-								}
 							} )
 							.setNegativeButton(R.string.cancel, new OnClickListener() {
 								@Override
@@ -183,14 +272,26 @@ public class ConfigMenu extends PreferenceActivity {
 							})
 							.show();
 					return true;
-				};
+				}
 			});
-
 
 			final CheckBoxPreference pref = (CheckBoxPreference)findPreference("local_config");
 			final PreferenceGroup devOpt = (PreferenceGroup)findPreference("developer_options");
-			final EditTextPreference server = (EditTextPreference) findPreference(PersistenceHelper.SERVER_URL);
 			final Preference folderPref = (Preference) findPreference(PersistenceHelper.FOLDER);
+			final Preference QRPref = (Preference) findPreference("scan_qr_code");
+
+			QRPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
+					Uri outputFileUri = Uri.fromFile(file);
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+					startActivityForResult(intent, Constants.QR_SCAN_REQUEST);
+					return true;
+				}
+			});
 			//check if local folder exists. If not, create it.
 			pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
@@ -198,10 +299,10 @@ public class ConfigMenu extends PreferenceActivity {
 
 					if (pref.isChecked()) {
 						devOpt.removePreference(folderPref);
-						devOpt.addPreference(server);
+						devOpt.addPreference(serverPref);
 					} else {
 
-						devOpt.removePreference(server);
+						devOpt.removePreference(serverPref);
 						setFolderPref(folderPref);
 						devOpt.addPreference(folderPref);
 
@@ -212,9 +313,9 @@ public class ConfigMenu extends PreferenceActivity {
 
 			if (!pref.isChecked()) {
 				devOpt.removePreference(folderPref);
-				devOpt.addPreference(server);
+				devOpt.addPreference(serverPref);
 			} else {
-				devOpt.removePreference(server);
+				devOpt.removePreference(serverPref);
 				setFolderPref(folderPref);
 				devOpt.addPreference(folderPref);
 			}
@@ -227,51 +328,9 @@ public class ConfigMenu extends PreferenceActivity {
 				}
 			});
 
-			/*
-			final Preference button = (Preference)findPreference(getString(R.string.resetSyncButton));
-			String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
-			String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
-			if (bName!=null && syncPValue!=null) {
-				button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-					@Override
-					public boolean onPreferenceClick(Preference preference) {   
-						new AlertDialog.Builder(getActivity())
-						.setTitle("Reset Sync")
-						.setMessage("Pressing ok will rewind the synchronization pointer to zero. This will synchronize all values with partner device.") 
-						.setIcon(android.R.drawable.ic_dialog_alert)
-						.setCancelable(false)
-						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {				
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								String bName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,null);
-								String syncPValue = getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.TIME_OF_LAST_SYNC,null);
-								Log.d("vortex","syncPValue is "+syncPValue);
-								if (bName!=null && syncPValue!=null) {
-									getActivity().getSharedPreferences(bName,Context.MODE_MULTI_PROCESS).edit().remove(PersistenceHelper.TIME_OF_LAST_SYNC).commit();
-									Intent intent = new Intent();
-									intent.setAction(MenuActivity.REDRAW);
-									getActivity().sendBroadcast(intent);
-									button.setEnabled(false);
-								}
 
 
-							}
-						} )
-						.setNegativeButton(R.string.cancel, new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
 
-							}
-						})
-						.show();
-						return true;
-					}
-				});
-			} else
-				button.setEnabled(false);
-
-
-			 */
 		}
 
 		private void setFolderPref(Preference folderPref) {
@@ -342,6 +401,7 @@ public class ConfigMenu extends PreferenceActivity {
 				EditTextPreference etp = (EditTextPreference) pref;
 
 				if (key.equals(PersistenceHelper.BUNDLE_NAME)) {
+					Log.d("vortex","changing bundle");
 					setFolderPref(findPreference(PersistenceHelper.FOLDER));
 					if (etp.getText().length()!=0) {
 						char[] strA = etp.getText().toCharArray();

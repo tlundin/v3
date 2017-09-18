@@ -90,7 +90,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 
 	
 	@Override
-	protected LoadResult prepare() throws IOException {
+    public LoadResult prepare() throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

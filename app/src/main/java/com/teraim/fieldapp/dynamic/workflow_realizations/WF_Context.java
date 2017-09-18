@@ -324,7 +324,7 @@ public class WF_Context {
 		Set<Rule> ret=new HashSet<Rule>();
 		boolean add;
 		for (Rule r:rules) {
-			add=(r.getTarget()==-1)||(executedBlocks.contains(r.getTarget()));
+			add=(r.getMyTargetBlockId()==-1)||(executedBlocks.contains(r.getMyTargetBlockId()));
 			if (add)
 				ret.add(r);
 		}

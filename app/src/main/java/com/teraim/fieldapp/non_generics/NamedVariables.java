@@ -6,6 +6,7 @@ public class NamedVariables {
 	public static final String RENSTIG = "Renstig";
 
 	//VARIABLER SOM OMNÄMNS
+	public static final String QR_RESULT = "QR_Result";
 	public static final String AVGRANSSLUT = "Avgränsning:avgransslut";
 	public static final String AVGRTYP = "Avgränsning:avgrtyp";
 	public static final String CentrumGPSNS = "CentrumGPSNS";
@@ -35,10 +36,7 @@ public class NamedVariables {
 		"fixpunkter:FixPunkt3:riktning","fixpunkter:FixPunkt4:avstand",
 		"fixpunkter:FixPunkt4:riktning"
 	};
-	
-	
-	
-	
+
 	public static final String CURRENT_METER = "Current_Meter";
 	public static final String CURRENT_DELYTA = "Current_Delyta";
 	public static final String CURRENT_SMAPROVYTA = "Current_Smaprovyta";

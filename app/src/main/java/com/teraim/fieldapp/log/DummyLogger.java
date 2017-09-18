@@ -77,8 +77,7 @@ public class DummyLogger implements LoggerI {
 		
 	}
 
-	@Override
-	public void removeTicky() {
+	private void removeTicky() {
 		// TODO Auto-generated method stub
 		
 	}

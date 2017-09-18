@@ -365,7 +365,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 											ok = r.execute();
 										} catch (SyntaxException e) {
 											o.addRow("");
-											o.addRedText("Rule "+r.id+" has syntax errors in condition: "+r.getCondition());
+											o.addRedText("Rule "+r.getId()+" has syntax errors in condition: "+r.getCondition());
 										}
 										if (ok!=null) {
 											Rule.Type type = r.getType();

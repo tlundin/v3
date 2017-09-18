@@ -428,37 +428,45 @@ public class VariableCache {
 
     public void invalidateOnKey(Map<String, String> keyChain, boolean exactMatch) {
         Log.d("nils", "invalidating all variables in Cache matching " + keyChain.toString() + " with exactMatch set to " + exactMatch);
-        if (exactMatch)
+        if (exactMatch) {
+            //invalidate all variables with the given key.
             this.refreshCache(keyChain);
+            //delete it from cache.
+            this.deleteCacheEntry(keyChain);
+        }
         else {
             for (Map<String, String> chain : newcache.keySet()) {
                 if (SubsetOf(keyChain, chain)) {
                     Log.d("vortex", "found subset chain " + chain.toString());
                     this.refreshCache(chain);
+                    this.deleteCacheEntry(chain);
+
                 }
             }
         }
     }
 
     //Delete all variables with the given hash with sync
-
+/*
     public void deleteAll(Map<String, String> keyChain) {
         Log.d("vortex","In delete all variables!");
         Map<String, Variable> varMap = newcache.remove(keyChain);
         if (varMap==null)
-            varMap = createAllVariablesForKey(keyChain);
+           ; //varMap = createAllVariablesForKey(keyChain);
         else {
             Log.d("vortex", "Already have cached!");
-        }
+
         if (varMap!=null && varMap.values()!=null && !varMap.values().isEmpty()) {
             for (Variable v : varMap.values()) {
                 Log.d("vortex", "deleting " + v.getLabel());
                 v.deleteValue();
             }
-        } else
-            Log.d("vortex","nothing to delete in Delete all");
+        }
 
     }
+*/
+
+
     //Find all variables in cache with a given keyhash that belongs to the given group.
     public List<Variable> findVariablesBelongingToGroup(Map<String, String> keyChain, String groupName) {
         Log.d("vortex", "In FindVariablesBelongingToGroup");

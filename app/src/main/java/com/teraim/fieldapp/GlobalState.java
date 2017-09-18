@@ -140,8 +140,8 @@ public class GlobalState  {
 
 		Log.d("fennox","my ID is "+getMyId());
 
-		imgMetaIsFile = imgMetaFormat!=null && "file".equalsIgnoreCase(imgMetaFormat);
-		
+		imgMetaIsFile = imgMetaFormat!=null && ("file".equalsIgnoreCase(imgMetaFormat)||"ini".equalsIgnoreCase(imgMetaFormat));
+		Log.d("yamma","imgMetaIsFile: "+imgMetaIsFile+" imgMetaFormat: "+imgMetaFormat);
 
 	}
 

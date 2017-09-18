@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -23,7 +24,7 @@ import com.teraim.fieldapp.non_generics.Constants;
  */
 public class BarcodeReader implements EventListener {
 
-    private final WF_Context myContext;
+    private WF_Context myContext;
     BarcodeDetector detector;
     Variable barCodeTarget;
 
@@ -35,40 +36,59 @@ public class BarcodeReader implements EventListener {
         barCodeTarget = GlobalState.getInstance().getVariableCache().getVariable(targetVariableName);
         barCodeTarget.setValue("");
         myContext.registerEvent(new WF_Event_OnSave("barcode"));
+    }
 
 
+    //Constructor when called from onActivityResult from outside the Vortex engine.
+    public BarcodeReader(Context ctx) {
+
+        detector =
+                new BarcodeDetector.Builder(ctx)
+                        .build();
     }
 
     @Override
     public void onEvent(Event event) {
         if (event.getType() == Event.EventType.onActivityResult) {
-            if(!detector.isOperational()){
-                barCodeTarget.setValue("Could not set up the detector!");
-                return;
-            }
-            Log.d("vortex", "barcode image is likely taken");
-            try {
-
-                BitmapFactory.Options option = new BitmapFactory.Options();
-                //option.inJustDecodeBounds = false;
-                option.inSampleSize = 4;
-                Bitmap myBitmap = BitmapFactory.decodeFile(Constants.PIC_ROOT_DIR + Constants.TEMP_BARCODE_IMG_NAME,option);
-                Frame frame = new Frame.Builder().setBitmap(myBitmap).build();
-                SparseArray<Barcode> barcodes = detector.detect(frame);
-                if (barcodes!=null) {
-                    Log.d("vortex","barcodes size: "+barcodes.size());
-                    if (barcodes.size()>0) {
-                        Log.d("vortex",barcodes.valueAt(0).displayValue);
-                        if (barCodeTarget != null)
-                            barCodeTarget.setValue(barcodes.valueAt(0).rawValue);
-                    } else
-                        barCodeTarget.setValue("No barcode found!");
-                    myContext.registerEvent(new WF_Event_OnSave("barcode"));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String code = analyze();
+            if (code==null)
+                code = "No barcode or error";
+            if (barCodeTarget != null) {
+                barCodeTarget.setValue(code);
+            } else
+                Log.e("vortex","cannot set result...barcode variable missing");
+            myContext.registerEvent(new WF_Event_OnSave("barcode"));
         }
+    }
+
+
+    public String analyze() {
+        if(!detector.isOperational()){
+            return null;
+        }
+        Log.d("vortex", "barcode image is likely taken");
+        try {
+
+            BitmapFactory.Options option = new BitmapFactory.Options();
+            //option.inJustDecodeBounds = false;
+            option.inSampleSize = 4;
+            Bitmap myBitmap = BitmapFactory.decodeFile(Constants.PIC_ROOT_DIR + Constants.TEMP_BARCODE_IMG_NAME,option);
+            Frame frame = new Frame.Builder().setBitmap(myBitmap).build();
+            SparseArray<Barcode> barcodes = detector.detect(frame);
+            if (barcodes!=null) {
+                Log.d("vortex","barcodes size: "+barcodes.size());
+                if (barcodes.size()>0) {
+                    Log.d("vortex",barcodes.valueAt(0).displayValue);
+                    return barcodes.valueAt(0).rawValue;
+
+                } else
+                    return null;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     /*
             //turn image on disk to bitmap.

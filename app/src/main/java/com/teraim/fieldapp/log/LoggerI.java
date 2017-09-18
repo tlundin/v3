@@ -19,7 +19,6 @@ public interface LoggerI {
 	 public void clear();
 	 public void addPurpleText(String string);
 	 public void writeTicky(String tickyText);
-	 public void removeTicky();
 	 public void removeLine();
 	 public boolean hasRed();
 

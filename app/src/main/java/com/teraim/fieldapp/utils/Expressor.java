@@ -1818,6 +1818,7 @@ public class Expressor {
 				case allHaveValue:
 
 					String function = getType().name();
+					Log.d("bortex","targetList is "+targetList);
 					if (checkPreconditions(evalArgs,-1,No_Null)) {
 
 						List<List<String>> rows;
@@ -1825,10 +1826,23 @@ public class Expressor {
 						String pattern = (String) evalArgs.get(0);
 						//Get all variables in Functional Group x.
 						Table table = al.getTable();
+
+
+						String column = (getType() == TokenType.hasSame)?VariableConfiguration.Col_Functional_Group:
+								VariableConfiguration.Col_Variable_Name;
+						if (targetList==null)
+							rows = al.getTable().getRowsContaining(column, pattern);
+						else {
+							rows = targetList;
+							Log.d("bortex","used targetlist for hasX!");
+						}
+
+						/*
 						if (getType() == TokenType.hasSame)
 							rows = table.getRowsContaining(VariableConfiguration.Col_Functional_Group, pattern);
 						else
 							rows = table.getRowsContaining(VariableConfiguration.Col_Variable_Name, pattern);
+						*/
 						if (rows == null || rows.size() == 0) {
 							Log.e("vortex", "no variables found for filter " + pattern);
 							return null;

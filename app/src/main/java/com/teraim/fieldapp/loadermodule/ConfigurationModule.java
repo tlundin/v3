@@ -25,7 +25,7 @@ public abstract class ConfigurationModule {
 		json,
 		xml,
 		csv,
-		raw
+		ini
 	}
 
 	public enum Source {
@@ -88,20 +88,21 @@ public abstract class ConfigurationModule {
 	//Freeze version number when load succesful
 	public void setLoaded(boolean loadStatus) {
 		IamLoaded=loadStatus;
-		isThawing=false;
+		setThawActive(false);
 	}
 
 
 	boolean isThawing = false;
 
-	private void setThawActive() {
-		isThawing=true;
+	public void setThawActive(boolean t) {
+		isThawing=t;
 	}
 	public boolean thawing() {
 		return isThawing;
 	}
 
 	public void setNotFound() {
+		isThawing=false;
 		notFound=true;
 	}
 
@@ -200,7 +201,7 @@ public abstract class ConfigurationModule {
 			return isDatabaseModule;
 	}
 
-	public LoadResult thaw() {
+	public LoadResult thawSynchronously() {
 
 		//A database module is by default saved already.
 		if (isDatabaseModule)
@@ -208,21 +209,23 @@ public abstract class ConfigurationModule {
 		else {
 			//Unthaw asynchronously
 			Object result = Tools.readObjectFromFile(this.frozenPath);
+			this.setThawActive(false);
 			setEssence(result);
 			return new LoadResult(this,result == null?ErrorCode.thawFailed:ErrorCode.thawed);
 		}
 
 	}
 
-	public void thaw(ModuleLoader caller) {
+	public boolean thaw(ModuleLoader caller) {
 
 		//A database module is by default saved already.
 		if (isDatabaseModule)
-			caller.onFileLoaded(new LoadResult(this,ErrorCode.thawed));
+			return true;
         else {
 			//Unthaw asynchronously
+			this.setThawActive(true);
 			Tools.readObjectFromFileAsync(this.frozenPath, this, caller);
-			this.setThawActive();
+			return false;
 		}
 
 	}

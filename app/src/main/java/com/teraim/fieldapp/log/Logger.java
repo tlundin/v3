@@ -39,6 +39,7 @@ public class Logger implements LoggerI {
 
 	public void addRow(String text) {
 		s = new SpannableString("\n"+text);
+		removeTicky();
 		myTxt.append(s);
 
 	}
@@ -49,6 +50,7 @@ public class Logger implements LoggerI {
 		}
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		removeTicky();
 		myTxt.append(s);
 		if (log!=null) log.setText(myTxt);
 		//Log.d("vortex","hasRed true for "+this.toString());
@@ -57,17 +59,20 @@ public class Logger implements LoggerI {
 	public void addGreenText(String text) {
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.GreenStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		removeTicky();
 		myTxt.append(s);
 		if (log!=null) log.setText(myTxt);
 	}
 	public void addYellowText(String text) {
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.YellowStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		removeTicky();
 		myTxt.append(s);
 		if (log!=null) log.setText(myTxt);
 	}
 	public void addText(String text) {
 		s = new SpannableString(text);
+		removeTicky();
 		myTxt.append(text);
 		if (log!=null) log.setText(myTxt);
 	}
@@ -103,6 +108,7 @@ public class Logger implements LoggerI {
 
 
 	public void clear() {
+		removeTicky();
 		myTxt.clear();
 		if (log!=null) log.setText(myTxt);
 	}
@@ -113,6 +119,7 @@ public class Logger implements LoggerI {
 	public void addPurpleText(String text) {
 		s = new SpannableString(text);
 		s.setSpan(new TextAppearanceSpan(myContext, R.style.PurpleStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		removeTicky();
 		myTxt.append(s);
 	}
 
@@ -120,7 +127,7 @@ public class Logger implements LoggerI {
 	String tickyIs = null;
 
 	@Override
-	public void writeTicky(String tickyText) {
+	public synchronized void writeTicky(String tickyText) {
 		if (tickyIs==null) {
 			myTxt.append(tickyText);
 		}
@@ -133,18 +140,21 @@ public class Logger implements LoggerI {
 		draw();
 	}
 
-	@Override
-	public void removeTicky() {
+	private void removeTicky() {
 		if (tickyIs!=null && myTxt.length()>=tickyIs.length()) {
 			myTxt=myTxt.delete(myTxt.length()-tickyIs.length(), myTxt.length());
 			tickyIs=null;
 		}
 	}
 
+
 	@Override
 	public void removeLine() {
-		if (s!=null && myTxt.length()>=s.length())
-			myTxt = myTxt.delete(myTxt.length()-s.length(),myTxt.length());
+		if (s!=null && myTxt.length()>=s.length()) {
+			myTxt = myTxt.delete(myTxt.length() - s.length(), myTxt.length());
+			tickyIs=null;
+		}
+
 	}
 
 	@Override

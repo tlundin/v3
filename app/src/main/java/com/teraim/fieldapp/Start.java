@@ -1,5 +1,6 @@
 package com.teraim.fieldapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
+import android.widget.Toast;
 
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.templates.LinjePortalTemplate;
@@ -39,6 +42,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
+import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
@@ -166,7 +170,7 @@ public class Start extends MenuActivity {
 	}
 
 
-	
+
 
 
 
@@ -370,10 +374,14 @@ public class Start extends MenuActivity {
 	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("vortex","IN ONACTIVITY RESULT");
+		Log.d("vortex","IN ONACTIVITY RESULT ");
+
+		Log.d("vortex","request code "+requestCode+" result code "+resultCode);
+
 		Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
-		if (f!=null && f instanceof Executor)
-			((Executor)f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start",EventType.onActivityResult));
+		if (f != null && f instanceof Executor)
+			((Executor) f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start", EventType.onActivityResult));
+
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -414,7 +422,7 @@ public class Start extends MenuActivity {
 			Fragment currentContentFrameFragment = getFragmentManager().findFragmentById(R.id.content_frame);
 			if (currentContentFrameFragment!=null && currentContentFrameFragment instanceof Executor) {
 
- 				final WF_Context wfCtx = ((Executor) currentContentFrameFragment).getCurrentContext();
+				final WF_Context wfCtx = ((Executor) currentContentFrameFragment).getCurrentContext();
 				Log.d("vortex", "current context: " + wfCtx.toString());
 				boolean map = false;
 

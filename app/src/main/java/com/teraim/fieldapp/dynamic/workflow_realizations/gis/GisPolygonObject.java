@@ -50,7 +50,7 @@ public class GisPolygonObject extends GisPathObject {
 			ret.put("Poly 1", new ArrayList<Location>());
 		else {
 		for (String poly:polys) {
-			Log.d("pulla","in poly with poly: ["+poly+"]");
+			//Log.d("pulla","in poly with poly: ["+poly+"]");
 			ret.put("Poly "+i, GisObject.createListOfLocations(poly, coordType));
 			
 			i++;

@@ -631,6 +631,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			touchedBag = currentCreateBag;
 			currentCreateBag=null;
 			touchedGop = newGisObj;
+			//throw away the current path and force redraw.
+			touchedGop.clearCache();
 			newGisObj=null;
 			//Log.d("vortex","Here touched is TG TB"+touchedGop.toString()+","+touchedBag.toString());
 			myMap.setVisibleAvstRikt(true,touchedGop);

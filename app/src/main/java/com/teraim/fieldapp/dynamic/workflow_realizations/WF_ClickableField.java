@@ -296,11 +296,13 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
         // SpannableString content = new SpannableString(headerT);
         // content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        inputContainer = new LinearLayout(context.getContext());
-        inputContainer.setOrientation(LinearLayout.VERTICAL);
-        inputContainer.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT, 1));
+        inputContainer = (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(
+                R.layout.input_container, null);
+       // inputContainer = new LinearLayout(context.getContext());
+       // inputContainer.setOrientation(LinearLayout.VERTICAL);
+       // inputContainer.setLayoutParams(new LinearLayout.LayoutParams(
+        //        LinearLayout.LayoutParams.MATCH_PARENT,
+        //        LinearLayout.LayoutParams.MATCH_PARENT, 1));
 
         // Empty all inputs and save.
         getWidget().setClickable(true);

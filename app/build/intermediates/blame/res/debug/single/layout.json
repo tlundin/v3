@@ -152,6 +152,10 @@
         "source": "C:\\Users\\Terje\\.android\\build-cache\\59537ed2e7ed907276e3a2236f163ae52d90fc5e\\output\\res\\layout\\mr_media_route_chooser_dialog.xml"
     },
     {
+        "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\input_container.xml",
+        "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\input_container.xml"
+    },
+    {
         "merged": "D:\\Terje\\Projects\\Vortex\\app\\build\\intermediates\\res\\merged\\debug\\layout\\template_foto.xml",
         "source": "D:\\Terje\\Projects\\Vortex\\app\\src\\main\\res\\layout\\template_foto.xml"
     },

@@ -69,7 +69,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private TextView appTxt;
 	private float oldV = -1;
 	private Activity mActivity;
-	private final static String InitialBundleName = "Helloworld";
+	private final static String InitialBundleName = "Vortex";
 
 
 	@Override

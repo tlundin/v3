@@ -384,7 +384,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 						while (pickerStatusVars.next()) {
 							String value = pickerStatusVars.getVariable().value;
 							String name = pickerStatusVars.getVariable().name;
-							Log.d("vortex","STATUSVAR: "+name+" value: "+value);
+							//Log.d("vortex","STATUSVAR: "+name+" value: "+value);
 							//Store status var name & value for per uuid.
 							if (statusVarM == null)
 								statusVarM = new HashMap<String, Pair<String, String>>();
@@ -449,7 +449,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							this.creator = storedVar1.creator;
 							if (myTypeS.equalsIgnoreCase(GisObjectType.Point.toString())) {
 								if (!dynamic) {
-									Log.d("vortex","adding "+this.getName());
+									//Log.d("vortex","adding "+this.getName());
 									myGisObjects.add(new StaticGisPoint(this, map1, new SweLocation(storedVar1.value), statusVarP.first, statusVarP.second));
 								}
 								else
@@ -459,7 +459,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType),statusVarP.first,statusVarP.second));
 
 							else if (myTypeS.equalsIgnoreCase(GisObjectType.Polygon.toString())) {
-								Log.d("vortex","Adding polygon");
+								//Log.d("vortex","Adding polygon");
 								myGisObjects.add(new GisPolygonObject(this,map1,storedVar1.value,coordType,statusVarP.first,statusVarP.second));
 							}
 						}
@@ -468,8 +468,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 					} while (pickerLocation1.next());
 					//Store timestamp for refresh calls.
 					lastCheckTimeStamp = thisCheck;
-					Log.d("vortex","Added "+myGisObjects.size()+" objects");
-
+					Log.d("vortex","Added "+myGisObjects.size()+" objects of type "+this.getName()==null?"null":this.getName());
 				}
 			}
 		} else

@@ -124,12 +124,14 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 	private LocationManager locationManager;
-	private boolean candMenuVisible=false;
+	private boolean candMenuVisible=false, initialized = false;
 
 
 	public GisImageView(Context context) {
 		super(context);
 		init(context);
+		//Initialize will become true after the call to "initialize" has ended.
+		initialized = false;
 	}
 
 	public GisImageView(Context context, AttributeSet attrs, int defStyle) {
@@ -256,7 +258,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private class IntBuffer {
 
-		private int[][] mBuffer = new int[500][2];
+		private int[][] mBuffer = new int[1500][2];
 		private int c=0;
 
 		public int[] getIntBuf() {
@@ -374,7 +376,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		//Remove any gis objects outside current viewport.
 		initializeAndSiftGisObjects();
+		initialized = true;
+	}
 
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 	public void editSelectedGop() {
@@ -406,7 +412,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			if (layer.getId().equals("Team")) {
 				Set<GisObject>teamMembers = findMyTeam();
 				if (teamMembers==null || teamMembers.isEmpty())
-					Log.e("bortex","fucki mc wartface");
+					Log.e("bortex","no team members found");
 				else {
 					Log.d("bortex", "found " + teamMembers.size()+" team members");
 					layer.addObjectBag("Team", teamMembers, false, this);

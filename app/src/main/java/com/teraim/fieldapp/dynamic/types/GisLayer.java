@@ -37,7 +37,7 @@ public class GisLayer {
 	private Map<String,Set<GisObject>> myObjects;
 	private boolean showLabels;
 	private Map<String, Set<GisFilter>> myFilters;
-	private boolean defaultVisible;
+	private boolean myVisibility;
 
 
 
@@ -48,10 +48,15 @@ public class GisLayer {
 		this.label = label;
 		this.hasWidget = hasWidget;
 		this.showLabels=showLabels;
-		Log.d("vortex","showlabels "+showLabels+" for gislayer "+label);
-		//If no user set value exist, use default.
-		//Else, set isvisible if stored value is 1.
-		defaultVisible = isVisible;
+		Log.d("zaza","Creating layer "+label+" with showlabels "+showLabels+" showgislayer "+isVisible+" layer name "+label);
+
+		//check if there is a persisted value for the layer visibility
+		int persistedVisibility = (GlobalState.getInstance()!=null?GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId()):-1);
+		if (persistedVisibility == -1)
+			myVisibility = isVisible;
+		else
+			//a value of 1 means the layer is visible. 0 invisible.
+			myVisibility = (persistedVisibility==1);
 
 	}
 
@@ -158,9 +163,9 @@ public class GisLayer {
 
 	public void setVisible(boolean isVisible) {
 
-		Log.d("vortex","SetVisible called with "+isVisible+" on "+this.getId()+" Obj: "+this.toString());
+		Log.d("vortex","SetVisible called with "+isVisible+" on "+this.getLabel()+" Obj: "+this.toString());
 		GlobalState.getInstance().getPreferences().put(PersistenceHelper.LAYER_VISIBILITY+getId(), isVisible?1:0);
-
+		this.myVisibility=isVisible;
 	}
 
 	/** Search for GisObject in all bags. 
@@ -181,6 +186,7 @@ public class GisLayer {
 	}
 
 	public void setShowLabels(boolean show) {
+		Log.d("zaza","Showlabels called with "+show+" for layer "+this.getLabel());
 		showLabels=show;
 	}
 
@@ -189,12 +195,8 @@ public class GisLayer {
 	}
 
 	public boolean isVisible() {
-		int v = (GlobalState.getInstance()!=null?GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId()):-1);
-		//Log.d("vortex","Layer "+getId()+" has visibility set to "+v+" default is "+defaultVisible);
-		if (v==-1)
-			return defaultVisible;
-		else
-			return v==1;
+		//Log.d("mama","Layer "+getId()+" has visibility set to "+myVisibility);
+		return myVisibility;
 
 	}
 

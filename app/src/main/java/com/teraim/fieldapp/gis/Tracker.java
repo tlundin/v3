@@ -226,6 +226,9 @@ public class Tracker extends Service implements LocationListener {
 				LoggerI o = GlobalState.getInstance().getLogger();
 				o.addRedText(sw.toString());
 				o.addRow("");
+				this.stopUsingGPS();
+				this.stopSelf();
+				return;
 			}
 		}
 	}

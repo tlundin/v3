@@ -102,7 +102,7 @@ public class DB_Context implements Serializable {
 							String[] kv = pair.split("=");
 
 							if (kv==null||kv.length<2) {
-								err = "Could not split context on equal sign (=) for context "+cContext;
+								err = "Context "+eContext+" cannot be evaluated, likely due to a missing variable value. Evaluation: "+cContext;
 								break;
 							} else {
 								String arg = kv[0].trim();

@@ -47,24 +47,15 @@ public class PassiveLogger implements LoggerI {
             hasRed = true;
             LocalBroadcastManager.getInstance(myContext).sendBroadcast(new Intent(MenuActivity.REDRAW));
         }
-        s = new SpannableString(text);
-        s.setSpan(new TextAppearanceSpan(myContext, R.style.RedStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        myTxt.append(s);
-        if (log!=null) log.setText(myTxt);
+        addText(text);
         //Log.d("vortex","hasRed true for "+this.toString());
         //Log.d("vortex",""+this.toString());
     }
     public void addGreenText(String text) {
-        s = new SpannableString(text);
-        s.setSpan(new TextAppearanceSpan(myContext, R.style.GreenStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        myTxt.append(s);
-        if (log!=null) log.setText(myTxt);
+       addText(text);
     }
     public void addYellowText(String text) {
-        s = new SpannableString(text);
-        s.setSpan(new TextAppearanceSpan(myContext, R.style.YellowStyle),0,s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        myTxt.append(s);
-        if (log!=null) log.setText(myTxt);
+        addText(text);
     }
     public void addText(String text) {
         s = new SpannableString(text);

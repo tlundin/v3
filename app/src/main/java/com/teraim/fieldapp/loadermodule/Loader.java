@@ -48,7 +48,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 
 	public static float getVersion(String h1,String h2) {
 
-
+		Log.d("spinn","Get version with h1:"+h1+" h2: "+h2);
 		String[] header = h1.split(",");
 
 		if (header!=null&&header.length>=2) {

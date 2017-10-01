@@ -72,15 +72,19 @@ public class ModuleLoader implements FileLoadedCb{
 				frontPageLog.draw();
 				Log.d("amazon", module.getLabel() + " :");
 				boolean forced = module.versionControl.equals("Forced");
+				boolean detaljerad = module.versionControl.startsWith("Det");
+				if (detaljerad)
+					Log.d("amazon","detaljerad: "+module.versionControl);
 				//Check if connection is slow. If so, use existing version IF versioncontrol is not set to "Always load".
 				if ((module.source == ConfigurationModule.Source.internet) &&
 						!Connectivity.isConnectedFast(ctx) &&
 						!forced) {
+					Log.d("pick","Gets here");
 
 					onFileLoaded(new LoadResult(module, ErrorCode.slowConnection));
 
 				} else {
-					if (majorVersionChange || forced) {
+					if (majorVersionChange || forced || detaljerad) {
 						Log.d("amazon","load");
 						module.load(this);
 					}

@@ -68,7 +68,7 @@ public abstract class ConfigurationModule {
 
 
 	public boolean frozenFileExists() {
-		return new File(frozenPath).isFile();
+		return new File(frozenPath).isFile() && (getFrozenVersion()!=-1);
 	}
 
 	public abstract float getFrozenVersion();

@@ -122,6 +122,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
         try {
 
             JsonToken tag = reader.peek();
+
             if (tag.equals(JsonToken.END_ARRAY)) {
                 //end array means we are done.
                 this.setEssence();
@@ -159,7 +160,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                     switch (nName) {
                         case "type":
                             //This type attribute is discarded
-                            //Log.d("murphy","hasType");
+                            Log.d("murphy","hasType");
                             this.getAttribute(reader);
                             featureF = true;
                             break;
@@ -172,7 +173,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                     attributes.put(name, this.getAttribute(reader));
                                 }
                             }
-                            //Log.d("vortex",attributes.toString());
+                            Log.d("vortex",attributes.toString());
                             //end attributes
                             reader.endObject();
                             String uuid = attributes.remove(GisConstants.FixedGid);
@@ -187,7 +188,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             }
                             else {
                                 generatedUID=true;
-                                //Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
+                                Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
 
                                 keyChain.put("uid", UUID.randomUUID().toString());
                                 attributes.put("GENERATEDUID","true");
@@ -220,7 +221,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             propF=true;
                             break;
                         case "geometry":
-                            //Log.d("murphy","hasGeo");
+                            Log.d("murphy","hasGeo");
                             geometryF = true;
                             //Coordinates.
                             reader.beginObject();
@@ -254,9 +255,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                 switch (nName) {
 
                                     case "type":
-                                        //Log.d("morphy","type matched");
+
                                         //This is the geotype, eg. "polygon"
                                         mType = this.getAttribute(reader);
+                                        Log.d("morphy","type matched: "+mType);
                                         geoTypeF = true;
                                         if (mType == null) {
                                             o.addRow("");
@@ -270,7 +272,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                         coordinatesF = true;
 
                                         //Always start with an array [
-                                        //Log.d("morphy", "bA1");
+                                        Log.d("morphy", "bA1");
                                         reader.beginArray();
                                         //If single point, next must be number.
                                         if (reader.peek() == JsonToken.NUMBER) {
@@ -282,11 +284,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                             //If multipoint or Linestring, next is a number.
                                             //[[->1,2,3],[...]]
 
-                                            //Log.d("morphy", "bA2");
+                                            Log.d("morphy", "bA2");
                                             reader.beginArray();
 
                                             if (reader.peek() == JsonToken.NUMBER) {
-                                                //Log.d("morphy", "linestring/multipoint");
+                                                Log.d("morphy", "linestring/multipoint");
                                                 myCoordinates = (readAllLocations(reader));
                                             } else {
                                                 int id = 1;
@@ -301,21 +303,21 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                                 if (reader.peek() == JsonToken.NUMBER) {
                                                     boolean stillMore = true;
                                                     while (stillMore) {
-                                                        //Log.d("murphy", "poly");
+                                                        Log.d("murphy", "poly");
                                                         polygonSet.put(id + "", readAllLocations(reader));
                                                         id++;
                                                         reader.endArray();
                                                         if  (reader.peek() != JsonToken.BEGIN_ARRAY) {
                                                             stillMore=false;
                                                         } else {
-                                                            //Log.d("murphy","found another poly");
+                                                            Log.d("murphy","found another poly");
                                                             reader.beginArray();
                                                         }
 
                                                     }
                                                 } else {
                                                     //Multipolygon - Array of polygon arrays.
-                                                    //Log.d("morphy", "bA4");
+                                                    Log.d("morphy", "bA4");
                                                     reader.beginArray();
                                                     if (reader.peek() == JsonToken.NUMBER) {
                                                         boolean stillMore = true;
@@ -328,10 +330,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                                             if  (reader.peek() != JsonToken.BEGIN_ARRAY) {
                                                                 stillMore=false;
                                                             } else {
-                                                                //Log.d("murphy","found another multi or another poly.");
+                                                                Log.d("murphy","found another multi or another poly.");
                                                                 reader.beginArray();
                                                                 if (reader.peek() == JsonToken.BEGIN_ARRAY) {
-                                                                   // Log.d("murphy","found another multi");
+                                                                    Log.d("murphy","found another multi");
                                                                     reader.beginArray();
                                                                 }
 
@@ -355,7 +357,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
                                     default:
-                                        //Log.d("vortex","in default...not good: "+reader.peek()+"::::"+reader.toString());
+                                        Log.d("vortex","in default...not good: "+reader.peek()+"::::"+reader.toString());
                                         List<String> skippies = new ArrayList<>();
                                         while (reader.hasNext()) {
                                             String skipped = this.getAttribute(reader);
@@ -371,10 +373,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                             for (String skip : skippies) {
                                                 o.addCriticalText(skip);
                                             }
+                                            Log.d("vortex","Skipped " + skippies.size() + " attributes in file " + getFileName() + ":");
 
                                         }
 
-                                        //Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
+                                        Log.d("vortex","nasdaq "+reader+"PEEK: "+reader.peek());
                                         break;
 
 
@@ -384,13 +387,18 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             }
 
                             //now we have type and coordinates.
+
                             switch (mType) {
+                                case GisConstants.LINE_STRING:
                                 case GisConstants.MULTI_POINT:
                                     Log.d("morphy","multip");
-                                    if (!polygonSet.isEmpty())
+                                    if (myCoordinates!=null && !myCoordinates.isEmpty())
                                         myGisObjects.add(new GisObject(keyChain, myCoordinates, attributes));
                                     else {
-                                        Log.e("vortex", "No coordinates inside multipoint in " + myType + "!");
+                                        o.addRow("");
+                                        o.addRedText("missing coordinates for Linestring/multipoint in "+getFileName());
+                                        Log.e("vortex", "No coordinates for multipoint in " + myType + "!");
+
                                     }
 
                                     break;
@@ -403,6 +411,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                     //Log.d("morphy","multi");
                                     myGisObjects.add(new GisPolygonObject(keyChain, polygonSet, attributes));
                                     break;
+                                default:
+                                    o.addRow("");
+                                    o.addRedText("Unrecognized gis type: "+mType+" in "+getFileName());
+                                    Log.e("bebox","unrecognized type: "+mType);
+                                    break;
+
                             }
                             //Log.d("morphy","PEEK: "+reader.peek());
                             //Log.d("morphy",reader.toString());
@@ -477,7 +491,11 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     @Override
     public boolean freeze(int counter) throws IOException {
 
-
+        if (counter==-1 || myGisObjects==null || myGisObjects.isEmpty()) {
+            Log.d("vortex","nothing to freeze!");
+            newVersion=-1;
+            return false;
+        }
         if (firstCall) {
             missingVariables=new HashSet<String>();
 

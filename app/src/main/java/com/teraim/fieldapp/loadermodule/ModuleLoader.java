@@ -3,19 +3,24 @@ package com.teraim.fieldapp.loadermodule;
 import java.util.List;
 import java.util.Objects;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.util.Log;
 
 import com.teraim.fieldapp.FileLoadedCb;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.log.PassiveLogger;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import static com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode.Unsupported;
 
 public class ModuleLoader implements FileLoadedCb{
 	private final LoggerI frontPageLog;
@@ -219,25 +224,40 @@ public class ModuleLoader implements FileLoadedCb{
 					case notFound:
 					case noData:
 					case slowConnection:
-
+						printError(res);
+						if (module.isRequired() && res.errCode == Unsupported) {
+							new AlertDialog.Builder(ModuleLoader.this.ctx).setTitle("Warning!")
+									.setMessage("The FieldPad version you have installed is not capable of running this version of the App! The required FieldPad version is "+res.errorMessage+". Fieldpad will use an older version of the XML if it exists, but this may lead to errors. Please upgrade as soon as possible" )
+									.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+										}})
+									.setCancelable(false)
+									.setIcon(android.R.drawable.ic_dialog_alert)
+									.show();
+						}
 						if (module.isRequired() && !module.frozenFileExists()) {
 							o.addRedText(" !");
 							o.addText(res.errCode.name());
 							o.addRedText("!");
-							frontPageLog.writeTicky("Upstart aborted..Unable to load [" + module.getFileName() + "]");
+
+							frontPageLog.writeTicky("Upstart aborted. Unable to load [" + module.getFileName() + "]");
 							//printError(res);
 
 							//Need to enable the settings menu.
 							caller.loadFail(loaderId);
 							return;
 						}
-						printError(res);
+
+
 						if (module.frozenFileExists()) {
 							//continue immediately on true = already thawed.
 							Log.d("vortex","frozen exists. ");
 							o.addRow("");
-							o.addYellowText("Using current: " + module.getFrozenVersion());
+							o.addYellowText("Using current: " );
+
+
 							if (module.thaw(this)) {
+
 								onFileLoaded(new LoadResult(module, ErrorCode.thawed));
 								return;
 							}
@@ -319,9 +339,9 @@ public class ModuleLoader implements FileLoadedCb{
 				else
 					o.addRow("File not found (Network error)");
 			}
-		} else if (errCode==ErrorCode.Unsupported) {
+		} else if (errCode== Unsupported) {
 			o.addRow("");
-			o.addRedText("The version of FieldPad you use cannot run this App. Min version required: "+res.errorMessage+". ");
+			o.addRedText("The version of FieldPad you use cannot run the latest bundle! Min version required is: "+res.errorMessage+".");
 		} else if (errCode==ErrorCode.ParseError) {
 			o.addRow("");
 			o.addRedText("Error. Please check log for details");

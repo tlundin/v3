@@ -2,8 +2,8 @@ package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
 public class GisConstants {
 	public final static String POINT = "Point";
-	public static final String MULTI_POINT = "Multipoint";
-	public static final String LINE_STRING = "Linestring";
+	public static final String MULTI_POINT = "MultiPoint";
+	public static final String LINE_STRING = "LineString";
 	public static final String POLYGON = "Polygon";
 	public static final String FixedGid = "FIXEDGID";
 	public static final String GlobalGid= "GlobalID";

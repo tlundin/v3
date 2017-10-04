@@ -437,9 +437,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					loginConsole.addRow("Backing up data");
 					gs.getBackupManager().backUp();
 				}
-				loginConsole.clear();
-				loginConsole.addRow(getString(R.string.done_loading));
-				loginConsole.draw();
+				if(isAdded()) {
+					loginConsole.clear();
+					loginConsole.addRow(getString(R.string.done_loading));
+					loginConsole.draw();
+				}
 				start(gs);
 
 			} else {
@@ -496,8 +498,10 @@ private void start(GlobalState gs) {
 
 		GlobalState.getInstance().onStart();
 	} else {
-		loginConsole.addRow("");
-		loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
+		if(isAdded()) {
+			loginConsole.addRow("");
+			loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
+		}
 	}
 
 

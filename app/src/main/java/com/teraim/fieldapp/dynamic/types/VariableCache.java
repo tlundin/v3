@@ -101,7 +101,7 @@ public class VariableCache {
         if (ret == null) {
             if (myKeyHash != null) {
 
-                Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
+                //Log.d("vortex", "Creating Cache for " + myKeyHash + " hash: " + myKeyHash.hashCode());
                 copy = copyKeyHash(myKeyHash);
 
             }

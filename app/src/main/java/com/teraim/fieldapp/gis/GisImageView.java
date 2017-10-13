@@ -638,7 +638,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			currentCreateBag=null;
 			touchedGop = newGisObj;
 			//throw away the current path and force redraw.
-			touchedGop.clearCache();
+			if (touchedGop instanceof GisPathObject)
+				touchedGop.clearCache();
 			newGisObj=null;
 			//Log.d("vortex","Here touched is TG TB"+touchedGop.toString()+","+touchedBag.toString());
 			myMap.setVisibleAvstRikt(true,touchedGop);
@@ -698,10 +699,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						//Log.d("vortex","bag "+key+" has "+bagOfObjects.size()+" members");
 						while (iterator.hasNext()) {
 							GisObject go = iterator.next();
-							//Log.d("bortex","Checking "+go.getLabel()+" id: "+go.getId()+ "object: "+((Object)go.toString()));
+							//Log.d("bortex","Checking "+go.getLabel()+" id: "+go.getId()+ "type: "+go.getClass().getCanonicalName());
 							//If not inside map, or if touched, skip.
 							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus())) {
-	//							Log.d("bortex",go.getLabel()+" is thown. useful?" + go.isUseful());
+								//Log.d("bortex",go.getLabel()+" is thown. useful?" + go.isUseful());
 								continue;
 							}
 							if (go instanceof GisPointObject) {

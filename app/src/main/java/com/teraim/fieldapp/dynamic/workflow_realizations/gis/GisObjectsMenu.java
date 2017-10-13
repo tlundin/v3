@@ -238,7 +238,7 @@ public class GisObjectsMenu extends View {
 		// and calls the onClick() listener on the view, if any
 		super.performClick();
 
-		Log.e("vortex","Gets here!");
+		Log.e("vortex","In performclick, GisObjectsMenu");
 
 		return true;
 	}
@@ -282,7 +282,12 @@ public class GisObjectsMenu extends View {
 		myGis=gis;
 		myMap=map;
 		if (myMenuItems!=null && !myMenuItems.keySet().isEmpty()) {
-			String firstEntry = myMenuItems.keySet().iterator().next();
+			//Last entry is first in tab order
+			String firstEntry=null;
+			for (String key:myMenuItems.keySet()) {
+				firstEntry=key;
+			}
+			//String firstEntry = myMenuItems.keySet().iterator().next();
 			currentPalette= userSelectedPalette==null?firstEntry:userSelectedPalette;
 			//Make sure userSelectedPalette is not from previous collection.
 			if (!myMenuItems.keySet().contains(currentPalette))
@@ -370,7 +375,7 @@ public class GisObjectsMenu extends View {
 					tabButtonArray.add(new TabButton(textOnButton, tabButtonRect, fullRect,textBounds.exactCenterY(),tabText));
 				}
 				//If it fails, try again, this time with aggressive length setting.
-				//Log.d("vorr","Aggressive: "+aggresive+" totalWidth: "+totalWidth+" w: "+w);
+				//Log.d("vorr","Aggressive: "+aggressive+" totalWidth: "+totalWidth+" w: "+w);
 				if (aggressive)
 					break;
 				else
@@ -392,11 +397,12 @@ public class GisObjectsMenu extends View {
 			Iterator<FullGisObjectConfiguration> it = itemSet.iterator();
 
 			menuHeaderArray[i++] = type.name();
+			//
 			while (it.hasNext()) {
 				//Left padding + numer of buttons + number of spaces in between.
 				FullGisObjectConfiguration fop = it.next();
 				int left = col * ColW + PaddingX;
-				int top = row * RowH + totalHeaderHeight+ tabRowHeight + PaddingY + (int)headerTextP.getTextSize()+5*scale;
+				int top = row * (RowH-15*scale) + totalHeaderHeight+ tabRowHeight+PaddingY+PaddingX/2;//+5*scale;
 				RectF r = new RectF(left, top, left + buttonWidth, top + buttonWidth);
 				menuButtonArray[col][row] = new MenuButton(fop, r);
 				col++;

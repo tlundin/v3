@@ -411,11 +411,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                     //Log.d("morphy","multi");
                                     myGisObjects.add(new GisPolygonObject(keyChain, polygonSet, attributes));
                                     break;
-                                default:
+                                /*default:
                                     o.addRow("");
                                     o.addRedText("Unrecognized gis type: "+mType+" in "+getFileName());
                                     Log.e("bebox","unrecognized type: "+mType);
                                     break;
+                                    */
 
                             }
                             //Log.d("morphy","PEEK: "+reader.peek());

@@ -69,7 +69,7 @@ public class Geomatte {
 		double length = 0;
 		
 		for (int i = 0 ; i < myDots.size()-1; i++) {
-			Log.d("vortex","mydots: "+myDots.get(i)+","+myDots.get(i+1));
+			//Log.d("vortex","mydots: "+myDots.get(i)+","+myDots.get(i+1));
 			length += sweDist(myDots.get(i),myDots.get(i+1));
 		}
 		return length;

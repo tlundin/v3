@@ -640,7 +640,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
             LinearLayout ll = getFieldLayout();
             w = opt!=null ? new OutSpin(ll, opt, val) : new OutC(ll, format);
             myOutputFields.put(var, w);
-            outputContainer.addView(ll);
+            outputContainer.addView(ll,0);
             //Log.d("franco","Added viewz "+var.getLabel()+" with width: "+ll.getWidth());
             // refreshInputFields();
             refreshOutputField(var, w);

@@ -257,6 +257,7 @@ public class ConfigMenu extends PreferenceActivity {
 								public void onClick(DialogInterface dialog, int which) {
 									String bundleName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
 									if (bundleName != null && !bundleName.isEmpty()) {
+										Log.d("vortex","Erasing cache for "+bundleName);
 										int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
 										Toast.makeText(getActivity(),n+" "+getResources().getString(R.string.reset_cache_toast),Toast.LENGTH_LONG).show();
 										askForRestart();

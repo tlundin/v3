@@ -2208,7 +2208,7 @@ containing a value of this type.
         public static final int end=0x7f0e0016;
         public static final int end_padder=0x7f0e00ea;
         public static final int entryRoot=0x7f0e0074;
-        public static final int entryfield=0x7f0e014b;
+        public static final int entryfield=0x7f0e014d;
         public static final int expand_activities_button=0x7f0e0044;
         public static final int expanded_menu=0x7f0e0054;
         public static final int extendedDescr=0x7f0e007c;
@@ -2218,8 +2218,10 @@ containing a value of this type.
         public static final int fieldList=0x7f0e0119;
         public static final int fieldListB=0x7f0e0130;
         public static final int fieldListL=0x7f0e013f;
+        public static final int fieldPanelBottom=0x7f0e014c;
         public static final int fieldPanelLeft=0x7f0e0149;
         public static final int fieldPanelRight=0x7f0e014a;
+        public static final int fieldPanelTop=0x7f0e014b;
         public static final int fieldpad=0x7f0e008f;
         public static final int fieldpad_version=0x7f0e0090;
         public static final int filterName=0x7f0e008a;
@@ -2283,11 +2285,11 @@ containing a value of this type.
         public static final int media_route_volume_layout=0x7f0e00d6;
         public static final int media_route_volume_slider=0x7f0e00d7;
         public static final int menuB=0x7f0e009d;
-        public static final int menu_continue=0x7f0e0150;
-        public static final int menu_delete=0x7f0e014e;
-        public static final int menu_goto=0x7f0e0151;
-        public static final int menu_info=0x7f0e014f;
-        public static final int menu_se_stor=0x7f0e014d;
+        public static final int menu_continue=0x7f0e0152;
+        public static final int menu_delete=0x7f0e0150;
+        public static final int menu_goto=0x7f0e0153;
+        public static final int menu_info=0x7f0e0151;
+        public static final int menu_se_stor=0x7f0e014f;
         public static final int middle=0x7f0e0017;
         public static final int minusB=0x7f0e00a1;
         public static final int mmenuL=0x7f0e00bc;
@@ -2406,7 +2408,7 @@ containing a value of this type.
         public static final int textView2=0x7f0e007d;
         public static final int textView3=0x7f0e007e;
         public static final int textView6=0x7f0e0109;
-        public static final int text_block=0x7f0e014c;
+        public static final int text_block=0x7f0e014e;
         public static final int text_wrapper=0x7f0e00d4;
         public static final int time=0x7f0e00e4;
         public static final int title=0x7f0e0049;
@@ -2543,10 +2545,11 @@ containing a value of this type.
         public static final int template_tag=0x7f03006a;
         public static final int template_tag_ny=0x7f03006b;
         public static final int template_two_columns=0x7f03006c;
-        public static final int template_wf_default=0x7f03006d;
-        public static final int template_wf_default_no_scroll=0x7f03006e;
-        public static final int text_block=0x7f03006f;
-        public static final int toggle_button=0x7f030070;
+        public static final int template_two_panels=0x7f03006d;
+        public static final int template_wf_default=0x7f03006e;
+        public static final int template_wf_default_no_scroll=0x7f03006f;
+        public static final int text_block=0x7f030070;
+        public static final int toggle_button=0x7f030071;
     }
     public static final class menu {
         public static final int foto_deletemenu=0x7f0f0000;

@@ -273,7 +273,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 
 		params.gravity=Gravity.CENTER_HORIZONTAL|Gravity.TOP;
-		params.topMargin=150;
+		params.topMargin=100;
 
 		gisObjectsPopUp.setLayoutParams(params);
 		layersPopup.setLayoutParams(params);

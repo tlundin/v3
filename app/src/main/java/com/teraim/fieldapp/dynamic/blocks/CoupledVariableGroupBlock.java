@@ -15,11 +15,15 @@ import com.teraim.fieldapp.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import android.os.Handler;
+import android.widget.SeekBar;
 
 /**
  * Created by Terje on 2016-07-08.
@@ -152,14 +156,34 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     int currentSum = 0;
 
 
+    Handler handler =null;
+    public void resetCounter() {
+        if (handler!=null) {
+            handler.removeCallbacksAndMessages(null);
+            active=false;
+        }
+    }
+
+
+    private class Range {
+
+        public Range(int min, int max) {
+            this.min=min;
+            this.max=max;
+        }
+        int min,max;
+
+        public boolean outsideRange(int sumToReach) {
+            Log.d("bob","SumtoReach "+sumToReach+" min:"+min+" max: "+max);
+            return sumToReach>max || sumToReach<min;
+        }
+    }
 
     //spawn a thread that calibrates group towards approved value.
     private void calibrateMe(final List<WF_ClickableField_Slider> sliders, final int sumToReach) {
 
 
-        int  totalMin = 0;
-        int totalMax = 0;
-        final List<WF_ClickableField_Slider> slidersToCalibrate;//=new ArrayList<>();
+        Range allSlidersTogether = null;
 
         if (sliders==null || sliders.isEmpty())
             return;
@@ -173,43 +197,78 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
 
         Set<WF_ClickableField_Slider> min=null,max=null;
-        for (WF_ClickableField_Slider slider:sliders) {
-            totalMin += slider.getMin();
-            totalMax += slider.getMax();
-            if (slider.getPosition()==slider.getMin()) {
-                if (min == null)
-                    min = new HashSet<>();
-                min.add(slider);
+        //try to leave touched sliders still if possible. if not, try a second time with all sliders.
+
+        boolean done = false;
+        min = new HashSet<>();
+        max = new HashSet<>();
+
+        //Try first with as many sliders fixed as possible.
+        boolean touchedFixed=true, minFixed=functionIsStickyLimits() || functionIsStickyLimitsMin(),
+                maxFixed = functionIsStickyLimits() || functionIsStickyLimitsMax();
+        if (touchedSliders!=null)
+            Log.d("rabba","touchedsliders has  "+touchedSliders.size()+" elements");
+        allSlidersTogether = calculateRange(sliders, touchedSliders, touchedFixed,minFixed,maxFixed);
+        WF_ClickableField_Slider last = null;
+
+        if (allSlidersTogether.outsideRange(sumToReach)) {
+            Log.d("vortex", "cannot reach sum...try to give back all but last slider");
+            if (touchedSliders!=null&&!touchedSliders.isEmpty()) {
+                Iterator<WF_ClickableField_Slider> it = touchedSliders.iterator();
+
+                while (it.hasNext())
+                    last = it.next();
+                Set<WF_ClickableField_Slider> onlyLast = new HashSet<>();
+                onlyLast.add(last);
+                allSlidersTogether = calculateRange(sliders, onlyLast, true, minFixed, maxFixed);
             }
-            if (slider.getPosition()==slider.getMax()) {
-                if (max == null)
-                    max = new HashSet<>();
-                max.add(slider);
+            if (allSlidersTogether.outsideRange(sumToReach)) {
+                last = null;
+                Log.d("vortex", "cannot reach sum...try to give back all touched");
+                touchedFixed=false;
+                allSlidersTogether = calculateRange(sliders, null, false,minFixed,maxFixed);
+                if (allSlidersTogether.outsideRange(sumToReach)) {
+                    Log.d("vortex", "cannot reach sum...try to give back all min max");
+                    //Still outside?, try without fixing minmax
+                    minFixed=false;
+                    maxFixed=false;
+                    allSlidersTogether = calculateRange(sliders, null, false,false,false);
+                }
             }
         }
 
-        //Remove min max sliders.
-
-        if (functionIsSticky()) {
-            slidersToCalibrate = new ArrayList<>(sliders);
-            if (min != null && (functionIsStickyLimits()||functionIsStickyLimitsMin()))
-                slidersToCalibrate.removeAll(min);
-            if (max != null && (functionIsStickyLimits()||functionIsStickyLimitsMax()))
-                slidersToCalibrate.removeAll(max);
-        } else
-
-            slidersToCalibrate=sliders;
 
 
+        //if still outside we cannot reach and we have an error.
+        boolean isOutside = allSlidersTogether.outsideRange(sumToReach);
 
-        if (sumToReach>totalMax || sumToReach < totalMin) {
-            Log.d("vortex","over Max or below min: "+sumToReach+", "+totalMin+" , "+totalMax);
+        if (isOutside) {
+            Log.d("vortex","over Max or below min: "+sumToReach+", "+allSlidersTogether.min
+                    +" , "+allSlidersTogether.max);
             o = GlobalState.getInstance().getLogger();
             o.addRow("");
-            o.addRedText("Argument to SUM in SliderGroup "+getName()+" is either too high or too low: "+argument+". Max allowed is: "+totalMax+" Min allowed is "+totalMin);
+            o.addRedText("Argument to SUM in SliderGroup "+getName()+" is not possible to reach: "+sumToReach+". Outside the range: "+allSlidersTogether.min+" - "+allSlidersTogether.max);
             return;
         }
+        final List<WF_ClickableField_Slider> slidersToCalibrate= new LinkedList<>(sliders);
+        //Remove sliders that are static.
+        if (last!=null) {
+            slidersToCalibrate.remove(last);
+        } else if (touchedFixed &&touchedSliders!=null && !touchedSliders.isEmpty()) {
+            slidersToCalibrate.removeAll(touchedSliders);
+
+        }
+
+        if (minFixed || maxFixed) {
+            for(WF_ClickableField_Slider slider:sliders) {
+                if ((minFixed && slider.getPosition() == slider.getMin()) ||
+                        (maxFixed && slider.getPosition() == slider.getMax()))
+                    slidersToCalibrate.remove(slider);
+            }
+        }
+
         Log.d("vortex","SUM TO REACH: "+sumToReach);
+        Log.d("blabb","sl "+sliders.size()+" touch "+(touchedSliders==null?"null":touchedSliders.size())+" min "+(min==null?"null":min.size())+" max "+(max==null?"null":max.size()));
         currentSum = 0;
 
         for (WF_ClickableField_Slider slider:sliders) {
@@ -223,56 +282,77 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         Log.d("currentsum","Currentsum initial is: "+currentSum);
         Log.d("vortex","number of sliders:" +slidersToCalibrate.size());
 
+        if (slidersToCalibrate.size()>0) {
 
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable(){
-            public void run() {
-                if (currentSum!=sumToReach) {
-                    //Check if any change.
-                    int anyChange=0;
-                    int oldSum = currentSum;
-                    Log.d("currentsum","Currentsum is: "+currentSum+" Min: "+functionIsMinSum()+" Max: "+functionIsMaxSum()+" SL: "+functionIsStickyLimits()+" SUM: "+functionIsSum()+" STICKY: "+functionIsSticky()+" sum to reach: "+sumToReach);
 
-                    for (WF_ClickableField_Slider slider:slidersToCalibrate) {
+            handler = new Handler();
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    if (currentSum != sumToReach) {
+                        //Check if any change.
+                        int anyChange = 0;
+                        int oldSum = currentSum;
+                        Log.d("currentsum", "Currentsum is: " + currentSum + " Min: " + functionIsMinSum() + " Max: " + functionIsMaxSum() + " SL: " + functionIsStickyLimits() + " SUM: " + functionIsSum() + " STICKY: " + functionIsSticky() + " sum to reach: " + sumToReach);
+                        Log.d("currentsum", "sliderstocalibrate has "+slidersToCalibrate.size()+" members");
+                        int remainingDifference = 0;
+                        for (WF_ClickableField_Slider slider : slidersToCalibrate) {
+                            remainingDifference = sumToReach-currentSum;
 
-                        if ((functionIsSum() || functionIsMinSum() || functionIsSticky()) && currentSum < sumToReach) {
-                            if (!slider.wasDecreasedLastTime())
-                                increaseSlider(slider);
+                            if (remainingDifference > 0 ) {
+                                increaseSlider(slider,remainingDifference);
 
-                        } else if ((functionIsSum() || functionIsMaxSum() || functionIsSticky()) && currentSum > sumToReach) {
-//                            Log.d("vortex","gets here: x n m"+functionIsMaxSum()+","+functionIsSum()+","+functionIsMinSum());
-                            if (!slider.wasIncreasedLastTime())
-                                decreaseSlider(slider);
+                            } else if (remainingDifference < 0 ) {
+                                decreaseSlider(slider,currentSum-sumToReach);
+                            }
+
                         }
 
-                    }
-                   /* if (oldSum==currentSum) {
-                        Log.d("vortex","SUM not changed in group "+groupName);
-                        Log.d("vortex","currentSum: "+currentSum+" sumtoreach: "+sumToReach);
+                        handler.postDelayed(this, 25);
+                        Log.d("vortex", "Current sum is: " + currentSum);
+                    } else {
+                        Log.d("vortex", "Sliders are calibrated.update variables.");
                         updateSliderVariables(slidersToCalibrate);
+                        if (touchedSliders!=null)
+                            touchedSliders.clear();
                         active = false;
-                    } else
-                    */
-                        handler.postDelayed(this,0);
-                    Log.d("vortex","Current sum is: "+currentSum);
-                } else {
-                    Log.d("vortex","Sliders are calibrated.update variables.");
-                    updateSliderVariables(slidersToCalibrate);
-                    active = false;
+                    }
                 }
-            }
-
-
 
 
             };
 
-       if (slidersToCalibrate.size()>0)
-            handler.postDelayed(runnable,delay);
-        else
-           Log.d("vortex","No sliders to calibrate");
+            handler.postDelayed(runnable, delay);
+        }
+        else {
+            active = false;
+            Log.d("vortex", "No sliders to calibrate");
+        }
 
 
+    }
+
+    //calculate the possible min to max range with current settings
+    private Range calculateRange(List<WF_ClickableField_Slider> sliders, Set<WF_ClickableField_Slider> touchedSliders, boolean touchedFixed,boolean minFixed, boolean maxFixed) {
+        int totalMin=0,totalMax=0;
+        for (WF_ClickableField_Slider slider:sliders) {
+            //check if slider is locked or variable. If variable, use the min max values. if static, use current.
+            if (
+                    (touchedSliders!=null && touchedSliders.contains(slider) && touchedFixed) ||
+                            (minFixed && slider.getPosition() == slider.getMin()) ||
+                            (maxFixed && slider.getPosition() == slider.getMax()))
+
+            {
+                totalMin += slider.getSliderValue();
+                totalMax += slider.getSliderValue();
+            } else {
+                totalMin += slider.getMin();
+                totalMax += slider.getMax();
+            }
+
+
+        }
+
+        return new Range(totalMin,totalMax);
     }
 
     private boolean functionIsSum() {
@@ -302,13 +382,13 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     }
     private void updateSliderVariables(List<WF_ClickableField_Slider> sliders) {
         for (WF_ClickableField_Slider slider:sliders) {
-           slider.setValueFromSlider();
+            slider.setValueFromSlider();
         }
     }
 
     final static Random r = new Random();
 
-    private void increaseSlider(WF_ClickableField_Slider slider) {
+    private void increaseSlider(WF_ClickableField_Slider slider, int remainingDifference) {
         int curr = slider.getPosition();
         int increase = calc(curr, slider.getMin(),slider.getMax());
 
@@ -316,61 +396,62 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
             Log.e("vortex","fecckoo");
             increase = 1;
         }
-       // Log.d("vortex","INC: "+increase);
-        curr += increase;
-        if (curr<=slider.getMax()) {
 
+        if (increase>remainingDifference)
+            increase=remainingDifference;
+        // Log.d("vortex","INC: "+increase);
+
+        if ((curr+increase)<=slider.getMax()) {
+            Log.d("change","INCREASE SLIDER: "+slider.getName()+" OLD: "+curr+" NEW: "+(curr+increase));
             currentSum+=increase;
-            slider.setPosition(curr);
+            slider.setPosition(curr+increase);
             slider.wasIncreased();
-         //   Log.d("vortex","currsum: "+currentSum);
+            //   Log.d("vortex","currsum: "+currentSum);
         } else
             Log.d("vortex",slider.getId()+" is over max in increase: "+slider.getPosition());
     }
 
-    private void decreaseSlider(WF_ClickableField_Slider slider) {
+    private void decreaseSlider(WF_ClickableField_Slider slider, int remainingDifference) {
         int curr = slider.getPosition();
         int decrease = calc(curr, slider.getMin(),slider.getMax());
         if (decrease==0 && r.nextBoolean()) {
             decrease=1;
         }
+        if (decrease>remainingDifference)
+            decrease=remainingDifference;
 
-        curr -= decrease;
-        if (curr>=slider.getMin()) {
 
+        if ((curr-decrease)>=slider.getMin()) {
             currentSum-=decrease;
-            slider.setPosition(curr);
+            slider.setPosition(curr-decrease);
             slider.wasDecreased();
+            Log.d("change","DECREASE SLIDER: "+slider.getName()+" OLD: "+curr+" NEW: "+(curr-decrease));
         } else
-            Log.d("vortex",slider.getId()+" is below min in decrease: "+slider.getPosition());
+            Log.d("vortex",slider.getName()+" is below min in increase: "+slider.getPosition());
+
+
+
     }
 
 
     private int calc(float x, int min, int max) {
-        Log.d("vortex","x: "+x+" min: "+min+" max: "+max);
-        float midP = (max-min)/2; //50
-        float maxChange = 8;
-        //reverse if > mid.
-        if (x>midP)
-            x = max-x;  //22
-        //interval is 0..intervalMax
-        float intervalMax = func(midP);  //2500
-
-        //segment size is intervalMax/maxChange
-        float seg = intervalMax/maxChange; //500
-        //change is f(x)/segment
-        int change = Math.round(func(x)/seg);//
-        Log.d("vortex","change is : "+change);
-
-        return change;
-
+       return 2;
     }
 
 
- //   private float func(float x) {
- //       return (float) Math.pow(x,2);
- //   }
-    private float func(float x) {
-        return (float) x;
+
+
+    //removes a slider and subtracts its current value from the target to reach.
+    //This is done when the user has touched a slider. The touched slider should no longer be adjusted.
+
+    Set<WF_ClickableField_Slider> touchedSliders=null;
+    public void removeSliderFromCalibration(WF_ClickableField_Slider slider) {
+        if (slider==null)
+            return;
+        if (touchedSliders==null)
+            touchedSliders=new LinkedHashSet<>();
+        //keep order...last touched should be last element.
+        touchedSliders.remove(slider);
+        touchedSliders.add(slider);
     }
 }

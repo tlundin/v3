@@ -25,6 +25,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.Line;
 import com.teraim.fieldapp.dynamic.types.TabButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
@@ -100,10 +101,10 @@ public class GisObjectsMenu extends View {
 		NoOfButtonsPerRow = 5;
 		SpaceBetweenHeaderAndButton = 10*scale;
 		spacingAroundTabs = 4*scale;
-
+		int scaledSize = getResources().getDimensionPixelSize(R.dimen.text_size_large);
 		tabTextP = new Paint();
 		tabTextP.setColor(Color.WHITE);
-		tabTextP.setTextSize(scale*20);
+		tabTextP.setTextSize(scaledSize);
 
 		Log.d("alfa","scale on device is "+scale);
 		tabTextP.setStyle(Paint.Style.STROKE);
@@ -402,7 +403,7 @@ public class GisObjectsMenu extends View {
 				//Left padding + numer of buttons + number of spaces in between.
 				FullGisObjectConfiguration fop = it.next();
 				int left = col * ColW + PaddingX;
-				int top = row * (RowH-15*scale) + totalHeaderHeight+ tabRowHeight+PaddingY+PaddingX/2;//+5*scale;
+				int top = row * RowH + totalHeaderHeight+ tabRowHeight+PaddingY+PaddingX-(10*scale*row);
 				RectF r = new RectF(left, top, left + buttonWidth, top + buttonWidth);
 				menuButtonArray[col][row] = new MenuButton(fop, r);
 				col++;
@@ -480,6 +481,8 @@ public class GisObjectsMenu extends View {
 			//if (menuHeaderArray[row]!=null)
 			//	canvas.drawText(menuHeaderArray[row]+" types", w/2, row*RowH+PaddingY+totalHeaderHeight+ SpaceBetweenHeaderAndButton+tabRowHeight+headerTextP.getTextSize(), headerTextP);
 			MenuButton currB=null;
+			Rect bounds = new Rect();
+			headerTextP.getTextBounds("a", 0, 1, bounds);
 			for (int col = 0; col < NoOfButtonsPerRow;col++) {
 				currB = menuButtonArray[col][row];
 				if (currB == null) {
@@ -523,10 +526,10 @@ public class GisObjectsMenu extends View {
 
 					canvas.drawBitmap(fop.getIcon(),null , rect, null);
 				}
-				canvas.drawText(fop.getName(), r.left+r.width()/2, rect.bottom+blackTextP.getTextSize(),currB.isSelected?blackTextP:whiteTextP);
+				canvas.drawText(fop.getName(), r.left+r.width() / 2, rect.bottom+blackTextP.getTextSize(),currB.isSelected?blackTextP:whiteTextP);
 
 			}
-			totalHeaderHeight += headerTextP.getTextSize()+SpaceBetweenHeaderAndButton;
+			totalHeaderHeight += bounds.height()+SpaceBetweenHeaderAndButton;
 		}
 
 		super.onDraw(canvas);

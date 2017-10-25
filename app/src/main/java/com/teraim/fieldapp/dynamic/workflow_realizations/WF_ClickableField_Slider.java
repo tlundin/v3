@@ -30,7 +30,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 	@SuppressWarnings("WrongConstant")
 	public WF_ClickableField_Slider(String headerT, String descriptionT,
-									WF_Context context, String id, boolean isVisible, String groupName, final int min, final int max, DisplayFieldBlock format) {
+									WF_Context context, String id, boolean isVisible, final String groupName, final int min, final int max, DisplayFieldBlock format) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(format.isHorisontal()?R.layout.selection_field_normal_horizontal:R.layout.selection_field_normal_vertical,null),
 				isVisible,format);
@@ -46,6 +46,16 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				if (tv!=null)
 					tv.setText(WF_ClickableField_Slider.this.min + progress +"");
+				//remove me from group..
+				if (groupName!=null && fromUser) {
+					//Log.d("zaxx","groupname: "+groupName);
+					CoupledVariableGroupBlock myGroup = myContext.getSliderGroup(groupName);
+					if (myGroup!=null)
+						myGroup.removeSliderFromCalibration(WF_ClickableField_Slider.this);
+					else
+						Log.e("zaxx","slidergroup missing");
+
+				}
 				/*
 				else {
 					if (!addVarCalled) {
@@ -62,12 +72,16 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
-
+				CoupledVariableGroupBlock myGroup = myContext.getSliderGroup(groupName);
+				if (myGroup!=null)
+					myGroup.resetCounter();
 			}
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				setValueFromSlider();
+				CoupledVariableGroupBlock myGroup = myContext.getSliderGroup(groupName);
+
 			}
 		});
 		if (groupName!=null) {

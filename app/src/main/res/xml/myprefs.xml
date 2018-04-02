@@ -40,14 +40,12 @@
             android:summary="@string/s_summary"
             android:title="Server URL" />
         <EditTextPreference
-            android:defaultValue=""
             android:dialogMessage="Folder for configuration files"
             android:title="Folder"
             android:summary="@string/s_folder_summary"
             android:key="file_picker"
             />
         <EditTextPreference
-            android:defaultValue=""
             android:dialogMessage="@string/appDialMsg"
             android:dialogTitle="App"
             android:inputType="textCapSentences"
@@ -74,7 +72,6 @@
             android:title="@string/Sync_method" />
 
         <EditTextPreference
-            android:defaultValue=""
             android:dialogMessage="@string/Backup_dm"
             android:dialogTitle="Backup folder"
             android:key="backup_location"

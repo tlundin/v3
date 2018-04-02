@@ -15,7 +15,7 @@ public class WebService extends AsyncTask<String, String, String>{
 	//public final String SERVICE_URI = "http://teraim.com/vortexservice.php?";
 
 	public interface WsCallback {
-		public void doSomething(String res);
+		void doSomething(String res);
 	}
 
 	WsCallback myC;

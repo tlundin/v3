@@ -153,11 +153,9 @@ public class GisPolygonObject extends GisPathObject {
 
 		}
 
-		if (distanceToClick<ClickThresholdInMeters)
-			return true;
+        return distanceToClick < ClickThresholdInMeters;
 
 
-		return false;
 		/*
 		distanceToClick=ClickThresholdInMeters;
 		for (int i=0;i<myCoordinates.size()-1;i++) {

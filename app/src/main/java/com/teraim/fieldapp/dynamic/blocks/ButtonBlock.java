@@ -361,12 +361,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 									for (Rule r:myRules) {
 										Boolean ok=false;
-										try {
-											ok = r.execute();
-										} catch (SyntaxException e) {
-											o.addRow("");
-											o.addRedText("Rule "+r.getId()+" has syntax errors in condition: "+r.getCondition());
-										}
+
+										ok = r.execute();
+
 										if (ok!=null) {
 											Rule.Type type = r.getType();
 											int indicatorId=0;

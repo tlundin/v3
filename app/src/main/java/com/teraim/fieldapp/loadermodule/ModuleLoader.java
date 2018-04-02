@@ -355,9 +355,9 @@ public class ModuleLoader implements FileLoadedCb{
 	}
 
 	//TODO:REMOVE
-	public void onFileLoaded(ErrorCode errCode, String version) {};
+	public void onFileLoaded(ErrorCode errCode, String version) {}
 
-	public void stop() {
+    public void stop() {
 		Log.e("vortex","In stop for "+loaderId);
 		List<ConfigurationModule> list = myModules.getAll();
 		for (ConfigurationModule module:list) {

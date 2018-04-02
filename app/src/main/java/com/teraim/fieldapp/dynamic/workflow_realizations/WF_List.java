@@ -26,20 +26,20 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
 
 public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 
-	private final List<Listable> list = new  ArrayList<Listable>(); //Instantiated in constructor
-	protected final List<Filter> myFilters=new ArrayList<Filter>();
-	protected final List<Sorter> mySorters=new ArrayList<Sorter>();
-	protected List<Listable> filteredList;
+	private final List<Listable> list = new  ArrayList<>(); //Instantiated in constructor
+	private final List<Filter> myFilters=new ArrayList<>();
+	private final List<Sorter> mySorters=new ArrayList<>();
+	private List<Listable> filteredList;
 
 	protected WF_Context myContext;
 	protected GlobalState gs;
 	protected VariableCache varCache;
 	//Keep track if list has changed and needs to be recalculated.
 	private boolean redraw = false;
-	private ViewGroup myW = null;
+	private ViewGroup myW;
 
 	//Table needs to send only part of its layout to list
-	public WF_List(String id,boolean isVisible,WF_Context ctx, View v) {
+	 WF_List(String id,boolean isVisible,WF_Context ctx, View v) {
 		super(id,v,isVisible,ctx);
 		myContext = ctx;
 		gs = GlobalState.getInstance();
@@ -49,7 +49,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	}
 	//TODO: MERGE THESE
 	//How about using the Container's panel?? TODO
-	public WF_List(String id,boolean isVisible,WF_Context ctx) {
+	 WF_List(String id,boolean isVisible,WF_Context ctx) {
 		super(id,new LinearLayout(ctx.getContext()),isVisible,ctx);
 		myW = (LinearLayout)this.getWidget();
 		LinearLayout ll = (LinearLayout)myW;
@@ -83,10 +83,10 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 		redraw=true;
 	}
 
-	public void reSortAndFilter() {
+	 void reSortAndFilter() {
 		filteredList = list;
 		if (myFilters != null) {
-			List<Listable> listx = new ArrayList<Listable>(list);
+			List<Listable> listx = new ArrayList<>(list);
 			for (Filter f : myFilters) {
 				f.filter(listx);
 			}
@@ -243,7 +243,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 		Log.d("zorg","DISCARDED ALL");
 		myW.removeAllViews();
 	}
-
+/*
 	public static void listReady() {
 
 		if (GlobalState.getInstance()!=null) {
@@ -251,4 +251,5 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 		} else
 			Log.e("vortex","GS null in Wf_list");
 	}
+*/
 }

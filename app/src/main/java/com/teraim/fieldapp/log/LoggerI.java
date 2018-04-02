@@ -5,21 +5,21 @@ import android.widget.TextView;
 
 public interface LoggerI {
 	
-	 public void setOutputView(TextView txt);	 
-	 public void addRow(String text);
-	 public void addRedText(String text);
-	 public void addGreenText(String text);
-	 public void addYellowText(String text);
-	 public void addText(String text);
+	 void setOutputView(TextView txt);
+	 void addRow(String text);
+	 void addRedText(String text);
+	 void addGreenText(String text);
+	 void addYellowText(String text);
+	 void addText(String text);
 
 	void addCriticalText(String text);
 
-	public CharSequence getLogText();
-	 public void draw();
-	 public void clear();
-	 public void addPurpleText(String string);
-	 public void writeTicky(String tickyText);
-	 public void removeLine();
-	 public boolean hasRed();
+	CharSequence getLogText();
+	 void draw();
+	 void clear();
+	 void addPurpleText(String string);
+	 void writeTicky(String tickyText);
+	 void removeLine();
+	 boolean hasRed();
 
 }

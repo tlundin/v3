@@ -61,7 +61,7 @@ public class ConditionalContinuationBlock extends Block {
 		}
 
 		
-		boolean ret = lastEval==null?false:eval!=lastEval;
+		boolean ret = lastEval != null && eval != lastEval;
 		lastEval = eval;
 		return ret;
 	}

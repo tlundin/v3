@@ -50,7 +50,7 @@ public class TimeStampedMap {
 
             } catch (NumberFormatException e) {
 
-            };
+            }
 
         }
 

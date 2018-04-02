@@ -10,16 +10,16 @@ import java.util.Set;
 public interface WF_Cell {
 
 	
-	public void addVariable(final String varId, boolean displayOut,String format,boolean isVisible,boolean showHistorical, String prefetchValue);
+	void addVariable(final String varId, boolean displayOut, String format, boolean isVisible, boolean showHistorical, String prefetchValue);
 	
 	
-	public boolean hasValue();
+	boolean hasValue();
 	
-	public void refresh();
+	void refresh();
 
-	public View getWidget();
+	View getWidget();
 
-	public Map<String,String> getKeyHash();
+	Map<String,String> getKeyHash();
 
-	public Set<Variable> getAssociatedVariables();
+	Set<Variable> getAssociatedVariables();
 }

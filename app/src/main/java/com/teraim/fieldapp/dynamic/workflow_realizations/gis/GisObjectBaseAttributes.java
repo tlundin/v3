@@ -6,7 +6,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 
 public interface GisObjectBaseAttributes {
 
-	public boolean isVisible();
-	public List<EvalExpr> getLabelExpression();
+	boolean isVisible();
+	List<EvalExpr> getLabelExpression();
 
 }

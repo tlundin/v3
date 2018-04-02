@@ -194,7 +194,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     Iterator<Map.Entry<Variable, VariableView>> its = myVars.entrySet()
                             .iterator();
                     while (its.hasNext()) {
-                        Map.Entry<Variable, VariableView> pairs = (Map.Entry<Variable, VariableView>) its
+                        Map.Entry<Variable, VariableView> pairs = its
                                 .next();
                         Variable variable = pairs.getKey();
                         Log.d("vortex", "deleting variable " + variable.getId()
@@ -243,8 +243,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                                             " Group_Desc "+i+":  "+al.getGroupDescription(row)+"\n";
                             i++;
                             row = (it.hasNext()?it.next().getBackingDataSet():null);
-                        } ;
-
+                        }
 
 
                         new AlertDialog.Builder(myContext.getContext())
@@ -675,7 +674,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         Context ctx = myContext.getContext();
 
         while (it.hasNext()) {
-            Map.Entry<Variable, VariableView> pairs = (Map.Entry<Variable, VariableView>) it
+            Map.Entry<Variable, VariableView> pairs = it
                     .next();
             Variable variable = pairs.getKey();
             existingValue = variable.getValue();
@@ -856,14 +855,11 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         Log.d("vortex", "In checkRules. I have " + myRules.size() + " rules");
         for (Rule r : myRules) {
             Log.d("vortex", " Rule: " + r.getCondition());
-            try {
+
                 Boolean res = r.execute();
                 if (res != null && !res)
                     return r;
-            } catch (SyntaxException e) {
-                Log.e("vortex", "Syntax exception on rule " + r.getId());
 
-            }
         }
         return null;
     }
@@ -957,7 +953,6 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             Log.d("vortex", "Hist spinner value is not a number: "
                                     + hist);
                         }
-                        ;
                     }
 
                     spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -1116,7 +1111,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             R.layout.edit_field_numeric, null);
                     header = (TextView) l.findViewById(R.id.header);
                     header.setText(varLabel);
-                    EditText etNum = (EditText) l.findViewById(R.id.edit);
+                    @SuppressLint("CutPasteId") EditText etNum = (EditText) l.findViewById(R.id.edit);
                     etNum.setFocusable(false);
                     inputContainer.addView(l);
                     varV.view=l;

@@ -243,7 +243,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
-			Preference button = (Preference)findPreference("reset_cache");
+			Preference button = findPreference("reset_cache");
 			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
@@ -262,9 +262,9 @@ public class ConfigMenu extends PreferenceActivity {
 										Toast.makeText(getActivity(),n+" "+getResources().getString(R.string.reset_cache_toast),Toast.LENGTH_LONG).show();
 										askForRestart();
 									}
-								};
+								}
 
-							} )
+                            } )
 							.setNegativeButton(R.string.cancel, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
@@ -278,8 +278,8 @@ public class ConfigMenu extends PreferenceActivity {
 
 			final CheckBoxPreference pref = (CheckBoxPreference)findPreference("local_config");
 			final PreferenceGroup devOpt = (PreferenceGroup)findPreference("developer_options");
-			final Preference folderPref = (Preference) findPreference(PersistenceHelper.FOLDER);
-			final Preference QRPref = (Preference) findPreference("scan_qr_code");
+			final Preference folderPref = findPreference(PersistenceHelper.FOLDER);
+			final Preference QRPref = findPreference("scan_qr_code");
 
 			QRPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				@Override

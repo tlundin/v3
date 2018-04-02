@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
+import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
@@ -59,6 +60,7 @@ public class GlobalState  {
 
 
 	private static Context myC=null;
+	private String imgMetaFormat=Constants.DEFAULT_IMG_FORMAT;
 	private LoggerI logger;
 	private PersistenceHelper ph = null;	
 	private DbHelper db = null;
@@ -84,7 +86,6 @@ public class GlobalState  {
 	private static Account mAccount;
 	private GisObject selectedGop;
 	private CharSequence logTxt;
-	private boolean imgMetaIsFile=false;
 	public static GlobalState getInstance() {
 
 		return singleton;
@@ -106,15 +107,15 @@ public class GlobalState  {
 			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt,String imgMetaFormat) {
 
 		myC = applicationContext;
-		this.globalPh=globalPh;		
-		this.ph=ph;		
-		this.db=myDb;		
+		this.globalPh=globalPh;
+		this.ph=ph;
+		this.db=myDb;
 		this.logger = debugConsole;
 		//Parser for rules
 		parser = new Parser(this);
-		
-		artLista = new VariableConfiguration(this,t);			
-		myWfs = mapWorkflowsToNames(workflows);		
+
+		artLista = new VariableConfiguration(this,t);
+		myWfs = mapWorkflowsToNames(workflows);
 		//Event Handler on the Bluetooth interface.
 		//myHandler = getHandler();
 		//Handles status for 
@@ -124,24 +125,24 @@ public class GlobalState  {
 
 		singleton =this;
 
-		
+
 		myVariableCache = new VariableCache(this);
 
 		//GPS listener service
-		
+
 
 		//myExecutor = new RuleExecutor(this);
 
 		myConnectionManager = new ConnectionManager(this);
-	
+
 		myBackupManager = new BackupManager(this);
-		
+
 		this.logTxt = logTxt;
 
 		Log.d("fennox","my ID is "+getMyId());
-
-		imgMetaIsFile = imgMetaFormat!=null && ("file".equalsIgnoreCase(imgMetaFormat)||"ini".equalsIgnoreCase(imgMetaFormat));
-		Log.d("yamma","imgMetaIsFile: "+imgMetaIsFile+" imgMetaFormat: "+imgMetaFormat);
+		Log.d("jgw","my imgmeta is "+imgMetaFormat);
+		if (imgMetaFormat!=null)
+			this.imgMetaFormat = imgMetaFormat;
 
 	}
 
@@ -200,7 +201,7 @@ public class GlobalState  {
 		return myBackupManager;
 	}
 
-
+	public String getImgMetaFormat() { return imgMetaFormat; }
 
 	/**************************************************
 	 * 
@@ -297,7 +298,7 @@ public class GlobalState  {
 	public LoggerI getLogger() {
 		return logger;
 	}
-
+/*
 	public void setCurrentWorkflowContext(WF_Context myContext) {
 		currentContext = myContext;
 	}
@@ -305,7 +306,7 @@ public class GlobalState  {
 	public WF_Context getCurrentWorkflowContext() {
 		return currentContext;
 	}
-	
+*/
 
 	public void setDBContext(DB_Context context) {
 		myVariableCache.setCurrentContext(context);
@@ -338,9 +339,6 @@ public class GlobalState  {
 		selectedGop=go;
 	}
 
-	public boolean isFileMetaFormat() {
-		return imgMetaIsFile;
-	}
 
 	//Map<String,WF_Static_List> listCache = new HashMap<>();
 

@@ -49,4 +49,6 @@ public class SweLocation implements Location {
 			return getX()+","+getY();
 
 	}
+
+
 }

@@ -78,10 +78,10 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		tablePanel = (LinearLayout)v.findViewById(R.id.myTable);
 		filterPanel = (LinearLayout)v.findViewById(R.id.filterPanel);
 
-		filterC1o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
-		filterC2o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
-		filterC3o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
-		filterC4o = (View)inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC1o = inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC2o = inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC3o = inflater.inflate(R.layout.filter_pop_inner,null);
+		filterC4o = inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC1 = (LinearLayout)filterC1o.findViewById(R.id.inner);
 		filterC2 = (LinearLayout)filterC2o.findViewById(R.id.inner);
 		filterC3 = (LinearLayout)filterC3o.findViewById(R.id.inner);

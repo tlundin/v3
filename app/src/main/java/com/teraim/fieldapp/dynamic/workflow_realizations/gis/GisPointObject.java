@@ -66,13 +66,9 @@ public abstract class GisPointObject extends GisObject {
 		 */
 		//Log.d("vortex","pxr pyr"+pxr+","+pyr);
 		//Log.d("vortex","I: D: "+this.getLabel()+","+distanceToClick);
-		if (distanceToClick<ClickThresholdInMeters) {
-			//Log.d("vortex","Touched by click...");
-			return true;
-		}
+        return distanceToClick < ClickThresholdInMeters;
 		//Log.d("vortex", "NO!: Dist x  y  tresh: "+xD+","+yD+","+distanceToClick+" thresh: "+ClickThresholdInMeters);
-		return false;
-	}
+    }
 	public Style getStyle() {
 		return poc.getStyle();
 	}
@@ -106,7 +102,7 @@ public abstract class GisPointObject extends GisObject {
 	@Override
 	public void clearCache() {
 		//Log.d("vortex","cleared gop object xy");
-		xy=new int[2];};
+		xy=new int[2];}
 
 }
 

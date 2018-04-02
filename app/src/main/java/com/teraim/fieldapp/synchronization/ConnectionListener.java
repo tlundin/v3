@@ -2,7 +2,7 @@ package com.teraim.fieldapp.synchronization;
 
 public interface ConnectionListener {
 
-	public enum ConnectionEvent {
+	enum ConnectionEvent {
 		connectionGained,
 		connectionBroken,
 		connectionFailed,
@@ -14,8 +14,8 @@ public interface ConnectionListener {
 		connectionFailedNamedPartnerMissing
 	}
 	
-	public void handleMessage(Object o);
-	public void handleEvent(ConnectionEvent e);
+	void handleMessage(Object o);
+	void handleEvent(ConnectionEvent e);
 	
 	
 }

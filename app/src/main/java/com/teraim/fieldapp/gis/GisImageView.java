@@ -468,8 +468,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private Location translateRealCoordinatestoMap(float[] xy) {
 		Log.d("betex","IMGW: "+this.getImageWidth());
-		float rX = this.getImageWidth()/2+((float)xy[0]);
-		float rY = this.getImageHeight()/2+((float)xy[1]);
+		float rX = this.getImageWidth()/2+ xy[0];
+		float rY = this.getImageHeight()/2+ xy[1];
 		pXR = photoMetaData.getWidth()/this.getImageWidth();
 		pYR = photoMetaData.getHeight()/this.getImageHeight();
 		double mapDistX = rX*pXR;
@@ -493,30 +493,24 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		//Assume it is inside
 		boolean isInside = true;
 		double mapDistX = l.getX()-photoMetaData.W;
-		if (mapDistX <=imgWReal && mapDistX>=0);
+		double mapDistY = l.getY()-photoMetaData.S;
+		if ((mapDistX <=imgWReal && mapDistX>=0) || (mapDistY <=imgHReal && mapDistY>=0))
+			;
 			//Log.d("vortex","Distance X in meter: "+mapDistX+" [inside]");
 		else {
-
-			//Log.e("vortex","Distance X in meter: "+mapDistX+" [outside!]");
-			//Log.d("vortex","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
-			//Log.d("vortex","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
-			//Log.d("vortex","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
-			//Log.d("vortex","object X,Y: "+l.getX()+","+l.getY());
-
+			if(mapDistX>imgWReal||mapDistX<0)
+				Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
+			if(mapDistY>imgHReal||mapDistY<0)
+				Log.e("jgw","Distance Y in meter: "+mapDistY+" [outside!]");
+			Log.d("jgw","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
+			Log.d("jgw","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
+			Log.d("jgw","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
+			Log.d("jgw","object X,Y: "+l.getX()+","+l.getY());
 			//No, it is outside.
 			isInside = false;
 		}
-		double mapDistY = l.getY()-photoMetaData.S;
-		if (mapDistY <=imgHReal && mapDistY>=0)
-			;//Log.d("vortex","Distance Y in meter: "+mapDistY+" [inside]");
-		else {
-			//Log.e("vortex","Distance Y in meter: "+mapDistY+" [outside!]");
-			//Log.d("vortex","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
-			//Log.d("vortex","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
-			//Log.d("vortex","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
-			//Log.d("vortex","object X,Y: "+l.getX()+","+l.getY());
-			isInside = false;
-		}
+
+
 		pXR = this.getImageWidth()/photoMetaData.getWidth();
 		pYR = this.getImageHeight()/photoMetaData.getHeight();
 
@@ -608,7 +602,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				List<Location> myDots = newGisObj.getCoordinates();
 				if (myDots!=null && !myDots.isEmpty()) {
 					myDots.remove(myDots.size() - 1);
-					((GisPathObject) newGisObj).clearCache();
+					newGisObj.clearCache();
 				}
 
 				if (myDots==null ||myDots.isEmpty()) {
@@ -709,8 +703,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								GisPointObject gop = (GisPointObject)go;
 								if (gop.isDynamic()) {
 									//Log.d("bortex","found dynamic object");
-									int[] xy = intBuffer.getIntBuf();;
-									boolean inside = translateMapToRealCoordinates(gop.getLocation(),xy);
+									int[] xy = intBuffer.getIntBuf();
+                                    boolean inside = translateMapToRealCoordinates(gop.getLocation(),xy);
 									if (!inside) {
 										//Log.d("vortex","outside "+gop.getLocation().getX()+" "+gop.getLocation().getY());
 										if (gop.equals(userGop)) {
@@ -1241,7 +1235,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		txtPaint.getTextBounds(mLabel, 0, mLabel.length(), bounds);
 		int textH = bounds.height()/2;
-		bounds.offset((int)xy[0]-bounds.width()/2,(int)xy[1]-(bounds.height()/2+(int)offSet));
+		bounds.offset(xy[0] -bounds.width()/2, xy[1] -(bounds.height()/2+(int)offSet));
 		bounds.set(bounds.left-2,bounds.top-2,bounds.right+2,bounds.bottom+2);
 		//txtPaint.setTextAlign(Paint.Align.CENTER);
 		canvas.drawRect(bounds, bgPaint);

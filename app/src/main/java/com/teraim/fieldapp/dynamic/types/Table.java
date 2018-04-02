@@ -54,9 +54,9 @@ public class Table implements Serializable {
 		tooFewColumns,
 		keyError,
 		ok
-	};
-	
-	public List<String> getColumnHeaders() {
+	}
+
+    public List<String> getColumnHeaders() {
 		return myColumns;
 	}
 	
@@ -103,8 +103,8 @@ public class Table implements Serializable {
 				//Log.d("nils","found new key part: "+key);
 				//Add to existing Database model.
 				keyParts.add(key.trim());
-			};
-		}
+			}
+        }
 		//no need to check this one again.
 		previousKeyChain = keyChain;
 		} 

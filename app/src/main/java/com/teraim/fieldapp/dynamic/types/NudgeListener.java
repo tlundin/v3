@@ -15,7 +15,7 @@ public interface NudgeListener {
     }
 
 
-    public void onNudge(Direction d, int step);
-    public void centerOnNudgeDot();
+    void onNudge(Direction d, int step);
+    void centerOnNudgeDot();
 
 }

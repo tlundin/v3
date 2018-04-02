@@ -26,12 +26,14 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
+import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataIni;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
+import com.teraim.fieldapp.loadermodule.PhotoMetaI;
 import com.teraim.fieldapp.loadermodule.WebLoader;
-import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataFile;
+import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataJgw;
 import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataXML;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -321,15 +323,31 @@ public class CreateGisBlock extends Block {
 		if (tmp!=null && tmp.length!=0) {
 			final String metaFileName = tmp[0];
 			Log.d("vortex","metafilename: "+metaFileName);
-			Log.d("franzon","imgmetaformatisfile: "+gs.isFileMetaFormat());
-			final ConfigurationModule meta = gs.isFileMetaFormat()?
-					new AirPhotoMetaDataFile(GlobalState.getInstance().getGlobalPreferences(),
-							GlobalState.getInstance().getPreferences(),Source.internet,
-							serverFileRootDir,metaFileName,"")
-					:
-					new AirPhotoMetaDataXML(GlobalState.getInstance().getGlobalPreferences(),
+			Log.d("jgw","imgmetaformatisfile: "+gs.getImgMetaFormat());
+			final ConfigurationModule  meta;
+			String imgFormat = gs.getImgMetaFormat();
+			switch (imgFormat) {
+				default:
+					/*falls through*/
+				case "xml":
+					meta = new AirPhotoMetaDataXML(gs.getGlobalPreferences(),
+							gs.getPreferences(),Source.internet,
+							serverFileRootDir,metaFileName,"");
+					break;
+				case "ini":
+					meta = new AirPhotoMetaDataIni(gs.getGlobalPreferences(),
+							gs.getPreferences(),Source.internet,
+							serverFileRootDir,metaFileName,"");
+					break;
+				case "jgw":
+					meta = new AirPhotoMetaDataJgw(gs.getGlobalPreferences(),
 							GlobalState.getInstance().getPreferences(),Source.internet,
 							serverFileRootDir,metaFileName,"");
+					break;
+
+			}
+
+
 			if (meta.thawSynchronously().errCode!=ErrorCode.thawed) {
 				Log.d("vortex","no frozen metadata. will try to download.");
 				new WebLoader(null, null, new FileLoadedCb(){
@@ -337,15 +355,15 @@ public class CreateGisBlock extends Block {
 					public void onFileLoaded(LoadResult res) {
 
 						if (res.errCode==ErrorCode.frozen) {
-							PhotoMeta pm = (PhotoMeta)meta.getEssence();
+							PhotoMeta pm = ((PhotoMetaI)meta).getPhotoMeta();
 							Log.d("vortex","img N, W, S, E "+pm.N+","+pm.W+","+pm.S+","+pm.E);
 							createAfterLoad(pm,cacheFolder,fileName);
 						}
 						else {
 							o.addRow("");
-							o.addRedText("Could not find GIS image "+metaFileName);
+							o.addRedText("Could not find GIS image meta file "+metaFileName);
 							Log.e("vortex","Failed to parse image meta. Errorcode "+res.errCode.name());
-							cb.abortExecution("Could not load GIS image meta file ["+metaFileName+(gs.isFileMetaFormat()?".ini":".xml")+"].");
+							cb.abortExecution("Could not load GIS image meta file ["+metaFileName+"."+gs.getImgMetaFormat()+"].");
 						}
 					}
 					@Override
@@ -358,7 +376,7 @@ public class CreateGisBlock extends Block {
 						"Forced").execute(meta);
 			} else {
 				Log.d("vortex","Found frozen metadata. Will use it");
-				PhotoMeta pm = (PhotoMeta)meta.getEssence();
+				PhotoMeta pm = ((PhotoMetaI)meta).getPhotoMeta();
 				Log.d("vortex","img N, W, S, E "+pm.N+","+pm.W+","+pm.S+","+pm.E);
 				createAfterLoad(pm,cacheFolder,fileName);
 			}

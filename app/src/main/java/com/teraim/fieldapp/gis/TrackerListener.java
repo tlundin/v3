@@ -2,7 +2,7 @@ package com.teraim.fieldapp.gis;
 
 public interface TrackerListener {
 
-	public class GPS_State {
+	class GPS_State {
 
 		public static GPS_State GPS_State_C(State s) {
 			GPS_State g = new GPS_State();
@@ -28,5 +28,5 @@ public interface TrackerListener {
 
 
 
-	public void gpsStateChanged(GPS_State newState);
+	void gpsStateChanged(GPS_State newState);
 }

@@ -39,6 +39,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 		this.o = debugConsole;
 		this.myDb = myDb;
 		isDatabaseModule=true;
+		hasSimpleVersion=true;
 		varTable = t;
 
 	}
@@ -61,7 +62,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 
 	@Override
-	protected LoadResult prepare(JsonReader reader) throws IOException, JSONException {
+	protected LoadResult prepare(JsonReader reader) throws IOException {
 
 		try {
 			reader.beginObject();
@@ -106,7 +107,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 	State state = null;
 
 	@Override
-	public LoadResult parse(JsonReader reader) throws IOException, JSONException {
+	public LoadResult parse(JsonReader reader) throws IOException {
 		LoadResult lr=null;
 		if (state == State.readingKeys) {
 			//Log.d("vortex","In parse ImportData");
@@ -265,7 +266,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 	boolean firstCall = true;
 
 	@Override
-	public boolean freeze(int counter) throws IOException {
+	public boolean freeze(int counter) {
 		if (entries == null)
 			return false;
 

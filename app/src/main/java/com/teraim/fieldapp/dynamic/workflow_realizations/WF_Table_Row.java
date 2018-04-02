@@ -193,7 +193,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 	public TextView addAggregateTextCell(String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_text_aggregate,null);
-		View bg = (View)emptyCell.findViewById(R.id.outputContainer);
+		View bg = emptyCell.findViewById(R.id.outputContainer);
 		TextView tv=(TextView)emptyCell.findViewById(R.id.contentT);
 
 		((TableRow)this.getWidget()).addView(emptyCell);

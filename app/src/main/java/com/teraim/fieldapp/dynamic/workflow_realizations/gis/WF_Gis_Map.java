@@ -436,8 +436,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							ctx.startActivity(intent);
 						} else {
-							Toast.makeText(ctx, "Saknar koordinater", Toast.LENGTH_SHORT).show();;
-						}
+							Toast.makeText(ctx, "Saknar koordinater", Toast.LENGTH_SHORT).show();
+                        }
 					}
 				}
 			});
@@ -544,8 +544,8 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 							gisImageView.unSelectGop();
 							myContext.getActivity().getFragmentManager().popBackStackImmediate();
 
-						};
-						//startScrollOut();
+						}
+                        //startScrollOut();
 						break;
 					case MotionEvent.ACTION_UP:
 						//stopScrollOut();
@@ -612,7 +612,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 			}
 		});
 
-		candidatesL = (View)mapView.findViewById(R.id.candidatesMenuL);
+		candidatesL = mapView.findViewById(R.id.candidatesMenuL);
 		candidatesButtonL = (LinearLayout) mapView.findViewById(R.id.candidatesButtonL);
 
 		popupShow = AnimationUtils.loadAnimation(ctx, R.anim.popup_show);

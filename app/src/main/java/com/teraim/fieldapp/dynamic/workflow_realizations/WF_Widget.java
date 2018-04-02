@@ -57,4 +57,4 @@ public class WF_Widget extends WF_Thing implements Drawable {
 	public void postDraw() {
 
 	}
-};
+}

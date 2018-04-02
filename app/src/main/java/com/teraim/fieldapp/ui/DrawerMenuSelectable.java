@@ -28,9 +28,10 @@ public class DrawerMenuSelectable implements DrawerMenuItem {
 	    @Override
 	    public View getView(LayoutInflater inflater, View convertView) {
 	        View view;
+			TextView tv;
 	        if (convertView == null) {
-	            view = (View) inflater.inflate(R.layout.drawer_menu_selectable, null);
-				TextView tv = (TextView)view.findViewById(R.id.list_content1);
+	            view = inflater.inflate(R.layout.drawer_menu_selectable, null);
+				tv = (TextView)view.findViewById(R.id.list_content1);
 				//Log.d("vortex","Menuheader bg text colors: "+bgColor+" "+textColor);
 				if (bgColor!=null)
 					tv.setBackgroundColor(Color.parseColor(bgColor));
@@ -40,10 +41,11 @@ public class DrawerMenuSelectable implements DrawerMenuItem {
 	            // Do some initialization
 	        } else {
 	            view = convertView;
+				tv = (TextView) view.findViewById(R.id.list_content1);
 	        }
 
-	        TextView text1 = (TextView) view.findViewById(R.id.list_content1);
-	        text1.setText(str1);
+
+	        tv.setText(str1);
 
 	        return view;
 	    }

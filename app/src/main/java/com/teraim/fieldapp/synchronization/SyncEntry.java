@@ -15,8 +15,9 @@ public class SyncEntry extends SyncMessage {
 	private String timeStamp;
 	private String target;
 	private boolean invalid = false;
-	public SyncEntry() {};
-	public SyncEntry(String type,String changes,String timeStamp,String target) {
+	public SyncEntry() {}
+
+    public SyncEntry(String type,String changes,String timeStamp,String target) {
 		this.changes=changes;
 		if (type.equals("I"))
 			mType = Type.insert;

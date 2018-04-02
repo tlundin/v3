@@ -441,9 +441,9 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 			 };
 		for (EditText eta: ETA){
 			   eta.setOnFocusChangeListener(focusListener);
-			};
-		
-		hundraB.setOnClickListener(new OnClickListener() {
+			}
+
+        hundraB.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {

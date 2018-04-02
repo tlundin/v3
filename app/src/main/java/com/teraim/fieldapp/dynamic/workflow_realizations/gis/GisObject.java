@@ -72,10 +72,10 @@ public class GisObject {
 		if (myCoordinates==null || myCoordinates.isEmpty())
 			return null;
 		return myCoordinates.get(0);		
-	};
+	}
 
 
-	public List<Location> getCoordinates() {
+    public List<Location> getCoordinates() {
 		return myCoordinates;
 	}
 	
@@ -224,8 +224,7 @@ public class GisObject {
 
 	public boolean isDefect() {
 		return isDefect;
-	};
+	}
 
-	
 
 }

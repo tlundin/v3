@@ -26,7 +26,7 @@ public class SyncService extends Service {
   
     
     
-    Messenger mClient; 
+    static Messenger mClient;
     
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_SYNC_ERROR_STATE = 2;
@@ -51,7 +51,7 @@ public class SyncService extends Service {
 	public static final int REFRESH = 9;
 
 
-    class IncomingHandler extends Handler {
+    static class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
 

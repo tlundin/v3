@@ -194,8 +194,8 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 						startActivity(intent);
 					} else {
 						Log.e("nils","Lat or Long null for py "+pyv.getValue()+" LAT: "+lat+" LONG: "+lon);
-						Toast.makeText(ProvytaTemplate.this.getActivity(), "Latitude eller Longitudvärde för provytacentrum är inte satt i historiskt data så navigering är inte möjlig.", Toast.LENGTH_LONG).show();;
-					}
+						Toast.makeText(ProvytaTemplate.this.getActivity(), "Latitude eller Longitudvärde för provytacentrum är inte satt i historiskt data så navigering är inte möjlig.", Toast.LENGTH_LONG).show();
+                    }
 				}
 			}
 		});

@@ -48,18 +48,21 @@ public class WebLoader extends Loader {
 			in = ucon.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 			StringBuilder sb = new StringBuilder();
-			//reader.readLine();
-			String headerRow1 = reader.readLine();
-			
-			//If the file is not readable or reachable, header is null.
-			if (headerRow1==null) {
-				Log.e("vortex","cannot read data..exiting");
-				return new LoadResult(module,ErrorCode.IOError);
+			//check if simple version.
+			float version = -1;
+			if (module.hasSimpleVersion) {
+				String headerRow1 = reader.readLine();
+				version = getVersion(headerRow1, null);
+				//If the file is not readable or reachable, header is null.
+				if (headerRow1 == null) {
+					Log.e("vortex", "cannot read data..exiting");
+					return new LoadResult(module, ErrorCode.IOError);
+				}
+
 			}
-		
 			//setresult runs a parser before returning. Parser is depending on module type.
-			LoadResult loadResult = read(module,getVersion(headerRow1,null),reader,sb);;
-			if (loadResult!=null && loadResult.errCode==ErrorCode.loaded) {
+			LoadResult loadResult = read(module,version,reader,sb);
+            if (loadResult!=null && loadResult.errCode==ErrorCode.loaded) {
 				loadResult = parse(module);
 				if (loadResult.errCode==ErrorCode.parsed)
 					return freeze(module);
@@ -95,8 +98,8 @@ public class WebLoader extends Loader {
 			return new LoadResult(module, ErrorCode.reloadDependant,e.getDependendant());
 		}
 		finally {
-			try {if (in!=null)in.close();}catch (Exception e){};
-		}
+			try {if (in!=null)in.close();}catch (Exception e){}
+        }
 	}
 
 

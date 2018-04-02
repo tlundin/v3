@@ -5,17 +5,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.utils.Tools;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 public class Linje extends View {
 
@@ -26,29 +31,34 @@ public class Linje extends View {
 	private Paint pTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint iTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint tagText = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private static float h=700,w=300,r;
+	private Paint bm_paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+	private static float h=700,w,r;
 	private final LineMarkerFactory lmFactory;
 	private MovingMarker user = new MovingMarker(w,h);
 	private static float TAG_W = 20, TAG_H = 10,Max_Dev_X = 50;
 	private static float LineLengthInMeters=200,areaWidthInMeters=2*Max_Dev_X;
 	private float lineX=0,lineStart=0,lineEnd=0;
 	private String mPole;
-	
-	private Map <String,Map<String,LineMarker>> markers = new HashMap<String,Map<String,LineMarker>>();
+	private Bitmap bm;
+
+	private Map <String,Map<String,LineMarker>> markers = new HashMap<>();
+
+
 	public Linje(Context context, String pole) {
 		super(context);
 		mPole = pole;
 		lmFactory = new LineMarkerFactory();
-		
-		p.setColor(Color.BLACK);
+		//setImageResource(R.drawable.linje_bg);
+		p.setColor(Color.WHITE);
 		p.setStyle(Style.STROKE);
-		p.setStrokeWidth(2);
+		p.setStrokeWidth(4);
 
-		p1.setColor(Color.BLACK);
+		p1.setColor(Color.WHITE);
 		p1.setStyle(Style.STROKE);
 		p1.setStrokeWidth(3);
 
-		p2.setColor(Color.BLACK);
+		p2.setColor(Color.WHITE);
 		p2.setStyle(Style.STROKE);
 		p2.setTextSize(15);
 		p2.setTextAlign(Align.CENTER);
@@ -66,34 +76,41 @@ public class Linje extends View {
 		iTag.setStrokeWidth(1);
 		iTag.setStyle(Style.STROKE);
 //	    iTag.setPathEffect(new DashPathEffect(new float[]{5, 10, 15, 20}, 0));
-		iTag.setColor(Color.BLACK);
+		iTag.setColor(Color.WHITE);
 		
-		tagText.setColor(Color.BLACK);
+		tagText.setColor(Color.WHITE);
 		tagText.setStyle(Style.STROKE);
 		tagText.setTextSkewX(-0.25f);
 		tagText.setTextSize(12);
 		tagText.setTextAlign(Align.LEFT);
 		
-		r=w/9;
+
+		//bm_paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+		bm = BitmapFactory.decodeResource(getResources(), R.drawable.linje_bg);
 	}
 
 	
 	@Override
 	protected void onDraw(Canvas canvas) {
 
-		super.onDraw(canvas);	
+		super.onDraw(canvas);
+
+		//canvas.drawBitmap(bm, 0, 0, bm_paint);
 		h = this.getHeight();
-		float lineLength = (h-2*(r+w/4));
-		lineEnd = r+w/4;
+		w = this.getWidth();
+		r=w/9;
+		canvas.drawBitmap(bm, null, new RectF(0, 0, w, h), null);
+		float lineLength = (h-2*(r+w/8));
+		lineEnd = r+w/8;
 		lineStart = h-lineEnd;
 		float pixelsPerMeter_Y = lineLength/LineLengthInMeters;
 		float pixelsPerMeter_X = w/areaWidthInMeters;
 		lineX = w/2;
-		canvas.drawText(mPole, lineX, w/4-r-10, pp);
-		canvas.drawCircle(lineX, w/4,r, p);
-		canvas.drawText("SLUT",lineX, w/4, p2);
-		canvas.drawCircle(lineX, h-w/4,r, p);
-		canvas.drawText("START",lineX, h-w/4, p2);
+		canvas.drawText(mPole, lineX, w/8-r-10, pp);
+		canvas.drawCircle(lineX, w/8,r, p);
+		canvas.drawText("SLUT",lineX, w/8, p2);
+		canvas.drawCircle(lineX, h-w/8,r, p);
+		canvas.drawText("START",lineX, h-w/8, p2);
 		canvas.drawLine(lineX, lineEnd, lineX, lineStart, p1);
 		
 		if (!markers.isEmpty()) {
@@ -130,7 +147,7 @@ public class Linje extends View {
 		if (user.isInsideScreen()) {
 			float x = user.getPosX();
 			float y = user.getPosY();
-			pTag.setColor(Color.BLACK);
+			pTag.setColor(Color.WHITE);
 			
 			if ( x<Max_Dev_X && 
 				 x>-Max_Dev_X &&
@@ -155,7 +172,7 @@ public class Linje extends View {
 		Log.e("vortex","Removing marker "+tag+" at "+meters+" meters");
 		Map<String,LineMarker> lm = markers.get(meters);
 		LineMarker a;
-		if (lm!=null)
+		if (lm!=null && !lm.isEmpty())
 			if ((a=lm.get(tag))!=null)
 				lm.remove(a);
 	}
@@ -166,7 +183,7 @@ public class Linje extends View {
 			return;
 		Map<String,LineMarker> lm = markers.get(start);
 		if (lm==null) {
-			lm = new HashMap<String,LineMarker>();
+			lm = new HashMap<>();
 			markers.put(start, lm);
 		}
 		lm.put(tag, lmFactory.create(start,end,tag));	
@@ -175,17 +192,17 @@ public class Linje extends View {
 	
 	
 	private class LineMarker {
-		private String start=null,end=null;
+		private String start,end;
 		public String tag;
-		public int myColor;
+		 int myColor;
 		
-		public LineMarker(String start,String end,String tag,int color) {
+		 LineMarker(String start,String end,String tag,int color) {
 			this.start=start;
 			this.end=end;
 			this.tag=tag;
 			this.myColor=color;
 		}
-		public boolean isInterval() {
+		 boolean isInterval() {
 			return end!=null;
 		}
 		
@@ -200,9 +217,9 @@ public class Linje extends View {
 		
 		
 		
-		Integer[] colors = {Color.parseColor("#CC3232"),Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW,Color.DKGRAY,Color.BLACK};
+		Integer[] colors = {Color.parseColor("#CC3232"),Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW,Color.DKGRAY,Color.WHITE};
 		int currentColor = 0;
-		Map <String, Integer> assigned = new HashMap<String,Integer>();
+		Map <String, Integer> assigned = new HashMap<>();
 		
 		public LineMarker create(String start, String end,String tag) {
 			Integer c = assigned.get(tag);
@@ -223,13 +240,13 @@ public class Linje extends View {
 		float x=-1,y=-1;
 		float w,h;
 		
-		public MovingMarker (float w, float h) {
+		 MovingMarker (float w, float h) {
 			this.w=w;
 			this.h=h;
 		}
 		
 		//x and y are relative to the Line that is in the center of the view. 
-		public void setPos(float x,float y) {
+		 void setPos(float x,float y) {
 			this.x=x;
 			this.y=y;
 		}

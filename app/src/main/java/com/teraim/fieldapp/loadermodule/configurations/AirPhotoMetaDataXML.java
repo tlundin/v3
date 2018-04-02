@@ -9,11 +9,12 @@ import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.loadermodule.LoadResult;
+import com.teraim.fieldapp.loadermodule.PhotoMetaI;
 import com.teraim.fieldapp.loadermodule.XMLConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
-public class AirPhotoMetaDataXML extends XMLConfigurationModule {
+public class AirPhotoMetaDataXML extends XMLConfigurationModule implements PhotoMetaI {
 
 
 
@@ -26,8 +27,7 @@ public class AirPhotoMetaDataXML extends XMLConfigurationModule {
 	}
 
 	@Override
-	protected LoadResult prepare(XmlPullParser parser)
-			throws XmlPullParserException, IOException {
+	protected LoadResult prepare(XmlPullParser parser) {
 		return null;
 	}
 
@@ -53,31 +53,37 @@ public class AirPhotoMetaDataXML extends XMLConfigurationModule {
 	}
 
 	private PhotoMeta readCorners(XmlPullParser parser) throws XmlPullParserException, IOException {
-		double N=-1,E=-1,S=-1,W=-1;
-		Log.d("vortex","calling readCordners");
+		double N = -1, E = -1, S = -1, W = -1;
+		Log.d("vortex", "calling readCordners");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
 				continue;
 			}
 
-			Log.d("vortex","reading corners!");
-			String name= parser.getName();
-			if (name.equals("westBL")) {
-				W = getCorner(parser);
-			} else if (name.equals("eastBL")) {
-				E = getCorner(parser);
-			} else if (name.equals("northBL")) {
-				N = getCorner(parser);
-			} else if (name.equals("southBL")) {
-				S = getCorner(parser);
-				
-			} else
-				skip(name,parser);
+			Log.d("vortex", "reading corners!");
+			String name = parser.getName();
+			switch (name) {
+				case "westBL":
+					W = getCorner(parser);
+					break;
+				case "eastBL":
+					E = getCorner(parser);
+					break;
+				case "northBL":
+					N = getCorner(parser);
+					break;
+				case "southBL":
+					S = getCorner(parser);
+					break;
+				default:
+					skip(name, parser);
+					break;
+			}
+
 		}
-		PhotoMeta pm = new PhotoMeta(N,E,S,W);
-		return pm;
+
+		return new PhotoMeta(N, E, S, W);
 	}
-	
 	private double getCorner(XmlPullParser parser) throws XmlPullParserException, IOException {
 		parser.next();
 		double f =Double.parseDouble(parser.getText());
@@ -109,4 +115,11 @@ public class AirPhotoMetaDataXML extends XMLConfigurationModule {
 		
 	}
 
+	@Override
+	public PhotoMeta getPhotoMeta() {
+		Object pm = getEssence();
+		if (pm==null || !(pm instanceof PhotoMeta))
+			return null;
+		return (PhotoMeta)pm;
+	}
 }

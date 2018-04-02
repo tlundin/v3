@@ -73,12 +73,10 @@ public class GisMultiPointObject extends GisPathObject {
 			
 		}
 
-		if (distanceToClick<ClickThresholdInMeters) 
-			return true;
-		
-			
-		return false;
-	}
+        return distanceToClick < ClickThresholdInMeters;
+
+
+    }
 	
 	
 }

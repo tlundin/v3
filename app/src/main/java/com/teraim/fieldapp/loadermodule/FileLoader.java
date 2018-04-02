@@ -61,8 +61,8 @@ public class FileLoader extends Loader {
 			return new LoadResult(module, ErrorCode.reloadDependant,e.getDependendant());
 		}
 		finally {
-			try {if (reader!=null)reader.close();}catch (Exception e){};
-		}
+			try {if (reader!=null)reader.close();}catch (Exception e){}
+        }
 	}
 
 }

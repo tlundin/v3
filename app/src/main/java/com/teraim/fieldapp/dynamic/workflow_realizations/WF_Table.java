@@ -57,8 +57,8 @@ public class WF_Table extends WF_List  {
 	//How about using the Container's panel?? TODO
 	public WF_Table(String id,String label,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
-		tableView = (TableLayout)tableV.findViewById(R.id.table);;
-		myContext = ctx;
+		tableView = (TableLayout)tableV.findViewById(R.id.table);
+        myContext = ctx;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		al = gs.getVariableConfiguration();
@@ -175,9 +175,9 @@ public class WF_Table extends WF_List  {
 			Log.d("baloba","seting with "+width);
 			width = Integer.parseInt(widthS);
 
-		} catch (NumberFormatException e) {};
+		} catch (NumberFormatException e) {}
 
-		for (int i=0;i<columnKeyL.size();i++) {
+        for (int i=0;i<columnKeyL.size();i++) {
 			
 			k = columnKeyL.get(i);
 			l = (useColumKeyAsHeader?null:labels.get(i));
@@ -236,9 +236,9 @@ public class WF_Table extends WF_List  {
 	//Keep track of Aggregate column cells.
 	public enum AggregateFunction {
 		AND, OR, COUNT, SUM, MIN, MAX, aggF, AVG
-	};
+	}
 
-	private class AggregateColumn implements EventListener {
+    private class AggregateColumn implements EventListener {
 
 
 
@@ -401,8 +401,8 @@ public class WF_Table extends WF_List  {
 		int widthI = 50;
 		if (width!=null) try {
 			widthI = Integer.parseInt(width);
-		} catch (NumberFormatException e) {};
-		//Add elements
+		} catch (NumberFormatException e) {}
+        //Add elements
 		View view;
 		for (Listable l:get()) {
 			WF_Table_Row wft = (WF_Table_Row)l;

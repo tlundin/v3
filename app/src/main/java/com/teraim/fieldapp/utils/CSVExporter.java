@@ -90,7 +90,7 @@ public class CSVExporter extends Exporter {
 	}
 
 
-	private String writeVariable(StoredVariableData variable) throws IOException {
+	private String writeVariable(StoredVariableData variable) {
 		//Type found from extended data
 		String ret = "";
 		String type;

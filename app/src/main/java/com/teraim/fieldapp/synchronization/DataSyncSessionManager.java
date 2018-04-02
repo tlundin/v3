@@ -29,8 +29,8 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 		sending_ping,
 		error,
 		sending_data,
-		closed;
-	}
+		closed
+    }
 	private static DataSyncSessionManager singleton=null;
 	Context ctx;
 	ConnectionProvider mConnection;

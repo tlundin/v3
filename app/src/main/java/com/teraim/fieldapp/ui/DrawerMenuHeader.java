@@ -29,9 +29,10 @@ public class DrawerMenuHeader implements DrawerMenuItem {
 	@Override
 	public View getView(LayoutInflater inflater, View convertView) {
 		View view;
+		TextView tv;
 		if (convertView == null) {
-			view = (View) inflater.inflate(R.layout.drawer_menu_header, null);
-			TextView tv = (TextView)view.findViewById(R.id.separator);
+			view = inflater.inflate(R.layout.drawer_menu_header, null);
+			tv = (TextView)view.findViewById(R.id.separator);
 			//Log.d("vortex","Menuheader bg text colors: "+bgColor+" "+textColor);
 			if (bgColor!=null)
 				tv.setBackgroundColor(Color.parseColor(bgColor));
@@ -40,10 +41,11 @@ public class DrawerMenuHeader implements DrawerMenuItem {
 			// Do some initialization
 		} else {
 			view = convertView;
+			tv = (TextView) view.findViewById(R.id.separator);
 		}
 
-		TextView text = (TextView) view.findViewById(R.id.separator);
-		text.setText(name);
+
+		tv.setText(name);
 
 		return view;
 	}

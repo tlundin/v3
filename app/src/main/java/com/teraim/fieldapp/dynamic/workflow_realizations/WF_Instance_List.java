@@ -25,12 +25,12 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 
 
-	Map<String,WF_ClickableField_Selection> entryFields = new HashMap<String,WF_ClickableField_Selection>();
+	private Map<String,WF_ClickableField_Selection> entryFields = new HashMap<>();
 
 
 	private int index = 0;
-	String variatorColumn;
-	private Set<List<String>> selectedRows = new HashSet<List<String>>();
+	private String variatorColumn;
+	private Set<List<String>> selectedRows = new HashSet<>();
 
 
 	private Map<String, Map<String, String>> varValueMap;
@@ -45,12 +45,13 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 	private boolean showHistorical;
 
+	final private Map<String,VarPars> parameters;
 
 	public WF_Instance_List(String id, WF_Context ctx, String variatorColumn, boolean isVisible, DisplayFieldBlock format) {
 		super(id, ctx,null,isVisible);
 		suffices.clear();
 
-		myKeyHash = new HashMap<String,String>(gs.getVariableCache().getContext().getContext());
+		myKeyHash = new HashMap<>(gs.getVariableCache().getContext().getContext());
 		myKeyHash.remove(variatorColumn);
 		ctx.registerEventListener(this, EventType.onFlowExecuted);
 		ctx.registerEventListener(this, EventType.onSave);
@@ -58,6 +59,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 		this.variatorColumn=variatorColumn;
 		this.entryFormat = format;
 		Log.d("nils","INSTANCE LIST CREATED. VARIATOR: "+variatorColumn);
+		parameters = new HashMap<>();
 	}
 
 	public void setRows(List<List<String>> rows) {
@@ -67,15 +69,29 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 
 	//A set containing all variable suffices used in EntryFields.
-	Set<String> suffices = new HashSet<String>();
+	private Set<String> suffices = new HashSet<String>();
 
 
+	private class VarPars{
+		VarPars(boolean showHistorical,boolean isVisible, boolean isDisplayed,String format,String defaultValue) {
+			this.showHistorical=showHistorical;
+			this.isVisible=isVisible;
+			this.isDisplayed=isDisplayed;
+			this.format=format;
+			this.defaultValue = defaultValue;
+		}
+		boolean showHistorical;
+		boolean isVisible;
+		boolean isDisplayed;
+		String format,defaultValue;
+	}
 
 	@Override
 	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
 		this.showHistorical = showHistorical;
 
 		suffices.add(varSuffix);
+		parameters.put(varSuffix,new VarPars(showHistorical,isVisible,displayOut,format,initialValue));
 		Log.d("vortex","In addvariabletoEverylist! Suffices now: "+suffices.toString());
 		return true;
 	}
@@ -84,7 +100,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 	//Creates the entryfields iteratively for each new batch of variables.
 
 
-	private Set<String> myVars=new HashSet<String>();
+	private Set<String> myVars=new HashSet<>();
 
 	private void updateEntryFields() {
 		//fetch all variable instances of given namePrefix. Remove variator from keychain so that all variables independent of variator are loaded.
@@ -127,11 +143,12 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 								efVarName = namePrefix+":"+varName+":"+suffix;
 								Log.d("vortex","will generate: "+efVarName);
 								//If this equals the main var, then dont generate - use existing.
+								VarPars pars = parameters.get(suffix);
 								if (efVarName.equals(varId))
-									ef.addVariable(var, true, null, true,showHistorical);
+									ef.addVariable(var, pars.isDisplayed, pars.format, pars.isVisible,pars.showHistorical);
 								else {
-									efVar =varCache.getVariable(myKeyHash,varCache.createOrGetCache(myKeyHash), efVarName, null, true);
-									ef.addVariable(efVar, true, null, true,showHistorical);
+									efVar =varCache.getVariable(myKeyHash,varCache.createOrGetCache(myKeyHash), efVarName, pars.defaultValue, true);
+									ef.addVariable(efVar, pars.isDisplayed, pars.format, pars.isVisible,pars.showHistorical);
 								}
 							}
 
@@ -231,7 +248,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 		String vId;
 		if (myRows==null)
 			return null;
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new HashSet<>();
 		for (List<String> r:myRows) {
 			vId = al.getVarName(r);
 			if (vId.endsWith(suffix))
@@ -293,7 +310,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 	@Override
 	public void onEvent(Event e) {
-		if (e.getProvider()!=null && e.getProvider().equals(this))
+		if (e.getProvider()!=null && e.getProvider().equals(this.getId()))
 			Log.d("nils","Throwing event that originated from me");
 		else {
 			if (e.getType()==EventType.onFlowExecuted) {

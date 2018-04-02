@@ -8,15 +8,15 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 //Listable represents a row of data with columns. 
 //TODO: Weaknesses : Cannot sort on value, only columns in Configuration Time data.
 public interface Listable {
-	public String getSortableField(String columnId);
+	String getSortableField(String columnId);
 	//Return the keychain for this listables key.
-	public Map<String,String> getKeyChain();
-	public String getKey();
+    Map<String,String> getKeyChain();
+	String getKey();
 	//TODO: Must separate into Comparable class or similar?
-	public long getTimeStamp();
-	public boolean hasValue();
-	public String getLabel();
-	public void refresh();
+    long getTimeStamp();
+	boolean hasValue();
+	String getLabel();
+	void refresh();
 
 	Set<Variable> getAssociatedVariables();
 

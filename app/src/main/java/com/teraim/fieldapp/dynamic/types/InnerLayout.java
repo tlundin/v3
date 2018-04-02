@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
  */
 public interface InnerLayout {
 
-    public LinearLayout getOutputFieldLayout();
-    public View getInnerLayout();
+    LinearLayout getOutputFieldLayout();
+    View getInnerLayout();
 
 }

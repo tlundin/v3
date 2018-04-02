@@ -39,7 +39,7 @@ public class GroupsConfiguration extends CSVConfigurationModule {
 	}
 
 	@Override
-    public LoadResult prepare() throws IOException {
+    public LoadResult prepare() {
 		scanHeader=true;
 		groups=new HashMap<String,List<List<String>>>();
 		groupIndex = -1;
@@ -53,7 +53,7 @@ public class GroupsConfiguration extends CSVConfigurationModule {
 
 
 	@Override
-	public LoadResult parse(String row, Integer currentRow) throws IOException {
+	public LoadResult parse(String row, Integer currentRow) {
 		//Log.d("vortex","group parsing "+row);
 		//if no header, abort.
 		if (scanHeader && row == null) {

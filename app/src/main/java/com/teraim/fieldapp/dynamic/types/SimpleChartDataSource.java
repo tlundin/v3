@@ -12,8 +12,8 @@ import java.util.List;
 public interface SimpleChartDataSource extends DataSource {
 
     CategorySeries getSeries();
-    public int[] getCurrentValues();
-    public int getSize();
+    int[] getCurrentValues();
+    int getSize();
     int[] getColors();
     String[] getCategories();
 }

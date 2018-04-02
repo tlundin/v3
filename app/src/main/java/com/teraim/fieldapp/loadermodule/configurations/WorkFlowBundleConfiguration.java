@@ -1596,18 +1596,18 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			} else if (name.equals("max")) {
 				String mS = readText("max",parser);
 				if (mS!=null)
-					try {max = Integer.parseInt(mS); } catch (NumberFormatException e) {};
-			} else if (name.equals("min")) {
+					try {max = Integer.parseInt(mS); } catch (NumberFormatException e) {}
+            } else if (name.equals("min")) {
 				String mS = readText("min",parser);
 				if (mS!=null)
-					try {min = Integer.parseInt(mS); } catch (NumberFormatException e) {};
-			} else if (name.equals("show_historical")) {
+					try {min = Integer.parseInt(mS); } catch (NumberFormatException e) {}
+            } else if (name.equals("show_historical")) {
 				showHistorical = readText("show_historical",parser).equals("true");
 			}  else if (name.equals("initial_value")) {
 				initialValue = readText("initial_value",parser);
 			} else if (name.equals("auto_open_spinner")) {
-				autoOpenSpinner = readText("auto_open_spinner",parser).equals("true");;
-			} else if (name.equals("variable_name")) {
+				autoOpenSpinner = readText("auto_open_spinner",parser).equals("true");
+            } else if (name.equals("variable_name")) {
 				variableName = readText("variable_name",parser);
 			} else if (name.equals("slider_group_name")) {
 				group = readText("slider_group_name",parser);
@@ -1691,7 +1691,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	 * @throws XmlPullParserException
 	 */
 
-	private void dummyWarning(String block,XmlPullParser parser) throws IOException, XmlPullParserException {
+	private void dummyWarning(String block,XmlPullParser parser) {
 		o.addRow("Parsing block: "+block);
 		o.addRow("");
 		o.addRedText("This type of block is not supported");
@@ -1935,8 +1935,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 				target = readText("target",parser);
 			}
 			else if (name.equals("enabled")) {
-				enabled = readText("enabled",parser).equals("true");;
-			}
+				enabled = readText("enabled",parser).equals("true");
+            }
 			else if (name.equals("is_visible")) {
 				isVisible = readText("is_visible",parser).equals("true");
 			} 

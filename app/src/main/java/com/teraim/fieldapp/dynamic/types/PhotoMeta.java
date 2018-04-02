@@ -5,7 +5,7 @@ import java.io.Serializable;
 import android.util.Log;
 
 public class PhotoMeta implements Serializable {
-	private static final long serialVersionUID = -3400543797668108398L;
+	private static final long serialVersionUID = -3400543797668108399L;
 	public double N=0,E=0,S=0,W=0;
 
 
@@ -15,7 +15,7 @@ public class PhotoMeta implements Serializable {
 			this.W = Double.parseDouble(W);
 			this.S = Double.parseDouble(S);
 			this.E = Double.parseDouble(E);
-		} catch (NumberFormatException e) { Log.e("vortex","non number in gis bg coordinates"); };
+		} catch (NumberFormatException e) { Log.e("vortex","non number in gis bg coordinates"); }
 
 
 	}
@@ -24,6 +24,7 @@ public class PhotoMeta implements Serializable {
 		this.W=W;
 		this.S=S;
 		this.E=E;
+
 	}
 	
 	public double getWidth()  {

@@ -2,19 +2,19 @@ package com.teraim.fieldapp.dynamic.types;
 
 public interface Numerable {
 
-	public enum Type {
+	enum Type {
 		LITERAL,ARITMETIC,NUMERIC,FLOAT,BOOLEAN
 	}
 	
-	public  String toString();
+	String toString();
 	 
-	public Type getType();
+	Type getType();
 
-	public  String getName(); 
+	String getName();
 	
-	public  String getLabel();
+	String getLabel();
 	
-	public  void setValue(String value);
+	void setValue(String value);
 
 	
 	

@@ -86,8 +86,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 	}
 	final Control control = new Control();
 	public class MThread extends Thread {
-		public void stopMe() {};
-	}
+		public void stopMe() {}
+    }
 	MThread t;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -255,9 +255,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				mBound = false;
 			}
 		}
-	};
+	}
 
-	/** Flag indicating whether we have called bind on the service. */
+    /** Flag indicating whether we have called bind on the service. */
 	boolean mBound;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -917,8 +917,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				public void onClose() {
 					me.onCloseSync();
 
-				};
-			});
+				}
+            });
 		} else {
 			if (syncMethod.equals("Internet")) {
 				if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY)) {

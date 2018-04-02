@@ -219,7 +219,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(brr,
 					ifi);
 			
-			myContext = new WF_Context((Context)this.getActivity(),this,R.id.content_frame);
+			myContext = new WF_Context(this.getActivity(),this,R.id.content_frame);
 			wf = getFlow();
 			if (wf == null) {
 				Log.e("Vortex","WF was null in Executor. Exiting...");

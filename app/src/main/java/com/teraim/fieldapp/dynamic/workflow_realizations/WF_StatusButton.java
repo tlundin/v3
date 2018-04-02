@@ -89,7 +89,6 @@ public class WF_StatusButton extends WF_Button {
            } catch (NumberFormatException e) {
                Log.e("vortex", "Parseerror in refresh status. This is not an integer: " + statusVariable.getValue());
            }
-           ;
            myStatus = getStatusFromOrdinal(statusI);
            refreshButton(WF_StatusButton.getIdFromStatus(myStatus));
        }

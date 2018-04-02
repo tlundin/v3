@@ -10,32 +10,32 @@ import com.teraim.fieldapp.dynamic.types.DB_Context;
 
 public interface FullGisObjectConfiguration extends GisObjectBaseAttributes {
 
-	public enum GisObjectType {
+	enum GisObjectType {
 		Point,
 		Multipoint,
 		Polygon, Linestring
 	}
 	
-	public enum PolyType {
+	enum PolyType {
 		circle,
 		rect,
 		triangle
 	}
 	
-	public float getRadius();
-	public String getColor();
-	public GisObjectType getGisPolyType();
-	public Bitmap getIcon();
-	public Paint.Style getStyle();
-	public PolyType getShape();
-	public String getClickFlow();
-	public DB_Context getObjectKeyHash();
-	public String getStatusVariable();
-	public boolean isUser();
-	public String getName();
-	public String getRawLabel();
-	public String getCreator();
-	public boolean useIconOnMap();
+	float getRadius();
+	String getColor();
+	GisObjectType getGisPolyType();
+	Bitmap getIcon();
+	Paint.Style getStyle();
+	PolyType getShape();
+	String getClickFlow();
+	DB_Context getObjectKeyHash();
+	String getStatusVariable();
+	boolean isUser();
+	String getName();
+	String getRawLabel();
+	String getCreator();
+	boolean useIconOnMap();
 	
 	
 }

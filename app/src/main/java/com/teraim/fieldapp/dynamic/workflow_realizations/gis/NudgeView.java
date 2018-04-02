@@ -186,7 +186,7 @@ public class NudgeView extends View {
                                 handler.postDelayed(runnable, 1000);
                             }
 
-                        };
+                        }
                         break;
                     case MotionEvent.ACTION_UP:
                         downCount=false;

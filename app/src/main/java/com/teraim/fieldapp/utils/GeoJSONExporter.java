@@ -427,8 +427,7 @@ public class GeoJSONExporter extends Exporter {
 				} catch (NumberFormatException e) {
 					writer.nullValue();
 				}
-				;
-			}
+            }
 		}
 		catch (IOException e) {
 			e.printStackTrace();

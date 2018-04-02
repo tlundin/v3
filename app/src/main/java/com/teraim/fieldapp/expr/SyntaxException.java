@@ -25,8 +25,9 @@ public class SyntaxException extends Exception {
      on the `allowed' list. */
  public static final int UNKNOWN_VARIABLE = 4;
  
- public SyntaxException() {};
- public SyntaxException(String complaint, 
+ public SyntaxException() {}
+
+    public SyntaxException(String complaint,
 			   Parser parser,
 			   int reason, 
 			   String expected) {

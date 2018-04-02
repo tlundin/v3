@@ -123,7 +123,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 		lm = (LocationManager)this.getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-		stopB = (Button)new Button(this.getActivity());
+		stopB = new Button(this.getActivity());
 		startB = (Button)fieldList.findViewById(R.id.startB);
 
 		varCache = gs.getVariableCache();
@@ -262,8 +262,8 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 			linjeF.addView(linje);
 
-			List<String>startAlt = (histOst != null && histNorr != null)?Arrays.asList(new String[] {"Sätt startpunkt här","Använd beräknad startpunkt","Starten måste kartinventeras","Hela linjen i karta"}):
-				Arrays.asList(new String[] {"Sätt startpunkt här"});			
+			List<String>startAlt = (histOst != null && histNorr != null)?Arrays.asList("Sätt startpunkt här","Använd beräknad startpunkt","Starten måste kartinventeras","Hela linjen i karta"):
+				Arrays.asList("Sätt startpunkt här");
 
 			final int startIHar = startAlt.indexOf("Sätt startpunkt här");
 			final int startIKart = startAlt.indexOf("Starten måste kartinventeras");
@@ -305,7 +305,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 				@Override
 				public void onClick(View v) {
-					if (((ViewGroup)startSpinnerL.getParent())!=null)
+					if (startSpinnerL.getParent() !=null)
 						((ViewGroup)startSpinnerL.getParent()).removeView(startSpinnerL);
 					if (!linjeStatus.getValue().equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR)) {
 						if (linjeStatus.getValue().equals(Constants.STATUS_AVSLUTAD_OK)) {
@@ -718,7 +718,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 		}
 
-		if (((ViewGroup)myView.getParent())!=null)
+		if (myView.getParent() !=null)
 			((ViewGroup)myView.getParent()).removeView(myView);
 
 		alert.setTitle(linjeObjLabel);
@@ -810,7 +810,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 				Variable v = varCache.getVariable(keyI,NamedVariables.AVGRANSSLUT);
 				v.setValue(end);
 				v= varCache.getVariable(keyI,NamedVariables.AVGRTYP);
-				Log.d("nils","Setting avgrtyp to "+((String)avgrSp.getSelectedItem()));
+				Log.d("nils","Setting avgrtyp to "+ avgrSp.getSelectedItem());
 				v.setValue(avgrValueA[avgrSp.getSelectedItemPosition()]);
 			}
 
@@ -885,7 +885,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	}
 
 	public boolean isRunning() {
-		return linjeStatus==null?false:linjeStatus.getValue().equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR);
+		return linjeStatus != null && linjeStatus.getValue().equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR);
 	}
 
 

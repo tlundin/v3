@@ -96,7 +96,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
     @Override
-    protected LoadResult prepare(JsonReader reader) throws IOException, JSONException {
+    protected LoadResult prepare(JsonReader reader) throws IOException {
         //first should be an array.
         if (!myDb.deleteHistoryEntries(GisConstants.TYPE_COLUMN,myType))
             return new LoadResult(this,ErrorCode.Aborted,"Database is missing column 'ÅR', cannot continue");
@@ -117,7 +117,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
     //Parses one row of data, then updates status.
     @Override
-    public LoadResult parse(JsonReader reader) throws JSONException,IOException {
+    public LoadResult parse(JsonReader reader) throws IOException {
         Location myLocation;
         try {
 
@@ -277,7 +277,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                         //If single point, next must be number.
                                         if (reader.peek() == JsonToken.NUMBER) {
                                             //Log.d("morphy", "point");
-                                            myGisObjects.add(new GisObject(keyChain, Arrays.asList(new Location[]{readLocation(reader)}), attributes));
+                                            myGisObjects.add(new GisObject(keyChain, Arrays.asList(readLocation(reader)), attributes));
                                         } else {
                                             //next must be an array. Otherwise error.
                                             //[->[
@@ -490,7 +490,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     Set<GisObject>dubletter = new HashSet<>();
     Set<String>seenAlready=new HashSet<>();
     @Override
-    public boolean freeze(int counter) throws IOException {
+    public boolean freeze(int counter) {
 
         if (counter==-1 || myGisObjects==null || myGisObjects.isEmpty()) {
             Log.d("vortex","nothing to freeze!");
@@ -537,7 +537,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
             if (!myDb.fastHistoricalInsert(go.getKeyHash(),key,attr.get(key))) {
                 o.addRow("");
-                o.addRedText("Row: "+counter+". Insert failed for "+key+". Hash: "+go.getKeyHash().toString());;
+                o.addRedText("Row: "+counter+". Insert failed for "+key+". Hash: "+go.getKeyHash().toString());
             }
             if (isDebug) {
                 if (varTable.getRowFromKey(key)==null) {

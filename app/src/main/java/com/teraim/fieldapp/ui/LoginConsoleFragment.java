@@ -202,9 +202,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		myLoader = new ModuleLoader(loaderId,myModules,loginConsole,globalPh,allFrozen,debugConsole,this,mActivity);
 
 		if (Constants.FreeVersion && expired())
-			showErrorMsg("The license has expired. The App still works, but you will not be able to export any data.");;
+			showErrorMsg("The license has expired. The App still works, but you will not be able to export any data.");
 
-			return view;
+		return view;
 	}
 
 
@@ -331,8 +331,8 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	private String getRandomName() {
 
-		List<String> start= Arrays.asList(new String[]{"Anna","Eva","Fiona","Berta"});
-		List<String> end= Arrays.asList(new String[]{"stina","getrud","lena","eulalia"});        
+		List<String> start= Arrays.asList("Anna","Eva","Fiona","Berta");
+		List<String> end= Arrays.asList("stina","getrud","lena","eulalia");
         Collections.shuffle(start);
         Collections.shuffle(end);
         return start.get(0)+end.get(0)+"_"+(new Random()).nextInt(500);
@@ -420,8 +420,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			WorkFlowBundleConfiguration wfC = ((WorkFlowBundleConfiguration)myModules.getModule(bundleName));
 			List<Workflow> workflows = (List<Workflow>)wfC.getEssence();
 			String imgMetaFormat = wfC.getImageMetaFormat();
-			if (imgMetaFormat!=null)
-				Log.d("franzon",imgMetaFormat);
 			Table t = (Table)(myModules.getModule(VariablesConfiguration.NAME).getEssence());
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
 			if (t==null) {

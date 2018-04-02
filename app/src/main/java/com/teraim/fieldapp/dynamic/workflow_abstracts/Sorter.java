@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Sorter {
 	
-	public List<? extends Listable> sort(List<? extends Listable> list);
+	List<? extends Listable> sort(List<? extends Listable> list);
 }

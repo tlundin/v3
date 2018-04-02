@@ -25,7 +25,8 @@ public abstract class ConfigurationModule {
 		json,
 		xml,
 		csv,
-		ini
+		ini,
+		jgw
 	}
 
 	public enum Source {
@@ -34,17 +35,18 @@ public abstract class ConfigurationModule {
 	}
 	public Source source;
 	public Type type;
-	public String rawData,fileName,printedLabel,frozenPath;
+	public String fileName;
+	private String rawData,printedLabel,frozenPath;
 	protected float newVersion;
 	protected PersistenceHelper globalPh,ph;
-	protected boolean IamLoaded=false;
+	private boolean IamLoaded=false;
 	protected String versionControl;
 
 	private Integer linesOfRawData;
 	protected Object essence;
 	protected String baseBundlePath;
 	private boolean notFound=false;
-	private String fullPath = null;
+	private String fullPath;
 	//freezeSteps contains the number of steps required to freeze the object. Should be -1 if not set specifically by specialized classes.
 	protected int freezeSteps=-1;
 	//tells if this module is stored on disk or db.
@@ -94,7 +96,7 @@ public abstract class ConfigurationModule {
 
 	boolean isThawing = false;
 
-	public void setThawActive(boolean t) {
+	private void setThawActive(boolean t) {
 		isThawing=t;
 	}
 	public boolean thawing() {
@@ -137,7 +139,9 @@ public abstract class ConfigurationModule {
 	}
 
 
-
+	public String getRawData() {
+		return rawData;
+	}
 	public void setRawData(String data, Integer tot) {
 		rawData = data;
 		this.linesOfRawData = tot;

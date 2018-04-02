@@ -3,6 +3,7 @@ package com.teraim.fieldapp.loadermodule;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 
 import org.json.JSONException;
 import org.xmlpull.v1.XmlPullParser;
@@ -29,30 +30,30 @@ import com.teraim.fieldapp.utils.Tools;
 public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult> {
 
 
-	ProgressBar pb;
-	TextView tv;
-	FileLoadedCb cb;
-	LoggerI myLog;
+	private WeakReference<ProgressBar> pb;
+	private WeakReference<TextView> tv;
+	private FileLoadedCb cb;
+	private LoggerI myLog;
 	String vNo ="";
-	LoadResult loadR=null;
+	private LoadResult loadR=null;
 	//Values defined in @arrays file, 
 	boolean versionControl;
 
-	public Loader(ProgressBar pb, TextView tv,FileLoadedCb cb, String versionControlS) {
-		this.pb=pb;
-		this.tv=tv;
+	 Loader(ProgressBar pb, TextView tv,FileLoadedCb cb, String versionControlS) {
+		this.pb= new WeakReference<>(pb);
+		this.tv=new WeakReference<>(tv);
 		this.cb=cb;
 		this.versionControl=(versionControlS==null || !versionControlS.equals("Forced"));
 	}
 
 
-	public static float getVersion(String h1,String h2) {
+	 static float getVersion(String h1,String h2) {
 
 		Log.d("spinn","Get version with h1:"+h1+" h2: "+h2);
 		String[] header = h1.split(",");
 
-		if (header!=null&&header.length>=2) {
-			String potVer = header[1].trim(); 
+		if (header.length>=2) {
+			String potVer = header[1].trim();
 			if (Tools.isVersionNumber(potVer))
 				return Float.parseFloat(potVer);
 		}
@@ -86,9 +87,9 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		cb.onUpdate(values);
 	}
 
-	int rowC = 1;
+	private int rowC = 1;
 	protected LoadResult read(ConfigurationModule m, float newVersion, BufferedReader reader,StringBuilder sb) throws IOException {
-		String line = null;
+		String line;
 		if (newVersion != -1) {
 			m.setNewVersion(newVersion);
 			if (versionControl) {
@@ -108,7 +109,8 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		}
 		while ((line = reader.readLine()) != null)
 		{
-			sb.append(line + "\n");
+			sb.append(line);
+			sb.append("\n");
 			if(isCancelled()) {
 				reader.close();
 				return new LoadResult(m,ErrorCode.Aborted);
@@ -121,16 +123,29 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 	protected LoadResult parse(ConfigurationModule m) throws IOException, XmlPullParserException, JSONException, Dependant_Configuration_Missing {
-		if (m.type==Type.csv||m.type==Type.ini)
-			return parseCSV((CI_ConfigurationModule)m);
-		else if (m.type==Type.json)
-			return parseJSON((JSONConfigurationModule)m);
-		else
-			return parseXML((XMLConfigurationModule)m);
+		switch(m.type) {
+			case csv:
+				/*fallthrough*/
+			case ini:
+				/*fallthrough*/
+			case jgw:
+				return parseCSV((CI_ConfigurationModule)m);
+			case json:
+				return parseJSON((JSONConfigurationModule)m);
+			case xml:
+				/*fallthrough*/
+			default:
+				return parseXML((XMLConfigurationModule)m);
+
+		}
+
+
+
+
 	}
 
-	protected LoadResult parseCSV(CI_ConfigurationModule m) throws IOException, Dependant_Configuration_Missing {
-		String[] myRows=null;
+	private LoadResult parseCSV(CI_ConfigurationModule m) throws IOException, Dependant_Configuration_Missing {
+		String[] myRows;
 		int noOfRows=rowC;
 		LoadResult res = null;
 		rowC=1;
@@ -139,8 +154,8 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		if (lr!=null)
 			return lr;
 
-		if (m.rawData!=null) 
-			myRows = m.rawData.split("\\n");
+		if (m.getRawData()!=null)
+			myRows = m.getRawData().split("\\n");
 		else
 			return new LoadResult(m,ErrorCode.noData);
 		for (String row:myRows) {
@@ -162,10 +177,10 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 
-	protected LoadResult parseXML(XMLConfigurationModule m) throws XmlPullParserException, IOException {
+    private LoadResult parseXML(XMLConfigurationModule m) throws XmlPullParserException, IOException {
 		XmlPullParser parser = Xml.newPullParser();
 		parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-		parser.setInput(new StringReader(m.rawData));
+		parser.setInput(new StringReader(m.getRawData()));
 		LoadResult lr = m.prepare(parser);
 		//exit if prepare returns.
 		if (lr!=null)
@@ -179,8 +194,8 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 
-	protected LoadResult parseJSON(JSONConfigurationModule m) throws IOException, JSONException {
-		JsonReader parser = new JsonReader(new StringReader(m.rawData));
+    private LoadResult parseJSON(JSONConfigurationModule m) throws IOException, JSONException {
+		JsonReader parser = new JsonReader(new StringReader(m.getRawData()));
 		LoadResult lr = m.prepare(parser);
 		if (lr!=null)
 			return lr;
@@ -198,7 +213,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 
 
 
-	protected LoadResult freeze(ConfigurationModule m) throws IOException {
+	 LoadResult freeze(ConfigurationModule m) throws IOException {
 
 		//Multiple steps or only one to freeze?
 		if (m.freezeSteps>0) {

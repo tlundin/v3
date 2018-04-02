@@ -1348,7 +1348,7 @@ public class Expressor {
 				//system.out.println("Recursing over argument "+i++ +"in function "+type.name()+" :");
 				//printTokens(arg);
 				EvalExpr analyzedArg;
-				try {
+//				try {
 					analyzedArg = analyzeExpression(arg);
 					if (analyzedArg != null) {
 						args.add(analyzedArg);
@@ -1356,10 +1356,12 @@ public class Expressor {
 						System.err.println("Fail to parse: ");
 						printTokens(arg);
 					}
+					/*
 				} catch (ExprEvaluationException e1) {
 					System.err.println("Fail to parse :");
 					printTokens(arg);
 				}
+				*/
 
 			}
 		}
@@ -1664,7 +1666,7 @@ public class Expressor {
 							if (cp != null) {
 
 								while (cp.next()) {
-									Log.d("statusvar", "picker return for " + (String) evalArgs.get(0) + " is\n" + cp.getKeyColumnValues());
+									Log.d("statusvar", "picker return for " + evalArgs.get(0) + " is\n" + cp.getKeyColumnValues());
 									empty = false;
 									String varValue = cp.getVariable().value;
 									Log.d("vortex", "VALUE: " + varValue);
@@ -1689,8 +1691,8 @@ public class Expressor {
 						}
 						if (cp==null || empty) {
 							o.addRow("");
-							o.addRedText("getStatusVariableValues finds no match with argument "+((String)evalArgs.get(0)));
-							Log.e("vortex","found no results in getStatusVariableValues for variable "+((String)evalArgs.get(0)));
+							o.addRedText("getStatusVariableValues finds no match with argument "+ evalArgs.get(0));
+							Log.e("vortex","found no results in getStatusVariableValues for variable "+ evalArgs.get(0));
 						}
 
 						if (combinedStatus != null) {
@@ -1761,12 +1763,10 @@ public class Expressor {
 								return fileName.getName().matches(regexp);
 							}
 						});
-						if (matchingFiles != null && matchingFiles.length != 0)
-							return true;
+                        return matchingFiles != null && matchingFiles.length != 0;
 
 					}
-					return false;
-				//Return 0 if one of the values are undefined.
+                    //Return 0 if one of the values are undefined.
 				case sum:
 					if (!checkPreconditions(evalArgs,-1,Null_Numeric))
 						return 0;
@@ -1869,17 +1869,13 @@ public class Expressor {
 								if (myVar != null && myVar.getValue() != null) {
 									allNull = false;
 									//if (!prep) {
-									try {
+
 										//Log.d("vortex","formula: "+formula);
 										List<Token> resulto = Expressor.tokenize(formula);
 										Expressor.testTokens(resulto);
 										fifo = Expressor.analyzeExpression(resulto);
 										//Log.d("vortex","tokenized: "+resulto);
-									} catch (ExprEvaluationException e) {
-										System.err.println("failed to analyze formula " + formula + " in hasValue/allHaveValue");
-										//	}
-										//	prep=true;
-									}
+
 									if (fifo!=null)
 										res = Expressor.analyzeBooleanExpression(fifo);
 									else
@@ -1999,10 +1995,7 @@ public class Expressor {
 					if (var != null) {
 						String value = var.getValue();
 						//Log.d("vortex","Found value "+value+" for variable "+var.getLabel()+" in has!");
-						if (value== null)
-							return false;
-						else
-							return true;
+                        return value != null;
 					} else {
 						Log.e("vortex","Variable not found for literal: ["+evalArgs.get(0)+"]");
 						o.addRow("");
@@ -2197,8 +2190,7 @@ public class Expressor {
 		}
 	}
 
-	public static EvalExpr analyzeExpression(List<Token> tokens)
-			throws ExprEvaluationException {
+	public static EvalExpr analyzeExpression(List<Token> tokens) {
 		boolean err = false;
 
 		// Operation stack.
@@ -2482,7 +2474,7 @@ public class Expressor {
 				//Add new.
 				if (op instanceof Operand) {
 					try {
-						rez = new Convoluted((EvalExpr)rez,(EvalExpr)arg2,(Operand)op);
+						rez = new Convoluted(rez, arg2,(Operand)op);
 					} catch (ClassCastException e) {
 						printfail(rez,arg2,op);
 					}

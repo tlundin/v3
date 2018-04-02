@@ -24,8 +24,8 @@ public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerat
 		super(textColor,bgColor,verticalFormat,verticalMargin);
 		this.blockId=id;
 		this.unit=unit;
-		this.namn=namn;;
-		this.label=label;
+		this.namn=namn;
+        this.label=label;
 		this.formula=formula;
 		this.containerId=containerId;
 		this.isVisible=isVisible;

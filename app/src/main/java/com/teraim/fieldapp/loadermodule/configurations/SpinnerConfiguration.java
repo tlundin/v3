@@ -51,7 +51,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 
 
 	@Override
-	public LoadResult parse(String row, Integer currentRow) throws IOException {
+	public LoadResult parse(String row, Integer currentRow) {
 			if (currentRow==1) {
 				Log.d("vortex","skip header: "+row);
 				return null;
@@ -90,7 +90,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 
 	
 	@Override
-    public LoadResult prepare() throws IOException {
+    public LoadResult prepare() {
 		// TODO Auto-generated method stub
 		return null;
 	}

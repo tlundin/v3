@@ -21,6 +21,6 @@ package com.teraim.fieldapp.gis;
  *
  */
 public interface ZoomAnimationListener {
-	public void onZoom(float scale, float x, float y);
-	public void onComplete();
+	void onZoom(float scale, float x, float y);
+	void onComplete();
 }

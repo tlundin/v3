@@ -270,7 +270,7 @@ public class GisLayer {
 				if (gob.isUseful())
 					c++;
 			}
-			Log.d("bloon","bag has "+c+" useful members");
+			Log.d("jgw","bag has "+c+" useful members");
 
 		}
 	}

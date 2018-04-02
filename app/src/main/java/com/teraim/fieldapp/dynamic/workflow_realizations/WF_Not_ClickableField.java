@@ -56,8 +56,9 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			view = ll;
 			format = f;
 		}
-		public OutC() {};
-		public LinearLayout view;
+		public OutC() {}
+
+        public LinearLayout view;
 		public String format;
 	}
 
@@ -230,10 +231,10 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 	protected abstract boolean shouldHideOutputView();
 
-	private enum Role {None,Mix,Master,Slave};
+	private enum Role {None,Mix,Master,Slave}
 
 
-	private void setBackgroundColor(Variable var) {
+    private void setBackgroundColor(Variable var) {
 		GlobalState gs = GlobalState.getInstance();
 
 
@@ -284,7 +285,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		//Log.d("nils","refreshoutput called on "+myHeader);
 		Iterator<Map.Entry<Variable,OutC>> it = myOutputFields.entrySet().iterator();
 		while (it.hasNext()) {
-			Map.Entry<Variable,OutC> pairs = (Map.Entry<Variable,OutC>)it.next();
+			Map.Entry<Variable,OutC> pairs = it.next();
 			//Log.d("nils","Iterator has found "+pairs.getKey()+" "+pairs.getValue());
 			refreshOutputField(pairs.getKey(),pairs.getValue());
 		}	

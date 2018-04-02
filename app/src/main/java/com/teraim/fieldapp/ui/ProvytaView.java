@@ -186,7 +186,7 @@ public class ProvytaView extends View {
 			}		
 */
 		
-		drawDelytor(canvas,cx,cy,(float)oScaleF);
+		drawDelytor(canvas,cx,cy, oScaleF);
 		canvas.drawText("10",(int)(cx+r)-15, cy, pl);
 		if (largeSize)
 			canvas.drawText("N",cx,(cy-r)-25, pl);

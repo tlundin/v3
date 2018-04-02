@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +85,7 @@ public class Tools {
 		ctx.startActivity (intent);
 	}
 
-	public static String getPath(Context context, Uri uri) throws URISyntaxException {
+	public static String getPath(Context context, Uri uri) {
 		if ("content".equalsIgnoreCase(uri.getScheme())) {
 			String[] projection = { "_data" };
 			Cursor cursor = null;
@@ -539,6 +540,7 @@ public class Tools {
 	public static Map<String,String> cutKeyMap(String columns, Map<String,String> fullHash) {
 		if (columns.isEmpty())
 			return null;
+		Log.d("cutkey","cols: "+columns+"fhash: "+fullHash.toString());
 		Map<String,String> ret = new HashMap<String,String>();
 		if (fullHash == null) {
 			Log.e("vortex","Hash null - so returning empty in cutkeymap. Columns: "+columns);
@@ -558,7 +560,7 @@ public class Tools {
 	public static Map<String,String> createKeyMap(String ...parameters) {
 
 		if ((parameters.length & 1) != 0 ) {
-			Log.e("nils","createKeyMap needs an even number of arguments");
+			Log.e("fargo","createKeyMap needs an even number of arguments: "+ Arrays.toString(parameters));
 			return null;
 		}
 		String colName;
@@ -839,7 +841,7 @@ public class Tools {
 	public static void restart(Activity context) {
 		Log.d("vortex","restarting...");
 		if (GlobalState.getInstance()!=null)
-			GlobalState.getInstance().destroy();
+			GlobalState.destroy();
 		android.app.FragmentManager fm = context.getFragmentManager();
 		for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
 			fm.popBackStack();
@@ -899,9 +901,7 @@ public class Tools {
 	public static boolean isURL(String source) {
 		if (source==null)
 			return false;
-		if (!source.startsWith("http")||source.startsWith("www"))
-			return false;
-		return true;
+		return source.startsWith("http") && !source.startsWith("www");
 	}
 
 	/*
@@ -996,9 +996,9 @@ public class Tools {
 	public interface WebLoaderCb {
 
 		//called when done.
-		public void loaded(Boolean result);
+		void loaded(Boolean result);
 		//called every time 1kb has been read.
-		public void progress(int bytesRead);
+		void progress(int bytesRead);
 	}
 
 
@@ -1095,7 +1095,7 @@ public class Tools {
 
 
 	public static void saveUrl(final String filename, final String urlString, WebLoaderCb cb)
-			throws MalformedURLException, IOException {
+			throws IOException {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		try {

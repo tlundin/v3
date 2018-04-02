@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.non_generics;
 
-/**
- * @author Terje 
- * 
- * This is the Common Vars class giving access to global state stored in the Persisted memory.
- * For now, persistence implemented via SharedPreferences only.
- */
 
 
 import java.io.BufferedReader;
@@ -42,7 +36,8 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class Constants {
 
-	public final static float VORTEX_VERSION = 6.12f;
+
+	public final static float VORTEX_VERSION = 6.16f;
 	//String constants
 	//The root folder for the SD  card is in the global Environment.
 	private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -56,11 +51,12 @@ public class Constants {
 	public static final String PIC_ROOT_DIR = VORTEX_ROOT_DIR + "pics/";
 	public static final String OLD_PIC_ROOT_DIR = VORTEX_ROOT_DIR + "old_pics/";
 	public static final String CACHE_ROOT_DIR = "cache/";
-	public static final String GIS_FILE_DIR = "/gisdata/";
+	private static final String GIS_FILE_DIR = "/gisdata/";
 	//Folder for backup on SD card.
 	public static final String DEFAULT_EXT_BACKUP_DIR = "/mnt/external_sdcard/vortex/backup";
 	public static final String TEMP_BARCODE_IMG_NAME = "tmpbar" ;
-	//public static String NILS_BASE_DIR = "/nils";
+    public static final String DEFAULT_IMG_FORMAT = "xml";
+    //public static String NILS_BASE_DIR = "/nils";
 	public static String UNDEFINED = "undefined";
 
 	public static String Color_Pressed="#4682B4";
@@ -72,8 +68,8 @@ public class Constants {
 	public static final String SYNC_ID = "SYNX";
 
 	//NILS uid
-	public static final UUID RED_UID = UUID.fromString("58500d27-6fd9-47c9-bf6b-d0969ce78bb3");
-	public static final UUID BLUE_UID = UUID.fromString("ce8ec829-30e3-469b-886e-6cf8f1168e98");
+	private static final UUID RED_UID = UUID.fromString("58500d27-6fd9-47c9-bf6b-d0969ce78bb3");
+	private static final UUID BLUE_UID = UUID.fromString("ce8ec829-30e3-469b-886e-6cf8f1168e98");
 
 
 	//Static methods
@@ -242,7 +238,7 @@ public class Constants {
 
 
 	public static List<ConfigurationModule> getCurrentlyKnownModules(Source source, PersistenceHelper globalPh,PersistenceHelper ph,String server, String bundle, LoggerI debugConsole) {
-		List<ConfigurationModule> ret = new ArrayList<ConfigurationModule>();
+		List<ConfigurationModule> ret = new ArrayList<>();
 		//Workflow xml. Named same as bundle.
 		final String pathOrURL;
 
@@ -270,7 +266,7 @@ public class Constants {
 	public static void getDBImportModules(
 			final PersistenceHelper globalPh, final PersistenceHelper ph, final String server,
 			final String bundle, final LoggerI debugConsole,final DbHelper db, final Table t, final AsyncLoadDoneCb asyncLoadDoneCb) {
-		final List<ConfigurationModule> ret = new ArrayList<ConfigurationModule>();
+		final List<ConfigurationModule> ret = new ArrayList<>();
 		//Workflow xml. Named same as bundle.		
 		//ret.add(new GisPolygonConfiguration(globalPh,ph,VORTEX_ROOT_DIR+bundle+AIR_PHOTO_FILE_DIR,debugConsole,db));
 		ret.add(new ImportDataConfiguration(globalPh,ph,server,bundle,debugConsole,db,t));
@@ -320,9 +316,9 @@ public class Constants {
 
 
 	private static List<String> getAllConfigurationFileNames(String folderName) {
-		List<String> ret = new ArrayList<String>();
+		List<String> ret = new ArrayList<>();
 		File folder = new File(folderName);
-		folder.mkdir();
+		//folder.mkdir();
 		File[] listOfFiles = folder.listFiles();
 		if (listOfFiles!=null) {
 			for (File f:listOfFiles) {
@@ -342,13 +338,13 @@ public class Constants {
 
 	private interface WebLoaderCb {
 
-		public void loaded(List<String> result);
+		 void loaded(List<String> result);
 	}
 
 	private static class DownloadFileTask extends AsyncTask<String, Void, List<String>> {
 		WebLoaderCb cb;
 
-		public DownloadFileTask(WebLoaderCb cb) {
+		 DownloadFileTask(WebLoaderCb cb) {
 			this.cb=cb;
 		}
 
@@ -367,12 +363,12 @@ public class Constants {
 		        
 		        while ((inputLine = in.readLine()) != null) {
 		        	if (fileNames==null)
-		        		fileNames = new ArrayList<String>();
+		        		fileNames = new ArrayList<>();
 		        	fileNames.add(inputLine);
 		        }
 		        in.close();
 
-		    } catch (IOException e) {
+		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
 		    return fileNames;

@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -18,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -41,6 +44,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
@@ -54,6 +58,7 @@ import com.teraim.fieldapp.gis.TrackerListener;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
+import com.teraim.fieldapp.synchronization.framework.SyncAdapter;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
@@ -175,11 +180,11 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
 		// Inflate the inner layout/view
-		View customView = inflater.inflate(R.layout.sync_popup_inner,null);
+		View syncpop = inflater.inflate(R.layout.sync_popup_inner,null);
 
 		// Initialize a new instance of popup window
 		mPopupWindow = new PopupWindow(
-				customView,
+				syncpop,
 				LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT
 		);
@@ -187,7 +192,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		if(Build.VERSION.SDK_INT>=21){
 			mPopupWindow.setElevation(5.0f);
 		}
-		Button closeButton = (Button) customView.findViewById(R.id.close_button);
+		Button closeButton = (Button) syncpop.findViewById(R.id.close_button);
 		closeButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -195,6 +200,29 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				mPopupWindow.dismiss();
 			}
 		});
+		Button sync_button = (Button) syncpop.findViewById(R.id.sync_button);
+		sync_button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				// Activate sync.
+
+				//Turn on if required
+				if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY))
+					toggleSyncOnOff();
+				else //sync is on. Try to force immediate.
+					SyncAdapter.forceSyncToHappen();
+			}
+		});
+		ImageButton refresh_button = (ImageButton) syncpop.findViewById(R.id.refresh_button);
+		refresh_button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				// refresh server list of users.
+
+			}
+		});
+
+
 	}
 
 	//Tracker callback.
@@ -443,6 +471,12 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					syncActive=false;
 					syncDataArriving=false;
 					syncError = false;
+
+
+					//update from the server.
+					gs.getServerSyncStatus();
+
+
 					break;
 
 				case SyncService.MSG_SYNC_RELEASE_DB:
@@ -710,7 +744,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 	Integer syncState=null;
 	private void setSyncState() {
-		allInSync();
 		//Log.d("vortex","Entering setsyncstate");
 		String title=null;
 		boolean internetSync = globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet");
@@ -741,7 +774,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 				} else {
 					//check with server if no more data.
-					syncState= allInSync()?R.drawable.insync:R.drawable.iminsync;
+					List team = gs.getTeamSyncStatus();
+					syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
 					title = "";
 				}
 			}
@@ -797,15 +831,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		//Log.d("vortex","Exiting setsyncstate");
 	}
 
-	private boolean allInSync() {
-		Log.d("vortex","allinsync called");
-		if (gs!=null) {
-			String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-			String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
-			String timestamp = gs.getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
-			String json = gs.getDb().getServerSyncStatus(team,timestamp,project);
-		}
-	}
+
 
 
 	private boolean menuChoice(MenuItem item) {
@@ -967,7 +993,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		}
 
 		mPopupWindow.showAtLocation(findViewById(R.id.content_frame), Gravity.CENTER,0,0);
-		refreshSynkDialog();
+		setSyncState();
 	}
 
 	private void refreshSynkDialog(Integer syncState) {
@@ -977,6 +1003,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		}
 		View customView = mPopupWindow.getContentView();
 
+		//The current synk status
 		TextView synk_status_display = (TextView) customView.findViewById(R.id.synk_status_display);
 		String synkStat = getString(R.string.synk_off);
 		if (syncState!=null) {
@@ -996,6 +1023,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				case R.drawable.insync:
 					synkStat = getString(R.string.in_sync);
 					break;
+				case R.drawable.iminsync:
+					synkStat = getString(R.string.imin_sync);
+					break;
 				case R.drawable.dbase:
 					synkStat = getString(R.string.synk_inserting) + " " + z_totalSynced + "/" + z_totalToSync;
 					break;
@@ -1005,7 +1035,37 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		synk_status_display.setText( synkStat );
 
 
+		//The current time since last sync was completed.
+		final String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
+		String timestamp = GlobalState.getInstance().getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+		TextView time_last_sync = (TextView) customView.findViewById(R.id.sync_time_since_last);
+		String time="";
+		if (timestamp.equals(PersistenceHelper.UNDEFINED))
+			time = "-";
+		else {
+			try {
+				Date date = new Date(Long.parseLong(timestamp) * 1000);
 
+			Date now = new Date(System.currentTimeMillis());
+			if (now.getMonth()!= date.getMonth())
+				time = (now.getMonth()-date.getMonth())+" "+getString(R.string.sync_time_months);
+			else if (now.getDay()!=date.getDay())
+				time = (now.getDay()-date.getDay())+" "+getString(R.string.sync_time_days);
+			else if (now.getHours()!=date.getHours())
+				time = (now.getHours()-date.getHours())+" "+getString(R.string.sync_time_hours);
+			else if (now.getMinutes()!=date.getMinutes())
+				time = (now.getMinutes()-date.getMinutes())+" "+getString(R.string.sync_time_minutes);
+			else
+				time = getString(R.string.sync_time_just_now);
+			} catch (NumberFormatException e) {
+				time ="-";
+			}
+		}
+		time_last_sync.setText(time);
+
+		//Remaining objects to sync
+		TextView unsync = (TextView) customView.findViewById(R.id.sync_objects_remaining);
+		unsync.setText(gs.getDb().getNumberOfUnsyncedEntries()+"");
 	}
 
 

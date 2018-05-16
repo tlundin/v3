@@ -16,8 +16,8 @@ android {
         targetSdkVersion 22
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
@@ -28,9 +28,11 @@ android {
 }
 
 dependencies {
+    compile 'com.android.volley:volley:1.0.0'
     implementation files('libs/achartengine-1.2.0.jar')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:22.2.0'
     implementation 'com.google.android.gms:play-services:7.8.0'
     implementation 'com.android.support:support-v4:22.2.0'
+
 }

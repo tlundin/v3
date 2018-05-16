@@ -1,6 +1,7 @@
 package com.teraim.fieldapp.utils;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +12,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+import com.android.volley.*;
 
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.appdatasearch.GetRecentContextCall;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.ArrayVariable;
 import com.teraim.fieldapp.dynamic.types.Location;
@@ -197,30 +202,6 @@ public class DbHelper extends SQLiteOpenHelper {
         return myNewKeyHash;
     }
 
-    public String getServerSyncStatus(String team, String timestamp,String project) {
-        if (ctx!=null) {
-            if(Connectivity.isConnected(ctx)) {
-                //connected...lets call the sync server.
-                final String SyncServerStatusCall = Constants.SynkServerURI+"?action=get_team_status&team="+team+"&project="+project+"&timestamp="+timestamp;
-                // Instantiate the RequestQueue.
-                val queue = Volley.newRequestQueue(this);
-                // Request a string response from the provided URL.
-                val stringRequest;
-                stringRequest = StringRequest(Request.Method.GET, SyncServerStatusCall,
-                        Response.Listener<String> { response ->
-                                // Display the first 500 characters of the response string.
-                                ;
-                        },
-                Response.ErrorListener { textView.text = "That didn't work!" })
-
-                // Add the request to the RequestQueue.
-                queue.add(stringRequest)
-            }
-        }
-
-        Log.d("vortex","I return here");
-        return null;
-    }
 
 
 public class LocationAndTimeStamp {

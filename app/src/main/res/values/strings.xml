@@ -45,16 +45,21 @@
     <string name="sync_pop_header">Synchronization status</string>
     <string name="sync_pop_sync_on">Current state</string>
     <string name="sync_pop_time_since_last_sync">Time since last sync</string>
-    <string name="sync_pop_unsynced_user">Unseen to others</string>
-    <string name="sync_pop_unsynced_server">Unseen to you</string>
-    <string name="sync_pop_sync_button_txt">Synchronise now</string>
+    <string name="sync_pop_unsynced_user">Remaining objects</string>
+    <string name="sync_pop_sync_button_txt">Sync now</string>
     <string name="sync_pop_sync_last_sync">Last synced with</string>
     <string name="synk_off">Turned off</string>
     <string name="synk_error">Not working</string>
     <string name="synk_idle">Idle, active</string>
     <string name="synk_inserting">Inserting data</string>
     <string name="synk_send_receive">Sending/receiving</string>
-    <string name="in_sync">In sync</string>
+    <string name="in_sync">Fully syncronised with team</string>
+    <string name="imin_sync">Your data has been uploaded</string>
+    <string name="sync_time_months">month(s)</string>
+    <string name="sync_time_days">day(s)</string>
+    <string name="sync_time_hours">hour(s)</string>
+    <string name="sync_time_minutes">minute(s)</string>
+    <string name="sync_time_just_now">moments ago</string>
 
     <string name="appDialMsg">Enter the application name. No \'.xml\', only the name!\n (Change requires restart)</string>
     <string name="Backup_folder_s">Leave empty to use folder named \'backup\' under project folder</string>

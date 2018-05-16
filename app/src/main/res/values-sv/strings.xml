@@ -41,7 +41,25 @@
 	<string name="Version_control">Versionskontroll</string>
 	<string name="Automatic_backup">Säkerhetskopiering</string>
 	<string name="Backup_folder">Plats för säkerhetskopia</string>
-	
+
+	<string name="sync_pop_header">Synkroniseringsstatus</string>
+	<string name="sync_pop_sync_on">Status</string>
+	<string name="sync_pop_time_since_last_sync">Senast synkad</string>
+	<string name="sync_pop_unsynced_user">Mina osynkade</string>
+	<string name="sync_pop_sync_button_txt">Synka nu</string>
+	<string name="sync_pop_sync_last_sync">Osynkat från team</string>
+	<string name="synk_off">Avstängd</string>
+	<string name="synk_error">Fungerar inte</string>
+	<string name="synk_idle">Aktiv</string>
+	<string name="synk_inserting">För in data</string>
+	<string name="synk_send_receive">Överför data</string>
+	<string name="in_sync">Helt i synk med team</string>
+	<string name="imin_sync">Ditt data synkat</string>
+	<string name="sync_time_months">månad(er)</string>
+	<string name="sync_time_days">dag(ar)</string>
+	<string name="sync_time_hours">timme(ar)</string>
+	<string name="sync_time_minutes">minut(er)</string>
+	<string name="sync_time_just_now">alldeles nyss</string>
 
 	<string name="appDialMsg">Appens namn utan \'.xml\'\n (ändring kräver omstart)</string>
 	<string name="Backup_folder_s">Om inget värde anges så används foldern \'backup\' under Appens hem</string>

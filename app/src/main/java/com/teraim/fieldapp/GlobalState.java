@@ -1,6 +1,10 @@
 package com.teraim.fieldapp;
 
 import java.io.File;
+import java.io.StringReader;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +20,16 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
@@ -40,9 +52,13 @@ import com.teraim.fieldapp.synchronization.SyncMessage;
 import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.BackupManager;
+import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -143,6 +159,9 @@ public class GlobalState  {
 		Log.d("jgw","my imgmeta is "+imgMetaFormat);
 		if (imgMetaFormat!=null)
 			this.imgMetaFormat = imgMetaFormat;
+		//check current state of synk server.
+		if(globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
+			getServerSyncStatus();
 
 	}
 
@@ -613,6 +632,95 @@ public class GlobalState  {
 		return logTxt;
 	}
 
+
+
+	public String getServerSyncStatus() {
+		Context ctx = getContext();
+		if (ctx!=null) {
+			Log.d("vortex","update team sync state called");
+
+			String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
+			String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
+			String timestamp = getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+
+			if(Connectivity.isConnected(ctx)) {
+				//connected...lets call the sync server.
+				final String SyncServerStatusCall = Constants.SynkServerURI+"?action=get_team_status&team="+team+"&project="+project+"&timestamp="+timestamp;
+				//final TextView mTextView = (TextView) findViewById(R.id.text);
+				RequestQueue queue = Volley.newRequestQueue(ctx);
+
+				StringRequest stringRequest = new StringRequest(Request.Method.GET, SyncServerStatusCall,
+						new Response.Listener<String>() {
+							@Override
+							public void onResponse(String response) {
+								// Display the first 500 characters of the response string.
+								Log.d("mama","Response is: "+ response);
+								updateTeam(response);
+								//sendEvent(MenuActivity.REDRAW);
+							}
+						}, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						Log.d("mama","That didn't work! "+error.getMessage());
+					}
+				});
+
+// Add the request to the RequestQueue.
+				queue.add(stringRequest);
+			} else
+				Log.d("mama","no internet...");
+		}
+
+		Log.d("mama","I return here");
+		return null;
+	}
+
+	private List<TeamMember> team = null;
+
+	private class TeamMember {
+    	int unsynched;
+    	String name;
+    	String date;
+
+    	public TeamMember(String name, int uns, String date) {
+    		unsynched=uns;
+    		this.name=name;
+    		this.date=date;
+
+		}
+	}
+
+	public List<TeamMember> getTeamSyncStatus() {
+		return team;
+	}
+	//insert current data on the sync status for the team.
+	private void updateTeam(String json) {
+    	//{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
+		if (json!=null) {
+			//clear current state.
+			team=new ArrayList<>();
+			try {
+				JsonReader jr = new JsonReader(new StringReader(json));
+
+				jr.beginObject();
+				while (!jr.peek().equals(JsonToken.END_OBJECT)) {
+					String name = jr.nextName();
+					Log.d("vortex", name);
+					jr.beginArray();
+					String user=jr.nextString();
+					int unsynced=jr.nextInt();
+					String date=jr.nextString();
+					Log.d("vortex", "user:"+user+" unsynced: "+unsynced+" time: "+date);
+					jr.endArray();
+					//name, number of unsynced entries, datetime last seen on sync server.
+					team.add(new TeamMember(name,unsynced,date));
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 }
 

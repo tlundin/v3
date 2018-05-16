@@ -390,7 +390,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		forceSyncToHappen();
 	}
 
-	private void forceSyncToHappen() {
+	public static void forceSyncToHappen() {
+		Log.d("vortex","trying to force sync");
 		Bundle bundle = new Bundle();
 		bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 		bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);

@@ -79,6 +79,7 @@ public class SyncService extends Service {
 					sSyncAdapter.releaseLock();
 					break;
 				case MSG_USER_STARTED_SYNC:
+					Log.d("vortex","user tried to start sync");
 					//sSyncAdapter.onPerformSync(null,null,null,null,null);
 					break;
                 default:

@@ -70,17 +70,7 @@
             android:layout_weight="1"
             android:singleLine="true"
             android:textColor="@color/white" />
-       
-       <Button
-            android:id="@+id/log_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Close"
-           android:textSize="@dimen/text_size_small"
-            android:layout_weight="1"
-            android:textColor="@color/white" />
-       
+
 
     </LinearLayout>
 

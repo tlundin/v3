@@ -92,7 +92,7 @@ public class TimeStampedMap {
                 myMap.remove(ves);
             return true;
         }
-
+        Log.d("bascar","no entry for "+variableName+" in sync cache");
         return false;
 
     }

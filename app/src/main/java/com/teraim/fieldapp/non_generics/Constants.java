@@ -225,11 +225,11 @@ public class Constants {
 	//public static final String SynkServerURI = "http://86.183.111.124:8080/com.teraim.synkserv/SynkServ";
 	//public static final String SynkServerURI = "http://109.157.177.172:8080/com.teraim.synkserv/SynkServ";
 
-	//public static final String SynkServerURI = "http://130.211.51.77:8080/synkserv/SynkServ";
-	public static final String SynkServerURI = "https://rlo.slu.se:8443/com.teraim.synkserv/SynkServ";
+	public static final String SynkServerURI = "http://10.0.0.9:8080/com.teraim.synkserv/SynkServ";
+	//public static final String SynkServerURI = "https://rlo.slu.se:8443/com.teraim.synkserv/SynkServ";
+	//public static final String SynkServerURI = "https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
 
 
-			//"https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
 	public static final Object TRANS_ACK = "TRANSACK";
 
 

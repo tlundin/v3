@@ -2,7 +2,7 @@
 <resources>
     <color name="pressed_color">#4d90fe</color>
     <color name="default_color">#ffffff</color>
-    <color name="background_light">#fff3f3f3</color>
+    <color name="background_light">#f3f3f3</color>
     <color name="moss_green">#8A9A5B</color>
     <color name="read_only">#006400</color>
     <color name="transparent_blue">#700000FF</color>

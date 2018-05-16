@@ -126,7 +126,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 
 										if (team != null)
-											 teamPref.setText(team);
+											teamPref.setText(team);
 
 										if (application != null) {
 											appPref.setText(application);
@@ -264,7 +264,7 @@ public class ConfigMenu extends PreferenceActivity {
 									}
 								}
 
-                            } )
+							} )
 							.setNegativeButton(R.string.cancel, new OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
@@ -462,7 +462,6 @@ public class ConfigMenu extends PreferenceActivity {
 
 
 
-
 		private void askForRestart() {
 			askForRestart=true;
 		}
@@ -476,7 +475,28 @@ public class ConfigMenu extends PreferenceActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			if (askForRestart) {
+			SharedPreferences sharedPrefs = this.getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
+			if (!sharedPrefs.getString(PersistenceHelper.SYNC_METHOD,"NONE").equals("NONE")&&sharedPrefs.getString(PersistenceHelper.LAG_ID_KEY,PersistenceHelper.UNDEFINED).equals(PersistenceHelper.UNDEFINED)) {
+				Log.d("berra","bopp");
+
+				new AlertDialog.Builder(this)
+						.setTitle(R.string.team_missing_error)
+						.setMessage(R.string.team_missing_error_message)
+						.setIcon(android.R.drawable.ic_dialog_alert)
+						.setCancelable(false)
+						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+
+							}
+
+						})
+						.show();
+
+
+
+
+			} else if (askForRestart) {
 
 				new AlertDialog.Builder(this)
 						.setTitle(R.string.restart)

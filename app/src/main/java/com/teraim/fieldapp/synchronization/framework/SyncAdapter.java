@@ -215,7 +215,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					if (currentStamp>maxStamp)
 						maxStamp=currentStamp;
 
-					sa[rowCount++] = new SyncEntry(action,changes,entryStamp,variable);
+					sa[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable);
 
 					targets.append(variable);
 					targets.append(",");
@@ -286,6 +286,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		e.printStackTrace();
 		Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
 		msg.arg1=SyncService.ERR_SERVER_CONN_TIMEOUT;
+		Log.e("vortex","Socket timeout. Reason: "+e.getMessage()+" Timestamp: "+System.currentTimeMillis());
 
 		return;
 	}
@@ -294,7 +295,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		fe.printStackTrace();
 		Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
 		msg.arg1=SyncService.ERR_SERVER_NOT_REACHABLE;
-
+		Log.e("vortex","IO Exception. Reason: "+fe.getMessage()+" Timestamp: "+System.currentTimeMillis());
 		return;
 	}
 
@@ -537,6 +538,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			else {
 				Log.e("vortex","OK not returned. instead "+reply.getClass().getCanonicalName());
+				if (reply instanceof SyncFailed) {
+					Log.e("vortex",((SyncFailed)reply).getReason());
+				}
 				
 			}
 
@@ -551,6 +555,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			e.printStackTrace();
 			Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
 			msg.arg1=SyncService.ERR_SERVER_CONN_TIMEOUT;
+			Log.e("vortex","ERR_SERVER_CONN_TIMEOUT. Reason: "+e.getMessage()+" Timestamp: "+System.currentTimeMillis());
 			busy = false;
 			return msg;
 		}

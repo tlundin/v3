@@ -34,7 +34,9 @@
 	
 	<string name="restart">Omstart</string>
 	<string name="restartMessage">Du måste starta om för att ändringen ska gälla. Starta om?</string>
-    <string name="developer_functions">Avlusningsfunktioner</string>
+	<string name="team_missing_error">Lag krävs</string>
+	<string name="team_missing_error_message">För att kunna använda synk, måste du ange ett lag(team). Annars kommer inte dina ändringar synas.</string>
+	<string name="developer_functions">Avlusningsfunktioner</string>
 	<string name="Sync_method">Synkningsmetod</string>
 	<string name="Version_control">Versionskontroll</string>
 	<string name="Automatic_backup">Säkerhetskopiering</string>

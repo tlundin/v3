@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.teraim.fieldapp.Start;
 
+import static com.teraim.fieldapp.synchronization.framework.SyncAdapter.forceSyncToHappen;
+
 /**
  * Define a Service that returns an IBinder for the
  * sync adapter class, allowing the sync adapter framework to call
@@ -69,6 +71,8 @@ public class SyncService extends Service {
                 case MSG_DATA_SAFELY_STORED:
                 	Log.d("vortex","received MSG_SAFELY_STORED in SyncService");
                 	sSyncAdapter.updateCounters();
+                	//force a new sync event to check for more data.
+					SyncAdapter.forceSyncToHappen();
                 	break;
                 case MSG_SYNC_ERROR_STATE:
                 	Log.d("vortex","received MSG_ERROR in SyncService");

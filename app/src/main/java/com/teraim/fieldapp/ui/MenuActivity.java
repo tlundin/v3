@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -44,10 +46,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,6 +92,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 	public static final String SYNC_REQUIRED = "com.teraim.fieldapp.sync_required";
 
 	private PopupWindow mPopupWindow;
+	private Switch sync_switch;
+	private Button sync_button;
 
 
 	public class Control {
@@ -200,29 +207,48 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				mPopupWindow.dismiss();
 			}
 		});
-		Button sync_button = (Button) syncpop.findViewById(R.id.sync_button);
+		sync_button = (Button) syncpop.findViewById(R.id.sync_button);
 		sync_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// Activate sync.
-
-				//Turn on if required
-				if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY))
-					toggleSyncOnOff();
-				else //sync is on. Try to force immediate.
-					SyncAdapter.forceSyncToHappen();
+ 				//Try to force immediate.
+				SyncAdapter.forceSyncToHappen();
 			}
 		});
 		ImageButton refresh_button = (ImageButton) syncpop.findViewById(R.id.refresh_button);
 		refresh_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// refresh server list of users.
+				rowBuffer.clear();
+				gs.getServerSyncStatus();
+			}
+		});
+		sync_switch = (Switch) syncpop.findViewById(R.id.sync_switch);
+
+
+		sync_switch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				if (b) {
+					String user = globalPh.get(PersistenceHelper.USER_ID_KEY, null);
+					String team = globalPh.get(PersistenceHelper.LAG_ID_KEY, null);
+					if (team == null || team.isEmpty() || user == null || user.isEmpty()) {
+						Toast.makeText(MenuActivity.this, "Username and/or team name missing", Toast.LENGTH_LONG).show();
+						sync_switch.setOnCheckedChangeListener(null);
+						sync_switch.setChecked(false);
+						sync_switch.setOnCheckedChangeListener(this);
+					} else
+						toggleSyncOnOff(true);
+				} else
+					toggleSyncOnOff(false);
 
 			}
 		});
 
+	}
 
+	private boolean syncOn() {
+		return ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY);
 	}
 
 	//Tracker callback.
@@ -402,6 +428,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 											@Override
 											public void onClick(DialogInterface dialog, int which) {
+												if (syncOn()) {
+													ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+												}
 												uiLock=null;
 											}
 										})
@@ -758,6 +787,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 		else if (internetSync) {
             //Log.d("mama","refresh synk dialog if visible");
+			numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
 
 
 			if (syncError) {
@@ -767,14 +797,14 @@ public class MenuActivity extends Activity implements TrackerListener   {
 			else if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY))
 				syncState= R.drawable.syncoff;
 			else if (inSync) {
-				numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
 				if (numOfUnsynchedEntries>0) {
 					inSync=false;
 					syncState= R.drawable.syncon;
 
 				} else {
 					//check with server if no more data.
-					List team = gs.getTeamSyncStatus();
+					GlobalState.SyncGroup sg = gs.getSyncGroup();
+					List team = sg==null?null:sg.getTeam();
 					syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
 					title = "";
 				}
@@ -800,7 +830,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					animationRunning=true;
 				}
 				syncState=R.drawable.syncactive;
-				refreshSynkDialog(syncState);
+				refreshSynkDialog(syncState,numOfUnsynchedEntries);
 				return;
 			}
 			else if (syncDataArriving) {
@@ -813,7 +843,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
 			}
 			else {
 				syncState= R.drawable.syncon;
-				numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
 				Log.d("vortex","icon set to syncon!");
 			}
 		}
@@ -827,7 +856,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		mnu[MENU_ITEM_SYNC_TYPE].setIcon(syncState);
 		mnu[MENU_ITEM_SYNC_TYPE].setTitle(title);
 		mnu[MENU_ITEM_SYNC_TYPE].setVisible(true);
-		refreshSynkDialog(syncState);
+
+		refreshSynkDialog(syncState,numOfUnsynchedEntries);
 		//Log.d("vortex","Exiting setsyncstate");
 	}
 
@@ -914,7 +944,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					@Override
 					public void onClick(View v) {
 						log.clear();
-						gs.getVariableCache().printCache();
+						if(gs.getVariableCache()!=null)
+							gs.getVariableCache().printCache();
 					}
 				});
 				Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);
@@ -996,17 +1027,20 @@ public class MenuActivity extends Activity implements TrackerListener   {
 		setSyncState();
 	}
 
-	private void refreshSynkDialog(Integer syncState) {
+	private void refreshSynkDialog(Integer syncState, int numberOfUnsynchedItems) {
 		if (!mPopupWindow.isShowing()) {
 			Log.d("pop", "pop not showing...exit");
 			return;
 		}
+		boolean sync_on=syncOn();
+		sync_switch.setChecked(sync_on);
+		sync_button.setEnabled(sync_on);
 		View customView = mPopupWindow.getContentView();
 
 		//The current synk status
 		TextView synk_status_display = (TextView) customView.findViewById(R.id.synk_status_display);
 		String synkStat = getString(R.string.synk_off);
-		if (syncState!=null) {
+		if (syncState != null) {
 			switch (syncState) {
 				case R.drawable.syncon:
 					synkStat = getString(R.string.synk_idle);
@@ -1032,44 +1066,116 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 			}
 		}
-		synk_status_display.setText( synkStat );
+		synk_status_display.setText(synkStat);
 
 
 		//The current time since last sync was completed.
 		final String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-		String timestamp = GlobalState.getInstance().getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+		Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME + team);
 		TextView time_last_sync = (TextView) customView.findViewById(R.id.sync_time_since_last);
-		String time="";
-		if (timestamp.equals(PersistenceHelper.UNDEFINED))
+		String time = "";
+		if (timestamp==-1)
 			time = "-";
 		else {
 			try {
-				Date date = new Date(Long.parseLong(timestamp) * 1000);
+				Date date = new Date(timestamp);
+				Date now = new Date(System.currentTimeMillis());
+				Log.d("mama","traw: "+timestamp+" now: "+System.currentTimeMillis());
 
-			Date now = new Date(System.currentTimeMillis());
-			if (now.getMonth()!= date.getMonth())
-				time = (now.getMonth()-date.getMonth())+" "+getString(R.string.sync_time_months);
-			else if (now.getDay()!=date.getDay())
-				time = (now.getDay()-date.getDay())+" "+getString(R.string.sync_time_days);
-			else if (now.getHours()!=date.getHours())
-				time = (now.getHours()-date.getHours())+" "+getString(R.string.sync_time_hours);
-			else if (now.getMinutes()!=date.getMinutes())
-				time = (now.getMinutes()-date.getMinutes())+" "+getString(R.string.sync_time_minutes);
-			else
-				time = getString(R.string.sync_time_just_now);
+				if (now.getMonth() != date.getMonth()) {
+					Log.d("mama","tm: "+date.getMonth()+" nowm: "+now.getMonth());
+					time = (now.getMonth() - date.getMonth()) + " " + getString(R.string.sync_time_months);
+				}
+				else if (now.getDay() != date.getDay())
+					time = (now.getDay() - date.getDay()) + " " + getString(R.string.sync_time_days);
+				else if (now.getHours() != date.getHours())
+					time = (now.getHours() - date.getHours()) + " " + getString(R.string.sync_time_hours);
+				else if (now.getMinutes() != date.getMinutes())
+					time = (now.getMinutes() - date.getMinutes()) + " " + getString(R.string.sync_time_minutes);
+				else
+					time = getString(R.string.sync_time_just_now);
 			} catch (NumberFormatException e) {
-				time ="-";
+				time = "-";
 			}
 		}
 		time_last_sync.setText(time);
 
 		//Remaining objects to sync
 		TextView unsync = (TextView) customView.findViewById(R.id.sync_objects_remaining);
-		unsync.setText(gs.getDb().getNumberOfUnsyncedEntries()+"");
+		unsync.setText(Integer.toString(numberOfUnsynchedItems ));
+
+
+		//List of people
+
+		GlobalState.SyncGroup syncGroup = gs.getSyncGroup();
+
+		LinearLayout ll = (LinearLayout) customView.findViewById(R.id.list_container);
+		TextView sync_refresh_date = (TextView) customView.findViewById(R.id.sync_refresh_date);
+
+		ll.removeAllViews();
+
+		if (syncGroup != null && syncGroup.getTeam() != null) {
+			sync_refresh_date.setText(syncGroup.getLastUpdate().toString());
+
+			List<GlobalState.TeamMember> teamMemberList = syncGroup.getTeam();
+
+			if (teamMemberList.isEmpty()) {
+				ll.addView(rowBuffer.defaultRow(getString(R.string.in_sync)));
+
+
+			} else {
+				for (GlobalState.TeamMember tm:teamMemberList) {
+					ll.addView(rowBuffer.getRow(tm.user,tm.unsynched+"",tm.getDate()));
+				}
+			}
+
+
+		}
+	}
+	private RowBuffer rowBuffer = new RowBuffer();
+	private  class RowBuffer {
+		Map<String,View> buffer = new HashMap<>();
+
+		public View getRow(String name, String obj, String time) {
+			View entry = getRow(name);
+			setText(entry,name,obj,time);
+			return entry;
+		}
+
+		public void clear() {
+			for (View entry:buffer.values()) {
+				if(entry.getParent()!=null)
+					((ViewGroup)entry.getParent()).removeView(entry);
+			}
+			buffer.clear();
+		}
+
+		private View getRow(String name) {
+			View entry = buffer.get(name);
+			if (entry == null) {
+				entry = (View)getLayoutInflater().inflate(R.layout.sync_popup_list_row,null);
+				buffer.put(name,entry);
+			} else {
+				if(entry.getParent()!=null)
+					((ViewGroup)entry.getParent()).removeView(entry);
+			}
+			return entry;
+		}
+
+		public View defaultRow(String text) {
+			View row = getRow("default");
+			setText(row,text,"","");
+			return row;
+		}
+		private void setText(View row, String name,String obj, String time) {
+			((TextView)row.findViewById(R.id.sync_row_user)).setText(name);
+			((TextView)row.findViewById(R.id.sync_row_unsynced)).setText(obj);
+            ((TextView)row.findViewById(R.id.sync_row_unsync_date)).setText(time);
+
+		}
 	}
 
-
-	private void toggleSyncOnOff() {
+	private void toggleSyncOnOff(boolean on) {
 		String syncMethod = globalPh.get(PersistenceHelper.SYNC_METHOD);
 		if (syncMethod.equals("Bluetooth")) {
 			DataSyncSessionManager.start(MenuActivity.this, new UIProvider(this) {
@@ -1081,7 +1187,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
             });
 		} else {
 			if (syncMethod.equals("Internet")) {
-				if (!ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY)) {
+				if (on && !syncOn()) {
 					Log.d("vortex", "Trying to start Internet sync");
 					//Check there is name and team.
 					String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
@@ -1138,7 +1244,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 						}
 					}
 				} else {
-					stopSync();
+					if (!on)
+						stopSync();
 
 
 

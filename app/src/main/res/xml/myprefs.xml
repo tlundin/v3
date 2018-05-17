@@ -79,7 +79,7 @@
             android:title="@string/Backup_folder" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:dialogMessage=""
             android:dialogTitle=""
             android:key="auto_backup"

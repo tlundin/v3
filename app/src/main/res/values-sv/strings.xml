@@ -47,14 +47,14 @@
 	<string name="sync_pop_time_since_last_sync">Senast synkad</string>
 	<string name="sync_pop_unsynced_user">Mina osynkade</string>
 	<string name="sync_pop_sync_button_txt">Synka nu</string>
-	<string name="sync_pop_sync_last_sync">Osynkat från team</string>
+	<string name="sync_pop_sync_last_sync">Team data (osynkat)</string>
 	<string name="synk_off">Avstängd</string>
 	<string name="synk_error">Fungerar inte</string>
 	<string name="synk_idle">Aktiv</string>
 	<string name="synk_inserting">För in data</string>
 	<string name="synk_send_receive">Överför data</string>
-	<string name="in_sync">Helt i synk med team</string>
-	<string name="imin_sync">Ditt data synkat</string>
+	<string name="in_sync">Inget data att hämta</string>
+	<string name="imin_sync">Ditt data är synkat</string>
 	<string name="sync_time_months">månad(er)</string>
 	<string name="sync_time_days">dag(ar)</string>
 	<string name="sync_time_hours">timme(ar)</string>

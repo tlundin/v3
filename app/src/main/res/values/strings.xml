@@ -47,7 +47,7 @@
     <string name="sync_pop_time_since_last_sync">Time since last sync</string>
     <string name="sync_pop_unsynced_user">Remaining objects</string>
     <string name="sync_pop_sync_button_txt">Sync now</string>
-    <string name="sync_pop_sync_last_sync">Last synced with</string>
+    <string name="sync_pop_sync_last_sync">Team data (not yet synced)</string>
     <string name="synk_off">Turned off</string>
     <string name="synk_error">Not working</string>
     <string name="synk_idle">Idle, active</string>

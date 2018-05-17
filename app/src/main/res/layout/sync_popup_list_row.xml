@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/team_name"
+        android:id="@+id/sync_row_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -17,7 +17,15 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/team_time"
+        android:id="@+id/sync_row_unsynced"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:text="3 min" />
+
+    <TextView
+        android:id="@+id/sync_row_unsync_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"

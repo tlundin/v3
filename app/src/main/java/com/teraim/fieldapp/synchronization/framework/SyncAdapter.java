@@ -42,7 +42,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-	private static final String LONG_TIME_AGO = "1900-05-03 12:32:01";
+	private static final Long LONG_TIME_AGO = 0L;
 	// Global variables
 	// Define a variable to contain a content resolver instance
 	ContentResolver mContentResolver;
@@ -377,17 +377,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.d("vortex","In Sync UpdateCounters");
 		//Here it is safe to update the timestamp for syncentries received from server.
 
-		String potentialStamp = ph.getString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,null);
-		if (potentialStamp!=null) {
-			gh.edit().putString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,
+		Long potentialStamp = ph.getLong(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,-1);
+		if (potentialStamp!=-1) {
+			ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,
 					potentialStamp).apply();
 			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentialStamp);
+			Log.d("vortex","Entry: "+ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,22)+" Team: "+team);
 		} else
 			Log.e("vortex","potentialStamp was null in updatecounters!");
 		busy = false;
 		//update ui here.....
 
-		forceSyncToHappen();
+
 	}
 
 	public static void forceSyncToHappen() {
@@ -435,7 +436,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("vortex","writing app..."+app);
 			objOut.writeObject(app);
 			//The last timestamp.
-			String trId=gh.getString(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,LONG_TIME_AGO);
+			Long trId=ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,LONG_TIME_AGO);
 			Log.d("vortex","LAST_SYNC_FROM_TEAM_TO_ME WAS "+trId);
 			objOut.writeObject(trId);
 
@@ -475,7 +476,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					//Each team + project has an associated TIME OF LAST SYNC pointer. 
 						ph = getContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
 						if (ph!=null)
-								ph.edit().putString(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team,maxStamp+"").apply();
+								ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team,maxStamp).apply();
 						else
 							Log.e("vortex","something wrong PH NULL!");
 						Log.e("vortex","UPDATED TIMESTAMP: "+maxStamp+"");
@@ -491,16 +492,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				int i=0;
 				while (true) {
 					reply = objIn.readObject();
-					if (reply instanceof String) {
+					if (reply instanceof Long) {
 						Log.d("vortex","received timestamp for next cycle: "+reply);
 						//This should be the Timestamp of the last entry arriving.
-						ph.edit().putString(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(String)reply).apply();
+						ph.edit().putLong(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(Long)reply).apply();
 						Log.d("vortex","Inserted rows: "+insertedRows);
 						objIn.close();
 						objOut.close();
 						if (insertedRows == 0 ) {
 							Log.d("vortex","In sync with server!!!");
-							busy = false;
+							//update counters - no insert required.
+							updateCounters();
 							return Message.obtain(null, SyncService.MSG_DEVICE_IN_SYNC);
 						} else {
 							Log.d("vortex","Insert into DB begins");

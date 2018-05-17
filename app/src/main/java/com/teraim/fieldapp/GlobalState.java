@@ -15,6 +15,7 @@ import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -62,192 +63,194 @@ import org.json.JSONObject;
 
 
 /**
- * 
+ *
  * @author Terje
  *
  * Classes defining datatypes for ruta, provyta, delyta and tåg.
  * There are two Scan() functions reading data from two input files (found under the /raw project folder).
  */
-public class GlobalState  {
+public class GlobalState {
 
-	//access only through getSingleton(Context).
-	//This is because of the Activity lifecycle. This object might need to be re-instantiated any time.
-	private static GlobalState singleton;
-
-
-	private static Context myC=null;
-	private String imgMetaFormat=Constants.DEFAULT_IMG_FORMAT;
-	private LoggerI logger;
-	private PersistenceHelper ph = null;	
-	private DbHelper db = null;
-	private Parser parser=null;
-	private VariableConfiguration artLista=null;
-	//Map workflows into a hash with name as key.
-	private Map<String,Workflow> myWfs; 
-	//Spinner definitions
-	private SpinnerDefinition mySpinnerDef;
-	private DrawerMenu myDrawerMenu;
-	
-	public String TEXT_LARGE;
-	private WF_Context currentContext;
-	private String myPartner="?";
-
-	private PersistenceHelper globalPh=null;
-	private Tracker myTracker=null;
-	private ConnectionManager myConnectionManager; 
-	private BackupManager myBackupManager;
+    //access only through getSingleton(Context).
+    //This is because of the Activity lifecycle. This object might need to be re-instantiated any time.
+    private static GlobalState singleton;
 
 
-	private VariableCache myVariableCache;
-	private static Account mAccount;
-	private GisObject selectedGop;
-	private CharSequence logTxt;
-	public static GlobalState getInstance() {
+    private static Context myC = null;
+    private String imgMetaFormat = Constants.DEFAULT_IMG_FORMAT;
+    private LoggerI logger;
+    private PersistenceHelper ph = null;
+    private DbHelper db = null;
+    private Parser parser = null;
+    private VariableConfiguration artLista = null;
+    //Map workflows into a hash with name as key.
+    private Map<String, Workflow> myWfs;
+    //Spinner definitions
+    private SpinnerDefinition mySpinnerDef;
+    private DrawerMenu myDrawerMenu;
 
-		return singleton;
-	}
+    public String TEXT_LARGE;
+    private WF_Context currentContext;
+    private String myPartner = "?";
 
-	public static GlobalState createInstance(Context applicationContext, PersistenceHelper globalPh,
-			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt, String imgMetaFormat) {
-		singleton = null;
-		return new GlobalState(applicationContext,  globalPh,
-				ph, debugConsole,  myDb,
-				workflows, t, sd, logTxt,imgMetaFormat);
-
-	}
-
-	//private GlobalState(Context ctx)  {
-	private GlobalState(Context applicationContext, PersistenceHelper globalPh,
-			PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
-			List<Workflow> workflows,Table t,SpinnerDefinition sd, CharSequence logTxt,String imgMetaFormat) {
-
-		myC = applicationContext;
-		this.globalPh=globalPh;
-		this.ph=ph;
-		this.db=myDb;
-		this.logger = debugConsole;
-		//Parser for rules
-		parser = new Parser(this);
-
-		artLista = new VariableConfiguration(this,t);
-		myWfs = mapWorkflowsToNames(workflows);
-		//Event Handler on the Bluetooth interface.
-		//myHandler = getHandler();
-		//Handles status for 
-		myStatusHandler = new StatusHandler(this);
-
-		mySpinnerDef = sd;
-
-		singleton =this;
+    private PersistenceHelper globalPh = null;
+    private Tracker myTracker = null;
+    private ConnectionManager myConnectionManager;
+    private BackupManager myBackupManager;
 
 
-		myVariableCache = new VariableCache(this);
+    private VariableCache myVariableCache;
+    private static Account mAccount;
+    private GisObject selectedGop;
+    private CharSequence logTxt;
 
-		//GPS listener service
+    public static GlobalState getInstance() {
 
+        return singleton;
+    }
 
-		//myExecutor = new RuleExecutor(this);
+    public static GlobalState createInstance(Context applicationContext, PersistenceHelper globalPh,
+                                             PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
+                                             List<Workflow> workflows, Table t, SpinnerDefinition sd, CharSequence logTxt, String imgMetaFormat) {
+        singleton = null;
+        return new GlobalState(applicationContext, globalPh,
+                ph, debugConsole, myDb,
+                workflows, t, sd, logTxt, imgMetaFormat);
 
-		myConnectionManager = new ConnectionManager(this);
+    }
 
-		myBackupManager = new BackupManager(this);
+    //private GlobalState(Context ctx)  {
+    private GlobalState(Context applicationContext, PersistenceHelper globalPh,
+                        PersistenceHelper ph, LoggerI debugConsole, DbHelper myDb,
+                        List<Workflow> workflows, Table t, SpinnerDefinition sd, CharSequence logTxt, String imgMetaFormat) {
 
-		this.logTxt = logTxt;
+        myC = applicationContext;
+        this.globalPh = globalPh;
+        this.ph = ph;
+        this.db = myDb;
+        this.logger = debugConsole;
+        //Parser for rules
+        parser = new Parser(this);
 
-		Log.d("fennox","my ID is "+getMyId());
-		Log.d("jgw","my imgmeta is "+imgMetaFormat);
-		if (imgMetaFormat!=null)
-			this.imgMetaFormat = imgMetaFormat;
-		//check current state of synk server.
-		if(globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
-			getServerSyncStatus();
+        artLista = new VariableConfiguration(this, t);
+        myWfs = mapWorkflowsToNames(workflows);
+        //Event Handler on the Bluetooth interface.
+        //myHandler = getHandler();
+        //Handles status for
+        myStatusHandler = new StatusHandler(this);
 
-	}
+        mySpinnerDef = sd;
 
-
-	public static Account getmAccount(Context ctx) {
-		if (mAccount==null )
-			mAccount = CreateSyncAccount(ctx);
-		return mAccount;
-	}
-
-	/*Validation
-	 * 
-	 */
-
-	
-
-	/*Singletons available for all classes
-	 * 
-	 */
-	public SpinnerDefinition getSpinnerDefinitions() {
-		return mySpinnerDef;
-	}
-	
-	//Persistance for app specific variables.
-	public PersistenceHelper getPreferences() {
-		return ph;
-	}
-
-	//Persistence for global, non app specific variables
-	public PersistenceHelper getGlobalPreferences() {
-		return globalPh;
-	}
+        singleton = this;
 
 
-	public DbHelper getDb() {
-		return db;
-	}
+        myVariableCache = new VariableCache(this);
 
-	public Parser getParser() {
-		return parser;
-	}
+        //GPS listener service
 
-	public Context getContext() {
-		return myC;
-	}
 
-	//public RuleExecutor getRuleExecutor() {
-	//	return myExecutor;
-	//}
+        //myExecutor = new RuleExecutor(this);
 
-	public VariableConfiguration getVariableConfiguration() {
-		return artLista;
-	}
+        myConnectionManager = new ConnectionManager(this);
 
-	public BackupManager getBackupManager() {
-		return myBackupManager;
-	}
+        myBackupManager = new BackupManager(this);
 
-	public String getImgMetaFormat() { return imgMetaFormat; }
+        this.logTxt = logTxt;
 
-	/**************************************************
-	 * 
-	 * Mapping workflow to workflow name.
-	 */
+        Log.d("fennox", "my ID is " + getMyId());
+        Log.d("jgw", "my imgmeta is " + imgMetaFormat);
+        if (imgMetaFormat != null)
+            this.imgMetaFormat = imgMetaFormat;
+        //check current state of synk server.
+        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
+            getServerSyncStatus();
 
-	public Map<String,Workflow> mapWorkflowsToNames(List<Workflow> l) {
-		Map<String,Workflow> ret=null;
-		if (l==null) 
-			Log.e("NILS","Parse Error: Workflowlist is null in SetWorkFlows");
-		else {
+    }
 
-			for (Workflow wf:l)
-				if (wf!=null) {
-					if (wf.getName()!=null) {
-						Log.d("NILS","Adding wf with name "+wf.getName()+" and length "+wf.getName().length());
-						if (ret== null)
-							ret = new TreeMap<String,Workflow>(String.CASE_INSENSITIVE_ORDER);
 
-						ret.put(wf.getName(), wf);
-					} else
-						Log.d("NILS","Workflow name was null in setWorkflows");
-				} else
-					Log.d("NILS","Workflow was null in setWorkflows");
-		}
-		return ret;
-	}
+    public static Account getmAccount(Context ctx) {
+        if (mAccount == null)
+            mAccount = CreateSyncAccount(ctx);
+        return mAccount;
+    }
+
+    /*Validation
+     *
+     */
+
+
+    /*Singletons available for all classes
+     *
+     */
+    public SpinnerDefinition getSpinnerDefinitions() {
+        return mySpinnerDef;
+    }
+
+    //Persistance for app specific variables.
+    public PersistenceHelper getPreferences() {
+        return ph;
+    }
+
+    //Persistence for global, non app specific variables
+    public PersistenceHelper getGlobalPreferences() {
+        return globalPh;
+    }
+
+
+    public DbHelper getDb() {
+        return db;
+    }
+
+    public Parser getParser() {
+        return parser;
+    }
+
+    public Context getContext() {
+        return myC;
+    }
+
+    //public RuleExecutor getRuleExecutor() {
+    //	return myExecutor;
+    //}
+
+    public VariableConfiguration getVariableConfiguration() {
+        return artLista;
+    }
+
+    public BackupManager getBackupManager() {
+        return myBackupManager;
+    }
+
+    public String getImgMetaFormat() {
+        return imgMetaFormat;
+    }
+
+    /**************************************************
+     *
+     * Mapping workflow to workflow name.
+     */
+
+    public Map<String, Workflow> mapWorkflowsToNames(List<Workflow> l) {
+        Map<String, Workflow> ret = null;
+        if (l == null)
+            Log.e("NILS", "Parse Error: Workflowlist is null in SetWorkFlows");
+        else {
+
+            for (Workflow wf : l)
+                if (wf != null) {
+                    if (wf.getName() != null) {
+                        Log.d("NILS", "Adding wf with name " + wf.getName() + " and length " + wf.getName().length());
+                        if (ret == null)
+                            ret = new TreeMap<String, Workflow>(String.CASE_INSENSITIVE_ORDER);
+
+                        ret.put(wf.getName(), wf);
+                    } else
+                        Log.d("NILS", "Workflow name was null in setWorkflows");
+                } else
+                    Log.d("NILS", "Workflow was null in setWorkflows");
+        }
+        return ret;
+    }
 
 	/*
 	public Table thawTable() { 	
@@ -255,49 +258,49 @@ public class GlobalState  {
 	}
 	 */
 
-	public Workflow getWorkflow(String id) {
-		if (id == null || id.isEmpty())
-			return null;
-		return myWfs.get(id);
-	}
+    public Workflow getWorkflow(String id) {
+        if (id == null || id.isEmpty())
+            return null;
+        return myWfs.get(id);
+    }
 
-	public Workflow getWorkflowFromLabel(String label) {
-		if (label==null)
-			return null;
-		for (Workflow wf:myWfs.values()) 
-			if (wf.getLabel()!=null && wf.getLabel().equals(label))
-				return wf;
-		Log.e("nils","flow not found: "+label);
-		return null;
-	}	
-
-
-	public String[] getWorkflowNames() {
-		if (myWfs==null)
-			return null;
-		String[] array = new String[myWfs.keySet().size()];
-		myWfs.keySet().toArray(array);
-		return array;
-
-	}
-
-	public String[] getWorkflowLabels() {
-		if (myWfs==null)
-			return null;
-		String[] array = new String[myWfs.keySet().size()];
-		int i=0;String label;
-		for (Workflow wf:myWfs.values()) {
-			label = wf.getLabel();
-			if (label!=null)
-				array[i++] = label;
-		}
-		return array;
-
-	}
+    public Workflow getWorkflowFromLabel(String label) {
+        if (label == null)
+            return null;
+        for (Workflow wf : myWfs.values())
+            if (wf.getLabel() != null && wf.getLabel().equals(label))
+                return wf;
+        Log.e("nils", "flow not found: " + label);
+        return null;
+    }
 
 
+    public String[] getWorkflowNames() {
+        if (myWfs == null)
+            return null;
+        String[] array = new String[myWfs.keySet().size()];
+        myWfs.keySet().toArray(array);
+        return array;
 
-	public synchronized Aritmetic makeAritmetic(String name, String label) {
+    }
+
+    public String[] getWorkflowLabels() {
+        if (myWfs == null)
+            return null;
+        String[] array = new String[myWfs.keySet().size()];
+        int i = 0;
+        String label;
+        for (Workflow wf : myWfs.values()) {
+            label = wf.getLabel();
+            if (label != null)
+                array[i++] = label;
+        }
+        return array;
+
+    }
+
+
+    public synchronized Aritmetic makeAritmetic(String name, String label) {
 		/*Variable result = myVars.get(name);
 		if (result == null) {
 		    myVars.put(name, result = new Aritmetic(name,label));
@@ -307,16 +310,16 @@ public class GlobalState  {
 			return (Aritmetic)result;
 		}
 		 */
-		return new Aritmetic(name,label);
-	}
+        return new Aritmetic(name, label);
+    }
 
-	public VariableCache getVariableCache() {
-		return myVariableCache;
-	}
+    public VariableCache getVariableCache() {
+        return myVariableCache;
+    }
 
-	public LoggerI getLogger() {
-		return logger;
-	}
+    public LoggerI getLogger() {
+        return logger;
+    }
 /*
 	public void setCurrentWorkflowContext(WF_Context myContext) {
 		currentContext = myContext;
@@ -327,48 +330,47 @@ public class GlobalState  {
 	}
 */
 
-	public void setDBContext(DB_Context context) {
-		myVariableCache.setCurrentContext(context);
-	}
+    public void setDBContext(DB_Context context) {
+        myVariableCache.setCurrentContext(context);
+    }
 
-	public boolean isMaster() {
-		String m;
-		if ((m = globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW)).equals(PersistenceHelper.UNDEFINED)) {
-			globalPh.put(PersistenceHelper.DEVICE_COLOR_KEY_NEW, "Master");
-			return true;
-		}
-		else
-			return m.equals("Master");
+    public boolean isMaster() {
+        String m;
+        if ((m = globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW)).equals(PersistenceHelper.UNDEFINED)) {
+            globalPh.put(PersistenceHelper.DEVICE_COLOR_KEY_NEW, "Master");
+            return true;
+        } else
+            return m.equals("Master");
 
-	}
+    }
 
-	public boolean isSolo() {
-		return globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW).equals("Solo");
-	}
+    public boolean isSolo() {
+        return globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW).equals("Solo");
+    }
 
-	public boolean isSlave() {
-		return globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW).equals("Client");
-	}
+    public boolean isSlave() {
+        return globalPh.get(PersistenceHelper.DEVICE_COLOR_KEY_NEW).equals("Client");
+    }
 
-	public GisObject getSelectedGop() {
-		return selectedGop;
-	}
+    public GisObject getSelectedGop() {
+        return selectedGop;
+    }
 
-	public void setSelectedGop(GisObject go) {
-		selectedGop=go;
-	}
+    public void setSelectedGop(GisObject go) {
+        selectedGop = go;
+    }
 
 
-	//Map<String,WF_Static_List> listCache = new HashMap<>();
+    //Map<String,WF_Static_List> listCache = new HashMap<>();
 
-	/*public WF_Static_List getListFromCache(String blockId) {
-		return listCache.get(blockId);
-	}
+    /*public WF_Static_List getListFromCache(String blockId) {
+        return listCache.get(blockId);
+    }
 
-	public void addListToCache(String blockId, WF_Static_List list) {
-		listCache.put(blockId,list);
-	}
-	*/
+    public void addListToCache(String blockId, WF_Static_List list) {
+        listCache.put(blockId,list);
+    }
+    */
 	/*
 	public MessageHandler getHandler() {
 		if (myHandler==null)
@@ -388,187 +390,175 @@ public class GlobalState  {
 			return new SlaveMessageHandler();
 	}
 	 */
-	public enum ErrorCode {
-		ok,
-		missing_required_column,
-		file_not_found, workflows_not_found,
-		tagdata_not_found,parse_error,
-		config_not_found,spinners_not_found,
-		missing_lag_id,
-		missing_user_id,
+    public enum ErrorCode {
+        ok,
+        missing_required_column,
+        file_not_found, workflows_not_found,
+        tagdata_not_found, parse_error,
+        config_not_found, spinners_not_found,
+        missing_lag_id,
+        missing_user_id,
 
-	}
-
-
+    }
 
 
+    public ErrorCode checkSyncPreconditions() {
+        if (this.isMaster() && globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
+            return ErrorCode.missing_lag_id;
+        else if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
+            return ErrorCode.missing_user_id;
 
-	public ErrorCode checkSyncPreconditions() {
-		if (this.isMaster()&&globalPh.get(PersistenceHelper.LAG_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-			return ErrorCode.missing_lag_id;
-		else if (globalPh.get(PersistenceHelper.USER_ID_KEY).equals(PersistenceHelper.UNDEFINED))
-			return ErrorCode.missing_user_id;
-
-		else 
-			return ErrorCode.ok;
-	}
+        else
+            return ErrorCode.ok;
+    }
 
 
-	Handler mHandler= new Handler(Looper.getMainLooper()) {
-	      
+    Handler mHandler = new Handler(Looper.getMainLooper()) {
+
         @Override
-		public void handleMessage(Message msg) {
-        	Intent intent =null;
+        public void handleMessage(Message msg) {
+            Intent intent = null;
 
-        	if(msg.obj instanceof String) {
-        	//Log.d("vortex","IN HANDLE MESSAGE WITH MSG: "+msg.toString());
-        	String s = (String)msg.obj;
-        	intent = new Intent();
-    		intent.setAction(s);
-        	} else
-        		if (msg.obj instanceof Intent)
-        			intent = (Intent)msg.obj;
-    		if (intent!=null)
-    			LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
-    		else
-    			Log.e("vortex","Intent was null in handleMessage");
-        	
-		}
+            if (msg.obj instanceof String) {
+                //Log.d("vortex","IN HANDLE MESSAGE WITH MSG: "+msg.toString());
+                String s = (String) msg.obj;
+                intent = new Intent();
+                intent.setAction(s);
+            } else if (msg.obj instanceof Intent)
+                intent = (Intent) msg.obj;
+            if (intent != null)
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+            else
+                Log.e("vortex", "Intent was null in handleMessage");
 
-		
-	};
-
-	
-	public void sendSyncEvent(Intent intent) {
-		Log.d("vortex","IN SEND SYNC EVENT WITH ACTION "+intent.getAction());
-		if (mHandler!=null) {
-			Message m = Message.obtain(mHandler);
-			m.obj=intent;
-			m.sendToTarget();
-		} else
-			Log.e("vortex","NO MESSAGE NO HANDLER!!");
-	}
-
-	public void sendEvent(String action) {
-		Log.d("vortex","IN SEND EVENT WITH ACTION "+action);
-		if (mHandler!=null) {
-			Message m = Message.obtain(mHandler);
-			m.obj=action;
-			m.sendToTarget();
-		} else
-			Log.e("vortex","NO MESSAGE NO HANDLER!!");
-	}
-
-	SyncMessage message;
+        }
 
 
-	private StatusHandler myStatusHandler;
+    };
 
 
+    public void sendSyncEvent(Intent intent) {
+        Log.d("vortex", "IN SEND SYNC EVENT WITH ACTION " + intent.getAction());
+        if (mHandler != null) {
+            Message m = Message.obtain(mHandler);
+            m.obj = intent;
+            m.sendToTarget();
+        } else
+            Log.e("vortex", "NO MESSAGE NO HANDLER!!");
+    }
 
-	public void setSyncMessage(SyncMessage message) {
-		this.message=message;
-	}
+    public void sendEvent(String action) {
+        Log.d("vortex", "IN SEND EVENT WITH ACTION " + action);
+        if (mHandler != null) {
+            Message m = Message.obtain(mHandler);
+            m.obj = action;
+            m.sendToTarget();
+        } else
+            Log.e("vortex", "NO MESSAGE NO HANDLER!!");
+    }
 
-	public SyncMessage getOriginalMessage() {
-		return message;
-	}
-
-
-	public void setMyPartner(String partner) {
-		myPartner = partner;
-	}
-
-	public String getMyPartner() {
-		return myPartner;
-	}
-
-	public StatusHandler getStatusHandler() {
-		return myStatusHandler;
-	}
-
-
-	private Configuration myModules;
+    SyncMessage message;
 
 
+    private StatusHandler myStatusHandler;
 
 
+    public void setSyncMessage(SyncMessage message) {
+        this.message = message;
+    }
 
-/*
-	public void synchronise(SyncEntry[] ses, boolean isMaster) {	
-		Log.e("nils,","SYNCHRONIZE. MESSAGES: ");
-		setSyncStatus(SyncStatus.writing_data);
-		for(SyncEntry se:ses) {
-			Log.e("nils","Action:"+se.getAction());
-			Log.e("nils","Target: "+se.getTarget());
-			Log.e("nils","Keys: "+se.getKeys());
-			Log.e("nils","Values:"+se.getValues());
-			Log.e("nils","Change: "+se.getChange());
-
-		}
-		db.synchronise(ses, myVarCache,this);
-		
-	}
-*/
-	public DrawerMenu getDrawerMenu() {
-		// TODO Auto-generated method stub
-		return myDrawerMenu;
-	}
-
-	public void setDrawerMenu(DrawerMenu mDrawerMenu) {
-		myDrawerMenu = mDrawerMenu;
-	}
+    public SyncMessage getOriginalMessage() {
+        return message;
+    }
 
 
-	public Map<String, Workflow> getWfs() {
-		return myWfs;
-	}
+    public void setMyPartner(String partner) {
+        myPartner = partner;
+    }
+
+    public String getMyPartner() {
+        return myPartner;
+    }
+
+    public StatusHandler getStatusHandler() {
+        return myStatusHandler;
+    }
 
 
-	//Change current context (side effect) to the context given in the workflow startblock.
-	//If no context can be built (missing variable values), return error. Otherwise, return null.
+    private Configuration myModules;
 
 
-	
+    /*
+        public void synchronise(SyncEntry[] ses, boolean isMaster) {
+            Log.e("nils,","SYNCHRONIZE. MESSAGES: ");
+            setSyncStatus(SyncStatus.writing_data);
+            for(SyncEntry se:ses) {
+                Log.e("nils","Action:"+se.getAction());
+                Log.e("nils","Target: "+se.getTarget());
+                Log.e("nils","Keys: "+se.getKeys());
+                Log.e("nils","Values:"+se.getValues());
+                Log.e("nils","Change: "+se.getChange());
 
-	public void setModules(Configuration myModules) {
-		this.myModules = myModules;
-	}
+            }
+            db.synchronise(ses, myVarCache,this);
+
+        }
+    */
+    public DrawerMenu getDrawerMenu() {
+        // TODO Auto-generated method stub
+        return myDrawerMenu;
+    }
+
+    public void setDrawerMenu(DrawerMenu mDrawerMenu) {
+        myDrawerMenu = mDrawerMenu;
+    }
 
 
-
-	public static void destroy() {
-		if (singleton.getTracker()!=null)
-			singleton.getTracker().stopSelf();
-
-		singleton=null;
+    public Map<String, Workflow> getWfs() {
+        return myWfs;
+    }
 
 
-	}
+    //Change current context (side effect) to the context given in the workflow startblock.
+    //If no context can be built (missing variable values), return error. Otherwise, return null.
 
-	public Tracker getTracker() {
-		if (myTracker == null) 
-			myTracker = new Tracker();
-		return myTracker;
-	}
 
-	public File getCachedFileFromUrl(String fileName) {
-		return Tools.getCachedFile(fileName, Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/");
-	}
+    public void setModules(Configuration myModules) {
+        this.myModules = myModules;
+    }
 
-	
-	public ConnectionManager getConnectionManager() {
-		return myConnectionManager;
-	}
 
-	//Get a string resource and print it. convenience function.
-	public CharSequence getString(int identifier) {
-		return getContext().getResources().getString(identifier);
-	}
+    public static void destroy() {
+        if (singleton.getTracker() != null)
+            singleton.getTracker().stopSelf();
 
-	
+        singleton = null;
 
-	  /**
+
+    }
+
+    public Tracker getTracker() {
+        if (myTracker == null)
+            myTracker = new Tracker();
+        return myTracker;
+    }
+
+    public File getCachedFileFromUrl(String fileName) {
+        return Tools.getCachedFile(fileName, Constants.VORTEX_ROOT_DIR + globalPh.get(PersistenceHelper.BUNDLE_NAME) + "/cache/");
+    }
+
+
+    public ConnectionManager getConnectionManager() {
+        return myConnectionManager;
+    }
+
+    //Get a string resource and print it. convenience function.
+    public CharSequence getString(int identifier) {
+        return getContext().getResources().getString(identifier);
+    }
+
+
+    /**
      * Create a new dummy account for the sync adapter
      *
      * @param context The application context
@@ -580,7 +570,7 @@ public class GlobalState  {
         // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(
-                		Start.ACCOUNT_SERVICE);
+                        Start.ACCOUNT_SERVICE);
         /*
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
@@ -592,8 +582,8 @@ public class GlobalState  {
              * then call context.setIsSyncable(account, AUTHORITY, 1)
              * here.
              */
-        	Log.d("vortex","Created account: "+newAccount.name);
-        	
+            Log.d("vortex", "Created account: " + newAccount.name);
+
         } else {
         	/*
         	Account[] aa = accountManager.getAccounts();
@@ -610,117 +600,159 @@ public class GlobalState  {
              * The account exists or some other error occurred. Log this, report it,
              * or handle it internally.
              */
-        	Log.d("vortex","add  sync account failed for some reason");
+            Log.d("vortex", "add  sync account failed for some reason");
         }
         return newAccount;
     }
 
-	public void onStart() {
-		//check synk
-		//db.processSyncEntriesIfAny();
-			
-	}
+    public void onStart() {
+        //check synk
+        //db.processSyncEntriesIfAny();
 
-	
-	public String getMyId() {
-		return Settings.Secure.getString(getContext().getContentResolver(),
-				Settings.Secure.ANDROID_ID);
-	}
+    }
 
 
-	public CharSequence getLogTxt() {
-		return logTxt;
-	}
+    public String getMyId() {
+        return Settings.Secure.getString(getContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
 
 
+    public CharSequence getLogTxt() {
+        return logTxt;
+    }
 
-	public String getServerSyncStatus() {
-		Context ctx = getContext();
-		if (ctx!=null) {
-			Log.d("vortex","update team sync state called");
 
-			String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-			String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
-			String timestamp = getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+    public String getServerSyncStatus() {
+        Context ctx = getContext();
+        if (ctx != null) {
+            Log.d("vortex", "update team sync state called");
 
-			if(Connectivity.isConnected(ctx)) {
-				//connected...lets call the sync server.
-				final String SyncServerStatusCall = Constants.SynkServerURI+"?action=get_team_status&team="+team+"&project="+project+"&timestamp="+timestamp;
-				//final TextView mTextView = (TextView) findViewById(R.id.text);
-				RequestQueue queue = Volley.newRequestQueue(ctx);
+            String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
+            String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
+            String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
 
-				StringRequest stringRequest = new StringRequest(Request.Method.GET, SyncServerStatusCall,
-						new Response.Listener<String>() {
-							@Override
-							public void onResponse(String response) {
-								// Display the first 500 characters of the response string.
-								Log.d("mama","Response is: "+ response);
-								updateTeam(response);
-								//sendEvent(MenuActivity.REDRAW);
-							}
-						}, new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						Log.d("mama","That didn't work! "+error.getMessage());
-					}
-				});
+            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team);
+//            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,-22);
+//            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team);
+            Log.d("vortex","TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME: "+timestamp);
+           timestamp=timestamp==-1?0:timestamp;
+            Log.d("mama","TS: "+timestamp);
+            if (Connectivity.isConnected(ctx)) {
+                //connected...lets call the sync server.
+                final String SyncServerStatusCall = Constants.SynkServerURI + "?action=get_team_status&team=" +
+                        team + "&project=" + project + "&timestamp=" + timestamp+"&user="+user;
+                //final TextView mTextView = (TextView) findViewById(R.id.text);
+                RequestQueue queue = Volley.newRequestQueue(ctx);
+
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, SyncServerStatusCall,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                Log.d("mama", "Response is: " + response);
+                                syncGroup = new SyncGroup(response);
+                                sendEvent(MenuActivity.REDRAW);
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("mama", "That didn't work! " + error.getMessage());
+                    }
+                });
 
 // Add the request to the RequestQueue.
-				queue.add(stringRequest);
-			} else
-				Log.d("mama","no internet...");
-		}
+                queue.add(stringRequest);
+            } else
+                Log.d("mama", "no internet...");
+        }
 
-		Log.d("mama","I return here");
-		return null;
-	}
+        Log.d("mama", "I return here");
+        return null;
+    }
 
-	private List<TeamMember> team = null;
+    private SyncGroup syncGroup = null;
 
-	private class TeamMember {
-    	int unsynched;
-    	String name;
-    	String date;
+    public SyncGroup getSyncGroup() {
+        return syncGroup;
+    }
 
-    	public TeamMember(String name, int uns, String date) {
-    		unsynched=uns;
-    		this.name=name;
-    		this.date=date;
+    public class SyncGroup {
 
-		}
-	}
+        private List<TeamMember> team = null;
+        private Date lastUpdate;
 
-	public List<TeamMember> getTeamSyncStatus() {
-		return team;
-	}
-	//insert current data on the sync status for the team.
-	private void updateTeam(String json) {
-    	//{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
-		if (json!=null) {
-			//clear current state.
-			team=new ArrayList<>();
-			try {
-				JsonReader jr = new JsonReader(new StringReader(json));
+        public SyncGroup(String json) {
+            //insert current data on the sync status for the team.
+            //{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
+            if (json != null) {
+                lastUpdate=new Date(System.currentTimeMillis());
+                //clear current state.
+                team = new ArrayList<>();
+                try {
+                    JsonReader jr = new JsonReader(new StringReader(json));
 
-				jr.beginObject();
-				while (!jr.peek().equals(JsonToken.END_OBJECT)) {
-					String name = jr.nextName();
-					Log.d("vortex", name);
-					jr.beginArray();
-					String user=jr.nextString();
-					int unsynced=jr.nextInt();
-					String date=jr.nextString();
-					Log.d("vortex", "user:"+user+" unsynced: "+unsynced+" time: "+date);
-					jr.endArray();
-					//name, number of unsynced entries, datetime last seen on sync server.
-					team.add(new TeamMember(name,unsynced,date));
-				}
+                    jr.beginObject();
+                    while (!jr.peek().equals(JsonToken.END_OBJECT)) {
+                        String name = jr.nextName();
+                        Log.d("vortex", name);
+                        jr.beginArray();
+                        String user = jr.nextString();
+                        int unsynced = jr.nextInt();
+                        Long date = jr.nextLong();
+                        Log.d("vortex", "user:" + user + " unsynced: " + unsynced + " time: " + date);
+                        jr.endArray();
+                        //name, number of unsynced entries, datetime last seen on sync server.
+                        addEntry(new TeamMember(user, unsynced, date));
+                    }
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        private void addEntry(TeamMember t) {
+            if (team == null)
+                team = new ArrayList<>();
+            team.add(t);
+
+        }
+
+        public List<TeamMember> getTeam() {
+            return team;
+        }
+
+        public Date getLastUpdate() {
+            return lastUpdate;
+        }
+    }
+
+    public class TeamMember {
+        public int unsynched;
+        public String user;
+        private Long date;
+
+        public TeamMember(String user, int uns, Long date) {
+            unsynched = uns;
+            this.user = user;
+            this.date = date;
+
+        }
+
+        public String getDate() {
+            if (date!=-1)
+                return new java.sql.Date(date).toString();
+            else
+                return null;
+        }
+
+        public Long getRawDate() {
+            return date;
+        }
+    }
+
 
 }
 

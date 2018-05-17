@@ -225,7 +225,8 @@ public class Constants {
 	//public static final String SynkServerURI = "http://86.183.111.124:8080/com.teraim.synkserv/SynkServ";
 	//public static final String SynkServerURI = "http://109.157.177.172:8080/com.teraim.synkserv/SynkServ";
 
-	public static final String SynkServerURI = "http://10.0.0.9:8080/com.teraim.synkserv/SynkServ";
+	public static final String SynkServerURI = "http://rlotest.eu-west-1.elasticbeanstalk.com:8080/SynkServ";
+	//public static final String SynkServerURI = "http://10.7.3.237:8080/com.teraim.synkserv/SynkServ";
 	//public static final String SynkServerURI = "https://rlo.slu.se:8443/com.teraim.synkserv/SynkServ";
 	//public static final String SynkServerURI = "https://rlotest.slu.se:8080/com.teraim.synkserv/SynkServ";
 

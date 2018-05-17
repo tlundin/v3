@@ -213,7 +213,7 @@ public class LocationAndTimeStamp {
     }
 }
 
-    final static long TenDays = 3600*24*7*2;
+    final static long TenDays = 3600*24*7*2*1000;
 
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
@@ -224,14 +224,14 @@ public class LocationAndTimeStamp {
             long timeStamp = qx.getLong(2);
             boolean isOld=false;
             String teamMemberName = qx.getString(0);
-            long diff = (System.currentTimeMillis()/1000 - timeStamp);
+            long diff = (System.currentTimeMillis() - timeStamp);
             if (diff > TenDays) {
                 Log.d("bortex","timestamp for "+teamMemberName+" is older than 10 days.");
                 continue;
             }
-            if (diff > 3600) {
+            if (diff > 3600*1000) {
 
-                Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis()/1000 - timeStamp));
+                Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis() - timeStamp)/1000);
                 isOld = true;
             }
             if (ret==null)
@@ -827,7 +827,7 @@ public class DBColumnPicker {
         values.put("lag",globalPh.get(PersistenceHelper.LAG_ID_KEY));
         values.put("changes", changes);
         values.put("target", varName);
-        values.put("timestamp", TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+        values.put("timestamp", System.currentTimeMillis());
         //need to save timestamp + value
         db.insert(TABLE_AUDIT, null, values);
     }
@@ -1038,7 +1038,7 @@ public class StoredVariableData {
         insertContentValues.clear();
         boolean isReplace = false;
         long milliStamp = System.currentTimeMillis();
-        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(milliStamp) + "";
+        String timeStamp = milliStamp + "";
 
         //for logging
         //Log.d("nils", "INSERT VALUE ["+var.getId()+": "+var.getValue()+"] Local: "+isLocal+ "NEW Value: "+newValue);
@@ -1199,7 +1199,7 @@ public class StoredVariableData {
     public void insertVariableSnap(ArrayVariable var, String newValue,
                                    boolean syncMePlease) {
         Log.d("vortex","I am in snap insert for variable "+var.getId()+" that is synced: "+syncMePlease);
-        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+        String timeStamp = (System.currentTimeMillis()) + "";
         ContentValues values = new ContentValues();
         createValueMap(var, newValue, values, timeStamp);
 
@@ -2026,14 +2026,12 @@ public static class Selection {
         }
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
-            String timestamp = GlobalState.getInstance().getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
-            if (timestamp.equals(PersistenceHelper.UNDEFINED)) {
-                timestamp = "0";
-                Log.d("vortex", "timestamp was null or undefined...will be set to zero");
-            }
+            Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+            timestamp=timestamp==-1?0:timestamp;
+
             //Log.d("nils","Time of last sync is "+timestamp+" in getNumberOfUnsyncedEntries (dbHelper)");
             Cursor c = db.query(TABLE_AUDIT, null,
-                    "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp,team}, null, null, "timestamp asc", null);
+                    "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp.toString(),team}, null, null, "timestamp asc", null);
             if (c != null && c.getCount() > 0)
                 ret = c.getCount();
             if (c != null)
@@ -2199,7 +2197,7 @@ public static class Selection {
 
     public boolean fastInsert(Map<String, String> key, String varId, String value) {
         valuez.clear();
-        String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + "";
+        String timeStamp = (System.currentTimeMillis()) + "";
 
         for (String k : key.keySet())
             valuez.put(getDatabaseColumnName(k), key.get(k));

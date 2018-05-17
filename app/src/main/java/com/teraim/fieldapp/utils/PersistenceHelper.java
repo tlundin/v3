@@ -74,6 +74,9 @@ public class PersistenceHelper {
 		this.sp = sp;
 	}
 
+	public String get(String key,String undefined) {
+		return sp.getString(key,undefined);
+	}
 
 	public String get(String key) {
 		return sp.getString(key,UNDEFINED);

@@ -144,10 +144,16 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 
 			String[] r = Tools.split(row);
 
-			if (r==null || r.length<Constants.VAR_PATTERN_ROW_LENGTH) {
+			if (r==null|| r.length<Constants.VAR_PATTERN_ROW_LENGTH) {
+
 				o.addRow("");
-				o.addRedText("found null or too short row at "+currentRow+" in config file..skipping");
-				return new LoadResult(this,ErrorCode.ParseError,"Parse error, row: "+currentRow);
+				o.addRedText("Too short row or row null in Variable.csv.");
+				if (r!=null) {
+					o.addRow("");
+					o.addRedText("Row length: "+r.length+". Expected length: "+Constants.VAR_PATTERN_ROW_LENGTH);
+				} else
+					o.addRow("NULL!!!");
+				return new LoadResult(this,ErrorCode.ParseError,"Parse error, row: "+currentRow+1);
 			} else {	
 				for(int i=0;i<r.length;i++) {
 					if (r[i]!=null)
@@ -179,7 +185,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 
 							if (varPatternName==null) {
 								o.addRow("");
-								o.addRedText("varPatternNamepart evaluates to null at line#"+currentRow+" in varpattern file");
+								o.addRedText("varPatternNamepart evaluates to null at line#"+(currentRow+1)+" in varpattern file");
 							} else {
 								String fullVarName = pGroup.trim()+Constants.VariableSeparator+(cFileNamePart!=null?cFileNamePart.trim()+Constants.VariableSeparator:"")+varPatternName.trim();
 								//Remove duplicate elements from Config File row.

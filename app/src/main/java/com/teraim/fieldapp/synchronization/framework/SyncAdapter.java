@@ -378,11 +378,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		//Here it is safe to update the timestamp for syncentries received from server.
 
 		Long potentialStamp = ph.getLong(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,-1);
-		if (potentialStamp!=-1) {
-			ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,
+
+		if (potentialStamp!=-1L) {
+			ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,
 					potentialStamp).apply();
 			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentialStamp);
-			Log.d("vortex","Entry: "+ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,22)+" Team: "+team);
+			Log.d("vortex","Entry: "+ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,22)+" Team: "+team);
 		} else
 			Log.e("vortex","potentialStamp was null in updatecounters!");
 		busy = false;
@@ -436,7 +437,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("vortex","writing app..."+app);
 			objOut.writeObject(app);
 			//The last timestamp.
-			Long trId=ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,LONG_TIME_AGO);
+			Long trId=ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,LONG_TIME_AGO);
 			Log.d("vortex","LAST_SYNC_FROM_TEAM_TO_ME WAS "+trId);
 			objOut.writeObject(trId);
 
@@ -476,7 +477,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					//Each team + project has an associated TIME OF LAST SYNC pointer. 
 						ph = getContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
 						if (ph!=null)
-								ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team,maxStamp).apply();
+								ph.edit().putLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +team,maxStamp).apply();
 						else
 							Log.e("vortex","something wrong PH NULL!");
 						Log.e("vortex","UPDATED TIMESTAMP: "+maxStamp+"");

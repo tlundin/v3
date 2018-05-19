@@ -21,7 +21,7 @@ import com.teraim.fieldapp.ui.ExportDialog;
 
 public class BackupManager {
 
-	private BackupManager singleton;
+	private static BackupManager singleton;
 	private GlobalState gs;
 	private Context ctx;
 
@@ -31,7 +31,7 @@ public class BackupManager {
 	}
 
 
-	public BackupManager getInstance(GlobalState gs) {		
+	public static BackupManager getInstance(GlobalState gs) {
 		if (singleton == null)
 			singleton = new BackupManager(gs);
 		return singleton;

@@ -20,7 +20,7 @@ import com.teraim.fieldapp.utils.Tools;
 public class GisObject {
 
 	
-	protected static final double ClickThresholdInMeters = 15;
+	protected static final double ClickThresholdInMeters = 30;
 	protected double distanceToClick=-1;
 	private String label=null;
 	private String statusVariableId=null,statusVariableValue=null;

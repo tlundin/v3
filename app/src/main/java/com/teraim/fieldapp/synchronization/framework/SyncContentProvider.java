@@ -96,7 +96,7 @@ public class SyncContentProvider extends ContentProvider {
 				c = db.rawQuery("SELECT count(*) FROM "+DbHelper.TABLE_SYNC, null);
 			} else {
 				//Timestamp key includes team name, since change of team name should lead to resync from zero.
-				Long timestamp = ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + teamName,0);
+				Long timestamp = ph.getLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + teamName,0);
 				Log.d("vortex", "Timestamp for last sync in Query is " + timestamp);
 
 				c = db.query(DbHelper.TABLE_AUDIT, null,

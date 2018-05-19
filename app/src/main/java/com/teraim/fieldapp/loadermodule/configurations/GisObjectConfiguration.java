@@ -187,11 +187,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                 keyChain.put("uid", uuid);
                             }
                             else {
-                                generatedUID=true;
-                                Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
+                                return new LoadResult(this,ErrorCode.Aborted,"missing 'FIXEDGID', cannot continue");
+                                //generatedUID=true;
+                                //Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
 
-                                keyChain.put("uid", UUID.randomUUID().toString());
-                                attributes.put("GENERATEDUID","true");
+                                //keyChain.put("uid", UUID.randomUUID().toString());
+                                //attributes.put("GENERATEDUID","true");
                             }
                             //keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
 

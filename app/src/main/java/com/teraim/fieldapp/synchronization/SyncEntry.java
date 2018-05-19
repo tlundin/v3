@@ -68,9 +68,25 @@ public class SyncEntry extends SyncMessage {
     private void generate() {
         if (changes == null)
             return;
+        if (isDeleteMany()) {
+            keys = collectPairs(changes.split(","));
+            values = null;
+ //           Log.d("bascar","deletemany generate returns: "+keys);
+            return;
+        }
+        if (isDelete() ) {
+
+            keys = collectPairs(changes.split("\\|"));
+            values = null;
+ //           Log.d("bascar","delete generate returns: "+keys);
+            return;
+        }
         String[] tmp = changes.split("_\\$_");
-        if (tmp==null||tmp.length!=2)
-            System.err.println("something wrong with syncentry with changes: ["+changes+"]");
+        if (tmp==null||tmp.length!=2) {
+            System.err.println("something wrong with syncentry with changes: [" + changes + "]");
+            String a = null;
+            a.isEmpty();
+        }
         else {
             keys = collectPairs(tmp[0].split("\\|"));
             values = collectPairs(tmp[1].split("§"));

@@ -1,7 +1,6 @@
 package com.teraim.fieldapp.utils;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,11 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
-import com.android.volley.*;
 
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.appdatasearch.GetRecentContextCall;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.ArrayVariable;
 import com.teraim.fieldapp.dynamic.types.Location;
@@ -34,6 +29,7 @@ import com.teraim.fieldapp.synchronization.SyncReport;
 import com.teraim.fieldapp.synchronization.SyncStatus;
 import com.teraim.fieldapp.synchronization.SyncStatusListener;
 import com.teraim.fieldapp.synchronization.TimeStampedMap;
+import com.teraim.fieldapp.synchronization.Unikey;
 import com.teraim.fieldapp.synchronization.VariableRowEntry;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
@@ -49,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -1396,6 +1391,10 @@ public static class Selection {
             return ret;
     }
 
+    private boolean hasDatabaseColumnName(String c) {
+        return realColumnNameToDB.get(c)!=null;
+    }
+
 
     public String getRealColumnNameFromDatabaseName(String databaseColumnName) {
         if (databaseColumnName == null || databaseColumnName.length() == 0)
@@ -1431,6 +1430,7 @@ public static class Selection {
         // Map<String, String> keyHash = new HashMap<String, String>();
 
         VariableCache variableCache = GlobalState.getInstance().getVariableCache();
+
         String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
 
@@ -1456,7 +1456,6 @@ public static class Selection {
 
             uid=null;
             variableName=null;
-
             spy=null;
 
             if (control.flag) {
@@ -1494,10 +1493,6 @@ public static class Selection {
                 }
 
 
-
-                String[] pair;
-                String myValue = null;
-                boolean error = false;
                 cv = new ContentValues();
 
                 for (String key : sValues.keySet())
@@ -1508,7 +1503,7 @@ public static class Selection {
                 }
                 variableName = sKeys.get("var");
 
-                if (variableName == null || error)
+                if (variableName == null)
                     continue;
 
 
@@ -1517,11 +1512,12 @@ public static class Selection {
                 uid = cv.getAsString(uidCol);  //unique key for object. uid.
                 spy = cv.getAsString(spyCol); //smaprovyteid
 
-
-                if (s.isInsert() && uid != null && spy == null) {
-                    tsMap.add(uid, variableName, cv);
+                Log.d("bascar", "Insert for: " + s.getTarget() + " ch: " + s.getChange());
+                if (s.isInsert() && uid != null ) {
+                    Log.d("vortex","added to tsmap: "+uid);
+                    tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                 } else {
-                    //Log.e("bascar", "Inserting RAW" + s.getChange());
+                    Log.e("bascar", "Inserting RAW" + s.getChange());
                     db.insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
                             cv
@@ -1538,7 +1534,7 @@ public static class Selection {
 
             else if (s.isDelete()) {
 
-                //Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
+                Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
                 Map<String,String> sKeys = s.getKeys();
 
                 if (sKeys == null) {
@@ -1550,9 +1546,10 @@ public static class Selection {
                 spy = sKeys.get("spy");
                 uid = sKeys.get("uid");
                 variableName = sKeys.get("var");
-
-                if (!tsMap.delete(uid, variableName)) {
+                Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
+                if (!tsMap.delete(ukey, variableName)) {
                     try {
+                        Log.d("bascar","not found in tsmap: "+variableName);
                         int aff = delete(sKeys, s.getTimeStamp(), team);
                         if (aff == 0) {
                             changes.refused++;
@@ -1571,15 +1568,19 @@ public static class Selection {
             }
 
 
-
+            //Erase set of values. Targets incoming sync entries only.
             else if (s.isDeleteMany()) {
-
-                String keyPairs = s.getChange();
+                Log.d("bascar","Indeletemany. CHANGES: "+s.getChange());
+                Map keyPairs = s.getKeys();
                 String pattern = s.getTarget();
                 if (keyPairs != null) {
-
-                    int affectedRows = this.erase(keyPairs, pattern);
+                    //pattern applies to variables.
+                    int affectedRows = tsMap.delete(keyPairs,pattern);
+                    //
                     changes.deletes += affectedRows;
+                    Log.d("bascar","Affected rows in cache: "+affectedRows);
+                    affectedRows = this.erase(s.getChange(), pattern);
+                    Log.d("bascar","Affected rows in database:" +affectedRows);
                 } else {
                     o.addRow("");
                     o.addRedText("DB_ERASE Failed. Message corrupt");
@@ -1607,7 +1608,7 @@ public static class Selection {
             return 0;
         int n=0;
         whereClause.setLength(0);
-        String [] whereArgs = new String[keys.keySet().size()+1];
+        String [] whereArgs = new String[keys.keySet().size()+2];
         whereArgs[whereArgs.length-1] = keys.get("var");
         for (String key : keys.keySet()) {
             //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
@@ -2026,7 +2027,7 @@ public static class Selection {
         }
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
-            Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME + team);
+            Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
             timestamp=timestamp==-1?0:timestamp;
 
             //Log.d("nils","Time of last sync is "+timestamp+" in getNumberOfUnsyncedEntries (dbHelper)");
@@ -2067,7 +2068,7 @@ public static class Selection {
             String[] keyValue = pair.split("=");
             if (keyValue != null && keyValue.length == 2) {
                 column = realColumnNameToDB.get(keyValue[0]);
-                //              Log.d("vortex","column: "+column+" value: "+keyValue[1]);
+                              Log.d("err","column: "+column+" value: "+keyValue[1]);
                 if (Constants.NOT_NULL.equals(keyValue[1])) {
                     Log.d("err","match for NN!");
                     delStmt.append(column + " IS NOT NULL");
@@ -2685,35 +2686,47 @@ public class TmpVal {
     }
 
     private void insertIfMax(SyncReport sr) {
+        //if spy exist?
+        boolean hasSpy = hasDatabaseColumnName("spy");
+
+
         TimeStampedMap tsMap = sr.getTimeStampedMap();
         VariableCache varCache = GlobalState.getInstance().getVariableCache();
         long t = System.currentTimeMillis();
         Set<Integer> idsToDelete = new HashSet<>();
-        String query = "SELECT id,timestamp,"+getDatabaseColumnName("år")+","+VARID+","+getDatabaseColumnName("uid")+" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
-        Log.d("kakko","query: "+query);
+        String query = "SELECT id,timestamp,"+getDatabaseColumnName("år")+","+VARID+","+getDatabaseColumnName("uid")+
+                (hasSpy?","+getDatabaseColumnName("spy"):"")
+                        +" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
+        //Log.d("kakko","query: "+query);
         Cursor c = db.rawQuery(query,null);
-        Log.d("rosto","C size: "+c.getCount());
+        //Log.d("rosto","C size: "+c.getCount());
         while (c.moveToNext()) {
             String vid = c.getString(3);
             String uid = c.getString(4);
-            ContentValues cv = tsMap.get(uid,vid);
-            if (cv!=null) {
-                Log.d("vortex","MATCH FOR "+uid+": "+vid);
-                long existingts = c.getLong(1);
-                long timestamp = Long.parseLong(cv.getAsString("timestamp"));
-                if (timestamp > existingts) {
-                    int id = c.getInt(0);
-                    idsToDelete.add(id);
-                    //invalidate in cache.
+            String spy = (hasSpy?c.getString(5):null);
+            Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
+            if (ukey!=null) {
+                Log.d("vortex", "Found ukey " + uid + ": " + vid);
 
-                    //db.execSQL("Delete from " + TABLE_VARIABLES + " where " + VARID + " = '" + vid + "' AND " + getDatabaseColumnName("uid")+"= '"+uid+"'");
-                } else
-                    tsMap.delete(uid,vid);
+                ContentValues cv = tsMap.get(ukey, vid);
+                if (cv != null) {
+                    Log.d("vortex", "MATCH FOR " + uid + ": " + vid);
+                    long existingts = c.getLong(1);
+                    long timestamp = Long.parseLong(cv.getAsString("timestamp"));
+                    if (timestamp > existingts) {
+                        int id = c.getInt(0);
+                        idsToDelete.add(id);
+                        //invalidate in cache.
+
+                        //db.execSQL("Delete from " + TABLE_VARIABLES + " where " + VARID + " = '" + vid + "' AND " + getDatabaseColumnName("uid")+"= '"+uid+"'");
+                    } else
+                        tsMap.delete(ukey, vid);
+                }
             }
         }
         c.close();
         //Insert any remaining rows.
-        Set<String> keys = tsMap.getKeySet();
+
         db.beginTransaction();
         if (idsToDelete.size()>0) {
             Log.d("rosto","Deleteing "+idsToDelete.size()+" rows");
@@ -2725,7 +2738,9 @@ public class TmpVal {
         }
 
         ContentValues cv;
-        for (String uid:keys) {
+        Set<Unikey> keys = tsMap.getKeySet();
+
+        for (Unikey uid:keys) {
             Map<String,ContentValues> m = tsMap.get(uid);
             if (m!=null) {
                 //For each variable...
@@ -2733,7 +2748,7 @@ public class TmpVal {
                     cv=m.get(vid);
                     db.insert(TABLE_VARIABLES, null, cv);
                     Log.d("bascar","inserted "+vid);
-                    varCache.turboRemoveOrInvalidate(uid,null,vid,true);
+                    varCache.turboRemoveOrInvalidate(uid.getUid(),uid.getSpy(),vid,true);
                     sr.inserts++;
                 }
             }

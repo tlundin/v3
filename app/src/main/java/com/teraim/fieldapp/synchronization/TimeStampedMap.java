@@ -6,6 +6,7 @@ import android.util.Log;
 import com.teraim.fieldapp.utils.DbHelper;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,11 +16,13 @@ import java.util.Set;
 public class TimeStampedMap {
 
     //uid, mapped to variable id, mapped to timestamp.
-    private Map<String,Map<String,ContentValues>> myMap = new HashMap();
+    private Map<Unikey,Map<String,ContentValues>> myMap = new HashMap();
 
     private int size = 0;
 
-    public void add(String uniqueKey, String varName, ContentValues cv) {
+
+
+    public void add(Unikey uniqueKey, String varName, ContentValues cv) {
         //Log.d("bang","uid: "+uniqueKey+" vn: "+varName);
 
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
@@ -51,13 +54,12 @@ public class TimeStampedMap {
             } catch (NumberFormatException e) {
 
             }
-
         }
 
     }
 
 
-    public ContentValues get(String uniqueKey, String varName) {
+    public ContentValues get(Unikey uniqueKey, String varName) {
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
 
         if (ves!=null && ves.get(varName)!=null) {
@@ -68,7 +70,7 @@ public class TimeStampedMap {
         return null;
     }
 
-    public Map<String, ContentValues> get(String uniqueKey) {
+    public Map<String, ContentValues> get(Unikey uniqueKey) {
         if (myMap!=null)
             return myMap.get(uniqueKey);
         else
@@ -79,8 +81,101 @@ public class TimeStampedMap {
         return size;
     }
 
-    public boolean delete(String uniqueKey, String variableName) {
-        Log.d("bascar","In deleteTimeSTMap with: "+uniqueKey+","+variableName);
+    //Erase all entries that has the corresponding keys and variable pattern.
+    //key can be both key and cv values.
+    public int delete(Map<String,String> keys, String pattern) {
+
+
+        Log.d("bascar", "KEYS :" + keys);
+        //check that each key exists.
+
+        String uid = keys.get("uid");
+        if (uid == null) {
+            Log.e("bascar", "uid null in eraseall");
+            return 0;
+        }
+        Map<String, ContentValues> vars;
+        if (pattern==null){
+           vars = (myMap.remove(Unikey.FindKeyFromParts(uid, null, myMap.keySet())));
+           if (vars!=null) {
+               Log.d("bascar", "deleteall removed something!");
+               return vars.size();
+           } else
+               return 0;
+        } else {
+            vars = myMap.get(Unikey.FindKeyFromParts(uid, null, myMap.keySet()));
+            int result = 0;
+            for(String var:vars.keySet()) {
+                if (var.matches(pattern) ) {
+                    Log.d("bascar","deleting "+var);
+                    result++;
+                }
+            }
+            return result;
+        }
+
+    }
+
+
+     /*    else {
+
+            String spy = keys.remove("spy");
+
+            Map<String, ContentValues> vars = myMap.get(Unikey.FindKeyFromParts(uid, spy, myMap.keySet()));
+            Log.e("myMap","myMap: "+myMap.keySet()+"\nLooking for\n "+uid+" , "+spy);
+            if (vars != null) {
+                Log.d("bascar", "found vars");
+                for (String var : vars.keySet()) {
+                    if (pattern == null || var.matches(pattern)) {
+                        Log.d("bascar", "found var: " + var);
+                        //now each remaining key must be in contentvalues.
+                        ContentValues cv = vars.get(var);
+                        boolean match = true;
+                        for (String key : keys.keySet()) {
+                            Log.d("bascar", "key " + key + " cv: "+cv);
+                            if (cv.containsKey(key)) {
+                                //check equal.
+                                Log.d("bascar", "key " + key + " found in cval");
+                                String cVal = cv.getAsString(key);
+                                String val = keys.get(key);
+                                if ((val == null && cVal == null) ||
+                                        ((val != null && cVal != null) &&
+                                                (val.equals(cVal) ||
+                                                        val.equals("NN")))) {
+                                    Log.d("bascar", "key val" + val + " matches in cval");
+
+                                } else {
+                                    match = false;
+                                    break;
+                                }
+                            } else {
+                                match = false;
+                                break;
+                            }
+
+                        }
+                        if (match) {
+                            Log.d("bascar", "full match for variable " + var + ". Deleting...");
+                            if (vars.remove(var) != null) {
+                                Log.d("bascar", " removed!");
+                                result++;
+                            } else
+                                Log.e("bascar", "not removed!");
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+
+*/
+
+
+
+    public boolean delete(Unikey uniqueKey, String variableName) {
+        //Log.d("bascar","In deleteTimeSTMap with: "+uniqueKey+","+variableName);
         if (uniqueKey==null || variableName==null) {
             return false;
         }
@@ -98,10 +193,18 @@ public class TimeStampedMap {
     }
 
 
-    public Set<String> getKeySet() {
-        if (myMap!=null)
+    public Set<Unikey> getKeySet() {
             return myMap.keySet();
-        return null;
+    }
+
+    //return key if it exists, otherwise create.
+    public Unikey getKey(String uid, String spy) {
+        Unikey key = Unikey.FindKeyFromParts(uid,spy,myMap.keySet());
+        if (key==null)
+            key = new Unikey(uid,spy);
+        else
+            Log.d("bascar","found existing key for "+uid);
+        return key;
 
     }
 }

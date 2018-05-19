@@ -22,9 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +31,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
@@ -65,6 +62,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
 import com.teraim.fieldapp.synchronization.framework.SyncAdapter;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
+import com.teraim.fieldapp.utils.BackupManager;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
 import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
@@ -91,7 +89,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 	public static final String INITFAILED = "com.teraim.fieldapp.init_done_but_failed";
 	public static final String SYNC_REQUIRED = "com.teraim.fieldapp.sync_required";
 
-	private PopupWindow mPopupWindow;
+	protected PopupWindow mPopupWindow;
 	private Switch sync_switch;
 	private Button sync_button;
 
@@ -247,6 +245,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 	}
 
+
+
 	private boolean syncOn() {
 		return ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY);
 	}
@@ -257,9 +257,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 	@Override
 	public void gpsStateChanged(GPS_State signal) {
-
-
-
 		if (signal.state == GPS_State.State.newValueReceived) {
 			Log.d("glapp","Got gps signal!");
 			latestSignal = signal;
@@ -340,6 +337,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 			}
 		}
 	}
+
 
     /** Flag indicating whether we have called bind on the service. */
 	boolean mBound;
@@ -944,7 +942,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					@Override
 					public void onClick(View v) {
 						log.clear();
-						if(gs.getVariableCache()!=null)
+						if(gs!=null && gs.getVariableCache()!=null)
 							gs.getVariableCache().printCache();
 					}
 				});
@@ -966,7 +964,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				print.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						gs.getBackupManager().backupDatabase("dump");
+						if (gs!=null)
+							BackupManager.getInstance(gs).backupDatabase("dump");
 					}
 				});
 
@@ -1071,7 +1070,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 		//The current time since last sync was completed.
 		final String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-		Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME + team);
+		Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM + team);
 		TextView time_last_sync = (TextView) customView.findViewById(R.id.sync_time_since_last);
 		String time = "";
 		if (timestamp==-1)

@@ -418,7 +418,15 @@ public class Start extends MenuActivity {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 			Log.d("vortex","gets here key back");
 
+			if (mPopupWindow!=null) {
+				Log.d("vortex", "popup is not null");
+				if (mPopupWindow.isShowing()) {
 
+					Log.d("vortex", "closed popup, exiting");
+					mPopupWindow.dismiss();
+					return true;
+				}
+			}
 			Fragment currentContentFrameFragment = getFragmentManager().findFragmentById(R.id.content_frame);
 			if (currentContentFrameFragment!=null && currentContentFrameFragment instanceof Executor) {
 

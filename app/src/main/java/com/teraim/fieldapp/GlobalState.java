@@ -3,19 +3,15 @@ package com.teraim.fieldapp;
 import java.io.File;
 import java.io.StringReader;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -33,13 +29,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
-import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.expr.Aritmetic;
 import com.teraim.fieldapp.expr.Parser;
@@ -57,9 +51,6 @@ import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -632,10 +623,10 @@ public class GlobalState {
             String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
             String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
 
-            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team);
-//            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM_TO_ME+team,-22);
-//            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME+team);
-            Log.d("vortex","TIME_OF_LAST_SYNC_TO_TEAM_FROM_ME: "+timestamp);
+            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
+//            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM+team,-22);
+//            Long timestamp = getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+team);
+            Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_ME: "+timestamp);
            timestamp=timestamp==-1?0:timestamp;
             Log.d("mama","TS: "+timestamp);
             if (Connectivity.isConnected(ctx)) {

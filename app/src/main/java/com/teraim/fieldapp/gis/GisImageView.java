@@ -839,6 +839,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				//If only one candidate, select it.
 			} else if (!candidates.isEmpty()) {
 				touchedGop=candidates.iterator().next();
+				riktLinjeStart=null;
 			}
 
 			if (touchedGop!=null) {
@@ -1250,7 +1251,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		if (useIconOnMap && bitmap!=null ) {
 			r = new Rect();
 			//Log.d("vortex","bitmap! "+gop.getLabel());
-			r.set(xy[0]-32, xy[1]-32, xy[0], xy[1]);
+			r.set(xy[0]-16, xy[1]-16, xy[0]+16, xy[1]+16);
 			canvas.drawBitmap(bitmap, null, r, null);
 		} //circular?
 
@@ -1582,6 +1583,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			String keyPairs = Tools.convertToKeyPairs(touchedGop.getKeyHash());
 			int rowsAffected = GlobalState.getInstance().getDb().erase(keyPairs,null);
 			if (rowsAffected>0) {
+				Log.d("claxon","aff: "+rowsAffected);
 				GlobalState.getInstance().getLogger().addRow(" erased " + rowsAffected + " entries for GIS object [" + touchedGop.getLabel() + "]");
 				//Create sync entry for all variables with matching keys (no pattern)
 				GlobalState.getInstance().getDb().insertEraseAuditEntry(keyPairs,null);
@@ -1589,6 +1591,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			//GlobalState.getInstance().getVariableCache().deleteAll(touchedGop.getKeyHash());
 			touchedBag.remove(touchedGop);
 			//Dont need to keep track of the bag anymore.
+			touchedGop=null;
 			invalidate();
 		} else
 			Log.e("vortex","Touchedgop null in deleteSelectedGop");

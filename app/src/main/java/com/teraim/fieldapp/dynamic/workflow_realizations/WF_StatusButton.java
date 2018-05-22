@@ -82,7 +82,7 @@ public class WF_StatusButton extends WF_Button {
            try {
                String v = statusVariable.getValue();
                if (v == null) {
-                   statusVariable.setValue("0");
+                   statusVariable.setValueNoSync("0");
                }
                statusI = (v == null) ? 0 : Integer.parseInt(v);
                Log.d("gomorra", "statusvariable " + statusVariable.getId() + " has value " + statusI + " with hash " + statusVariable.getKeyChain());

@@ -171,7 +171,7 @@ public class Tracker extends Service implements LocationListener {
 				return;
 			}
 			//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
-			if (myX!=null) {
+			if (location!=null && myX!=null) {
 				//Log.d("vortex","setting sweref location");
 				SweLocation myL = Geomatte.convertToSweRef(location.getLatitude(),location.getLongitude());
 

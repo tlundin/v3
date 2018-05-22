@@ -37,19 +37,25 @@ public class TimeStampedMap {
         if (existingCV == null) {
             ves.put(varName, cv);
             size++;
+            //if (natura)
+            //    Log.d("froobos","Adding NATURA: "+cv.getAsString("timestamp"));
         }
         else {
-            //Log.d("zoobaz","Comparing!");
+            //Log.d("zoobaz","VAR: "+varName+" ts: "+existingCV);
             try {
-                String existingStamp = existingCV.getAsString("timestamp");
-                String newTimeStamp = cv.getAsString("timestamp");
-                if (existingStamp!=null && newTimeStamp!=null) {
-                    int existing = Integer.parseInt(existingStamp);
-                    int newTs = Integer.parseInt(newTimeStamp);
-                    if (existing < newTs)
+                long existingStamp = existingCV.getAsLong("timestamp");
+                long newTimeStamp = cv.getAsLong("timestamp");
+                //if (existingStamp!=null && newTimeStamp!=null) {
+                //    long existing = Long.parseLong(existingStamp);
+                //    long newTs = Long.parseLong(newTimeStamp);
+                    //if (natura) {
+                    //    Log.d("froobos","Replaing NATURA: existing: "+existing+" new: "+newTs);
+                    //}
+                    if (existingStamp < newTimeStamp)
                         ves.put(varName, cv);
+
                     //Log.d("zoobaz","SWAP!");
-                }
+                //}
 
             } catch (NumberFormatException e) {
 

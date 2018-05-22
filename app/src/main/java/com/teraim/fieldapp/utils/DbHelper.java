@@ -56,7 +56,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_SYNC = "sync";
 
 
-    private static final String VARID = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", AUTHOR = "author";
+    public static final String VARID = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", AUTHOR = "author",YEAR="år";
     private static final String[] VAR_COLS = new String[]{TIMESTAMP, AUTHOR, LAG, VALUE};
     //	private static final Set<String> MY_VALUES_SET = new HashSet<String>(Arrays.asList(VAR_COLS));
 
@@ -213,8 +213,8 @@ public class LocationAndTimeStamp {
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
 
-        Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and lag like '"+team+"' and author <> '"+user+"' group by author", null);
-        Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and lag like '"+team+"' and author <> '"+user+"' group by author", null);
+        Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
+        Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
             boolean isOld=false;
@@ -227,6 +227,7 @@ public class LocationAndTimeStamp {
             if (diff > 3600*1000) {
 
                 Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis() - timeStamp)/1000);
+                Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis() - timeStamp)/1000);
                 isOld = true;
             }
             if (ret==null)
@@ -234,6 +235,7 @@ public class LocationAndTimeStamp {
             Log.d("bortex","Adding one for "+teamMemberName);
             ret.put(teamMemberName,new LocationAndTimeStamp(isOld,new SweLocation(qx.getString(1),qy.getString(1))));
         }
+        Log.d("mamba"," after qx is "+qx);
         qx.close();
         qy.close();
 
@@ -1420,8 +1422,8 @@ public static class Selection {
         }
         //If cache needs to be emptied.
         //boolean resetCache = false;
-        String uidCol = getDatabaseColumnName("uid");
-        String spyCol = getDatabaseColumnName("spy");
+        final String uidCol = getDatabaseColumnName("uid");
+        final String spyCol = getDatabaseColumnName("spy");
         //String arCol = getDatabaseColumnName("år");
         //SyncStatus syncStatus=new SyncStatus();
         TimeStampedMap tsMap = changes.getTimeStampedMap();
@@ -1429,14 +1431,15 @@ public static class Selection {
         //Map<String, String> keySet = new HashMap<String, String>();
         // Map<String, String> keyHash = new HashMap<String, String>();
 
-        VariableCache variableCache = GlobalState.getInstance().getVariableCache();
+        final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
 
-        String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
-
+        //keep track of most current location update.
+        SyncEntry mostCurrentLocationUpdate = null;
 
         String variableName = null,uid=null, spy=null,syncTeam=null;
         int synC = 1;
 
+        final String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
         beginTransaction();
 
@@ -1455,7 +1458,6 @@ public static class Selection {
             //keyHash.clear();
 
             uid=null;
-            variableName=null;
             spy=null;
 
             if (control.flag) {
@@ -1467,7 +1469,7 @@ public static class Selection {
             synC++;
             //Skip array inserts that are older than one hour.
             if (s.isInsertArray()) {
-
+/*
                 long current = date.getTime() / 1000;
                 long incoming = Long.parseLong(s.getTimeStamp());
                 long diff = current - incoming;
@@ -1478,43 +1480,41 @@ public static class Selection {
                     changes.refused++;
                     continue;
                 }
+*/
+                if (mostCurrentLocationUpdate==null) {
+                    mostCurrentLocationUpdate = s;
+                } else {
+                    long incoming = Long.parseLong(s.getTimeStamp());
+                    long mostCurrent = Long.parseLong(mostCurrentLocationUpdate.getTimeStamp());
+                    if (incoming>mostCurrent)
+                        mostCurrentLocationUpdate = s;
+                    //swapped.
+                }
+                continue;
+
             }
 
-            if (s.isInsert() || s.isInsertArray()) {
+            else if (s.isInsert() ) {
                 //Log.d("bascar","Insert "+s.getTarget());
 
-                Map<String,String> sKeys = s.getKeys(), sValues = s.getValues();
+                cv = createContentValues(s.getKeys(),s.getValues(),team);
 
-                if (sKeys == null || sValues == null) {
+                if (cv == null) {
                     Log.e("maggan", "Synkmessage with " + s.getTarget() + " is invalid. Skipping. keys: " + s.getKeys() + " values: " + s.getValues());
                     changes.faults++;
                     changes.faultInValues++;
                     continue;
                 }
 
-
-                cv = new ContentValues();
-
-                for (String key : sValues.keySet())
-                    cv.put(getDatabaseColumnName(key), sValues.get(key));
-
-                for (String key : sKeys.keySet()) {
-                    cv.put(getDatabaseColumnName(key), sKeys.get(key));
-                }
-                variableName = sKeys.get("var");
-
-                if (variableName == null)
-                    continue;
-
-
                 //Insert also in cache if not array.
                 //
                 uid = cv.getAsString(uidCol);  //unique key for object. uid.
                 spy = cv.getAsString(spyCol); //smaprovyteid
+                variableName = cv.getAsString(VARID);
 
-                Log.d("bascar", "Insert for: " + s.getTarget() + " ch: " + s.getChange());
-                if (s.isInsert() && uid != null ) {
-                    Log.d("vortex","added to tsmap: "+uid);
+                if (uid != null ) {
+                    //Log.d("bascar", "Insert for: " + s.getTarget() + " ch: " + s.getChange());
+                   //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                 } else {
                     Log.e("bascar", "Inserting RAW" + s.getChange());
@@ -1527,8 +1527,6 @@ public static class Selection {
                     changes.inserts++;
 
                 }
-
-
 
             }
 
@@ -1545,7 +1543,8 @@ public static class Selection {
                 }
                 spy = sKeys.get("spy");
                 uid = sKeys.get("uid");
-                variableName = sKeys.get("var");
+                variableName = sKeys.get(VARID);
+
                 Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
                 if (!tsMap.delete(ukey, variableName)) {
                     try {
@@ -1591,12 +1590,41 @@ public static class Selection {
             }
 
         }
+        //insert max location update if any.
+        if (mostCurrentLocationUpdate!=null) {
+            //Log.d("boozaa","inserting max location update");
+            cv = createContentValues(mostCurrentLocationUpdate.getKeys(),mostCurrentLocationUpdate.getValues(),team);
+            db.insert(TABLE_VARIABLES, // table
+                    null, //nullColumnHack
+                    cv
+            );
+        }
+
         endTransactionSuccess();
 
         //if (resetCache)
         // variableCache.reset();
 
         return changes;
+    }
+
+    private ContentValues createContentValues(Map<String,String> sKeys, Map<String,String> sValues, String team) {
+        if (sKeys == null || sValues == null || sKeys.get("var")==null) {
+            return null;
+        }
+
+        ContentValues cv = new ContentValues();
+
+        for (String key : sKeys.keySet())
+            cv.put(getDatabaseColumnName(key), sKeys.get(key));
+
+        for (String key : sValues.keySet()) {
+            cv.put(getDatabaseColumnName(key), sValues.get(key));
+        }
+        //Team must be same as currently configured
+        cv.put(LAG,team);
+
+        return cv;
     }
 
     StringBuilder whereClause = new StringBuilder();
@@ -2712,7 +2740,7 @@ public class TmpVal {
                 if (cv != null) {
                     Log.d("vortex", "MATCH FOR " + uid + ": " + vid);
                     long existingts = c.getLong(1);
-                    long timestamp = Long.parseLong(cv.getAsString("timestamp"));
+                    long timestamp = cv.getAsLong("timestamp");
                     if (timestamp > existingts) {
                         int id = c.getInt(0);
                         idsToDelete.add(id);
@@ -2747,7 +2775,7 @@ public class TmpVal {
                 for (String vid:m.keySet()) {
                     cv=m.get(vid);
                     db.insert(TABLE_VARIABLES, null, cv);
-                    Log.d("bascar","inserted "+vid);
+                    Log.d("bascar","inserted "+cv);
                     varCache.turboRemoveOrInvalidate(uid.getUid(),uid.getSpy(),vid,true);
                     sr.inserts++;
                 }

@@ -61,6 +61,7 @@ public class PersistenceHelper {
 	public static final String SYNC_ON_FIRST_TIME_KEY = "sync_first_use";
 	public static final String TIMESTAMP_LAST_SYNC_FROM_ME = "time_last_sync_from_me";
 	public static final String TIME_OF_LAST_SYNC_FROM_TEAM = "time_last_sync_from_team";
+	public static final String TIME_OF_LAST_SYNC_INET = "last_time_I_got_something_from_server";
 	public static final String PARTNER_NAME = "my_partner";
 	public static final String LOG_LEVEL = "log_levels";
 	public static final String PotentiallyTimeStampToUseIfInsertDoesNotFail="potential_timestamp";
@@ -114,14 +115,6 @@ public class PersistenceHelper {
 		return sp.getLong(key, -1);
 	}
 
-
-
-
-
-	
-		
-		
-	
 
 
 }

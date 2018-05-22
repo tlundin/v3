@@ -29,6 +29,7 @@
         android:layout_alignParentBottom="false"
         android:layout_alignStart="@+id/textView4"
         android:layout_below="@+id/textView4"
+
         android:background="@drawable/grey_border"
         android:orientation="horizontal">
 
@@ -52,11 +53,29 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_below="@+id/ll1"
+        android:orientation="horizontal"
+        android:layout_alignLeft="@+id/textView4">
+
+        <Switch
+            android:paddingLeft="3dp"
+            android:id="@+id/sync_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
-        android:layout_below="@+id/ll1"
+        android:layout_below="@+id/ll4"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
@@ -111,29 +130,15 @@
             android:text="3 minutes" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_below="@+id/ll3"
-        android:orientation="horizontal">
 
-        <Switch
-            android:paddingLeft="3dp"
-            android:id="@+id/sync_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="" />
-    </LinearLayout>
+
     <Button
         android:id="@+id/sync_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/ll1"
         android:layout_alignRight="@+id/ll1"
-        android:layout_below="@+id/ll4"
+        android:layout_below="@+id/ll3"
         android:layout_marginTop="15dp"
         android:text="@string/sync_pop_sync_button_txt" />
 
@@ -152,23 +157,20 @@
         android:layout_alignLeft="@+id/textView4"
         android:layout_alignStart="@+id/textView4"
         android:layout_below="@+id/line1"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:padding="3dp"
         android:text="@string/sync_pop_sync_last_sync" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView8">
+        android:layout_height="133dp"
+        android:layout_below="@+id/textView8"
+        android:layout_marginTop="15dp">
 
         <LinearLayout
             android:id="@+id/list_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="false"
-
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="30dp" />
     </ScrollView>
@@ -180,30 +182,29 @@
         android:layout_alignEnd="@+id/ll1"
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/ll1"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="5dp"
         android:text="@string/ok" />
 
-    <ImageButton
+    <Button
         android:id="@+id/refresh_button"
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
+        android:text="Refresh"
+        android:drawableLeft="@drawable/refresh"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/ll1"
         android:layout_alignRight="@+id/ll1"
-        android:layout_alignBottom="@+id/textView8"
-
-        android:adjustViewBounds="true"
-        android:minHeight="40dip"
-        android:scaleType="fitCenter"
-        android:src="@drawable/refresh" />
+        android:layout_alignTop="@+id/textView8"
+         />
 
     <TextView
         android:id="@+id/sync_refresh_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/ll1"
-        android:layout_below="@+id/textView8"
+        android:layout_below="@+id/refresh_button"
 
         android:text="testamera"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:layout_alignRight="@+id/ll1" />
 
 </RelativeLayout>

@@ -1,7 +1,4 @@
 package com.teraim.fieldapp.synchronization;
-
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +87,7 @@ public class SyncEntry extends SyncMessage {
         else {
             keys = collectPairs(tmp[0].split("\\|"));
             values = collectPairs(tmp[1].split("§"));
+            //Log.d("bush","keys: "+keys+" values: "+values);
         };
     }
 

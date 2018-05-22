@@ -2,7 +2,7 @@ package com.teraim.fieldapp;
 
 import java.io.File;
 import java.io.StringReader;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -623,11 +623,11 @@ public class GlobalState {
             String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
             String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
 
-            Long timestamp = getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
+            Long timestamp = ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
 //            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM+team,-22);
 //            Long timestamp = getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+team);
             Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_ME: "+timestamp);
-           timestamp=timestamp==-1?0:timestamp;
+           timestamp=(timestamp==-1)?0:timestamp;
             Log.d("mama","TS: "+timestamp);
             if (Connectivity.isConnected(ctx)) {
                 //connected...lets call the sync server.
@@ -732,11 +732,8 @@ public class GlobalState {
 
         }
 
-        public String getDate() {
-            if (date!=-1)
-                return new java.sql.Date(date).toString();
-            else
-                return null;
+        public Date getDate() {
+                return new java.util.Date(date);
         }
 
         public Long getRawDate() {

@@ -44,7 +44,7 @@ public class WebLoader extends Loader {
 			url = new URL(module.getURL());
 
 			URLConnection ucon = url.openConnection();
-			if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) { ucon.setRequestProperty("Connection", "close"); }
+			//if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) { ucon.setRequestProperty("Connection", "close"); }
 			in = ucon.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 			StringBuilder sb = new StringBuilder();

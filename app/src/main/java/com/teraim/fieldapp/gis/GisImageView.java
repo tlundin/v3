@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,6 +44,7 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
@@ -701,6 +703,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							}
 							if (go instanceof GisPointObject) {
 								GisPointObject gop = (GisPointObject)go;
+								Log.d("baha",gop.getId());
 								if (gop.isDynamic()) {
 									//Log.d("bortex","found dynamic object");
 									int[] xy = intBuffer.getIntBuf();
@@ -733,9 +736,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								String statusValue = gop.getStatus();
 								//Log.d("bortex", "LBL: "+gop.getLabel()+" STAT: "+statusValue+" POLLY "+polyType.name());
 
-								//String statusColor = colorShiftOnStatus(gop.getStatus());
-								//if (statusColor!=null)
-								//	color = statusColor;
+								String statusColor = colorShiftOnStatus(gop.getStatus());
+								if (statusColor!=null)
+									color = statusColor;
 
 								if (filters!=null&&!filters.isEmpty()) {
 
@@ -944,20 +947,24 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			return null;
 		}
 		final Map<String,String> tmp = new HashMap<>();
-		tmp.put("år",Constants.getYear());
-		tmp.put("lag",team);
+		tmp.put(DbHelper.YEAR,Constants.getYear());
+		tmp.put(DbHelper.LAG,team);
 		int cc=0;
 		Map<String,DbHelper.LocationAndTimeStamp> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
 		if (myTeam==null)
 			return null;
 
-		for (final String name:myTeam.keySet()) {
+		for (String name:myTeam.keySet()) {
 
 			Log.d("bortex","Adding Team member "+name);
-
+            if (name==null || name.isEmpty()) {
+                Log.e("vortex","skipping nameless team member");
+                continue;
+            }
 			final DbHelper.LocationAndTimeStamp l = myTeam.get(name);
 			//Log.d("bortex","Location "+l);
-			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
+            String finalName = name;
+            GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
 				@Override
 				public float getRadius() {
 					return 4;
@@ -975,7 +982,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public Bitmap getIcon() {
-					return null;
+					return null;//BitmapFactory.decodeResource(getResources(), R.drawable.boy);
 				}
 
 				@Override
@@ -1010,12 +1017,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public String getName() {
-					return name;
+					return finalName;
 				}
 
 				@Override
 				public String getRawLabel() {
-					return name;
+					return finalName;
 				}
 
 				@Override
@@ -1035,7 +1042,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public List<Expressor.EvalExpr> getLabelExpression() {
-					return Expressor.preCompileExpression(name);
+					return Expressor.preCompileExpression(finalName);
 				}
 			}, tmp, l.location, null, null);
 
@@ -1233,7 +1240,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			bounds = new Rect();
 			rectBuffer.put(xy,bounds);
 		}
-
+		mLabel=mLabel==null?"":mLabel; //prevent null exception if label is null.
 		txtPaint.getTextBounds(mLabel, 0, mLabel.length(), bounds);
 		int textH = bounds.height()/2;
 		bounds.offset(xy[0] -bounds.width()/2, xy[1] -(bounds.height()/2+(int)offSet));

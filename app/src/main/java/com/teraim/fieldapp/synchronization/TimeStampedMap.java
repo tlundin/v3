@@ -208,8 +208,8 @@ public class TimeStampedMap {
         Unikey key = Unikey.FindKeyFromParts(uid,spy,myMap.keySet());
         if (key==null)
             key = new Unikey(uid,spy);
-        else
-            Log.d("bascar","found existing key for "+uid);
+        //else
+         //   Log.d("bascar","found existing key for "+uid);
         return key;
 
     }

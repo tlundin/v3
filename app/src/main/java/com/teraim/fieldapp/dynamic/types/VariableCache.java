@@ -505,9 +505,10 @@ public class VariableCache {
     //cache last chain to save some time.
     Map<String,String> prevChain = null;
     final static String uniqueKey = "uid";
-    public void turboRemoveOrInvalidate(String uniqueKeyValue, String spy,String variableName, boolean invalidate) {
+    public boolean turboRemoveOrInvalidate(String uniqueKeyValue, String spy,String variableName, boolean invalidate) {
 //        if (prevValue!=null && prevValue.equals(uniqueKeyValue))
         //Log.d("bascar","turbo1 "+uniqueKeyValue+" "+variableName);
+        boolean success =false;
         for (Map<String, String> chain : newcache.keySet()) {
             //Log.d("bascar","turbo2 chain: "+chain+" uniq: "+uniqueKey+" uval: "+uniqueKeyValue);
             if (chain!=null && chain.containsKey(uniqueKey) && chain.get(uniqueKey).equals(uniqueKeyValue)) {
@@ -521,12 +522,13 @@ public class VariableCache {
                             v.invalidate();
                         else
                             v.deleteValue();
+                        success=true;
                     }
                     prevChain = chain;
                 }
             }
         }
-
+        return success;
     }
 
     public void insert(String name, Map<String, String> keyHash, String newValue) {

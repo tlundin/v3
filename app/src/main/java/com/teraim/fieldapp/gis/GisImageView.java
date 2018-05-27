@@ -500,14 +500,14 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			;
 			//Log.d("vortex","Distance X in meter: "+mapDistX+" [inside]");
 		else {
-			if(mapDistX>imgWReal||mapDistX<0)
-				Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
-			if(mapDistY>imgHReal||mapDistY<0)
-				Log.e("jgw","Distance Y in meter: "+mapDistY+" [outside!]");
-			Log.d("jgw","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
-			Log.d("jgw","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
-			Log.d("jgw","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
-			Log.d("jgw","object X,Y: "+l.getX()+","+l.getY());
+			//if(mapDistX>imgWReal||mapDistX<0)
+				//Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
+			//if(mapDistY>imgHReal||mapDistY<0)
+				//Log.e("jgw","Distance Y in meter: "+mapDistY+" [outside!]");
+			//Log.d("jgw","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
+			//Log.d("jgw","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
+			//Log.d("jgw","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
+			//Log.d("jgw","object X,Y: "+l.getX()+","+l.getY());
 			//No, it is outside.
 			isInside = false;
 		}
@@ -703,7 +703,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							}
 							if (go instanceof GisPointObject) {
 								GisPointObject gop = (GisPointObject)go;
-								Log.d("baha",gop.getId());
+								//Log.d("baha",gop.getId());
 								if (gop.isDynamic()) {
 									//Log.d("bortex","found dynamic object");
 									int[] xy = intBuffer.getIntBuf();

@@ -1141,7 +1141,7 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
     //This in effect creates an array of values for different timestamps.
     public void insertVariableSnap(ArrayVariable var, String newValue,
                                    boolean syncMePlease) {
-        Log.d("vortex","I am in snap insert for variable "+var.getId()+" that is synced: "+syncMePlease);
+        //Log.d("vortex","I am in snap insert for variable "+var.getId()+" that is synced: "+syncMePlease);
         long timeStamp = System.currentTimeMillis();
         ContentValues values = new ContentValues();
         String author = globalPh.get(PersistenceHelper.USER_ID_KEY);
@@ -1369,6 +1369,7 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
             Log.d("sync", "SE[] empty in sync");
             return null;
         }
+        final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
         //If cache needs to be emptied.
         //boolean resetCache = false;
         final String uidCol = getDatabaseColumnName("uid");
@@ -1380,12 +1381,9 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
         //Map<String, String> keySet = new HashMap<String, String>();
         // Map<String, String> keyHash = new HashMap<String, String>();
 
-        final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
 
-
-        //keep track of most current location update per user.
-        Map<String,SyncEntry> mostCurrentSyncMessage = new HashMap<>();
-        Map<String,Long> mostCurrentTimestamp = new HashMap<>();
+        //keep track of most current location update per user. For each user, keep a map of most current gps_x,gps_y,gps_accuracy etc
+        Map<String,Map<String,SyncEntry>> mostCurrentSyncMessage = new HashMap<>();
 
         String variableName = null,uid=null, spy=null,syncTeam=null;
         int synC = 1;
@@ -1416,23 +1414,27 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
             }
 
             synC++;
-            Log.d("babbs","sync2");
             //Only insert location updates that are newest.
             if (s.isInsertArray()) {
                 Log.d("babbs","array");
                 String author=s.getAuthor();
+                String variable = s.getTarget();
                 //get author of sync message.
                 if (author!=null) {
-                    Long maxTimeStamp = mostCurrentTimestamp.get(author);
-                    long thisStamp = s.getTimeStamp();
-                    if (maxTimeStamp==null || maxTimeStamp<thisStamp) {
-                        Log.d("babbs","found most recent for "+author);
-                        mostCurrentTimestamp.put(author,thisStamp);
-                        mostCurrentSyncMessage.put(author,s);
-
-                    } else {
-                        Log.d("babbs","not most recent for "+author);
+                    Map<String, SyncEntry> variables = mostCurrentSyncMessage.get(author);
+                    if (variables == null) {
+                        variables = new HashMap<>();
+                        mostCurrentSyncMessage.put(author,variables);
                     }
+                    //get existing syncentry
+                    SyncEntry se = variables.get(variable);
+                    //if older, replace.
+                    if (se==null || se.getTimeStamp()<s.getTimeStamp()) {
+                        variables.put(variable, s);
+                        Log.d("babbs"," Replacing variable "+variable);
+                    }
+                    else
+                        Log.d("babbs"," Discarding variable "+variable);
                 } else
                     Log.e("babbs","author null in insertarray");
             }
@@ -1489,14 +1491,15 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
                 Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
                 if (!tsMap.delete(ukey, variableName)) {
                     try {
-                        Log.d("bascar","not found in tsmap: "+variableName);
+                        Log.d("bascar","not found in sync cache buffer (TS): "+variableName);
                         int aff = delete(sKeys, s.getTimeStamp(), team);
                         if (aff == 0) {
                             changes.refused++;
                             changes.failedDeletes++;
                         } else {
                             changes.deletes++;
-                            variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false);
+                            boolean success = (variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false));
+                            Log.d("bascar","not found in tsmap: "+variableName+" removed by turbo: "+success);
                         }
                     } catch (SQLException e) {
                         Log.e("vortex", "Delete failed due to exception in statement");
@@ -1518,9 +1521,11 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
                     int affectedRows = tsMap.delete(keyPairs,pattern);
                     //
                     changes.deletes += affectedRows;
-                    Log.d("bascar","Affected rows in cache: "+affectedRows);
+                    Log.d("bascar","Affected rows in sync cache: "+affectedRows);
+                    //cache entries deleted in erase.
                     affectedRows = this.erase(s.getChange(), pattern);
                     Log.d("bascar","Affected rows in database:" +affectedRows);
+
                 } else {
                     o.addRow("");
                     o.addRedText("DB_ERASE Failed. Message corrupt");
@@ -1536,13 +1541,23 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
 
         if (!mostCurrentSyncMessage.isEmpty()) {
             for (String name:mostCurrentSyncMessage.keySet()) {
-                Log.d("babs","inserting max location update for "+name);
-                SyncEntry se = mostCurrentSyncMessage.get(name);
-                cv = createContentValues(se.getKeys(), se.getValues(), team);
-                db.insert(TABLE_VARIABLES, // table
-                        null, //nullColumnHack
-                        cv
-                );
+                Map<String, SyncEntry> map = mostCurrentSyncMessage.get(name);
+                if (map!=null) {
+                    for (String variable:map.keySet()) {
+                        SyncEntry se = map.get(variable);
+                        Log.d("babbs","inserting "+variable+" for "+name);
+                        cv = createContentValues(se.getKeys(), se.getValues(), team);
+                        db.insert(TABLE_VARIABLES, // table
+                                null, //nullColumnHack
+                                cv
+                        );
+                        //refresh cache
+                        uid = cv.getAsString(uidCol);  //unique key for object. uid.
+                        variableCache.turboRemoveOrInvalidate(uid,null,variable,true);
+                    }
+                }
+
+
             }
         }
 
@@ -2069,9 +2084,9 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
         int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         //Invalidate affected cache variables
         if (affected > 0) {
-            Log.d("err", "Deleted rows count: " + affected+" keys: "+keyPairs);
+            Log.d("bascar", "Deleted rows count: " + affected+" keys: "+keyPairs);
 
-            //         Log.d("vortex", "cleaning up cache. Exact: " + exact);
+            Log.d("bascar", "cleaning up cache. Exact: " + exact);
             GlobalState.getInstance().getVariableCache().invalidateOnKey(map, exact);
         } //else
         //dr0++;

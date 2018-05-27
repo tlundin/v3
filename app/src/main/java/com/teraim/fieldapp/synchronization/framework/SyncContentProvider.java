@@ -164,7 +164,7 @@ public class SyncContentProvider extends ContentProvider {
 			db.insert(DbHelper.TABLE_SYNC, null, values);
 		else
 			Log.e("vortex","DB null in adapter...insert fail");
-		Log.d("bascar","insert row done.");
+		//Log.d("bascar","insert row done.");
 		return uri;
 	}
 

@@ -27,20 +27,21 @@ public class SyncEntry extends SyncMessage {
         deleteMany,
         unknown, insertArray
     }
-    private static final long serialVersionUID = 862826293136691825L;
+    private static final long serialVersionUID = 862826293136691826L;
     private Type mType;
     private String changes;
-    private String timeStamp;
-    private String target;
+    private long timeStamp;
+    private String target,author;
     private Map<String,String> keys, values;
     private boolean invalid = false;
     public SyncEntry() {}
 
-    public SyncEntry(Type type,String changes,String timeStamp,String target) {
+    public SyncEntry(Type type,String changes,long timeStamp,String target,String author) {
         this.changes=changes;
         mType=type;
         this.timeStamp=timeStamp;
         this.target=target;
+        this.author=author;
     }
 
 
@@ -102,6 +103,7 @@ public class SyncEntry extends SyncMessage {
         return result;
     }
 
+    //only expose keys, values.
     public String getChange() {
         return changes;
     }
@@ -122,8 +124,12 @@ public class SyncEntry extends SyncMessage {
         return (mType==Type.deleteMany);
     }
 
-    public String getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public String getTarget() {

@@ -72,8 +72,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	private boolean refreshUserAppAndTeam() {
-		gh = getContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
-		ph = getContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
+		gh = getContext().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
+		ph = getContext().getApplicationContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
 		user = gh.getString(PersistenceHelper.USER_ID_KEY, null);
 		team = gh.getString(PersistenceHelper.LAG_ID_KEY, null);
 		internetSync = gh.getString(PersistenceHelper.SYNC_METHOD,"").equals("Internet");
@@ -110,7 +110,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	public void setClient(Messenger client) {
-		gh = getContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
+		gh = getContext().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS);
 		app = gh.getString(PersistenceHelper.BUNDLE_NAME, null);
 		Log.d("vortex","mClient SET..my app is "+app);
 		mClient = client;
@@ -193,8 +193,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			} else {
 				Log.d("vortex","Found "+c.getCount()+" rows to sync from ["+user+"] to ["+team+"]");
 
-				String entryStamp,action,changes,variable;
-
+				String action,changes,variable;
+				long entryStamp;
 				int rowCount=0;
 
 				//Either sync the number of lines returned, or MAX. Never more.
@@ -206,16 +206,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				while (c.moveToNext()&& rowCount < maxToSync) {
 					action 		=	c.getString(c.getColumnIndex("action"));
 					changes 	=	c.getString(c.getColumnIndex("changes"));
-					entryStamp	=	c.getString(c.getColumnIndex("timestamp"));
+					entryStamp	=	c.getLong(c.getColumnIndex("timestamp"));
 					variable 		= 	c.getString(c.getColumnIndex("target"));
 
-					long currentStamp = Long.parseLong(entryStamp);
+					//long currentStamp = Long.parseLong(entryStamp);
 
 					//Keep track of the highest timestamp in the set!
-					if (currentStamp>maxStamp)
-						maxStamp=currentStamp;
+					if (entryStamp>maxStamp)
+						maxStamp=entryStamp;
 
-					sa[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable);
+					sa[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable,user);
 
 					targets.append(variable);
 					targets.append(",");
@@ -338,8 +338,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				Log.d("bascar", "inserting entry: " + i + "-"+(i+10));
 
 				msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
-					msg.arg1 = i;
-					msg.arg2 = rowsToInsert.size();
+				msg.obj=bundle(i,rowsToInsert.size());
+
 					sendMessage(
 							msg
 					);
@@ -382,7 +382,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		if (potentialStamp!=-1L) {
 			ph.edit().putLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,
 					potentialStamp).apply();
-			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentialStamp);
+			Log.d("vortex","LAST_SYNC TEAM --> ME: "+potentialStamp+". Difference to real time: "+(System.currentTimeMillis()-potentialStamp));
 			Log.d("vortex","Entry: "+ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,22)+" Team: "+team);
 		} else
 			Log.e("vortex","potentialStamp was null in updatecounters!");
@@ -467,6 +467,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("bascar","After read object. reply is "+(reply!=null?"not":"")+" null");
 
 			if (reply instanceof String ) {
+				//server read my data succesfully. we can update the read pointer (timestamp) to avoid sending same data again.
+				msg = Message.obtain(null, SyncService.MSG_SERVER_READ_MY_DATA);
+				msg.obj=bundle(maxStamp);
+				sendMessage(
+						msg
+				);
 
 				int numberOfRows = Integer.parseInt((String) reply);
 				Log.d("bascar","Number of Rows that will arrive: "+numberOfRows);
@@ -475,20 +481,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 					Log.d("vortex","LAST_SYNC ME --> TEAM: "+maxStamp);
 					Log.d("vortex","Teamname: "+team+" App: "+app);
 					//Each team + project has an associated TIME OF LAST SYNC pointer. 
-						ph = getContext().getSharedPreferences(app, Context.MODE_MULTI_PROCESS);
-						if (ph!=null)
-								ph.edit().putLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +team,maxStamp).apply();
-						else
-							Log.e("vortex","something wrong PH NULL!");
-						Log.e("vortex","UPDATED TIMESTAMP: "+maxStamp+"");
 
 				} else
 					Log.d("vortex","Timestamp for Time Of Last Sync not changed for Internet sync.");
 
 				int insertedRows=0;
-
-
-
 				objOut.close();
 				int i=0;
 				while (true) {
@@ -504,6 +501,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 							Log.d("vortex","In sync with server!!!");
 							//update counters - no insert required.
 							updateCounters();
+							//maxStamp is the latest message I have sent.
 							return Message.obtain(null, SyncService.MSG_DEVICE_IN_SYNC);
 						} else {
 							Log.d("vortex","Insert into DB begins");
@@ -526,8 +524,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						insertedRows++;
 						if (insertedRows%10==0) {
 							msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
-							msg.arg1 = 0;
-							msg.arg2 = numberOfRows;
+							msg.obj=bundle(insertedRows,numberOfRows);
+
 							sendMessage(
 									msg
 							);
@@ -582,6 +580,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		msg.arg1=SyncService.ERR_UNKNOWN;
 		return msg;
 
+	}
+
+	private Object bundle(int numberOfRowsSoFar, int numberOfRowsTotal) {
+		Bundle b = new Bundle();
+		b.putInt("number_of_rows_so_far",numberOfRowsSoFar);
+		b.putInt("number_of_rows_total",numberOfRowsTotal);
+		return b;
+	}
+
+
+	private Object bundle(long maxStamp) {
+		Bundle b = new Bundle();
+		b.putLong("maxstamp",maxStamp);
+		return b;
 	}
 
 	public void releaseLock() {

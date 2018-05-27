@@ -273,7 +273,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                         coordinatesF = true;
 
                                         //Always start with an array [
-                                        Log.d("morphy", "bA1");
+                                        //Log.d("morphy", "bA1");
                                         reader.beginArray();
                                         //If single point, next must be number.
                                         if (reader.peek() == JsonToken.NUMBER) {
@@ -285,7 +285,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                             //If multipoint or Linestring, next is a number.
                                             //[[->1,2,3],[...]]
 
-                                            Log.d("morphy", "bA2");
+                                            //Log.d("morphy", "bA2");
                                             reader.beginArray();
 
                                             if (reader.peek() == JsonToken.NUMBER) {

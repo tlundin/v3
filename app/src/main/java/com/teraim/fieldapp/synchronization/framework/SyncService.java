@@ -21,6 +21,7 @@ import static com.teraim.fieldapp.synchronization.framework.SyncAdapter.forceSyn
  * onPerformSync().
  */
 public class SyncService extends Service {
+
     // Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
@@ -41,6 +42,7 @@ public class SyncService extends Service {
 	public static final int MSG_USER_STOPPED_SYNC = 9;
 	public static final int MSG_SYNC_DATA_ARRIVING = 10;
 	public static final int MSG_USER_STARTED_SYNC = 11;
+	public static final int MSG_SERVER_READ_MY_DATA = 12;
 
 	public static final int ERR_UNKNOWN = 0;
 	public static final int ERR_NOT_READY = 1;

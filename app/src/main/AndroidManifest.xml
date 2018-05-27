@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teraim.fieldapp"
     android:versionCode="16"
-    android:versionName="6.22">
+    android:versionName="6.24">
 
     <uses-feature
         android:glEsVersion="0x00020000"

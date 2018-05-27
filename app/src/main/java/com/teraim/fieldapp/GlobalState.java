@@ -626,7 +626,7 @@ public class GlobalState {
             Long timestamp = ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
 //            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM+team,-22);
 //            Long timestamp = getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+team);
-            Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_ME: "+timestamp);
+            Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_TEAN_TO_ME: "+timestamp);
            timestamp=(timestamp==-1)?0:timestamp;
             Log.d("mama","TS: "+timestamp);
             if (Connectivity.isConnected(ctx)) {

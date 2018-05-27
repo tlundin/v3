@@ -86,7 +86,7 @@ public class Rule implements Serializable {
                //target list for rule.
                List<List<String>> l = list.getRows();
                if (l!=null)
-                   Log.d("vortex","jaaaaa");
+                   Log.d("bepal","jaa "+myBlock.getBlockId());
                return Expressor.analyzeBooleanExpression(condition,l);
 
            }

@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -109,7 +110,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         super.onCreate(savedInstanceState);
         me = this;
 
-        globalPh = new PersistenceHelper(getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
+        globalPh = new PersistenceHelper(getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
 
         brr = new BroadcastReceiver() {
             @Override
@@ -324,7 +325,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
     @Override
     protected void onResume() {
         super.onResume();
-        if("Internet".equals(getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.SYNC_METHOD,"")))
+        if("Internet".equals(getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.SYNC_METHOD,"")))
         {
 
             Intent myIntent = new Intent(MenuActivity.this, SyncService.class);
@@ -394,16 +395,26 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                 case SyncService.MSG_SYNC_STARTED:
                     Log.d("vortex","MSG -->SYNC STARTED");
+                    gs.getPreferences().put(PersistenceHelper.TIME_OF_LAST_SYNC_INET+globalPh.get(PersistenceHelper.LAG_ID_KEY),System.currentTimeMillis());
                     syncActive = true;
                     syncError=false;
                     break;
+
+                case SyncService.MSG_SERVER_READ_MY_DATA:
+                    long timestampFromMe = ((Bundle)msg.obj).getLong("maxstamp");
+                    gs.getPreferences().put(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY),timestampFromMe);
+                    Log.d("babs","updated my read sync timestamp to "+timestampFromMe);
+                    break;
+
                 case SyncService.MSG_SYNC_DATA_ARRIVING:
                     syncActive=false;
                     syncDataArriving=true;
-                    z_totalSynced = msg.arg1;
-                    z_totalToSync = msg.arg2;
+                    Bundle b = (Bundle)msg.obj;
+                    z_totalSynced=b.getInt("number_of_rows_so_far");
+                    z_totalToSync = b.getInt("number_of_rows_total");
                     Log.d("vortex","MSG_SYNC_DATA_ARRIVING...total rows to sync is "+z_totalToSync);
                     break;
+
                 case SyncService.MSG_SYNC_ERROR_STATE:
                     String toastMsg = "";
                     Log.d("vortex","MSG -->SYNC ERROR STATE");
@@ -495,17 +506,13 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                 case SyncService.MSG_DEVICE_IN_SYNC:
                     Log.d("vortex","***DEVICE IN SYNC***");
-                    inSync = true;
+                            inSync = true;
                     syncActive=false;
                     syncDataArriving=false;
                     syncError = false;
                     String team = gs.getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
-                    //update latest sync
-                    gs.getPreferences().put(PersistenceHelper.TIME_OF_LAST_SYNC_INET+team,System.currentTimeMillis());
                     //update from the server.
                     gs.getServerSyncStatus();
-
-
                     break;
 
                 case SyncService.MSG_SYNC_RELEASE_DB:
@@ -513,7 +520,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         Log.d("vortex", "MSG -->SYNC RELEASE DB LOCK");
 
                         //Create ui provider.
-
 
                         //Check if something needs to be saved. If so, do it on its own thread.
                         if (!syncDbInsert) {

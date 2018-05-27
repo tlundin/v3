@@ -75,14 +75,14 @@ public class SyncContentProvider extends ContentProvider {
 
 		Context ctx = getContext();
 
-		SharedPreferences globalPh = ctx.getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
+		SharedPreferences globalPh = ctx.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
 		final String bundleName = globalPh.getString(PersistenceHelper.BUNDLE_NAME,null);
 		final String teamName =  globalPh.getString(PersistenceHelper.LAG_ID_KEY,"");
 		if (bundleName == null || bundleName.length()==0) {
 			Log.e("vortex","Bundlename was null in content provider!");
 			return null;
 		} else {
-			ph = ctx.getSharedPreferences(bundleName, Context.MODE_MULTI_PROCESS);
+			ph = ctx.getApplicationContext().getSharedPreferences(bundleName, Context.MODE_MULTI_PROCESS);
 
 			if (ph == null) {
 				Log.e("vortex","persistencehelper null in onCreate");
@@ -97,7 +97,7 @@ public class SyncContentProvider extends ContentProvider {
 			} else {
 				//Timestamp key includes team name, since change of team name should lead to resync from zero.
 				Long timestamp = ph.getLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + teamName,0);
-				Log.d("vortex", "Timestamp for last sync in Query is " + timestamp);
+				Log.d("biff", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
 
 				c = db.query(DbHelper.TABLE_AUDIT, null,
 						"timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);

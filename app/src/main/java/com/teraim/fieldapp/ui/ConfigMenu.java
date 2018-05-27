@@ -176,7 +176,7 @@ public class ConfigMenu extends PreferenceActivity {
 			//Set default values for the prefs.
 			//			getPreferenceScreen().getSharedPreferences()
 			//			.registerOnSharedPreferenceChangeListener(this);
-			this.getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS)
 					.registerOnSharedPreferenceChangeListener(this);
 
 			//Create a filter that stops users from entering disallowed characters.
@@ -255,7 +255,7 @@ public class ConfigMenu extends PreferenceActivity {
 							.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									String bundleName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
+									String bundleName = getActivity().getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
 									if (bundleName != null && !bundleName.isEmpty()) {
 										Log.d("vortex","Erasing cache for "+bundleName);
 										int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
@@ -338,7 +338,7 @@ public class ConfigMenu extends PreferenceActivity {
 			//Null if serverbased preference displayed.
 			if (folderPref==null)
 				return;
-			String bundleName = getActivity().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
+			String bundleName = getActivity().getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
 			if (bundleName == null || bundleName.isEmpty())
 				folderPref.setSummary("Application name missing");
 			else {
@@ -368,7 +368,7 @@ public class ConfigMenu extends PreferenceActivity {
 		 */
 		@Override
 		public void onPause() {
-			this.getActivity().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplication().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
 					.unregisterOnSharedPreferenceChangeListener(this);
 			super.onPause();
 		}
@@ -382,7 +382,7 @@ public class ConfigMenu extends PreferenceActivity {
 		@Override
 		public void onResume() {
 			//this.getPreferenceManager().setSharedPreferencesName(phone);
-			this.getActivity().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplication().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
 					.registerOnSharedPreferenceChangeListener(this);
 			//getPreferenceScreen().getSharedPreferences()
 			//.registerOnSharedPreferenceChangeListener(this);
@@ -427,7 +427,7 @@ public class ConfigMenu extends PreferenceActivity {
 						Log.d("nils","Changed to CLIENT");
 					else if (letp.getValue().equals("Solo")) {
 						//Turn off sync if on
-						getActivity().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS).edit().putString(PersistenceHelper.SYNC_METHOD,"NONE").apply();
+						getActivity().getApplication().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS).edit().putString(PersistenceHelper.SYNC_METHOD,"NONE").apply();
 						Log.d("nils","Changed to SOLO");
 						Log.d("vortex","sync stopped");
 						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
@@ -475,7 +475,7 @@ public class ConfigMenu extends PreferenceActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			SharedPreferences sharedPrefs = this.getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
+			SharedPreferences sharedPrefs = this.getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
 			if (!sharedPrefs.getString(PersistenceHelper.SYNC_METHOD,"NONE").equals("NONE")&&sharedPrefs.getString(PersistenceHelper.LAG_ID_KEY,PersistenceHelper.UNDEFINED).equals(PersistenceHelper.UNDEFINED)) {
 				Log.d("berra","bopp");
 

@@ -1835,6 +1835,20 @@ public class Expressor {
 						else {
 							rows = targetList;
 							Log.d("bortex","used targetlist for hasX!");
+							Log.d("vortex", "found " + (rows.size() - 1) + " variables for " + pattern);
+							if (pattern!=null) {
+								pattern.trim();
+								List ret = new ArrayList<List<String>>();
+								for (int i = 0; i < rows.size(); i++) {
+									//Log.d("nils","i: "+i+" col: "+column.get(i));
+									if (al.getVarName(rows.get(i)).equals(pattern) || al.getVarName(rows.get(i)).matches(pattern)) {
+										ret.add(rows.get(i));
+									}
+								}
+								if (ret != null)
+									Log.d("nils", "Returning " + ret.size() + " rows in getRows(Table)");
+								rows = ret;
+							}
 						}
 
 						/*
@@ -1846,8 +1860,12 @@ public class Expressor {
 						if (rows == null || rows.size() == 0) {
 							Log.e("vortex", "no variables found for filter " + pattern);
 							return null;
-						} else
+						} else {
 							Log.d("vortex", "found " + (rows.size() - 1) + " variables for " + pattern);
+							for(int i=0;i<200;i++)
+								System.out.println(al.getVarName(rows.get(i)));
+						}
+
 						//Parse the expression. Find all references to Functional Group.
 						//Each argument need to either exist or not exist.
 						Map<String, String[]> values = new HashMap<String, String[]>();

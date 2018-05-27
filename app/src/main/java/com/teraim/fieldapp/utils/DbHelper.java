@@ -1,57 +1,4 @@
-package com.teraim.fieldapp.utils;
-
-import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.types.ArrayVariable;
-import com.teraim.fieldapp.dynamic.types.Location;
-import com.teraim.fieldapp.dynamic.types.SweLocation;
-import com.teraim.fieldapp.dynamic.types.Table;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
-import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.synchronization.SyncEntry;
-import com.teraim.fieldapp.synchronization.SyncEntryHeader;
-import com.teraim.fieldapp.synchronization.SyncReport;
-import com.teraim.fieldapp.synchronization.SyncStatus;
-import com.teraim.fieldapp.synchronization.SyncStatusListener;
-import com.teraim.fieldapp.synchronization.TimeStampedMap;
-import com.teraim.fieldapp.synchronization.Unikey;
-import com.teraim.fieldapp.synchronization.VariableRowEntry;
-import com.teraim.fieldapp.ui.MenuActivity;
-import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
-import com.teraim.fieldapp.utils.Exporter.ExportReport;
-import com.teraim.fieldapp.utils.Exporter.Report;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-public class DbHelper extends SQLiteOpenHelper {
-
-    // Database Version
-    public static final int DATABASE_VERSION = 9;
-    // Books table name
-    private static final String TABLE_VARIABLES = "variabler";
+package com.teraim.fieldapp.utils;import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;public class DbHelper extends SQLiteOpenHelper {/* Database Version*/public static final int DATABASE_VERSION = 10;/* Books table name*/private static final String TABLE_VARIABLES = "variabler";
     public static final String TABLE_AUDIT = "audit";
     public static final String TABLE_SYNC = "sync";
 
@@ -199,14 +146,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-public class LocationAndTimeStamp {
-    public boolean old;
-    public Location location;
-    public LocationAndTimeStamp(boolean isOld,Location loc) {
-        location=loc;
-        old = isOld;
+    public class LocationAndTimeStamp {
+        public boolean old;
+        public Location location;
+        public LocationAndTimeStamp(boolean isOld,Location loc) {
+            location=loc;
+            old = isOld;
+        }
     }
-}
 
     final static long TenDays = 3600*24*7*2*1000;
 
@@ -243,54 +190,54 @@ public class LocationAndTimeStamp {
 
     }
 
-//Helper class that wraps the Cursor.
-public class DBColumnPicker {
-    Cursor c;
-    private static final String NAME = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", CREATOR = "author";
+    //Helper class that wraps the Cursor.
+    public class DBColumnPicker {
+        Cursor c;
+        private static final String NAME = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", CREATOR = "author";
 
-    public DBColumnPicker(Cursor c) {
-        this.c = c;
-    }
-
-    public StoredVariableData getVariable() {
-        return new StoredVariableData(pick(NAME), pick(VALUE), pick(TIMESTAMP), pick(LAG), pick(CREATOR));
-    }
-
-    public Map<String, String> getKeyColumnValues() {
-        Map<String, String> ret = new HashMap<String, String>();
-        Set<String> keys = realColumnNameToDB.keySet();
-        String col = null;
-        for (String key : keys) {
-            col = realColumnNameToDB.get(key);
-            if (col == null)
-                col = key;
-            if (pick(col)!= null)
-                ret.put(key, pick(col));
+        public DBColumnPicker(Cursor c) {
+            this.c = c;
         }
-        //Log.d("nils","getKeyColumnValues returns "+ret.toString());
-        return ret;
-    }
 
-    private String pick(String key) {
-        return c.getString(c.getColumnIndex(key));
-    }
+        public StoredVariableData getVariable() {
+            return new StoredVariableData(pick(NAME), pick(VALUE), pick(TIMESTAMP), pick(LAG), pick(CREATOR));
+        }
 
-    public boolean moveToFirst() {
-        return c != null && c.moveToFirst();
-    }
+        public Map<String, String> getKeyColumnValues() {
+            Map<String, String> ret = new HashMap<String, String>();
+            Set<String> keys = realColumnNameToDB.keySet();
+            String col = null;
+            for (String key : keys) {
+                col = realColumnNameToDB.get(key);
+                if (col == null)
+                    col = key;
+                if (pick(col)!= null)
+                    ret.put(key, pick(col));
+            }
+            //Log.d("nils","getKeyColumnValues returns "+ret.toString());
+            return ret;
+        }
 
-    public boolean next() {
-        boolean b = c.moveToNext();
-        if (!b)
+        private String pick(String key) {
+            return c.getString(c.getColumnIndex(key));
+        }
+
+        public boolean moveToFirst() {
+            return c != null && c.moveToFirst();
+        }
+
+        public boolean next() {
+            boolean b = c.moveToNext();
+            if (!b)
+                c.close();
+            return b;
+        }
+
+        public void close() {
             c.close();
-        return b;
-    }
+        }
 
-    public void close() {
-        c.close();
     }
-
-}
 
 
     public DbHelper(Context context, Table t, PersistenceHelper globalPh, PersistenceHelper appPh, String bundleName) {
@@ -407,10 +354,11 @@ public class DBColumnPicker {
         //audit table to keep track of all insert,updates and deletes.
         String CREATE_AUDIT_TABLE = "CREATE TABLE audit ( " +
                 "id INTEGER PRIMARY KEY ," +
-                "lag TEXT, " +
+                LAG+" TEXT, " +
                 "timestamp TEXT, " +
                 "action TEXT, " +
                 "target TEXT, " +
+                AUTHOR+" TEXT, " +
                 "changes TEXT ) ";
 
         //synck table to keep track of incoming rows of data (sync entries[])
@@ -703,11 +651,11 @@ public class DBColumnPicker {
 
 
     private Map<String, String> createAuditEntry(Variable var, String newValue,
-                                                 String timeStamp) {
+                                                 long timeStamp) {
         Map<String, String> valueSet = new HashMap<String, String>();
         //if (!var.isKeyVariable())
         valueSet.put(var.getValueColumnName(), newValue);
-        valueSet.put("timestamp", timeStamp);
+        valueSet.put("timestamp", timeStamp+"");
         valueSet.put("author", globalPh.get(PersistenceHelper.USER_ID_KEY));
         return valueSet;
     }
@@ -761,19 +709,19 @@ public class DBColumnPicker {
             dd = null;
         //store
         if (dd != null) {
-            storeAuditEntry("D", dd, varName);
+            storeAuditEntry("D", dd, varName,System.currentTimeMillis(),globalPh.get(PersistenceHelper.USER_ID_KEY));
         }
         Log.d("vortex", "INSERT Delete audit entry. Args:  " + dd);
     }
 
     public void insertEraseAuditEntry(String keyPairs, String pattern) {
-        storeAuditEntry("M", keyPairs, pattern);
+        storeAuditEntry("M", keyPairs, pattern, System.currentTimeMillis(),globalPh.get(PersistenceHelper.USER_ID_KEY));
         Log.d("vortex", "inserted Erase Many with: " + keyPairs + " and pattern " + pattern);
 
     }
 
 
-    private void insertAuditEntry(Variable v, Map<String, String> valueSet, String action) {
+    private void insertAuditEntry(Variable v, Map<String, String> valueSet, String author, String action,long timestamp) {
         String changes = "";
         //First the keys.
         //Log.d("vortex","Inserting Audit entry!");
@@ -809,11 +757,11 @@ public class DBColumnPicker {
         }
         //Log.d("nils","Variable name: "+v.getId());
         //Log.d("nils","Audit entry: "+changes);
-        storeAuditEntry(action, changes, v.getId());
+        storeAuditEntry(action, changes, v.getId(),timestamp,author);
     }
 
 
-    private void storeAuditEntry(String action,String changes, String varName) {
+    private void storeAuditEntry(String action,String changes, String varName,long timestamp, String author) {
 
         if (action == null || changes == null ) {
             Log.e("vortex", "STOREADUIT ERROR: Action: " + action + " changes: " + changes + " varName: " + varName);
@@ -824,7 +772,8 @@ public class DBColumnPicker {
         values.put("lag",globalPh.get(PersistenceHelper.LAG_ID_KEY));
         values.put("changes", changes);
         values.put("target", varName);
-        values.put("timestamp", System.currentTimeMillis());
+        values.put("timestamp", timestamp);
+        values.put("author",author);
         //need to save timestamp + value
         db.insert(TABLE_AUDIT, null, values);
     }
@@ -854,22 +803,22 @@ public class DBColumnPicker {
     }
 */
 
-public class StoredVariableData {
-    public StoredVariableData(String name, String value, String timestamp,
-                              String lag, String author) {
-        this.timeStamp = timestamp;
-        this.value = value;
-        this.lagId = lag;
-        this.creator = author;
-        this.name = name;
-    }
+    public class StoredVariableData {
+        public StoredVariableData(String name, String value, String timestamp,
+                                  String lag, String author) {
+            this.timeStamp = timestamp;
+            this.value = value;
+            this.lagId = lag;
+            this.creator = author;
+            this.name = name;
+        }
 
-    public String name;
-    public String timeStamp;
-    public String value;
-    public String lagId;
-    public String creator;
-}
+        public String name;
+        public String timeStamp;
+        public String value;
+        public String lagId;
+        public String creator;
+    }
 
     //public final static int MAX_RESULT_ROWS = 500;
 
@@ -1034,9 +983,7 @@ public class StoredVariableData {
 
         insertContentValues.clear();
         boolean isReplace = false;
-        long milliStamp = System.currentTimeMillis();
-        String timeStamp = milliStamp + "";
-
+        long timeStamp = System.currentTimeMillis();
         //for logging
         //Log.d("nils", "INSERT VALUE ["+var.getId()+": "+var.getValue()+"] Local: "+isLocal+ "NEW Value: "+newValue);
 
@@ -1057,8 +1004,8 @@ public class StoredVariableData {
             }
         }
         // 1. create ContentValues to add key "column"/value
-
-        createValueMap(var, newValue, insertContentValues, timeStamp);
+        String author = globalPh.get(PersistenceHelper.USER_ID_KEY);
+        createValueMap(var, newValue, insertContentValues, timeStamp,author);
         // 3. insert
         long rId;
         if (isReplace) {
@@ -1081,7 +1028,7 @@ public class StoredVariableData {
 
             //If this variable is not local, store the action for synchronization.
             if (syncMePlease) {
-                insertAuditEntry(var, createAuditEntry(var, newValue, timeStamp), "I");
+                insertAuditEntry(var, createAuditEntry(var, newValue, timeStamp),author, "I",timeStamp);
 
             }
             //else
@@ -1091,7 +1038,6 @@ public class StoredVariableData {
         //delete lateron
         //Delete any existing value.
         deleteOldVariable(var.getId(),var.getSelection(), rId);
-        Log.d("vortex", "time used: " + (System.currentTimeMillis() - milliStamp) + "");
 
     }
 
@@ -1164,7 +1110,7 @@ public class StoredVariableData {
 
     }
 */
-    private void createValueMap(Variable var, String newValue, ContentValues values, String timeStamp) {
+    private void createValueMap(Variable var, String newValue, ContentValues values, long timeStamp,String author) {
         //Add column,value mapping.
         //Log.d("vortex","in createvaluemap");
         Map<String, String> keyChain = var.getKeyChain();
@@ -1186,7 +1132,7 @@ public class StoredVariableData {
         //}
         values.put("lag", globalPh.get(PersistenceHelper.LAG_ID_KEY));
         values.put("timestamp", timeStamp);
-        values.put("author", globalPh.get(PersistenceHelper.USER_ID_KEY));
+        values.put("author", author);
 
     }
 
@@ -1196,16 +1142,17 @@ public class StoredVariableData {
     public void insertVariableSnap(ArrayVariable var, String newValue,
                                    boolean syncMePlease) {
         Log.d("vortex","I am in snap insert for variable "+var.getId()+" that is synced: "+syncMePlease);
-        String timeStamp = (System.currentTimeMillis()) + "";
+        long timeStamp = System.currentTimeMillis();
         ContentValues values = new ContentValues();
-        createValueMap(var, newValue, values, timeStamp);
+        String author = globalPh.get(PersistenceHelper.USER_ID_KEY);
+        createValueMap(var, newValue, values, timeStamp,author);
 
         db.insert(TABLE_VARIABLES, // table
                 null, //nullColumnHack
                 values
         );
         if (syncMePlease) {
-            insertAuditEntry(var, createAuditEntry(var, newValue, timeStamp), "A");
+            insertAuditEntry(var, createAuditEntry(var, newValue, timeStamp),author,"A",timeStamp);
 
         }
     }
@@ -1258,18 +1205,20 @@ public class StoredVariableData {
         if (c != null && c.getCount() > 0 && c.moveToFirst()) {
             int cn = 1;
             sa = new SyncEntry[c.getCount() + 1];
-            String entryStamp, action, changes, target;
+            long entryStamp;
+            String action, changes, target,author;
             maxStamp = 0;
             do {
                 action = c.getString(c.getColumnIndex("action"));
                 changes = c.getString(c.getColumnIndex("changes"));
-                entryStamp = c.getString(c.getColumnIndex("timestamp"));
+                entryStamp = c.getLong(c.getColumnIndex("timestamp"));
                 target = c.getString(c.getColumnIndex("target"));
+                author = c.getString(c.getColumnIndex("author"));
 
-                long es = Long.parseLong(entryStamp);
-                if (es > maxStamp)
-                    maxStamp = es;
-                sa[cn] = new SyncEntry(SyncEntry.action(action), changes, entryStamp, target);
+
+                if (entryStamp > maxStamp)
+                    maxStamp = entryStamp;
+                sa[cn] = new SyncEntry(SyncEntry.action(action), changes, entryStamp, target,author);
                 //Log.d("nils","Added sync entry : "+action+" changes: "+changes+" index: "+cn);
                 if (ui != null)
                     ui.setInfo(cn + "/" + c.getCount());
@@ -1288,10 +1237,10 @@ public class StoredVariableData {
 
 //Map <Set<String>,String>cachedSelArgs = new HashMap<Set<String>,String>();
 
-public static class Selection {
-    public String[] selectionArgs = null;
-    public String selection = null;
-}
+    public static class Selection {
+        public String[] selectionArgs = null;
+        public String selection = null;
+    }
 
     public Selection createSelection(Map<String, String> keySet, String name) {
 
@@ -1433,8 +1382,10 @@ public static class Selection {
 
         final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
 
-        //keep track of most current location update.
-        SyncEntry mostCurrentLocationUpdate = null;
+
+        //keep track of most current location update per user.
+        Map<String,SyncEntry> mostCurrentSyncMessage = new HashMap<>();
+        Map<String,Long> mostCurrentTimestamp = new HashMap<>();
 
         String variableName = null,uid=null, spy=null,syncTeam=null;
         int synC = 1;
@@ -1442,8 +1393,6 @@ public static class Selection {
         final String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
         beginTransaction();
-
-        java.util.Date date = new java.util.Date();
 
         for (SyncEntry s : ses) {
 
@@ -1467,38 +1416,29 @@ public static class Selection {
             }
 
             synC++;
-            //Skip array inserts that are older than one hour.
+            Log.d("babbs","sync2");
+            //Only insert location updates that are newest.
             if (s.isInsertArray()) {
-/*
-                long current = date.getTime() / 1000;
-                long incoming = Long.parseLong(s.getTimeStamp());
-                long diff = current - incoming;
+                Log.d("babbs","array");
+                String author=s.getAuthor();
+                //get author of sync message.
+                if (author!=null) {
+                    Long maxTimeStamp = mostCurrentTimestamp.get(author);
+                    long thisStamp = s.getTimeStamp();
+                    if (maxTimeStamp==null || maxTimeStamp<thisStamp) {
+                        Log.d("babbs","found most recent for "+author);
+                        mostCurrentTimestamp.put(author,thisStamp);
+                        mostCurrentSyncMessage.put(author,s);
 
-
-
-                if (diffMoreThanThreshold(diff)) {
-                    changes.refused++;
-                    continue;
-                }
-*/
-                if (mostCurrentLocationUpdate==null) {
-                    mostCurrentLocationUpdate = s;
-                } else {
-                    long incoming = Long.parseLong(s.getTimeStamp());
-                    long mostCurrent = Long.parseLong(mostCurrentLocationUpdate.getTimeStamp());
-                    if (incoming>mostCurrent)
-                        mostCurrentLocationUpdate = s;
-                    //swapped.
-                }
-                continue;
-
+                    } else {
+                        Log.d("babbs","not most recent for "+author);
+                    }
+                } else
+                    Log.e("babbs","author null in insertarray");
             }
-
             else if (s.isInsert() ) {
                 //Log.d("bascar","Insert "+s.getTarget());
-
                 cv = createContentValues(s.getKeys(),s.getValues(),team);
-
                 if (cv == null) {
                     Log.e("maggan", "Synkmessage with " + s.getTarget() + " is invalid. Skipping. keys: " + s.getKeys() + " values: " + s.getValues());
                     changes.faults++;
@@ -1514,19 +1454,20 @@ public static class Selection {
 
                 if (uid != null ) {
                     //Log.d("bascar", "Insert for: " + s.getTarget() + " ch: " + s.getChange());
-                   //Log.d("vortex","added to tsmap: "+uid);
+                    //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
+                    variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
                 } else {
                     Log.e("bascar", "Inserting RAW" + s.getChange());
                     db.insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
                             cv
                     );
-                    if (uid != null)
-                        variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
-                    changes.inserts++;
-
+                    variableCache.invalidateOnName(variableName);
                 }
+                changes.inserts++;
+
+
 
             }
 
@@ -1569,7 +1510,7 @@ public static class Selection {
 
             //Erase set of values. Targets incoming sync entries only.
             else if (s.isDeleteMany()) {
-                Log.d("bascar","Indeletemany. CHANGES: "+s.getChange());
+                Log.d("bascar","Indeletemany. ");
                 Map keyPairs = s.getKeys();
                 String pattern = s.getTarget();
                 if (keyPairs != null) {
@@ -1590,14 +1531,19 @@ public static class Selection {
             }
 
         }
+
         //insert max location update if any.
-        if (mostCurrentLocationUpdate!=null) {
-            //Log.d("boozaa","inserting max location update");
-            cv = createContentValues(mostCurrentLocationUpdate.getKeys(),mostCurrentLocationUpdate.getValues(),team);
-            db.insert(TABLE_VARIABLES, // table
-                    null, //nullColumnHack
-                    cv
-            );
+
+        if (!mostCurrentSyncMessage.isEmpty()) {
+            for (String name:mostCurrentSyncMessage.keySet()) {
+                Log.d("babs","inserting max location update for "+name);
+                SyncEntry se = mostCurrentSyncMessage.get(name);
+                cv = createContentValues(se.getKeys(), se.getValues(), team);
+                db.insert(TABLE_VARIABLES, // table
+                        null, //nullColumnHack
+                        cv
+                );
+            }
         }
 
         endTransactionSuccess();
@@ -1629,7 +1575,7 @@ public static class Selection {
 
     StringBuilder whereClause = new StringBuilder();
 
-    private int delete(Map<String,String> keys, String timeStamp, String team) throws SQLException {
+    private int delete(Map<String,String> keys, long timeStamp, String team) throws SQLException {
 
         //contains the delete key,value pairs found in the delete entry.
         if (keys ==null)
@@ -1645,7 +1591,7 @@ public static class Selection {
             whereArgs[n++]=keys.get(key);
         }
         whereArgs[n++]= team;
-        whereArgs[n] = timeStamp;
+        whereArgs[n] = timeStamp+"";
         whereClause.append(LAG+" = ? AND "+TIMESTAMP+" <= ? AND "+VARID+" = ?");
 
         //Log.d("vortex","Calling delete with Selection: "+whereClause+" args: "+print(whereArgs));
@@ -1710,7 +1656,7 @@ public static class Selection {
                 if (s.isInsertArray()) {
                     java.util.Date date = new java.util.Date();
                     long current = date.getTime() / 1000;
-                    long incoming = Long.parseLong(s.getTimeStamp());
+                    long incoming =s.getTimeStamp();
                     long diff = current - incoming;
                     //Log.d("plaz", "ARRAYOBJECT curr incom: " + current + " " + incoming);
                     if (diffMoreThanThreshold(diff)) {
@@ -1781,7 +1727,7 @@ public static class Selection {
                         changes.inserts++;
                     } else {
                         long id = c.getLong(0);
-                        String timestamp = c.getString(1);
+                        long timestamp = c.getLong(1);
                         String value = c.getString(2);
                         String varName = c.getString(3);
                         String author = c.getString(4);
@@ -1816,32 +1762,30 @@ public static class Selection {
 
                         //If this is a status variable, and the value is different than existing value, add a conflict.
 
-                        boolean existingTimestampIsMoreRecent = (Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp()));
-                        if (timestamp != null && s.getTimeStamp() != null) {
-                            if (!existingTimestampIsMoreRecent) {
-                                //                       Log.d("sync", "REPLACING " + name);
-                                cv.put("id", id);
-                                rId = db.replace(TABLE_VARIABLES, // table
-                                        null, //nullColumnHack
-                                        cv
-                                );
-                                gs.getVariableCache().insert(name, keyHash, myValue);
-                                changes.inserts++;
 
-                                if (rId != id) {
-                                    Log.e("sync", "CRY FOUL!!! New Id not equal to found! " + " ID: " + id + " RID: " + rId);
+                        if (timestamp<s.getTimeStamp()) {
+                            //                       Log.d("sync", "REPLACING " + name);
+                            cv.put("id", id);
+                            rId = db.replace(TABLE_VARIABLES, // table
+                                    null, //nullColumnHack
+                                    cv
+                            );
+                            gs.getVariableCache().insert(name, keyHash, myValue);
+                            changes.inserts++;
 
-                                    Log.e("sync", "varname: " + varName + "value: " + value + " timestamp: " + timestamp + " author: " + author + " ");
-                                    Log.e("sync", "CV: " + cv);
-                                }
-                            } else {
-                                changes.refused++;
-                                //                        o.addRow("");
-                                //                        o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
-                                //                        Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                            if (rId != id) {
+                                Log.e("sync", "CRY FOUL!!! New Id not equal to found! " + " ID: " + id + " RID: " + rId);
+
+                                Log.e("sync", "varname: " + varName + "value: " + value + " timestamp: " + timestamp + " author: " + author + " ");
+                                Log.e("sync", "CV: " + cv);
                             }
-                        } else
-                            Log.e("sync", "A timestamp was null!!");
+                        } else {
+                            changes.refused++;
+                            //                        o.addRow("");
+                            //                        o.addYellowText("DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                            //                        Log.d("vortex", "DB_INSERT REFUSED: " + name + " Timestamp incoming: " + s.getTimeStamp() + " Time existing: " + timestamp +" value: "+myValue);
+                        }
+
                     }
                     if (rId != -1)
                         touchedVariables.add(name);
@@ -1899,10 +1843,10 @@ public static class Selection {
                             c = getExistingVariableCursor(s.getTarget(), sel);
                             boolean hasValueAlready = c.moveToNext();
                             boolean existingTimestampIsMoreRecent = true;
-                            String timestamp = "";
+
                             if (hasValueAlready) {
 
-                                timestamp = c.getString(1);
+                                long timestamp = c.getLong(1);
                                 //String value = c.getString(2);
                                 //String varName = c.getString(3);
                                 //String author = c.getString(4);
@@ -1910,7 +1854,7 @@ public static class Selection {
                                 //Is the existing entry done by me?
                                 //                        Log.d("vortex", "Existing is author" + author+",val: "+value+",var:"+varName+",timestamp: "+timestamp);
                                 //                        Log.d("vortex","incoming timestamp: "+s.getTimeStamp()+" existingTimestamp: "+timestamp);
-                                existingTimestampIsMoreRecent = Tools.existingTimestampIsMoreRecent(timestamp, s.getTimeStamp());
+                                existingTimestampIsMoreRecent = timestamp > s.getTimeStamp();
                             } else
                                 Log.d("vortex", "Did not find variable to delete: " + s.getTarget());
                             if (!existingTimestampIsMoreRecent) {
@@ -2056,9 +2000,11 @@ public static class Selection {
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
+            Long timestamp2 = GlobalState.getInstance().getGlobalPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
+            Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
+
             timestamp=timestamp==-1?0:timestamp;
 
-            //Log.d("nils","Time of last sync is "+timestamp+" in getNumberOfUnsyncedEntries (dbHelper)");
             Cursor c = db.query(TABLE_AUDIT, null,
                     "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp.toString(),team}, null, null, "timestamp asc", null);
             if (c != null && c.getCount() > 0)
@@ -2096,7 +2042,7 @@ public static class Selection {
             String[] keyValue = pair.split("=");
             if (keyValue != null && keyValue.length == 2) {
                 column = realColumnNameToDB.get(keyValue[0]);
-                              Log.d("err","column: "+column+" value: "+keyValue[1]);
+                Log.d("err","column: "+column+" value: "+keyValue[1]);
                 if (Constants.NOT_NULL.equals(keyValue[1])) {
                     Log.d("err","match for NN!");
                     delStmt.append(column + " IS NOT NULL");
@@ -2407,10 +2353,10 @@ public static class Selection {
 
     }
 
-public class TmpVal {
-    public String hist,norm;
+    public class TmpVal {
+        public String hist,norm;
 
-}
+    }
 
     public Map<String, TmpVal> preFetchValuesForAllMatchingKeyV(Map<String, String> keyChain) {
         final List<String> selectionArgs = new ArrayList<String>();
@@ -2724,7 +2670,7 @@ public class TmpVal {
         Set<Integer> idsToDelete = new HashSet<>();
         String query = "SELECT id,timestamp,"+getDatabaseColumnName("år")+","+VARID+","+getDatabaseColumnName("uid")+
                 (hasSpy?","+getDatabaseColumnName("spy"):"")
-                        +" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
+                +" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
         //Log.d("kakko","query: "+query);
         Cursor c = db.rawQuery(query,null);
         //Log.d("rosto","C size: "+c.getCount());

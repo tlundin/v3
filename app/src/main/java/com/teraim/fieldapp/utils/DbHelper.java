@@ -1,4 +1,14 @@
-package com.teraim.fieldapp.utils;import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;public class DbHelper extends SQLiteOpenHelper {/* Database Version*/public static final int DATABASE_VERSION = 10;/* Books table name*/private static final String TABLE_VARIABLES = "variabler";
+package com.teraim.fieldapp.utils;
+import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;
+
+public class DbHelper extends SQLiteOpenHelper {
+
+    /* Database Version*/public static final int DATABASE_VERSION = 11;/* Books table name*/
+    private static final String TABLE_VARIABLES = "variabler";
+
+
+
+
     public static final String TABLE_AUDIT = "audit";
     public static final String TABLE_SYNC = "sync";
 
@@ -348,14 +358,14 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
                 "var TEXT COLLATE NOCASE, " +
                 "value TEXT, " +
                 "lag TEXT, " +
-                "timestamp TEXT, " +
+                "timestamp NUMBER, " +
                 "author TEXT ) ";
 
         //audit table to keep track of all insert,updates and deletes.
         String CREATE_AUDIT_TABLE = "CREATE TABLE audit ( " +
                 "id INTEGER PRIMARY KEY ," +
                 LAG+" TEXT, " +
-                "timestamp TEXT, " +
+                "timestamp NUMBER, " +
                 "action TEXT, " +
                 "target TEXT, " +
                 AUTHOR+" TEXT, " +
@@ -2016,7 +2026,7 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
             Long timestamp2 = GlobalState.getInstance().getGlobalPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
-            Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
+            //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
             timestamp=timestamp==-1?0:timestamp;
 
@@ -2026,7 +2036,7 @@ package com.teraim.fieldapp.utils;import android.app.Activity;import android.con
                 ret = c.getCount();
             if (c != null)
                 c.close();
-            Log.d("vortex", "My unsynced items: " + ret);
+            //Log.d("vortex", "My unsynced items: " + ret);
             return ret;
         }
         return -1;

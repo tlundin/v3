@@ -523,7 +523,7 @@ public class WF_Table extends WF_List  {
 		if (selectedColumnIndex != -1) {
 			for (Listable l : get()) {
 				WF_Table_Row wft = (WF_Table_Row) l;
-				Log.d("vortex", l.getLabel() + " Cells: " + wft.getCells().size());
+				//Log.d("vortex", l.getLabel() + " Cells: " + wft.getCells().size());
 				//for (int i =0;i<wft.getCells().size();i++) {
 				WF_Cell cell = wft.getCells().get(selectedColumnIndex-1);
 				if (!cell.getWidget().isShown())

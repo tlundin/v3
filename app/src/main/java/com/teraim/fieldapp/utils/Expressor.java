@@ -379,7 +379,7 @@ public class Expressor {
 
 		}
 
-		//Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
+		Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
 		if (endResult.toString().isEmpty())
 			return null;
 		else

@@ -89,19 +89,19 @@
         android:id="@+id/avstriktF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|center_vertical"
+        android:layout_gravity="left|center_vertical"
         android:layout_margin="5dp"
         android:minWidth="100dp" >
 
         <LinearLayout
             android:id="@+id/avstRL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             android:background="@drawable/object_menu_pop_bg"
             android:minWidth="150dp"
             android:orientation="vertical"
-            android:padding="5dp" >
+            android:padding="5dp">
 
             <ImageButton
                 android:id="@+id/carNavB"
@@ -122,8 +122,8 @@
                 android:gravity="center_horizontal"
                 android:text="Large Text"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/areaT"
@@ -135,6 +135,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:visibility="gone" />
+
             <TextView
                 android:id="@+id/circumT"
                 android:layout_width="fill_parent"
@@ -172,8 +173,7 @@
                 android:inAnimation="@anim/push_up_in"
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp" />
 
             <TextSwitcher
                 android:id="@+id/riktTS"
@@ -183,8 +183,7 @@
                 android:inAnimation="@anim/push_up_in"
                 android:outAnimation="@anim/push_up_out"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout

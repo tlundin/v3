@@ -1036,7 +1036,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     private void refreshSynkDialog(Integer syncState, int numberOfUnsynchedItems) {
         if (!mPopupWindow.isShowing()) {
-            Log.d("pop", "pop not showing...exit");
+            //Log.d("pop", "pop not showing...exit");
             return;
         }
         boolean sync_on=syncOn();

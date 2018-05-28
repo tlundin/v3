@@ -78,7 +78,8 @@ public class PageWithAggregationTemplate extends Executor {
 
 	@Override
 	public void onPause() {
-		scrollPosition= new int[]{ mScrollView.getScrollX(), mScrollView.getScrollY()};
+		if (mScrollView!=null)
+			scrollPosition= new int[]{ mScrollView.getScrollX(), mScrollView.getScrollY()};
 		super.onPause();
 	}
 

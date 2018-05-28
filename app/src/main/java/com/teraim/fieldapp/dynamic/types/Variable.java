@@ -270,6 +270,10 @@ public class Variable implements Serializable {
 	}
 
 	public void setValueNoSync(String value) {
+		if (value==null) {
+			Log.e("vortex","attempt to set null value for "+this.getId());
+			return;
+		}
 		myValue = value;
 		insert(value, false);
 		unknown=false;

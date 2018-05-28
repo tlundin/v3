@@ -94,12 +94,6 @@ public class Tracker extends Service implements LocationListener {
 		if (gs==null)
 			return ErrorCode.UNSTABLE;
 
-		//set to null.
-		myX.setValueNoSync(null);
-		myY.setValueNoSync(null);
-		if (myAcc!=null)
-			myAcc.setValueNoSync(null);
-
 		try {
 			locationManager = (LocationManager) ctx
 					.getSystemService(LOCATION_SERVICE);
@@ -172,6 +166,7 @@ public class Tracker extends Service implements LocationListener {
 			}
 			//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
 			if (location!=null && myX!=null) {
+
 				//Log.d("vortex","setting sweref location");
 				SweLocation myL = Geomatte.convertToSweRef(location.getLatitude(),location.getLongitude());
 

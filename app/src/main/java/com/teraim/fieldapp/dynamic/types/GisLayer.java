@@ -72,7 +72,7 @@ public class GisLayer {
 		boolean merge = false;
 		Log.d("bortex", "in add objbag with key " + key);
 		if (myObjects == null) {
-			Log.d("bortex", "myObjects null...creating. Mygisobjects: " + myGisObjects + " dynamic: " + dynamic);
+			//Log.d("bortex", "myObjects null...creating. Mygisobjects: " + myGisObjects + " dynamic: " + dynamic);
 			myObjects = new HashMap<String, Set<GisObject>>();
 
 		}

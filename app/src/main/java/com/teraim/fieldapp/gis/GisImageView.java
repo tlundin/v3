@@ -320,6 +320,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					}
 					return;
 				}
+
 				calculateMapLocationForClick(polyVertexX,polyVertexY);
 
 
@@ -496,9 +497,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		boolean isInside = true;
 		double mapDistX = l.getX()-photoMetaData.W;
 		double mapDistY = l.getY()-photoMetaData.S;
-		if ((mapDistX <=imgWReal && mapDistX>=0) || (mapDistY <=imgHReal && mapDistY>=0))
+		if ((mapDistX <=imgWReal && mapDistX>=0) && (mapDistY <=imgHReal && mapDistY>=0)) {
 			;
-			//Log.d("vortex","Distance X in meter: "+mapDistX+" [inside]");
+			//Log.d("inside", " distX: " + mapDistX + " distY: "+mapDistY+" [imgW: "+imgWReal+" imgH: "+imgHReal+"]");
+		}
 		else {
 			//if(mapDistX>imgWReal||mapDistX<0)
 				//Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
@@ -717,7 +719,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 										//This object should not be drawn.
 										continue;
 									} else {
-										//Log.d("bortex","inside!");
+
+										//Log.d("inside","inside. Label :"+gop.getLabel());
 										if (gop.isUser()) {
 											//Log.d("bortex","user!");
 											userGop = gop;
@@ -834,7 +837,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 					}
 					candMenuVisible = true;
-
+					touchedBag=null;
 					myMap.showCandidates(candies);
 				}
 
@@ -843,10 +846,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			} else if (!candidates.isEmpty()) {
 				touchedGop=candidates.iterator().next();
 				riktLinjeStart=null;
+				touchedBag=null;
 			}
 
 			if (touchedGop!=null) {
-				Log.d("vortex", "Gop selected now has Keychain: " + touchedGop.getKeyHash());
+				//Log.d("vortex", "Gop selected now has Keychain: " + touchedGop.getKeyHash());
 				//Find the layer and bag touched.
 				if (touchedBag==null) {
 					for (GisLayer layer : myMap.getLayers()) {
@@ -854,18 +858,22 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 						if (touchedBag != null) {
 							Log.d("vortex", "setting touchedlayer");
 							touchedLayer = layer;
+							//if longclick, open the actionbar menu.
+							if (!clickWasShort)
+								myMap.startActionModeCb();
+							else {
+								myMap.setVisibleAvstRikt(true, touchedGop);
+								displayDistanceAndDirection();
+							}
+
 							break;
 						}
 					}
+
 				}
 				if (touchedBag != null) {
-					//if longclick, open the actionbar menu.
-					if (!clickWasShort)
-						myMap.startActionModeCb();
-					else {
-						myMap.setVisibleAvstRikt(true, touchedGop);
-						displayDistanceAndDirection();
-					}
+
+
 
 					if (clickWasShort && (riktLinjeStart == null || riktLinjeEnd == null) && mostRecentGPSValueTimeStamp!=-1 && myX!=null&&myY!=null&&myX.getValue()!=null && myY.getValue()!=null) {
 						//Create a line from user to object.
@@ -881,7 +889,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					drawGop(canvas,touchedLayer,touchedGop,true);
 					//Check if directional line should be drawn.
 					if (riktLinjeStart!=null) {
-						Log.d("vortex","drawing a million times?");
+						//Log.d("vortex","drawing a million times?");
 						canvas.drawLine(riktLinjeStart[0], riktLinjeStart[1], riktLinjeEnd[0], riktLinjeEnd[1], fgPaintSel);//fgPaintSel
 					}
 				} else {
@@ -1395,7 +1403,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			int rikt = (int)(Geomatte.getRikt2(mY, mX, gY, gX)*57.2957795);
 			myMap.setAvstTxt(currentDistance>9999?(currentDistance/1000+"km"):(currentDistance+"m"));
 			myMap.setRiktTxt(rikt+Deg);
-			Log.d("wolf","update drawn");
+			//Log.d("wolf","update drawn");
 
 
 		}

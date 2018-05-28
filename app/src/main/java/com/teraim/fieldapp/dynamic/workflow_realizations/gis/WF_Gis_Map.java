@@ -724,6 +724,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 	public void setSelectedObjectText(String txt) {
 		selectedT.setText(txt);
 	}
+
 	public void setVisibleAvstRikt(boolean isVisible, GisObject touchedGop) {
 		Log.d("vortex","Entering setVisibleAvstRikt..");
 		if (isVisible) {

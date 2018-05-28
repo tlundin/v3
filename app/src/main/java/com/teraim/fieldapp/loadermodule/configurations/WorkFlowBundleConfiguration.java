@@ -54,6 +54,7 @@ import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
+import com.teraim.fieldapp.dynamic.blocks.StartCameraBlock;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Not_ClickableField_SumAndCountOfVariables;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
@@ -334,6 +335,9 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					blocks.add(readBlockGoSub(parser));
 				else if (name.equals("block_define_coupled_variable_group"))
 					blocks.add(readBlockSliderGroup(parser));
+				else if (name.equals("block_start_camera")) {
+					blocks.add(readBlockStartCamera(parser));
+				}
 				else {			
 					skip(name,parser,o);
 				}
@@ -362,8 +366,29 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		return blocks;
 	}
 
+	private Block readBlockStartCamera(XmlPullParser parser) throws IOException, XmlPullParserException {
+		o.addRow("Parsing block: block_start_camera...");
+		String id=null,fileName=null;
+		while (parser.next() != XmlPullParser.END_TAG) {
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name = parser.getName();
+			if (name.equals("block_ID")) {
+				id = readText("block_ID", parser);
+			} else if (name.equals("target")) {
+				fileName = readText("target", parser);
+			}
+			else {
 
-	private Block readBlockSliderGroup(XmlPullParser parser) throws IOException, XmlPullParserException {
+				Log.e("vortex","Skipped "+name);
+				skip(name,parser);
+			}
+		}
+		checkForNull(fileName);
+		return new StartCameraBlock(id,fileName);
+	}
+		private Block readBlockSliderGroup(XmlPullParser parser) throws IOException, XmlPullParserException {
 		o.addRow("Parsing block: block_define_coupled_variable_group...");
 		String id=null,groupName=null,function=null,arguments=null,delay=null;
 

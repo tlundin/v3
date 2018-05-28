@@ -71,6 +71,7 @@ import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.StartCameraBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Rule;
@@ -528,21 +529,16 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 						myListBlocks.get(bl.getTarget()).associateVariableBlock(bl);
 
 					}
-					/*
-					if(!bl.create(myContext)) {
-						savedBlockPointer = blockP+1;
-						return;
-					}
-					*/
+
 
 
 				} else if (b instanceof BlockCreateListEntriesFromFieldList) {
-					o.addRow("");
-					o.addYellowText("BlockCreateListEntriesFromFieldList found " + b.getBlockId());
-					//delay creation until filters applied.
-					BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList) b;
-					bl.create(myContext);
-					myListBlocks.put(bl.getListId(), bl);
+                    o.addRow("");
+                    o.addYellowText("BlockCreateListEntriesFromFieldList found " + b.getBlockId());
+                    //delay creation until filters applied.
+                    BlockCreateListEntriesFromFieldList bl = (BlockCreateListEntriesFromFieldList) b;
+                    bl.create(myContext);
+                    myListBlocks.put(bl.getListId(), bl);
 
 					/*
 					if(!bl.create(myContext)) {
@@ -552,6 +548,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 					}
 					*/
+                } else if (b instanceof StartCameraBlock) {
+                    o.addRow("");
+                    o.addYellowText("BlockStartCamera found " + b.getBlockId());
+                    StartCameraBlock bl = (StartCameraBlock) b;
+                    bl.create(myContext);
 				} else if (b instanceof BlockCreateTable) {
 					o.addRow("");
 					o.addYellowText("BlockCreateTable found " + b.getBlockId());

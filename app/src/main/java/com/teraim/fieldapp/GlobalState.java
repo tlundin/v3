@@ -10,8 +10,10 @@ import java.util.TreeMap;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -643,8 +645,15 @@ public class GlobalState {
                                 // Display the first 500 characters of the response string.
                                 Log.d("mama", "Response is: " + response);
                                 syncGroup = new SyncGroup(response);
-                                sendEvent(MenuActivity.REDRAW);
+                                //request a new sync if the team has data.
+                                if (syncGroup.getTeam()!=null && !syncGroup.getTeam().isEmpty()) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                                    ContentResolver.requestSync(mAccount, Start.AUTHORITY, bundle);
 
+                                }
+                                sendEvent(MenuActivity.REDRAW);
                             }
                         }, new Response.ErrorListener() {
                     @Override

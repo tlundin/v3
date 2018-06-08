@@ -1,5 +1,7 @@
 package com.teraim.fieldapp.utils;
-import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;
+import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -265,6 +267,7 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.d("nils", "Table doesn't exist yet...postpone init");
         }
 
+
     }
 
     public void closeDatabaseBeforeExit() {
@@ -326,7 +329,15 @@ public class DbHelper extends SQLiteOpenHelper {
         for (String e : s)
             Log.d("nils", "Key: " + e + "Value:" + realColumnNameToDB.get(e));
 
+    }
 
+    public void fixYearNull() {
+        if (db!=null && db.isOpen()) {
+            Log.d("markus","repairing...");
+            String colYear = getDatabaseColumnName(YEAR);
+            db.execSQL("update variabler set "+colYear+"= '"+ Calendar.getInstance().get(Calendar.YEAR)+"' where "+colYear+" is null");
+
+        }
     }
 
 
@@ -918,6 +929,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 String value = c.getString(0);
                 Log.d("vortex", "GETVALUE [" + name + " :" + value + "] Value = null? " + (value == null));
                 c.close();
+
                 return value;
             }
         }
@@ -1266,7 +1278,7 @@ public class DbHelper extends SQLiteOpenHelper {
             for (String key : keySet.keySet()) {
                 key = getDatabaseColumnName(key);
 
-                selection += key + "= ? and ";
+                    selection += key + "= ? and ";
 
             }
         }
@@ -1426,7 +1438,7 @@ public class DbHelper extends SQLiteOpenHelper {
             synC++;
             //Only insert location updates that are newest.
             if (s.isInsertArray()) {
-                Log.d("babbs","array");
+                //Log.d("babbs","array");
                 String author=s.getAuthor();
                 String variable = s.getTarget();
                 //get author of sync message.
@@ -1441,7 +1453,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     //if older, replace.
                     if (se==null || se.getTimeStamp()<s.getTimeStamp()) {
                         variables.put(variable, s);
-                        Log.d("babbs"," Replacing variable "+variable);
+                        //Log.d("babbs"," Replacing variable "+variable);
                     }
                     else
                         Log.d("babbs"," Discarding variable "+variable);
@@ -1465,7 +1477,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 variableName = cv.getAsString(VARID);
 
                 if (uid != null ) {
-                    //Log.d("bascar", "Insert for: " + s.getTarget() + " ch: " + s.getChange());
+                    Log.d("brakko", "INSERT T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                     //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                     variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
@@ -1485,7 +1497,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             else if (s.isDelete()) {
 
-                Log.d("bascar", "Delete for: " + s.getTarget() + " ch: " + s.getChange());
+                Log.d("brakko", "DELETE T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                 Map<String,String> sKeys = s.getKeys();
 
                 if (sKeys == null) {
@@ -1499,9 +1511,9 @@ public class DbHelper extends SQLiteOpenHelper {
                 variableName = sKeys.get(VARID);
 
                 Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
-                if (!tsMap.delete(ukey, variableName)) {
+                tsMap.delete(ukey, variableName);
                     try {
-                        Log.d("bascar","not found in sync cache buffer (TS): "+variableName);
+                        //Log.d("bascar","not found in sync cache buffer (TS): "+variableName);
                         int aff = delete(sKeys, s.getTimeStamp(), team);
                         if (aff == 0) {
                             changes.refused++;
@@ -1516,7 +1528,6 @@ public class DbHelper extends SQLiteOpenHelper {
                         changes.refused++;
                         changes.failedDeletes++;
                     }
-                }
 
             }
 

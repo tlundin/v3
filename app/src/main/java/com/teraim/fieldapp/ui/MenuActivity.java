@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -22,8 +25,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.PeriodicSync;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.SyncRequest;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -84,6 +89,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
     private boolean initdone=false,initfailed=false;
     private MenuActivity me;
     private Account mAccount;
+    private Future synkBackgroundTask;
 
     public final static String REDRAW = "com.teraim.fieldapp.menu_redraw";
     public static final String INITDONE = "com.teraim.fieldapp.init_done";
@@ -110,7 +116,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         super.onCreate(savedInstanceState);
         me = this;
 
-        globalPh = new PersistenceHelper(getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
+        globalPh = new PersistenceHelper(getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
 
         brr = new BroadcastReceiver() {
             @Override
@@ -250,6 +256,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
     private boolean syncOn() {
+
         return ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY);
     }
 
@@ -325,7 +332,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
     @Override
     protected void onResume() {
         super.onResume();
-        if("Internet".equals(getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.SYNC_METHOD,"")))
+        if("Internet".equals(getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.SYNC_METHOD,"")))
         {
 
             Intent myIntent = new Intent(MenuActivity.this, SyncService.class);
@@ -403,7 +410,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                 case SyncService.MSG_SERVER_READ_MY_DATA:
                     long timestampFromMe = ((Bundle)msg.obj).getLong("maxstamp");
                     gs.getPreferences().put(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY),timestampFromMe);
-                    Log.d("babs","updated my read sync timestamp to "+timestampFromMe);
+                    Log.d("biff", PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY));
+                    Log.d("biff","Timestamp for last sync in Query is  "+timestampFromMe);
                     break;
 
                 case SyncService.MSG_SYNC_DATA_ARRIVING:
@@ -423,7 +431,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             Log.d("vortex","ERR NOT INTERNET SYNC...");
                             //Send a config changed msg...reload!
                             Log.d("vortex","Turning sync off.");
-                            ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+                            stopSync();
 
                             break;
                         case SyncService.ERR_SETTINGS:
@@ -439,7 +447,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (syncOn()) {
-                                                    ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+                                                    stopSync();
                                                 }
                                                 uiLock=null;
                                             }
@@ -513,6 +521,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     String team = gs.getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
                     //update from the server.
                     gs.getServerSyncStatus();
+
                     break;
 
                 case SyncService.MSG_SYNC_RELEASE_DB:
@@ -573,7 +582,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                                                     z_totalSynced += increment;
                                                 } else {
                                                     control.flag = threadDone;
-                                                    gs.sendEvent(REDRAW_PAGE);
+
+
                                                     Log.d("vortex", "End reached for sync. Sending msg safely_stored");
                                                     if (uiLock != null)
                                                         uiLock.cancel();
@@ -586,9 +596,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
                                                     syncDataArriving = false;
 
                                                     try {
-
-
                                                         mService.send(reply);
+                                                        gs.sendEvent(REDRAW_PAGE);
+
                                                     } catch (RemoteException e) {
                                                         e.printStackTrace();
                                                         syncError = true;
@@ -812,6 +822,14 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     GlobalState.SyncGroup sg = gs.getSyncGroup();
                     List team = sg==null?null:sg.getTeam();
                     syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
+                    if (syncState==R.drawable.insync) {
+                        //TODO: REMOVE - IF User is in sync with server, repair the database.
+                            //TODO: REMOVE!!
+                            if (!globalPh.getB(PersistenceHelper.YEAR_BUG_FIXED)) {
+                                GlobalState.getInstance().getDb().fixYearNull();
+                                globalPh.put(PersistenceHelper.YEAR_BUG_FIXED,true);
+                            }
+                    }
                     title = "";
                 }
             }
@@ -950,8 +968,12 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     @Override
                     public void onClick(View v) {
                         log.clear();
-                        if(gs!=null && gs.getVariableCache()!=null)
-                            gs.getVariableCache().printCache();
+                        //if(gs!=null && gs.getVariableCache()!=null)
+                         //   gs.getVariableCache().printCache();
+                        //List<PeriodicSync> l = ContentResolver.getPeriodicSyncs(mAccount, Start.AUTHORITY);
+                        //for (PeriodicSync p:l) {
+                        //    Log.d("marko","Period: "+p.period+" isSyncable: "+ContentResolver.getIsSyncable(mAccount, Start.AUTHORITY)+" isPending? "+ContentResolver.isSyncPending(mAccount,Start.AUTHORITY));
+                        //}
                     }
                 });
                 Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);
@@ -1252,10 +1274,26 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                     }
 
-                    ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);
+
                     if (isSynkServiceRunning()) {
+                        ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);
                         Log.d("vortex","sync service is running...sending msg");
-                        reply = Message.obtain(null, SyncService.MSG_USER_STARTED_SYNC);
+                        Handler handler = new Handler();
+
+                        Runnable syncP = new Runnable() {
+                            @Override
+                            public void run() {
+                                if (gs!=null && MenuActivity.this.syncOn()) {
+                                    gs.getServerSyncStatus();
+                                    setSyncState();
+                                    handler.postDelayed(this, 60000);
+                                }
+                            }
+                        };
+                        ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
+                        synkBackgroundTask = threadPoolExecutor.submit(syncP);
+                        /*reply = Message.obtain(null, SyncService.MSG_USER_STARTED_SYNC);
+
                         try {
                             mService.send(reply);
                         } catch (RemoteException e) {
@@ -1263,6 +1301,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             syncActive = false;
                             syncError = true;
                         }
+
+                        */
                     }
                 } else {
                     if (!on)
@@ -1280,6 +1320,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     private void stopSync() {
         Log.d("vortex", "Trying to stop Internet sync");
+        if(synkBackgroundTask!=null)
+            synkBackgroundTask.cancel(true);
         ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
         if (syncError) {
             Log.d("vortex","Resetting sync error");
@@ -1302,13 +1344,16 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     private void configureSynk() {
         mAccount = GlobalState.getmAccount(getApplicationContext());
-
         ContentResolver.addPeriodicSync(
                 mAccount,
                 Start.AUTHORITY,
                 Bundle.EMPTY,
                 Start.SYNC_INTERVAL);
         Log.d("vortex","added periodic sync to account.");
+
+        //Schedule a periodic update of the server sync state.
+
+
     }
 	/*
 	public void stopSynk() {
@@ -1478,8 +1523,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         row1 = (String)msg.obj;
                         row2="";
                         uiBlockerWindow.setMessage(row1+"\n"+row2);
-
-
 
                         break;
                     case UPDATE:

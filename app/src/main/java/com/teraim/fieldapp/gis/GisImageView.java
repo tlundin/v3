@@ -1263,7 +1263,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		Rect r;
 		//Log.d("bortex","in drawpoint type "+type.name()+" bitmap: "+bitmap);
+		Log.d("arriba","useI"+useIconOnMap+" bm: "+(bitmap!=null));
 		if (useIconOnMap && bitmap!=null ) {
+
 			r = new Rect();
 			//Log.d("vortex","bitmap! "+gop.getLabel());
 			r.set(xy[0]-16, xy[1]-16, xy[0]+16, xy[1]+16);
@@ -1351,7 +1353,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		}
 
 		//Check preconditions for GPS to work
-		Log.d("wolf","In display distance an direction");
+		//Log.d("wolf","In display distance an direction");
 		if (myX==null||myY==null||GlobalState.getInstance()==null) {
 			myMap.setAvstTxt("Config");
 			myMap.setRiktTxt("fault!");

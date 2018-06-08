@@ -427,17 +427,19 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 					//Get Lat Long.
 					GisObject gop = gisImageView.getSelectedGop();
 					//sweref
-					Location sweref = gop.getLocation();
-					if (sweref!=null) {
-						Location latlong = Geomatte.convertToLatLong(sweref.getX(),sweref.getY());
-						if (latlong!=null) {
-							Log.d("vortex","Nav to: "+sweref.getX()+","+sweref.getY()+" LAT: "+latlong.getX()+" LONG: "+latlong.getY());
-							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q="+latlong.getX()+","+latlong.getY()));
-							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							ctx.startActivity(intent);
-						} else {
-							Toast.makeText(ctx, "Saknar koordinater", Toast.LENGTH_SHORT).show();
-                        }
+					if (gop!=null) {
+						Location sweref = gop.getLocation();
+						if (sweref != null) {
+							Location latlong = Geomatte.convertToLatLong(sweref.getX(), sweref.getY());
+							if (latlong != null) {
+								Log.d("vortex", "Nav to: " + sweref.getX() + "," + sweref.getY() + " LAT: " + latlong.getX() + " LONG: " + latlong.getY());
+								Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + latlong.getX() + "," + latlong.getY()));
+								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								ctx.startActivity(intent);
+							} else {
+								Toast.makeText(ctx, "Saknar koordinater", Toast.LENGTH_SHORT).show();
+							}
+						}
 					}
 				}
 			});

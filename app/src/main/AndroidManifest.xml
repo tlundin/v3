@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teraim.fieldapp"
-    android:versionCode="18"
-    android:versionName="6.27">
+    android:versionCode="21"
+    android:versionName="6.30">
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -20,6 +20,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -75,8 +76,7 @@
 
         <service
             android:name=".synchronization.framework.SyncService"
-            android:exported="true"
-            android:process=":sync">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

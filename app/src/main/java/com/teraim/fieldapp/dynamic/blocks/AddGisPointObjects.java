@@ -39,6 +39,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.StaticGisPoint;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
@@ -279,6 +280,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 			pickerStatusVars = GlobalState.getInstance().getDb().getAllVariableInstances(statusVarS);
 		}
 
+		//superhack
 
 		coordVar1S = GlobalState.getInstance().getDb().createSelection(objectKeyHash.getContext(), locationVar1);
 		//If this is a refresh, dont fetch anything that has already been fetched.

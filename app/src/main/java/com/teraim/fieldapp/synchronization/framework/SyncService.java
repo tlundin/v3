@@ -84,10 +84,10 @@ public class SyncService extends Service {
 					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");
 					sSyncAdapter.releaseLock();
 					break;
-				case MSG_USER_STARTED_SYNC:
-					Log.d("vortex","user tried to start sync");
+				//case MSG_USER_STARTED_SYNC:
+				//	Log.d("vortex","user tried to start sync");
 					//sSyncAdapter.onPerformSync(null,null,null,null,null);
-					break;
+				//	break;
                 default:
                     super.handleMessage(msg);
             }

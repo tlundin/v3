@@ -203,7 +203,7 @@
         android:layout_alignEnd="@+id/ll1"
         android:layout_below="@+id/refresh_button"
 
-        android:text="testamera"
+        android:text=""
         android:textStyle="italic"
         android:layout_alignRight="@+id/ll1" />
 

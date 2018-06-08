@@ -95,7 +95,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//Create global state
 
 
-		globalPh = new PersistenceHelper(mActivity.getApplication().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
+		globalPh = new PersistenceHelper(mActivity.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
 
 		debugConsole = Start.singleton.getLogger();
 
@@ -141,7 +141,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = InitialBundleName;
 
-		ph	 = new PersistenceHelper(mActivity.getApplication().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
+		ph	 = new PersistenceHelper(mActivity.getApplicationContext().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));

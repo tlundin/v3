@@ -267,8 +267,13 @@ public class GisLayer {
 			Log.d("bloon","Bag: "+key+" size: "+bag.size());
 			int c=0;
 			for (GisObject gob:bag) {
-				if (gob.isUseful())
+				if (gob.isUseful()) {
+					//Log.d("brakka","Useful: "+ gob.getLabel()+" key: "+gob.getKeyHash());
 					c++;
+				} else {
+                    Log.d("brakka","Useless: "+ gob.getLabel()+" key: "+gob.getKeyHash());
+                }
+
 			}
 			Log.d("jgw","bag has "+c+" useful members");
 

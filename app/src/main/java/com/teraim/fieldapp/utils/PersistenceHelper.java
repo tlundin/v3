@@ -65,7 +65,6 @@ public class PersistenceHelper {
 	public static final String PARTNER_NAME = "my_partner";
 	public static final String LOG_LEVEL = "log_levels";
 	public static final String PotentiallyTimeStampToUseIfInsertDoesNotFail="potential_timestamp";
-    public static final String YEAR_BUG_FIXED = "year_bug_fixed";
 
 
     SharedPreferences sp;

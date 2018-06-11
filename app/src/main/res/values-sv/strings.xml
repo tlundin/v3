@@ -33,6 +33,7 @@
 	<string name="Team_s">Name på ditt lag och synkgrupp</string>
 	
 	<string name="restart">Omstart</string>
+	<string name="repair">Databas reparerad</string>
 	<string name="restartMessage">Du måste starta om för att ändringen ska gälla. Starta om?</string>
 	<string name="team_missing_error">Lag krävs</string>
 	<string name="team_missing_error_message">För att kunna använda synk, måste du ange ett lag(team). Annars kommer inte dina ändringar synas.</string>

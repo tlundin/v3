@@ -120,6 +120,7 @@ public class GlobalState {
         myC = applicationContext;
         this.globalPh = globalPh;
         this.ph = ph;
+
         this.db = myDb;
         this.logger = debugConsole;
         //Parser for rules
@@ -167,6 +168,9 @@ public class GlobalState {
         return mAccount;
     }
 
+    public String getMyTeam() {
+        return globalPh.get(PersistenceHelper.LAG_ID_KEY);
+    }
     /*Validation
      *
      */
@@ -576,7 +580,7 @@ public class GlobalState {
              * here.
              */
             Log.d("vortex", "Created account: " + newAccount.name);
-
+            
         } else {
         	/*
         	Account[] aa = accountManager.getAccounts();

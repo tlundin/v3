@@ -54,7 +54,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private final Uri CONTENT_URI = Uri.parse("content://"
 			+ SyncContentProvider.AUTHORITY + "/synk");
 
-	boolean busy = false,internetSync = false;
+	boolean busy = true,internetSync = false;
 	String app=null, user=null, team=null;
 	private SharedPreferences ph;
 	/**
@@ -135,13 +135,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.d("vortex", "************onPerformSync [" + user + "]");
 
 
-		if (mClient == null || !ContentResolver.getSyncAutomatically(GlobalState.getmAccount(getContext()), Start.AUTHORITY)) {
+		if (mClient == null ) {
 			Log.e("vortex", "Not ready so discarding call");
 			return;
 		}
-		if (busy) {
+		else if (busy) {
 			Log.e("vortex", "Busy so discarding call");
-			err = SyncService.ERR_SYNC_BUSY;
+			//err = SyncService.ERR_SYNC_BUSY;
 			return;
 		}
 		//Check for any change of username or team name. 
@@ -238,7 +238,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	
 		} else {
 			Log.e("vortex", "DATABASE CURSOR NULL IN SYNCADAPTER");
-			busy=false;
+			releaseLock();
 		}
 
 
@@ -471,22 +471,24 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			if (reply instanceof String ) {
 				//server read my data succesfully. we can update the read pointer (timestamp) to avoid sending same data again.
-				msg = Message.obtain(null, SyncService.MSG_SERVER_READ_MY_DATA);
-				msg.obj=bundle(maxStamp);
-				sendMessage(
-						msg
-				);
+				if (maxStamp > -1) {
+					msg = Message.obtain(null, SyncService.MSG_SERVER_READ_MY_DATA);
+					msg.obj = bundle(maxStamp);
+					sendMessage(
+							msg
+					);
+				}
 
 				int numberOfRows = Integer.parseInt((String) reply);
 				Log.d("brakko","Number of Rows that will arrive: "+numberOfRows);
 				//We now know that the SyncEntries from this user are safely stored. So advance the pointer! 
 				if (maxStamp!=-1) {
-					Log.d("brakko","LAST_SYNC FROM ME --> TEAM: "+maxStamp);
+					Log.d("burlesk","ME --> TEAM: "+maxStamp);
 					Log.d("brakko","Teamname: "+team+" App: "+app);
 					//Each team + project has an associated TIME OF LAST SYNC pointer. 
 
 				} else
-					Log.d("vortex","Timestamp for Time Of Last Sync not changed for Internet sync.");
+					Log.d("burlesk","Timestamp for Time Of Last Sync not changed for Internet sync.");
 
 				int insertedRows=0;
 				objOut.close();
@@ -494,7 +496,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				while (true) {
 					reply = objIn.readObject();
 					if (reply instanceof Long) {
-						Log.d("brakko","received timestamp for next cycle: "+reply);
+						Log.d("burlesk","TEAM-->ME: "+reply);
 						//This should be the Timestamp of the last entry arriving.
 						ph.edit().putLong(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(Long)reply).apply();
 						Log.d("brakko","Inserted rows: "+insertedRows);
@@ -602,7 +604,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	public void releaseLock() {
 		busy=false;
-		//Log.e("vortex","BUSY NOW FALSE T");
+		Log.e("vortex","BUSY NOW FALSE T");
 	}
 
 

@@ -41,7 +41,7 @@ public class SyncService extends Service {
 	public static final int MSG_DEVICE_IN_SYNC = 8;
 	public static final int MSG_USER_STOPPED_SYNC = 9;
 	public static final int MSG_SYNC_DATA_ARRIVING = 10;
-	public static final int MSG_USER_STARTED_SYNC = 11;
+	public static final int MSG_START_SYNC = 11;
 	public static final int MSG_SERVER_READ_MY_DATA = 12;
 
 	public static final int ERR_UNKNOWN = 0;
@@ -82,12 +82,12 @@ public class SyncService extends Service {
                 	break;
 				case MSG_USER_STOPPED_SYNC:
 					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");
-					sSyncAdapter.releaseLock();
 					break;
-				//case MSG_USER_STARTED_SYNC:
-				//	Log.d("vortex","user tried to start sync");
+				case MSG_START_SYNC:
+					Log.d("baboo","request to start sync");
+					sSyncAdapter.releaseLock();
 					//sSyncAdapter.onPerformSync(null,null,null,null,null);
-				//	break;
+					break;
                 default:
                     super.handleMessage(msg);
             }
@@ -140,7 +140,7 @@ public class SyncService extends Service {
          * constructors call super()
          */
 
-    	sSyncAdapter.releaseLock();
+    	//sSyncAdapter.releaseLock();
     	if (intent.getAction().equals(Start.MESSAGE_ACTION)) {
     		Log.d("vortex","OnBind returning mMessgenger_Binder");
     		return mMessenger.getBinder();

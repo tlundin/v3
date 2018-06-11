@@ -801,7 +801,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 								boolean s = candidates.add(go);
-								/*if (!s) {
+								if (!s) {
 
 									Log.d("pex", go.getLabel()+" exists: "+candidates.contains(go)+" loc "+go.getCoordinates()+" gid: "+go.getKeyHash());
 									for (GisObject g:candidates)
@@ -810,7 +810,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								}
 								else
 									Log.d("pex","cand added: "+go.getLabel());
-								*/
+
 							}
 						}
 					}

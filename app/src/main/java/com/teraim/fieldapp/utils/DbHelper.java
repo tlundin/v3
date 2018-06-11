@@ -1,7 +1,17 @@
 package com.teraim.fieldapp.utils;
-import android.app.Activity;import android.content.ContentValues;import android.content.Context;import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentValues;import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;
+import com.teraim.fieldapp.ui.ConfigMenu;
+import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;
+import java.util.UUID;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -331,13 +341,41 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public void fixYearNull() {
+    public boolean fixYearNull() {
         if (db!=null && db.isOpen()) {
-            Log.d("markus","repairing...");
+            Log.d("markus", "repairing...");
             String colYear = getDatabaseColumnName(YEAR);
-            db.execSQL("update variabler set "+colYear+"= '"+ Calendar.getInstance().get(Calendar.YEAR)+"' where "+colYear+" is null");
+            String colUid = getDatabaseColumnName("uid");
+            //check for sure that his db hasnt been repaired already.
+            Cursor cursor = null;
+            try {
+                cursor = db.rawQuery("select value from variabler where author = ?", new String[]{"repair_june"});
+                if (cursor.getCount() != 0) {
+                    Log.d("markus", "duplicate call");
+                } else {
+                    //add year to rows missing year
+                    db.execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
 
+                    //remove duplicates.
+
+                    db.execSQL("delete from variabler where id not in ("
+                            + " select min(id) as id from variabler group by " + colUid + ", timestamp "
+                            + " union all "
+                            + " select id from variabler where timestamp is null )"
+                    );
+
+                    //block further calls
+                    db.execSQL("insert into variabler (author) values ('repair_june')");
+
+                   return true;
+                }
+            } catch (SQLException e) {
+                Log.e("markus", "exception");
+            } finally {
+                cursor.close();
+            }
         }
+        return false;
     }
 
 
@@ -1477,7 +1515,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 variableName = cv.getAsString(VARID);
 
                 if (uid != null ) {
-                    Log.d("brakko", "INSERT T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
+                    //Log.d("brakko", "INSERT T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                     //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                     variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
@@ -2036,7 +2074,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
-            Long timestamp2 = GlobalState.getInstance().getGlobalPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
             //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
             timestamp=timestamp==-1?0:timestamp;

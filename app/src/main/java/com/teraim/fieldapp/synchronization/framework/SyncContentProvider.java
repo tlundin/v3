@@ -21,16 +21,10 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class SyncContentProvider extends ContentProvider {
 
-	private static final String TAG = "SynkDataProvider";	   
-
+	private static final String TAG = "SynkDataProvider";
 	public static final String AUTHORITY = "com.teraim.fieldapp.provider";
-
-
-
 	private SharedPreferences ph;
-
 	private DatabaseHelper dbHelper;
-
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -49,26 +43,12 @@ public class SyncContentProvider extends ContentProvider {
 			Log.e("vortex","Not upgrading anything with this helper!!");
 		}
 	}
-
-
-
-
-
-
-
 	@Override
 	public boolean onCreate() {
 		Log.d("vortex","ON CREATE CALLED FOR SYNC CONTENT PROVIDER!!!");
 		currentCount=0;
 		return true;
 	}
-
-
-
-
-
-
-
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
@@ -98,7 +78,7 @@ public class SyncContentProvider extends ContentProvider {
 				//Timestamp key includes team name, since change of team name should lead to resync from zero.
 				Long timestamp = ph.getLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + teamName,0);
 				Log.d("biff", PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+teamName);
-				Log.d("biff", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
+				Log.d("burlesk", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
 
 				c = db.query(DbHelper.TABLE_AUDIT, null,
 						"timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);
@@ -107,12 +87,6 @@ public class SyncContentProvider extends ContentProvider {
 			return c;
 		}
 	}
-
-
-
-
-
-
 
 	@Override
 	public String getType(Uri uri) {
@@ -142,8 +116,6 @@ public class SyncContentProvider extends ContentProvider {
 	        //System.out.println("ending transaction");
 	        return result;
 	    }
-
-
 
 	SQLiteDatabase db;
 	int currentCount=0;

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.teraim.fieldapp"
-    android:versionCode="21"
-    android:versionName="6.30">
+    android:versionCode="22"
+    android:versionName="6.31">
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -76,7 +76,8 @@
 
         <service
             android:name=".synchronization.framework.SyncService"
-            android:exported="true">
+            android:exported="true"
+            android:process=":sync">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>

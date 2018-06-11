@@ -33,6 +33,7 @@
     <string name="Team_s">Name of team and sync group</string>
 
     <string name="restart">Restart</string>
+    <string name="repair">Database repaired</string>
     <string name="restartMessage">You need to restart for this change to take effect. Restart now?</string>
     <string name="team_missing_error">Team required</string>
     <string name="team_missing_error_message">To be able to use the sync function, you must enter a team name. Otherwise your entries will not be synchronised.</string>

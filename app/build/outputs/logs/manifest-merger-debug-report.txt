@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
 MERGED from [com.android.volley:volley:1.0.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\volley-1.0.0.aar\4755eea37e37755a3d2b3835ca85a8ed\AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\play-services-7.8.0.aar\113d8133d161d604356404b4804864a5\AndroidManifest.xml:16:1-20:12
 MERGED from [com.google.android.gms:play-services-cast:7.8.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\play-services-cast-7.8.0.aar\e67cf8fe3028e927264f68491f3d89b1\AndroidManifest.xml:16:1-20:12
@@ -30,9 +30,9 @@ MERGED from [com.google.android.gms:play-services-vision:7.8.0] C:\Users\terje\.
 MERGED from [com.google.android.gms:play-services-wearable:7.8.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\play-services-wearable-7.8.0.aar\dabd805d69411014e00e802eb16e0da8\AndroidManifest.xml:16:1-20:12
 MERGED from [com.google.android.gms:play-services-base:7.8.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\play-services-base-7.8.0.aar\34357ef4acca2ce9658013f0f0d39115\AndroidManifest.xml:16:1-26:12
 MERGED from [com.android.support:support-v4:22.2.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\support-v4-22.2.0.aar\9a0a685600790dfb2d936b6633ad53ee\AndroidManifest.xml:17:1-24:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-105:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
+INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:2:1-106:12
 	package
 		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:3:5-34
 		INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
@@ -126,7 +126,7 @@ ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 	android:name
 		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:22:22-77
 application
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:25:5-103:19
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:25:5-104:19
 MERGED from [com.android.volley:volley:1.0.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\volley-1.0.0.aar\4755eea37e37755a3d2b3835ca85a8ed\AndroidManifest.xml:9:5-20
 MERGED from [com.android.volley:volley:1.0.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\volley-1.0.0.aar\4755eea37e37755a3d2b3835ca85a8ed\AndroidManifest.xml:9:5-20
 MERGED from [com.google.android.gms:play-services:7.8.0] C:\Users\terje\.gradle\caches\transforms-1\files-1.1\play-services-7.8.0.aar\113d8133d161d604356404b4804864a5\AndroidManifest.xml:19:5-20
@@ -266,43 +266,45 @@ ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 	android:name
 		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:74:13-40
 service#com.teraim.fieldapp.synchronization.framework.SyncService
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:77:9-87:19
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:77:9-88:19
+	android:process
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:80:13-36
 	android:exported
 		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:79:13-36
 	android:name
 		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:78:13-66
 intent-filter#action:name:android.content.SyncAdapter
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:80:13-82:29
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:81:13-83:29
 action#android.content.SyncAdapter
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:81:17-70
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:82:17-70
 	android:name
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:81:25-67
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:82:25-67
 meta-data#android.content.SyncAdapter
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:84:13-86:55
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:85:13-87:55
 	android:resource
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:86:17-52
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:87:17-52
 	android:name
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:85:17-59
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:86:17-59
 service#com.teraim.fieldapp.synchronization.framework.AuthenticatorService
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:89:9-100:19
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:90:9-101:19
 	android:process
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:92:13-36
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:93:13-36
 	android:exported
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:91:13-36
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:92:13-36
 	android:name
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:90:13-75
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:91:13-75
 intent-filter#action:name:android.accounts.AccountAuthenticator
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:93:13-95:29
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:94:13-96:29
 action#android.accounts.AccountAuthenticator
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:94:17-80
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:95:17-80
 	android:name
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:94:25-77
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:95:25-77
 meta-data#android.accounts.AccountAuthenticator
-ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:97:13-99:57
+ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:98:13-100:57
 	android:resource
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:99:17-54
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:100:17-54
 	android:name
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:98:17-69
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:99:17-69
 uses-sdk
 INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml

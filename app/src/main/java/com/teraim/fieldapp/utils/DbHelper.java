@@ -341,7 +341,14 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean fixYearNull() {
+    public void fixYearNull() {
+        String colYear = getDatabaseColumnName(YEAR);
+        //add year to rows missing year
+        db.execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
+
+    }
+
+    public boolean fixdoublets() {
         if (db!=null && db.isOpen()) {
             Log.d("markus", "repairing...");
             String colYear = getDatabaseColumnName(YEAR);
@@ -353,8 +360,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 if (cursor.getCount() != 0) {
                     Log.d("markus", "duplicate call");
                 } else {
-                    //add year to rows missing year
-                    db.execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
 
                     //remove duplicates.
 
@@ -1499,7 +1504,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     Log.e("babbs","author null in insertarray");
             }
             else if (s.isInsert() ) {
-                //Log.d("bascar","Insert "+s.getTarget());
+
                 cv = createContentValues(s.getKeys(),s.getValues(),team);
                 if (cv == null) {
                     Log.e("maggan", "Synkmessage with " + s.getTarget() + " is invalid. Skipping. keys: " + s.getKeys() + " values: " + s.getValues());
@@ -1515,7 +1520,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 variableName = cv.getAsString(VARID);
 
                 if (uid != null ) {
-                    //Log.d("brakko", "INSERT T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
+                    Log.d("brakko", "INSERT U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                     //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                     variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
@@ -1535,7 +1540,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             else if (s.isDelete()) {
 
-                Log.d("brakko", "DELETE T: " + s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
+                Log.d("brakko", "DELETE U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                 Map<String,String> sKeys = s.getKeys();
 
                 if (sKeys == null) {
@@ -2073,19 +2078,21 @@ public class DbHelper extends SQLiteOpenHelper {
         }
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
-            Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
-            //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
+            if (GlobalState.getInstance()!=null) {
+                Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
+                //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
-            timestamp=timestamp==-1?0:timestamp;
+                timestamp = timestamp == -1 ? 0 : timestamp;
 
-            Cursor c = db.query(TABLE_AUDIT, null,
-                    "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp.toString(),team}, null, null, "timestamp asc", null);
-            if (c != null && c.getCount() > 0)
-                ret = c.getCount();
-            if (c != null)
-                c.close();
-            //Log.d("vortex", "My unsynced items: " + ret);
-            return ret;
+                Cursor c = db.query(TABLE_AUDIT, null,
+                        "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
+                if (c != null && c.getCount() > 0)
+                    ret = c.getCount();
+                if (c != null)
+                    c.close();
+                //Log.d("vortex", "My unsynced items: " + ret);
+                return ret;
+            }
         }
         return -1;
     }

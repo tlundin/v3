@@ -120,8 +120,9 @@ public class GlobalState {
         myC = applicationContext;
         this.globalPh = globalPh;
         this.ph = ph;
-
         this.db = myDb;
+        //TODO REMOVE
+        db.fixYearNull();
         this.logger = debugConsole;
         //Parser for rules
         parser = new Parser(this);

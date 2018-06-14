@@ -830,8 +830,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
                     if (syncState==R.drawable.insync) {
                         //TODO: REMOVE - IF User is in sync with server, repair the database.
+                        GlobalState.getInstance().getDb().fixYearNull();
 
-                        if (GlobalState.getInstance().getDb().fixYearNull())
+                        if (GlobalState.getInstance().getDb().fixdoublets())
 
                             new AlertDialog.Builder(this)
                                     .setTitle(R.string.repair)

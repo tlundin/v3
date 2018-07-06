@@ -224,7 +224,15 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 		if (var!=null && var.getValue()!=null) {
 			try {
-				sb.setProgress(Integer.parseInt(var.getValue()));
+				int value = Integer.parseInt(var.getValue());
+				Log.d("Exeter","setting progress to "+value+" for "+this.label);
+				sb.post(new Runnable() {
+					@Override
+					public void run() {
+						sb.setProgress(value);
+					}
+				});
+				//sb.setProgress(value);
             } catch (NumberFormatException e) {
 				o.addRow("");
 				o.addRedText("The variable used for slider " + this.getId() + " is not containing a numeric value");

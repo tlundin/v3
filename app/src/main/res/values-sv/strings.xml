@@ -95,4 +95,8 @@
 	<string name="scan_QR_code">Om du har fått inställningar via QR kod så kan du skanna den här</string>
 	<string name="log_levels_d">Bestämmer om meddelanden visas i loggen eller inte</string>
 	<string name="done_loading">"Appen är laddad. Se 'Om appen' för detaljer"</string>
+	<string name="_continue">"Fortsätt"</string>
+	<string name="old_xml_message">"FieldPad versionen du har installerad är för gammal för att köra det här programmet. Du borde installera version "</string>
+	<string name="warning">Varning</string>
+	<string name="old_xml_message_cont">". Om du väljer att fortsätta laddas en äldre version, men det finns risk för fel."</string>>
 </resources>

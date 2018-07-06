@@ -143,8 +143,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                         .getBackingDataSet();
                 String url = al.getUrl(row);
 
-                if (!Connectivity.isConnectedFast(gs.getContext()) || url == null
-                        || url.length() == 0)
+                if (url == null || url.length() == 0)
                     x.setVisible(false);
                 else
                     x.setVisible(true);

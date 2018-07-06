@@ -17,8 +17,8 @@ public class LoadResult {
 		Aborted, 
 		LoadInBackground, newConfigVersionLoaded, 
 		BadURL,frozen, parsed, noData, thawed, 
-		ClassNotFound, nothingToFreeze, Unsupported, 
-		reloadDependant, existingVersionIsMoreCurrent, slowConnection, thawFailed, tick, majorVersionNotUpdated
+		ClassNotFound, nothingToFreeze, Unsupported, socket_timeout,
+		reloadDependant, existingVersionIsMoreCurrent, slowConnection, thawFailed, tick, majorVersionNotUpdated,majorVersionUpdated
 	}
 	
 	

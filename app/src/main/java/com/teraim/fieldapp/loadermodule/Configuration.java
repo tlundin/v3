@@ -20,7 +20,7 @@ public class Configuration {
 	public ConfigurationModule next() {
 		
 		for (ConfigurationModule cm:mModules) {
-			if (!cm.isLoaded())
+			if (!cm.isLoaded() && !cm.isThawing())
 				return cm;
 		}
 		return null;

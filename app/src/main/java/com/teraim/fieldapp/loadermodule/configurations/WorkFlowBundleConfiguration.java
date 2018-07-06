@@ -153,7 +153,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			if (frozenVersion!=-1 && frozenAppVersion >= appVersion && versionControl!=null && versionControl.equals("Major")) {				
 				return new LoadResult(this,ErrorCode.majorVersionNotUpdated);
 			}
-				
+			else if ((frozenVersion!=-1 && frozenAppVersion < appVersion && versionControl !=null && versionControl.equals("Major")))
+				return new LoadResult(this,ErrorCode.majorVersionUpdated);
 			Log.d("vortex","frozen Worfklowfile version "+frozenVersion);
 			if (frozenVersion!=-1 && newWorkflowVersion==frozenVersion) {
 				//Log.d("vortex","Returning same old!");

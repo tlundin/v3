@@ -99,8 +99,7 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell, EventLi
 						.getBackingDataSet();
 				String url = al.getUrl(row);
 
-				if (!Connectivity.isConnectedFast(GlobalState.getInstance().getContext()) || url == null
-						|| url.length() == 0)
+				if (url == null || url.length() == 0)
 					x.setVisible(false);
 				else
 					x.setVisible(true);

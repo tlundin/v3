@@ -3,6 +3,7 @@ package com.teraim.fieldapp.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,6 +18,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -255,19 +257,34 @@ public class Tools {
 				Object object = null;
 
 				try {
-					FileInputStream fileIn = new FileInputStream(fileName);
-					objectIn = new ObjectInputStream(fileIn);
+					File file = new File(fileName);
+					FileInputStream fileIn = new FileInputStream(file);
+					int fileLength = (int)file.length();
+					Integer totalBlocks = (int)(fileLength/4096);
+					byte[] buf = new byte[4096];
+					int read = 0,blockC=0;
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+					while((read = fileIn.read(buf))>0) {
+						callBack.onUpdate(blockC++,totalBlocks);
+						outputStream.write(buf,0,read);
+					}
+					//create object.
+					ByteArrayInputStream bis = new ByteArrayInputStream(outputStream.toByteArray());
+					objectIn = new ObjectInputStream(bis);
 					object = objectIn.readObject();
 
 				} catch (Exception e) {
                     Log.d("vortex","thaw failed");
+                    e.printStackTrace();
                    return null;
 				}  finally {
 					if (objectIn != null) {
 						try {
 							objectIn.close();
 						} catch (IOException e) {
-							// do nowt
+							Log.d("vortex","thaw failed - ");
+							e.printStackTrace();
+							return null;
 						}
 					}
 				}
@@ -284,7 +301,7 @@ public class Tools {
 
 				Log.d("vortex", "Object thawed ");
                 caller.setEssence(result);
-				caller.thawing();
+				caller.setThawActive(false);
                 LoadResult loadResult = new LoadResult(caller,result==null?
                         LoadResult.ErrorCode.thawFailed:LoadResult.ErrorCode.thawed);
 				callBack.onFileLoaded(loadResult);
@@ -1045,14 +1062,16 @@ public class Tools {
 
 			try {
 				Log.d("vortex","urlString: "+url);
-				in = new BufferedInputStream(new URL(url).openStream());
+				URL _url = new URL(url);
+				URLConnection ucon = _url.openConnection();
+				ucon.setConnectTimeout(5000);
+				in = new BufferedInputStream(ucon.getInputStream());
 				fout = new BufferedOutputStream(new FileOutputStream(fileName));
 
-				final byte data[] = new byte[1024];
+				final byte data[] = new byte[4096];
 				int count;
-				while ((count = in.read(data, 0, 1024)) != -1) {
+				while ((count = in.read(data, 0, 4096)) != -1) {
 					fout.write(data, 0, count);
-
 					cb.progress(count);
 				}
 				success = true;

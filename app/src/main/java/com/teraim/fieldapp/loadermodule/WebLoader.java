@@ -42,8 +42,10 @@ public class WebLoader extends Loader {
 		URL url;
 		try {
 			url = new URL(module.getURL());
-
+			Log.d("vortex","trying to open connection");
 			URLConnection ucon = url.openConnection();
+			Log.d("vortex","setting timeout");
+			ucon.setConnectTimeout(5000);
 			//if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) { ucon.setRequestProperty("Connection", "close"); }
 			in = ucon.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -81,12 +83,15 @@ public class WebLoader extends Loader {
 				return new LoadResult(module,ErrorCode.ParseError,"Malformed JSON: "+e.getMessage()+"\n Did you forget to add a version number of the first row?");
 			else if (e instanceof FileNotFoundException) {
 				return new LoadResult(module,ErrorCode.notFound);
+			} else if (e instanceof java.net.SocketTimeoutException) {
+				return new LoadResult(module,ErrorCode.socket_timeout);
 			}
 			else {
 				StringWriter sw = new StringWriter();
 				PrintWriter pw = new PrintWriter(sw);
 				e.printStackTrace(pw);		
 				e.printStackTrace();
+				Log.d("vortex","gets to here...");
 				return new LoadResult(module,ErrorCode.IOError,sw.toString());
 			}
 		} catch (XmlPullParserException e) {

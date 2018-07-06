@@ -1862,8 +1862,8 @@ public class Expressor {
 							return null;
 						} else {
 							Log.d("vortex", "found " + (rows.size() - 1) + " variables for " + pattern);
-							for(int i=0;i<200;i++)
-								System.out.println(al.getVarName(rows.get(i)));
+							//for(int i=0;i<200;i++)
+							//	System.out.println(al.getVarName(rows.get(i)));
 						}
 
 						//Parse the expression. Find all references to Functional Group.

@@ -94,12 +94,12 @@ public abstract class ConfigurationModule {
 	}
 
 
-	boolean isThawing = false;
+	private boolean isThawing = false;
 
-	private void setThawActive(boolean t) {
+	public void setThawActive(boolean t) {
 		isThawing=t;
 	}
-	public boolean thawing() {
+	public boolean isThawing() {
 		return isThawing;
 	}
 
@@ -131,8 +131,9 @@ public abstract class ConfigurationModule {
 	private Loader mLoader=null;
 
 	public void load(FileLoadedCb moduleLoader) {
-		if (source == Source.internet) 
-			mLoader = new WebLoader(null, null, moduleLoader,versionControl);
+		if (source == Source.internet) {
+			mLoader = new WebLoader(null, null, moduleLoader, versionControl);
+		}
 		else 
 			mLoader = new FileLoader(null, null, moduleLoader,versionControl);
 		mLoader.execute(this);
@@ -211,7 +212,7 @@ public abstract class ConfigurationModule {
 		if (isDatabaseModule)
 			return new LoadResult(this,ErrorCode.thawed);
 		else {
-			//Unthaw asynchronously
+			this.setThawActive(true);
 			Object result = Tools.readObjectFromFile(this.frozenPath);
 			this.setThawActive(false);
 			setEssence(result);

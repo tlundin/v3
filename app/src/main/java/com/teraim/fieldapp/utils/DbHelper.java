@@ -40,7 +40,7 @@ public class DbHelper extends SQLiteOpenHelper {
     Context ctx;
 
     public void eraseSyncObjects() {
-        db.delete(TABLE_SYNC,null,null);
+        db().delete(TABLE_SYNC,null,null);
     }
 
     //This function attempts to recover a newer  uuid from a old uuid using the variable GlobalID as key.
@@ -48,7 +48,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String query = "SELECT " + this.getDatabaseColumnName("uid") + " FROM " + TABLE_VARIABLES + " WHERE " + VALUE + " = '{"+ uid + "}' AND " + VARID + " = '" + GisConstants.GlobalGid + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
         String res=null;
         //Log.d("quinto",query);
-        Cursor resultSet = db.rawQuery(query, null);
+        Cursor resultSet = db().rawQuery(query, null);
         if (resultSet.moveToNext())
             res = resultSet.getString(0);
         resultSet.close();
@@ -57,7 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public String findVarFromUID(String uid,String variableName) {
         String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + variableName + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
-        Cursor resultSet = db.rawQuery(query, null);
+        Cursor resultSet = db().rawQuery(query, null);
         if (resultSet.moveToNext())
             return resultSet.getString(0);
         return null;
@@ -97,7 +97,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //db.delete(TABLE_VARIABLES,"L4 = '?'",null);
         //return myKeyHash;}
 
-        Cursor c = db.rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        Cursor c = db().rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
         if (c.moveToNext()) {
             for (int i = 0;i < c.getColumnCount();i++) {
                 Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
@@ -151,7 +151,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         Log.d("notnull","final query: "+query);
 
-        Cursor c = db.rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        Cursor c = db().rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
         if (c.moveToNext()) {
             for (int i = 0;i < c.getColumnCount();i++) {
                 Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
@@ -182,8 +182,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
 
-        Cursor qx = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
-        Cursor qy = db.rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
+        Cursor qx = db().rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_X' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
+        Cursor qy = db().rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
             boolean isOld=false;
@@ -261,14 +261,17 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
+    private SQLiteDatabase db() {
+        if (db == null || !db.isOpen())
+         db = this.getWritableDatabase();
+        return db;
+    }
 
     public DbHelper(Context context, Table t, PersistenceHelper globalPh, PersistenceHelper appPh, String bundleName) {
         super(context, bundleName, null, DATABASE_VERSION);
         Log.d("vortex", "Bundle name: " + bundleName);
         ctx = context;
-        if (db != null && db.isOpen())
-            db.close();
-        db = this.getWritableDatabase();
+
 
         this.globalPh = globalPh;
         if (t != null)
@@ -344,33 +347,33 @@ public class DbHelper extends SQLiteOpenHelper {
     public void fixYearNull() {
         String colYear = getDatabaseColumnName(YEAR);
         //add year to rows missing year
-        db.execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
+        if (!colYear.equals(getDatabaseColumnName(YEAR)))
+            db().execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
 
     }
 
     public boolean fixdoublets() {
-        if (db!=null && db.isOpen()) {
             Log.d("markus", "repairing...");
             String colYear = getDatabaseColumnName(YEAR);
             String colUid = getDatabaseColumnName("uid");
-            //check for sure that his db hasnt been repaired already.
+            //check for sure that his db() hasnt been repaired already.
             Cursor cursor = null;
             try {
-                cursor = db.rawQuery("select value from variabler where author = ?", new String[]{"repair_june"});
+                cursor = db().rawQuery("select value from variabler where author = ?", new String[]{"repair_june"});
                 if (cursor.getCount() != 0) {
                     Log.d("markus", "duplicate call");
                 } else {
 
                     //remove duplicates.
 
-                    db.execSQL("delete from variabler where id not in ("
+                    db().execSQL("delete from variabler where id not in ("
                             + " select min(id) as id from variabler group by " + colUid + ", timestamp "
                             + " union all "
                             + " select id from variabler where timestamp is null )"
                     );
 
                     //block further calls
-                    db.execSQL("insert into variabler (author) values ('repair_june')");
+                    db().execSQL("insert into variabler (author) values ('repair_june')");
 
                    return true;
                 }
@@ -379,7 +382,6 @@ public class DbHelper extends SQLiteOpenHelper {
             } finally {
                 cursor.close();
             }
-        }
         return false;
     }
 
@@ -394,7 +396,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase _db) {
 
         // create variable table Lx columns are key parts.
         String CREATE_VARIABLE_TABLE = "CREATE TABLE variabler ( " +
@@ -431,22 +433,22 @@ public class DbHelper extends SQLiteOpenHelper {
                 "data BLOB ) ";
 
         //
-        db.execSQL(CREATE_VARIABLE_TABLE);
-        db.execSQL(CREATE_AUDIT_TABLE);
-        db.execSQL(CREATE_SYNC_TABLE);
+        _db.execSQL(CREATE_VARIABLE_TABLE);
+        _db.execSQL(CREATE_AUDIT_TABLE);
+        _db.execSQL(CREATE_SYNC_TABLE);
 
         Log.d("NILS", "DB CREATED");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
         // Drop older books table if existed
-        db.execSQL("DROP TABLE IF EXISTS variabler");
-        db.execSQL("DROP TABLE IF EXISTS audit");
-        db.execSQL("DROP TABLE IF EXISTS sync");
+        _db.execSQL("DROP TABLE IF EXISTS variabler");
+        _db.execSQL("DROP TABLE IF EXISTS audit");
+        _db.execSQL("DROP TABLE IF EXISTS sync");
 
         // create fresh table
-        this.onCreate(db);
+        this.onCreate(_db);
     }
 
 		/*
@@ -532,7 +534,7 @@ public class DbHelper extends SQLiteOpenHelper {
             selArgsA = selArgs.toArray(new String[selArgs.size()]);
         Cursor c=null;
         try {
-            c = db.query(TABLE_VARIABLES, null, selection,
+            c = db().query(TABLE_VARIABLES, null, selection,
                     selArgsA, null, null, null, null);
         } catch (SQLiteException e) {
 
@@ -700,7 +702,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
         int aff =
-                db.delete(TABLE_VARIABLES, //table name
+                db().delete(TABLE_VARIABLES, //table name
                         s.selection,  // selections
                         s.selectionArgs); //selections args
 
@@ -839,12 +841,12 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put("timestamp", timestamp);
         values.put("author",author);
         //need to save timestamp + value
-        db.insert(TABLE_AUDIT, null, values);
+        db().insert(TABLE_AUDIT, null, values);
     }
 
     public Cursor getExistingVariableCursor(String name, Selection s) {
         //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
-        Cursor c = db.query(TABLE_VARIABLES, new String[]{"id", "timestamp", "value", "var", "author"},
+        Cursor c = db().query(TABLE_VARIABLES, new String[]{"id", "timestamp", "value", "var", "author"},
                 s.selection, s.selectionArgs, null, null, null, null);
         return c;
     }
@@ -896,7 +898,7 @@ public class DbHelper extends SQLiteOpenHelper {
             substCols[i] = getDatabaseColumnName(columns[i]);
         //Get cached selectionArgs if exist.
         //this.printAllVariables();
-        Cursor c = db.query(true,TABLE_VARIABLES, substCols,
+        Cursor c = db().query(true,TABLE_VARIABLES, substCols,
                 s.selection, s.selectionArgs, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             List<String[]> ret = new ArrayList<String[]>();
@@ -937,7 +939,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public List<String> getValues(Selection s) {
-        Cursor c = db.query(TABLE_VARIABLES, new String[]{"value"},
+        Cursor c = db().query(TABLE_VARIABLES, new String[]{"value"},
                 s.selection, s.selectionArgs, null, null, null, null);
         List<String> ret = null;
         if (c != null && c.moveToFirst()) {
@@ -956,16 +958,11 @@ public class DbHelper extends SQLiteOpenHelper {
     public String getValue(String name, Selection s, String[] valueCol) {
         //Get cached selectionArgs if exist.
         //this.printAllVariables();
-        if (!db.isOpen()) {
-            Log.e("vortex", "Database was gone!!! Creating new");
-            Log.d("nils", "In getvalue with name " + name + " and selection " + s.selection + " and selectionargs " + print(s.selectionArgs));
-            db = this.getWritableDatabase();
-        }
         //Log.d("nils","In getvalue with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         Cursor c = null;
 
         if (checkForNulls(s.selectionArgs)) {
-            c = db.query(TABLE_VARIABLES, valueCol,
+            c = db().query(TABLE_VARIABLES, valueCol,
                     s.selection, s.selectionArgs, null, null, "timestamp DESC", "1");
             if (c != null && c.moveToFirst()) {
                 //Log.d("nils","Cursor count "+c.getCount()+" columns "+c.getColumnCount());
@@ -1014,7 +1011,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public int getId(Selection s) {
         //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
-        Cursor c = db.query(TABLE_VARIABLES, new String[]{"id"},
+        Cursor c = db().query(TABLE_VARIABLES, new String[]{"id"},
                 s.selection, s.selectionArgs, null, null, null, null);
         if (c != null && c.moveToFirst()) {
             //Log.d("nils","Cursor count "+c.getCount()+" columns "+c.getColumnCount());
@@ -1074,13 +1071,13 @@ public class DbHelper extends SQLiteOpenHelper {
         // 3. insert
         long rId;
         if (isReplace) {
-            rId = db.replace(TABLE_VARIABLES, // table
+            rId = db().replace(TABLE_VARIABLES, // table
                     null, //nullColumnHack
                     insertContentValues
             );
 
         } else {
-            rId = db.insert(TABLE_VARIABLES, // table
+            rId = db().insert(TABLE_VARIABLES, // table
                     null, //nullColumnHack
                     insertContentValues
             );
@@ -1130,7 +1127,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Log.d("vova","EXT selection: "+extendedSelection);
         //Log.d("vova","EXT selectionArgs: "+print(extendedSelArgs));
         int aff =
-                db.delete(TABLE_VARIABLES, //table name
+                db().delete(TABLE_VARIABLES, //table name
                         extendedSelection,  // selections
                         extendedSelArgs); //selections args
         //if (aff == 0)
@@ -1212,7 +1209,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String author = globalPh.get(PersistenceHelper.USER_ID_KEY);
         createValueMap(var, newValue, values, timeStamp,author);
 
-        db.insert(TABLE_VARIABLES, // table
+        db().insert(TABLE_VARIABLES, // table
                 null, //nullColumnHack
                 values
         );
@@ -1229,7 +1226,7 @@ public class DbHelper extends SQLiteOpenHelper {
         VariableRowEntry[] vRows = null;
         List<String> values;
         //Ask for everything.
-        Cursor c = db.query(TABLE_VARIABLES, null, null,
+        Cursor c = db().query(TABLE_VARIABLES, null, null,
                 null, null, null, null, null);
         if (c != null && c.getCount() > 0 && c.moveToFirst()) {
             vRows = new VariableRowEntry[c.getCount() + 1];
@@ -1265,7 +1262,7 @@ public class DbHelper extends SQLiteOpenHelper {
             timestamp = "0";
 
         //Log.d("nils","Time of last sync is "+timestamp+" in getChanges (dbHelper)");
-        Cursor c = db.query(TABLE_AUDIT, null,
+        Cursor c = db().query(TABLE_AUDIT, null,
                 "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp, team}, null, null, "timestamp asc", null);
         if (c != null && c.getCount() > 0 && c.moveToFirst()) {
             int cn = 1;
@@ -1526,7 +1523,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
                 } else {
                     Log.e("bascar", "Inserting RAW" + s.getChange());
-                    db.insert(TABLE_VARIABLES, // table
+                    db().insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
                             cv
                     );
@@ -1611,7 +1608,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         SyncEntry se = map.get(variable);
                         Log.d("babbs","inserting "+variable+" for "+name);
                         cv = createContentValues(se.getKeys(), se.getValues(), team);
-                        db.insert(TABLE_VARIABLES, // table
+                        db().insert(TABLE_VARIABLES, // table
                                 null, //nullColumnHack
                                 cv
                         );
@@ -1677,7 +1674,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //Calling delete with Selection: L4= ? AND L2= ? AND L1= ? AND L3= ? AND timestamp <= ? AND var = ? args: [0]: 2B1AFEF6-6C71-45DC-BB26-AF0B362E9073 [1]: 999994 [2]: 2016 [3]: Angsobete [4]: 1474478318 [5]: null [6]: STATUS:status_angsochbete
 
         return
-                db.delete(TABLE_VARIABLES, //table name
+                db().delete(TABLE_VARIABLES, //table name
                         whereClause.toString(),  // selections
                         whereArgs); //selections args
 
@@ -1703,14 +1700,14 @@ public class DbHelper extends SQLiteOpenHelper {
         int size = ses.length - 1;
 
         //Log.d("sync","LOCK!");
-        db.beginTransaction();
+        db().beginTransaction();
         String name = null;
         boolean resetCache=false;
 
         synC = 0;
         if (ses.length == 0) {
             Log.e("plaz", "either syncarray is short or null. no data to sync.");
-            db.endTransaction();
+            db().endTransaction();
             return null;
         }
         //Log.d("vortex", "In Synchronize with " + ses.length + " arguments.");
@@ -1795,7 +1792,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         //                  Log.d("sync", "INSERTING NEW (OR ARRAY) " + name);
                         //                  Log.d("sync", "cv: "+cv);
                         //now there should be ContentValues that can be inserted.
-                        rId = db.insert(TABLE_VARIABLES, // table
+                        rId = db().insert(TABLE_VARIABLES, // table
                                 null, //nullColumnHack
                                 cv
                         );
@@ -1845,7 +1842,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         if (timestamp<s.getTimeStamp()) {
                             //                       Log.d("sync", "REPLACING " + name);
                             cv.put("id", id);
-                            rId = db.replace(TABLE_VARIABLES, // table
+                            rId = db().replace(TABLE_VARIABLES, // table
                                     null, //nullColumnHack
                                     cv
                             );
@@ -2067,7 +2064,7 @@ public class DbHelper extends SQLiteOpenHelper {
             if (timestamp == null || timestamp.equals(PersistenceHelper.UNDEFINED))
                 timestamp = "0";
             //Log.d("nils","Time of last sync is "+timestamp+" in getNumberOfUnsyncedEntries (dbHelper)");
-            Cursor c = db.query(TABLE_AUDIT, null,
+            Cursor c = db().query(TABLE_AUDIT, null,
                     "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp,team}, null, null, "timestamp asc", null);
             if (c != null && c.getCount() > 0)
                 ret = c.getCount();
@@ -2084,7 +2081,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 timestamp = timestamp == -1 ? 0 : timestamp;
 
-                Cursor c = db.query(TABLE_AUDIT, null,
+                Cursor c = db().query(TABLE_AUDIT, null,
                         "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
                 if (c != null && c.getCount() > 0)
                     ret = c.getCount();
@@ -2146,7 +2143,7 @@ public class DbHelper extends SQLiteOpenHelper {
         valuesA = values.toArray(new String[values.size()]);
         //     Log.d("vortex", "Delete statement is now " + delStmt);
         //     Log.d("vortex", "VALUES:"+print(valuesA));
-        int affected = db.delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
+        int affected = db().delete(DbHelper.TABLE_VARIABLES, delStmt.toString(), valuesA);
         //Invalidate affected cache variables
         if (affected > 0) {
             Log.d("bascar", "Deleted rows count: " + affected+" keys: "+keyPairs);
@@ -2211,7 +2208,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 queryP += " AND ";
             valA[i++] = keyHash.get(key);
         }
-        int affRows = db.delete(DbHelper.TABLE_VARIABLES,
+        int affRows = db().delete(DbHelper.TABLE_VARIABLES,
                 queryP, valA);
         StringBuilder valAs = new StringBuilder();
         for (String v : valA) {
@@ -2229,7 +2226,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean deleteHistory() {
         try {
             Log.d("nils", "deleting all historical values");
-            int rows = db.delete(TABLE_VARIABLES, getDatabaseColumnName("år") + "= ?", new String[]{Constants.HISTORICAL_TOKEN_IN_DATABASE});
+            int rows = db().delete(TABLE_VARIABLES, getDatabaseColumnName("år") + "= ?", new String[]{Constants.HISTORICAL_TOKEN_IN_DATABASE});
             Log.d("nils", "Deleted " + rows + " rows of history");
         } catch (SQLiteException e) {
             Log.d("nils", "not a nils db");
@@ -2241,7 +2238,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean deleteHistoryEntries(String typeColumn, String typeValue) {
         try {
             Log.d("nils", "deleting historical values of type " + typeValue);
-            int rows = db.delete(TABLE_VARIABLES, getDatabaseColumnName("år") + "= ? AND " + getDatabaseColumnName(typeColumn) + "= ? COLLATE NOCASE", new String[]{Constants.HISTORICAL_TOKEN_IN_DATABASE, typeValue});
+            int rows = db().delete(TABLE_VARIABLES, getDatabaseColumnName("år") + "= ? AND " + getDatabaseColumnName(typeColumn) + "= ? COLLATE NOCASE", new String[]{Constants.HISTORICAL_TOKEN_IN_DATABASE, typeValue});
             Log.d("nils", "Deleted " + rows + " rows of history");
         } catch (SQLiteException e) {
             Log.d("nils", "not a nils db");
@@ -2265,7 +2262,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         //Log.d("nils","inserting:  "+valuez.toString());
         try {
-            db.insert(TABLE_VARIABLES, // table
+            db().insert(TABLE_VARIABLES, // table
 
                     null, //nullColumnHack
                     valuez
@@ -2302,7 +2299,7 @@ public class DbHelper extends SQLiteOpenHelper {
         valuez.put("var", varId);
         valuez.put("value", value);
         try {
-            db.insert(TABLE_VARIABLES, // table
+            db().insert(TABLE_VARIABLES, // table
                     null, //nullColumnHack
                     valuez
             );
@@ -2342,13 +2339,13 @@ public class DbHelper extends SQLiteOpenHelper {
     //Get values for all instances of a given variable, from a keychain with * values.
 
     public DBColumnPicker getAllVariableInstances(Selection s) {
-        Cursor c = db.query(TABLE_VARIABLES, null, s.selection,
+        Cursor c = db().query(TABLE_VARIABLES, null, s.selection,
                 s.selectionArgs, null, null, null, null);//"timestamp DESC","1");
         return new DBColumnPicker(c);
     }
 
     public DBColumnPicker getLastVariableInstance(Selection s) {
-        Cursor c = db.query(TABLE_VARIABLES, null, s.selection,
+        Cursor c = db().query(TABLE_VARIABLES, null, s.selection,
                 s.selectionArgs, null, null, "timestamp DESC", "1");
         return new DBColumnPicker(c);
     }
@@ -2360,7 +2357,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String variatorColTransl = this.getDatabaseColumnName(variatorColumn);
         //Get all instances of variable for variatorColumn.
         Selection s = this.createSelection(keyChain, varID);
-        Cursor c = db.query(TABLE_VARIABLES, new String[]{variatorColTransl},
+        Cursor c = db().query(TABLE_VARIABLES, new String[]{variatorColTransl},
                 s.selection, s.selectionArgs, null, null, null, null);
         Map<String, String> varKeyChain;
         if (c != null && c.moveToFirst()) {
@@ -2416,7 +2413,7 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d("vortex", "Selarg: " + selArgs.toString());
 
 
-        Cursor c = db.rawQuery(query, selArgs);
+        Cursor c = db().rawQuery(query, selArgs);
         Log.d("nils", "Got " + c.getCount() + " results. PrefetchValue." + namePrefix + " with key: " + keyChain.toString());
 
         if (c != null && c.moveToFirst()) {
@@ -2487,7 +2484,7 @@ public class DbHelper extends SQLiteOpenHelper {
         String[] selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);
 //        Log.d("vortex", "selection: " + selection);
 //        Log.d("vortex", "selectionArgs: " + selectionArgs);
-        Cursor c = db.query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
+        Cursor c = db().query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
 //        Log.d("vortex", "Got " + c.getCount() + " results in norm ");
         //Now also query the historical values. If any.
         Map<String, TmpVal> tmp = new HashMap<String, TmpVal>();
@@ -2501,7 +2498,7 @@ public class DbHelper extends SQLiteOpenHelper {
             selectionArgs.set(arIndex, Constants.HISTORICAL_TOKEN_IN_DATABASE);
             //Log.d("vortex","historical selloArgs: "+selectionArgs);
             selArgs = selectionArgs.toArray(new String[selectionArgs.size()]);
-            Cursor d = db.query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
+            Cursor d = db().query(true, TABLE_VARIABLES, new String[]{VARID, "value"}, selection.toString(), selArgs, null, null, null, null);
             histC = d.getCount();
 //            Log.d("vortex", "Got " + histC + " results in hist ");
             while (d.moveToNext())
@@ -2580,7 +2577,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         Log.d("nils", "Query: " + query);
         //Return cursor.
-        return db.rawQuery(query, selArgs);
+        return db().rawQuery(query, selArgs);
 
     }
 
@@ -2601,18 +2598,18 @@ public class DbHelper extends SQLiteOpenHelper {
 
         Log.d("vortex", "Query: " + query);
         //Return cursor.
-        return db.rawQuery(query, selArgs);
+        return db().rawQuery(query, selArgs);
 
     }
 
 
     public void beginTransaction() {
-        db.beginTransaction();
+        db().beginTransaction();
     }
 
     public void endTransactionSuccess() {
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        db().setTransactionSuccessful();
+        db().endTransaction();
     }
 
 
@@ -2627,7 +2624,7 @@ public class DbHelper extends SQLiteOpenHelper {
         final String[] dataColumn = new String[]{"id,data"};
         //get a cursor.
         //		db.beginTransaction();
-        Cursor c = db.query(TABLE_SYNC, dataColumn, null, null, null, null, null, null);
+        Cursor c = db().query(TABLE_SYNC, dataColumn, null, null, null, null, null, null);
         int lastId = -1;
         while (c.moveToNext()) {
             int id = c.getInt(0);
@@ -2650,7 +2647,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public int getSyncRowsLeft() {
-        Cursor c = db.rawQuery("SELECT Count(*) FROM " + TABLE_SYNC , null);
+        Cursor c = db().rawQuery("SELECT Count(*) FROM " + TABLE_SYNC , null);
         if (c.moveToFirst())
             return c.getInt(0);
         Log.e("vortex","fiasko");
@@ -2660,7 +2657,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean scanSyncEntries(MenuActivity.Control control, int maxR, UIProvider ui) {
 
 
-        Cursor c = db.rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc",null); // limit "+maxR, null);
+        Cursor c = db().rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc",null); // limit "+maxR, null);
         byte[] row;
         int sesTot = 0; int count = 0;
         int id=-1;
@@ -2726,7 +2723,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             if (id != -1 && !control.error) {
                 Log.d("plaz", "Deleting entries in table_sync with id less than or equal to " + id);
-                if (db.delete(TABLE_SYNC, "id <=" + id, null) == 0)
+                if (db().delete(TABLE_SYNC, "id <=" + id, null) == 0)
                     Log.e("vortex", "failed to delete curent row in sync table!!");
             }
         }catch (IllegalStateException e) {
@@ -2752,7 +2749,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 (hasSpy?","+getDatabaseColumnName("spy"):"")
                 +" from "+TABLE_VARIABLES+" where "+getDatabaseColumnName("år")+"<>'H' AND "+getDatabaseColumnName("uid")+" NOT NULL";
         //Log.d("kakko","query: "+query);
-        Cursor c = db.rawQuery(query,null);
+        Cursor c = db().rawQuery(query,null);
         //Log.d("rosto","C size: "+c.getCount());
         while (c.moveToNext()) {
             String vid = c.getString(3);
@@ -2781,13 +2778,13 @@ public class DbHelper extends SQLiteOpenHelper {
         c.close();
         //Insert any remaining rows.
 
-        db.beginTransaction();
+        db().beginTransaction();
         if (idsToDelete.size()>0) {
             Log.d("rosto","Deleteing "+idsToDelete.size()+" rows");
             sr.deletes+=idsToDelete.size();
 
             String delStr = String.format("DELETE FROM "+TABLE_VARIABLES+" WHERE id IN (%s)", TextUtils.join(", ", idsToDelete));
-            db.execSQL(delStr);
+            db().execSQL(delStr);
             Log.d("vortex","delStr: "+delStr);
         }
 
@@ -2800,7 +2797,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 //For each variable...
                 for (String vid:m.keySet()) {
                     cv=m.get(vid);
-                    db.insert(TABLE_VARIABLES, null, cv);
+                    db().insert(TABLE_VARIABLES, null, cv);
                     Log.d("bascar","inserted "+cv);
                     varCache.turboRemoveOrInvalidate(uid.getUid(),uid.getSpy(),vid,true);
                     sr.inserts++;

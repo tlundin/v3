@@ -45,6 +45,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	private static final Long LONG_TIME_AGO = 0L;
+
 	// Global variables
 	// Define a variable to contain a content resolver instance
 	ContentResolver mContentResolver;
@@ -185,10 +186,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		//Get data entries to sync if any.
 
-		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, MaxSyncableRows+"");
+		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, null);
 		SyncEntry[] sa =null;
 		StringBuilder targets=new StringBuilder("");
 		long maxStamp = -1;
+		int maxToSync=0;
 		if (c!=null) {
 			if (c.getCount()==0) {
 				Log.d("brakko","Nothing to sync from ["+user+"] to ["+team+"]");
@@ -202,7 +204,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 				//Either sync the number of lines returned, or MAX. Never more.
 
-				int maxToSync = Math.min(c.getCount(),MaxSyncableRows);
+				maxToSync = Math.min(c.getCount(),MaxSyncableRows);
 
 				sa = new SyncEntry[maxToSync];
 
@@ -219,7 +221,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						maxStamp=entryStamp;
 
 					sa[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable,user);
-                    Log.d("brakko", "ACTION: "+SyncEntry.action(action)+" T: " + variable + " CH: " + changes+" TS:"+entryStamp+" A:"+user);
+                    //Log.d("brakko", "ACTION: "+SyncEntry.action(action)+" T: " + variable + " CH: " + changes+" TS:"+entryStamp+" A:"+user);
 					targets.append(variable);
 					targets.append(",");
 				}
@@ -227,21 +229,23 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			c.close();
 			//If succesful, update the counter.
 
-			Log.d("brakko","SYNCING --> ["+targets+"]");
+			Log.d("brakko","ENTRIES --> ["+maxToSync+"]");
+			Log.d("brakko","VARIABLES --> ["+targets+"]");
 			Log.d("brakko","Maxstamp--> ["+maxStamp+"]");
 
 			//Send and Receive.
 			rowsToInsert = new ArrayList<ContentValues>();
 			msg = sendAndReceive(rowsToInsert,team,user,app,sa,maxStamp);
-			if (msg!=null)
-				sendMessage(msg);
+			if (msg!=null) {
+                sendMessage(msg);
+            }
 	
 		} else {
 			Log.e("vortex", "DATABASE CURSOR NULL IN SYNCADAPTER");
 			releaseLock();
 		}
 
-
+        Log.d("brakko","exiting onsyncupdate");
 	}
 
 	private boolean syncDataAlreadyExists() {
@@ -389,7 +393,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Log.d("vortex","Entry: "+ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,22)+" Team: "+team);
 		} else
 			Log.e("vortex","potentialStamp was null in updatecounters!");
-		busy = false;
+		releaseLock();
 		//update ui here.....
 
 
@@ -443,14 +447,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Long trId=ph.getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team,LONG_TIME_AGO);
 			Log.d("brakko","LAST_SYNC_FROM_TEAM_TO_ME WAS "+trId);
 			objOut.writeObject(trId);
-
+			boolean IHadData=true;
 			if (sa!=null && sa.length>0) {
 				Log.d("brakko","Writing SA[] Array.");
 				objOut.writeObject(sa);				
 			}
-			else 
-				Log.d("brakko","did not write any Sync Entries. SA[] Empty");
-				
+			else {
+				Log.d("brakko", "did not write any Sync Entries. SA[] Empty");
+				IHadData=false;
+			}
 
 			//Done sending.
 			objOut.writeObject(new EndOfStream());
@@ -496,19 +501,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				while (true) {
 					reply = objIn.readObject();
 					if (reply instanceof Long) {
+						objIn.close();
+						objOut.close();
 						Log.d("burlesk","TEAM-->ME: "+reply);
 						//This should be the Timestamp of the last entry arriving.
 						ph.edit().putLong(PersistenceHelper.PotentiallyTimeStampToUseIfInsertDoesNotFail+team,(Long)reply).apply();
 						Log.d("brakko","Inserted rows: "+insertedRows);
-						objIn.close();
-						objOut.close();
 						if (insertedRows == 0 ) {
 							Log.d("brakko","In sync with server!!!");
 							//update counters - no insert required.
 							updateCounters();
-
-							//maxStamp is the latest message I have sent.
-							return Message.obtain(null, SyncService.MSG_DEVICE_IN_SYNC);
+							//check if i still have data to send.
+                            msg = Message.obtain(null, SyncService.MSG_DEVICE_IN_SYNC);
+							if (IHadData) {
+								Log.d("vortex","I had data...");
+								forceSyncToHappen();
+							} else {
+								Log.d("vortex","I had no data...");
+							}
+							return msg;
 						} else {
 							Log.d("brakko","Insert into DB begins");
 							return Message.obtain(null, SyncService.MSG_SYNC_REQUEST_DB_LOCK);
@@ -580,7 +591,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			ex.printStackTrace();
 
 		}
-		busy = false;
+		releaseLock();
 		//Log.e("vortex","BUSY NOW FALSE E");
 		Message msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
 		msg.arg1=SyncService.ERR_UNKNOWN;

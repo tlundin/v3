@@ -90,7 +90,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
     private boolean initdone=false,initfailed=false;
     private MenuActivity me;
     private Account mAccount;
-    private Future synkBackgroundTask;
+    Runnable syncP;
+    Handler handler;
 
     public final static String REDRAW = "com.teraim.fieldapp.menu_redraw";
     public static final String INITDONE = "com.teraim.fieldapp.init_done";
@@ -323,13 +324,13 @@ public class MenuActivity extends Activity implements TrackerListener   {
     @Override
     protected void onStop() {
         super.onStop();
-
+        if(syncP!=null && handler !=null)
+            handler.removeCallbacks(syncP);
     }
     @Override
     protected void onStart() {
         super.onStart();
-        //Bind to synk service
-
+       
     }
 
     @Override
@@ -819,10 +820,17 @@ public class MenuActivity extends Activity implements TrackerListener   {
                 Log.d("vortex","sync is off in redrawmenu");
             }
             else if (inSync) {
-                if (numOfUnsynchedEntries>0) {
+                Log.d("zazz","Unsynched: "+numOfUnsynchedEntries);
+                if (numOfUnsynchedEntries>15) {
                     inSync=false;
                     syncState= R.drawable.syncon;
-
+                    //request sync here.
+                    reply = Message.obtain(null, SyncService.MSG_START_SYNC);
+                    try {
+                        mService.send(reply);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     //check with server if no more data.
                     GlobalState.SyncGroup sg = gs.getSyncGroup();
@@ -1302,16 +1310,19 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     if (isSynkServiceRunning()) {
                         ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, true);
                         Log.d("vortex","sync service is running...sending msg");
-                        Handler handler = new Handler();
+                        handler = new Handler();
 
-                        Runnable syncP = new Runnable() {
+                        syncP = new Runnable() {
                             @Override
                             public void run() {
                                 Log.d("zazz","called");
-                                if (gs!=null && MenuActivity.this.syncOn()) {
-                                    gs.getServerSyncStatus();
+                                if (MenuActivity.this.syncOn()) {
+                                    if (gs!=null)
+                                        gs.getServerSyncStatus();
                                     setSyncState();
+                                    Log.d("zazz","reposting");
                                     handler.postDelayed(this, 60000);
+
                                 } else {
                                     Log.d("zazz","blocked: gs: "+(gs!=null)+" on: "+MenuActivity.this.syncOn());
 
@@ -1319,9 +1330,10 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             }
                         };
                         try {
-                            Log.d("babboo","Sending start sync.");
+                            Log.d("zazz","Sending start sync.");
                             ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
-                            synkBackgroundTask = threadPoolExecutor.submit(syncP);
+                            handler.post(syncP);
+
                             reply = Message.obtain(null, SyncService.MSG_START_SYNC);
                             mService.send(reply);
                         } catch (RemoteException e) {
@@ -1348,8 +1360,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     private void stopSync() {
         Log.d("vortex", "Trying to stop Internet sync");
-        if(synkBackgroundTask!=null)
-            synkBackgroundTask.cancel(true);
+        if(syncP!=null && handler !=null)
+            handler.removeCallbacks(syncP);
         ContentResolver.cancelSync(mAccount, Start.AUTHORITY);
         ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
 

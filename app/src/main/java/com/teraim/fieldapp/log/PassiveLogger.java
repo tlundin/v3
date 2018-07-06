@@ -96,7 +96,7 @@ public class PassiveLogger implements LoggerI {
     String tickyIs = null;
 
     @Override
-    public void writeTicky(String tickyText) {
+    synchronized public void writeTicky(String tickyText) {
         if (tickyIs==null) {
             myTxt.append(tickyText);
         }

@@ -97,5 +97,9 @@
     <string name="scan_QR_code">If you have received settings via a QR code, you can scan it here</string>
     <string name="log_levels_d">Determines granularity of information shown in log</string>
     <string name="done_loading">"App is ready to run. 'About' page for details"</string>
+    <string name="_continue">"Continue"</string>
+    <string name="old_xml_message">"The FieldPad version you have installed is too old for this bundle. The required FieldPad version is "</string>
+    <string name="warning">Warning</string>
+    <string name="old_xml_message_cont">". Fieldpad will try to use an older version of the XML if you click Continue but this may lead to errors."</string>>
 
 </resources>

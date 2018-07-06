@@ -74,7 +74,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_login_console,
 				container, false);
 		TextView versionTxt;
@@ -228,31 +228,19 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		super.onResume();
 		Log.e("vortex","onresume!");
 		if (GlobalState.getInstance() == null ) {
-			String storedBundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
-			if (!storedBundleName.equals(bundleName)) {
-				/*if (!storedBundleName.isEmpty()) {
-					Log.e("horcrux", "bundlename: " + bundleName + " inPHBN: " + globalPh.get(PersistenceHelper.BUNDLE_NAME));
-					Fragment frg = null;
-					frg = getFragmentManager().findFragmentById(R.id.content_frame);
-					final FragmentTransaction ft = getFragmentManager().beginTransaction();
-					ft.detach(frg);
-					ft.attach(frg);
-					ft.commit();
-				}*/
-				Log.e("horcrux","gets");
-				//Tools.restart(this.getActivity());
-			} else {
-
+			if (!myLoader.isActive()) {
 				Intent intent = new Intent();
 				intent.setAction(MenuActivity.INITSTARTS);
 				LocalBroadcastManager.getInstance(this.getActivity()).sendBroadcast(intent);
-				Log.d("vortex","Loading In Memory Modules");
-				myLoader.loadModules(true);
+				Log.d("vortex", "Loading In Memory Modules");
+				myLoader.loadModules(false,false);
 				loginConsole.draw();
-				Log.d("vortex","loginConsole object "+loginConsole);
-			}
+				Log.d("vortex", "loginConsole object " + loginConsole);
+			} else
+				Log.e("vortex","Loader is active...discarding onResume");
 		}
 	}
+
 
 
 
@@ -316,11 +304,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (globalPh.get(PersistenceHelper.LOG_LEVEL).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.LOG_LEVEL, "critical");
 
-	
+
 
 		folder = new File(Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/"+Constants.CACHE_ROOT_DIR);
 		if(!folder.mkdirs())
-			Log.e("NILS","Failed to create gis image folder");		
+			Log.e("NILS","Failed to create gis image folder");
 
 		globalPh.put(PersistenceHelper.FIRST_TIME_KEY,"Initialized");
 		long millis = System.currentTimeMillis();
@@ -333,9 +321,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 		List<String> start= Arrays.asList("Anna","Eva","Fiona","Berta");
 		List<String> end= Arrays.asList("stina","getrud","lena","eulalia");
-        Collections.shuffle(start);
-        Collections.shuffle(end);
-        return start.get(0)+end.get(0)+"_"+(new Random()).nextInt(500);
+		Collections.shuffle(start);
+		Collections.shuffle(end);
+		return start.get(0)+end.get(0)+"_"+(new Random()).nextInt(500);
 	}
 
 
@@ -344,39 +332,39 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	private void showErrorMsg(String error) {
 		new AlertDialog.Builder(mActivity)
-		.setTitle("Error message")
-		.setMessage(error) 
-		.setIcon(android.R.drawable.ic_dialog_alert)
-		.setCancelable(false)
-		.setNeutralButton("Ok",new Dialog.OnClickListener() {				
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+				.setTitle("Error message")
+				.setMessage(error)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setCancelable(false)
+				.setNeutralButton("Ok",new Dialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-			}
-		} )
-		.show();
+					}
+				} )
+				.show();
 	}
 
 	public String server() {
 		String serverUrl = globalPh.get(PersistenceHelper.SERVER_URL);
 		if (!serverUrl.endsWith("/"))
 			serverUrl+="/";
-		if (!serverUrl.startsWith("http://")) 
+		if (!serverUrl.startsWith("http://"))
 			serverUrl = "http://"+serverUrl;
 		return serverUrl;
 	}
 
 
 	@Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = activity;
-    }
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mActivity = activity;
+	}
 
-    CharSequence logTxt="";
+	CharSequence logTxt="";
 
 	@Override
-	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logTxt) {
+	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logTxt,boolean socketBroken) {
 		Log.d("vortex","Arrives to loadsucc with ID: "+loaderId);
 		ph.put(PersistenceHelper.ALL_MODULES_FROZEN+loaderId,true);
 
@@ -388,27 +376,43 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			ConfigurationModule m = myModules.getModule(VariablesConfiguration.NAME);
 
 			if (m!=null) {
-				Table t = (Table)m.getEssence();
-				myDb = new DbHelper(mActivity.getApplicationContext(),t, globalPh,ph,bundleName);
-				//Load configuration files asynchronously.
-				Constants.getDBImportModules(globalPh, ph, server(), bundleName, debugConsole, myDb,t, new AsyncLoadDoneCb() {
-					public void onLoadSuccesful(List<ConfigurationModule> modules) {
-						Configuration dbModules = new Configuration(modules);
-						if (modules!=null) {
-							String loaderId = "dbLoader";
-							boolean allFrozen = ph.getB(PersistenceHelper.ALL_MODULES_FROZEN+loaderId);
-							myDBLoader = new ModuleLoader(loaderId,dbModules,loginConsole,globalPh,allFrozen,debugConsole,LoginConsoleFragment.this,mActivity);
-							LoginConsoleFragment.this.logTxt = TextUtils.concat(LoginConsoleFragment.this.logTxt,"\nDefaults & GIS modules");
-							myDBLoader.loadModules(majorVersionChange);
-						} else 
-							Log.e("vortex","null returned from getDBImportModules");
-					}
-				});
+				final String _loaderId = "dbLoader";
+				boolean allFrozen = ph.getB(PersistenceHelper.ALL_MODULES_FROZEN+_loaderId);
+				if (!allFrozen && socketBroken) {
+					//alert.
+					//break
+					loginConsole.clear();
+					loginConsole.addRow("Network Error - load aborted");
+					loginConsole.draw();
+					return;
+				}
+
+				Table t = (Table) m.getEssence();
+				myDb = new DbHelper(mActivity.getApplicationContext(), t, globalPh, ph, bundleName);
+
+				if (allFrozen && (socketBroken || !majorVersionChange)) {
+					//no need to load.
+					Log.d("baloo","no need to load...socket broken or no majorchange and allfrozen");
+					loadSuccess(_loaderId, majorVersionChange, logTxt,socketBroken);
+				} else {
+					//Load configuration files asynchronously.
+					Constants.getDBImportModules(globalPh, ph, server(), bundleName, debugConsole, myDb, t, new AsyncLoadDoneCb() {
+						public void onLoadSuccesful(List<ConfigurationModule> modules) {
+							Configuration dbModules = new Configuration(modules);
+							if (modules != null) {
+								myDBLoader = new ModuleLoader(_loaderId, dbModules, loginConsole, globalPh, allFrozen, debugConsole, LoginConsoleFragment.this, mActivity);
+								LoginConsoleFragment.this.logTxt = TextUtils.concat(LoginConsoleFragment.this.logTxt, "\nDefaults & GIS modules");
+								myDBLoader.loadModules(majorVersionChange, socketBroken);
+							} else
+								Log.e("vortex", "null returned from getDBImportModules");
+						}
+					});
+				}
 				//Configuration dbModules = new Configuration(Constants.getDBImportModules(globalPh, ph, server(), bundleName, debugConsole, myDb,t));
 				//Import historical data to database. 
 
 
-			} 
+			}
 		} else {
 			//Program is ready to run.
 			//Create the global state from all module objects. 
@@ -455,80 +459,80 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 
-private void start(GlobalState gs) {
-	Start.alive=true;
-	//Update app version if new
-	//if (majorVersionChange) {
-	float loadedAppVersion = ph.getF(PersistenceHelper.NEW_APP_VERSION);
-	Log.d("vortex","updating App version to "+loadedAppVersion);
-	ph.put(PersistenceHelper.CURRENT_VERSION_OF_APP,loadedAppVersion);
-	//				}
-	//drawermenu
-	gs.setDrawerMenu(Start.singleton.getDrawerMenu());
+	private void start(GlobalState gs) {
+		Start.alive = true;
+		//Update app version if new
+		//if (majorVersionChange) {
+		float loadedAppVersion = ph.getF(PersistenceHelper.NEW_APP_VERSION);
+		Log.d("vortex", "updating App version to " + loadedAppVersion);
+		ph.put(PersistenceHelper.CURRENT_VERSION_OF_APP, loadedAppVersion);
+		//				}
+		//drawermenu
+		gs.setDrawerMenu(Start.singleton.getDrawerMenu());
 
 
-	//Change to main.
-	//execute main workflow if it exists.
-	Workflow wf = gs.getWorkflow("Main");
-	if (wf == null) {
-		String[] x = gs.getWorkflowNames();
-		debugConsole.addRow("");
-		debugConsole.addRedText("workflow main not found. These are available:");
-		for (String n:x)
-			debugConsole.addRow(n);
-	}
-	if (wf!=null) {
-		Start.singleton.getDrawerMenu().closeDrawer();
-		Start.singleton.getDrawerMenu().clear();
-		gs.sendEvent(MenuActivity.INITDONE);
-		float newV = ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-		if (newV==-1)
-			appTxt.setText(bundleName+" [no version]");
-		else {
-			if (newV>oldV)
-				appTxt.setText(bundleName+" --New Version! ["+newV+"]");
-			else
-				appTxt.setText(bundleName+" "+newV);
+		//Change to main.
+		//execute main workflow if it exists.
+		Workflow wf = gs.getWorkflow("Main");
+		if (wf == null) {
+			String[] x = gs.getWorkflowNames();
+			debugConsole.addRow("");
+			debugConsole.addRedText("workflow main not found. These are available:");
+			for (String n : x)
+				debugConsole.addRow(n);
 		}
-		Start.singleton.changePage(wf,null);
-		Log.d("vortex","executing workflow main!");
-		gs.setModules(myModules);
-
-		GlobalState.getInstance().onStart();
-	} else {
-		if(isAdded()) {
-			loginConsole.addRow("");
-			loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
-		}
-	}
-
-
-	}
-	private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-		ImageView bmImage;
-
-		public DownloadImageTask(ImageView bmImage) {
-			this.bmImage = bmImage;
-		}
-
-		protected Bitmap doInBackground(String... urls) {
-			String urldisplay = urls[0];
-			Bitmap mIcon11 = null;
-			try {
-				InputStream in = new java.net.URL(urldisplay).openStream();
-				mIcon11 = BitmapFactory.decodeStream(in);
-			} catch (Exception e) {
-
+		if (wf != null) {
+			Start.singleton.getDrawerMenu().closeDrawer();
+			Start.singleton.getDrawerMenu().clear();
+			gs.sendEvent(MenuActivity.INITDONE);
+			float newV = ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
+			if (newV == -1)
+				appTxt.setText(bundleName + " [no version]");
+			else {
+				if (newV > oldV)
+					appTxt.setText(bundleName + " --New Version! [" + newV + "]");
+				else
+					appTxt.setText(bundleName + " " + newV);
 			}
-			return mIcon11;
+			Start.singleton.changePage(wf, null);
+			Log.d("vortex", "executing workflow main!");
+			gs.setModules(myModules);
+
+			GlobalState.getInstance().onStart();
+		} else {
+			if (isAdded()) {
+				loginConsole.addRow("");
+				loginConsole.addRedText("Found no workflow 'Main'. Exiting..");
+			}
 		}
 
-		protected void onPostExecute(Bitmap result) {
-			Log.d("vortex","setting image!!");
-			if (result!=null)
-				bmImage.setImageBitmap(result);
-		}
+
 	}
+private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+	ImageView bmImage;
+
+	public DownloadImageTask(ImageView bmImage) {
+		this.bmImage = bmImage;
+	}
+
+	protected Bitmap doInBackground(String... urls) {
+		String urldisplay = urls[0];
+		Bitmap mIcon11 = null;
+		try {
+			InputStream in = new java.net.URL(urldisplay).openStream();
+			mIcon11 = BitmapFactory.decodeStream(in);
+		} catch (Exception e) {
+
+		}
+		return mIcon11;
+	}
+
+	protected void onPostExecute(Bitmap result) {
+		Log.d("vortex","setting image!!");
+		if (result!=null)
+			bmImage.setImageBitmap(result);
+	}
+}
 
 
 

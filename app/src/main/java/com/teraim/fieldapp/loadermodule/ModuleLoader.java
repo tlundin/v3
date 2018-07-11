@@ -75,7 +75,8 @@ public class ModuleLoader implements FileLoadedCb{
 		frontPageLog.clear();
 		module = myModules.next();
 		if (module != null) {
-			o.addRow(module.getLabel() + " :");
+			o.addRow("");
+			o.addText(module.getLabel() + " :");
 			frontPageLog.addRow("Loading " + module.getLabel());
 			frontPageLog.draw();
 			Log.d("amazon", module.getLabel() + " :");
@@ -105,7 +106,7 @@ public class ModuleLoader implements FileLoadedCb{
 				//Forced, detailed or the module is not frozen yet?
 				if (forced || detaljerad || !module.frozenFileExists()) {
 					if (module.source == ConfigurationModule.Source.internet) {
-						frontPageLog.writeTicky("waiting for network...");
+						frontPageLog.addText("waiting for network...");
 					}
 					module.load(this);
 				} else {
@@ -129,9 +130,9 @@ public class ModuleLoader implements FileLoadedCb{
 	@Override
 	public void onUpdate(Integer ...args) {
 		if (args.length==1)
-			frontPageLog.writeTicky(" "+args[0].toString());
+			frontPageLog.addText(module.getLabel()+": "+args[0].toString());
 		else
-			frontPageLog.writeTicky(" "+args[0].toString()+"/"+args[1].toString());
+			frontPageLog.addText(module.getLabel()+": "+args[0].toString()+"/"+args[1].toString());
 
 	}
 
@@ -147,23 +148,6 @@ public class ModuleLoader implements FileLoadedCb{
 
 		final ConfigurationModule module = res.module;
 		if (module != null) {
-/*
-			if (res.errCode == ErrorCode.tick) {
-				if (module.isThawing()) {
-					frontPageLog.writeTicky(" "+ticks[n++]);
-					n = n % ticks.length;
-					//Log.d("vortex", "tick for " + module.getLabel());
-				} else {
-					Log.d("vortex","stop tick for "+module.getLabel());
-					//frontPageLog.removeTicky();
-					return;
-				}
-
-			} else {
-*/
-			//frontPageLog.removeTicky();
-
-
 			debug.addRow("Module " + res.module.fileName + " loaded. Returns code " + res.errCode.name() + (res.errorMessage != null ? " and errorMessage: " + res.errorMessage : ""));
 			Log.d("vortex", "Module " + res.module.fileName + " loaded. Returns code " + res.errCode.name() + (res.errorMessage != null ? " and errorMessage: " + res.errorMessage : ""));
 
@@ -197,23 +181,20 @@ public class ModuleLoader implements FileLoadedCb{
 				case frozen:
 				case nothingToFreeze:
 					module.setLoaded(true);
-					if (debug.hasRed()) {
-						o.addRedText(" *Check Log!*");
-					} else
-						o.addGreenText(" New!");
-					o.addText(" [");
+					String txt = "";
 					if (module.newVersion != -1)
-						o.addText(module.newVersion + "");
-					else
-						o.addText("?");
-					o.addText("]");
-
+						txt = txt + "["+Float.toString(module.newVersion)+"]";
+					if (debug.hasRed()) {
+						txt += " *Check Log*";
+					} else
+						txt += " New!";
+					o.addText(txt);
 					break;
 				case thawFailed:
 					//if thaw failed, remove file and try again.
 					Log.d("vortex", "Retrying.");
 					o.addYellowText(" thawing failed. Load from network");
-					frontPageLog.writeTicky("no file..load from net");
+					frontPageLog.addText("thaw failed.");
 					module.deleteFrozen();
 					module.setFrozenVersion(-1);
 					module.load(this);
@@ -264,7 +245,7 @@ public class ModuleLoader implements FileLoadedCb{
 						}
 					} else if (module.isRequired() && !module.frozenFileExists()) {
 						new AlertDialog.Builder(ModuleLoader.this.ctx).setTitle("Error")
-								.setMessage("Unable to load bundle - FieldApp is outdated. Required version: "+res.errorMessage)
+								.setMessage("Load aborted. Failed to load "+module.getFileName())
 								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) {
 										failAndExitLoad(module,res);
@@ -327,24 +308,7 @@ public class ModuleLoader implements FileLoadedCb{
 			}
 		}
 		Log.d("vortex","Falling out of onFileLoaded");
-		/*
-		if (!module.isThawing()) {
-			Log.d("vortex","calling loadmodules. ");
-			loadModules(!allFrozen);
-		}
-		else {
-			//if nothing changed, just call again on same module.
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					onFileLoaded(new LoadResult(module,ErrorCode.tick));
-				}
-			}, 50);
 
-
-		}
-		*/
 
 	}
 
@@ -353,7 +317,7 @@ public class ModuleLoader implements FileLoadedCb{
 		o.addText(res.errCode.name());
 		o.addRedText("!");
 
-		frontPageLog.writeTicky("Upstart aborted. Unable to load [" + module.getFileName() + "]");
+		frontPageLog.addRedText("Unable to load [" + module.getFileName() + "]");
 		//printError(res);
 
 		//Need to enable the settings menu.

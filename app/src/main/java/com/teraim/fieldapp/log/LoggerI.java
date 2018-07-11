@@ -18,7 +18,6 @@ public interface LoggerI {
 	 void draw();
 	 void clear();
 	 void addPurpleText(String string);
-	 void writeTicky(String tickyText);
 	 void removeLine();
 	 boolean hasRed();
 

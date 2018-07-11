@@ -46,8 +46,11 @@ import com.teraim.fieldapp.loadermodule.ModuleLoader.ModuleLoaderListener;
 import com.teraim.fieldapp.loadermodule.configurations.SpinnerConfiguration;
 import com.teraim.fieldapp.loadermodule.configurations.VariablesConfiguration;
 import com.teraim.fieldapp.loadermodule.configurations.WorkFlowBundleConfiguration;
+import com.teraim.fieldapp.log.CriticalOnlyLogger;
 import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.log.PassiveLogger;
+import com.teraim.fieldapp.log.PlainLogger;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Connectivity;
@@ -151,7 +154,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//new DownloadImageTask(logo)
 		//.execute(logoUrl.toLowerCase());
 		final String appRootFolderPath = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/";
-		loginConsole = new Logger(mActivity,"INITIAL");
+		loginConsole = new PlainLogger(mActivity,"INITIAL");
 		loginConsole.setOutputView(log);
 		Tools.onLoadCacheImage(appBaseUrl,"bg_image.jpg", appRootFolderPath+"cache/", new Tools.WebLoaderCb() {
 			@Override

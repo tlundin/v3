@@ -288,7 +288,7 @@ public class Tools {
 						}
 					}
 				}
-
+				Log.d("vortex","returning thawed object");
 				return object;
 
 

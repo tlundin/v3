@@ -50,22 +50,23 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	 static float getVersion(String h1,String h2) {
 
 		Log.d("spinn","Get version with h1:"+h1+" h2: "+h2);
-		String[] header = h1.split(",");
 
-		if (header.length>=2) {
-			String potVer = header[1].trim();
-			if (Tools.isVersionNumber(potVer))
-				return Float.parseFloat(potVer);
-		}
-		if (h2!=null) {
-			int p = h2.indexOf("version");
-			if (p>0) {
-				String vNo = h2.substring(p+9, h2.indexOf('\"', p+9));
-				Log.d("vortex","Version line: "+vNo);
-				if (Tools.isVersionNumber(vNo))
-					return Float.parseFloat(vNo);
-			}
-		}
+		 if (h2!=null) {
+			 int p = h2.indexOf("app_version");
+			 if (p>0) {
+				 String vNo = h2.substring(p+13, h2.indexOf('\"', p+13));
+				 Log.d("spinn","Version line: "+vNo);
+				 if (Tools.isVersionNumber(vNo))
+					 return Float.parseFloat(vNo);
+			 }
+		 } else {
+			 String[] header = h1.split(",");
+			 if (header.length >= 2) {
+				 String potVer = header[1].trim();
+				 if (Tools.isVersionNumber(potVer))
+					 return Float.parseFloat(potVer);
+			 }
+		 }
 		Log.d("vortex","No version found for simple lookup.");
 		Log.d("vortex","Header row1: "+h1);
 		Log.d("vortex","Header row2: "+h2);
@@ -90,11 +91,14 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	private int rowC = 1;
 	protected LoadResult read(ConfigurationModule m, float newVersion, BufferedReader reader,StringBuilder sb) throws IOException {
 		String line;
+		float frozenVersion = m.getFrozenVersion();
+		Log.d("abba","module: "+m.getLabel()+" versionC: "+versionControl+" newVersion: "+newVersion+" frozenV: "+frozenVersion);
 		if (newVersion != -1) {
 			m.setNewVersion(newVersion);
 			if (versionControl) {
-				Log.d("vortex","newversion equals: "+newVersion);
-				float frozenVersion = m.getFrozenVersion();
+				// frozenVersion = m.getFrozenVersion();
+				Log.d("vortex","newversion equals: "+newVersion+" frozenVersion equals "+frozenVersion);
+
 				if (frozenVersion!=-1) {
 					if (frozenVersion==newVersion) {
 						//We can set the version number safely.
@@ -107,6 +111,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 				}
 			}
 		}
+		Log.d("abba","READING FILE!");
 		while ((line = reader.readLine()) != null)
 		{
 			sb.append(line);
@@ -214,7 +219,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 
 
 	 LoadResult freeze(ConfigurationModule m) throws IOException {
-
+		Log.d("abba","Freeze called for "+m.getLabel());
 		//Multiple steps or only one to freeze?
 		if (m.freezeSteps>0) {
 			rowC=0;

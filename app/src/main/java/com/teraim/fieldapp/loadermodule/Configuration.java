@@ -16,9 +16,9 @@ public class Configuration {
 	}
 
 		
-	
+
 	public ConfigurationModule next() {
-		
+
 		for (ConfigurationModule cm:mModules) {
 			if (!cm.isLoaded() && !cm.isThawing())
 				return cm;
@@ -27,6 +27,8 @@ public class Configuration {
 	}
 	
 	public ConfigurationModule getModule(String moduleName) {
+		if(moduleName==null)
+			return null;
 		for(ConfigurationModule m:mModules) 
 			if (m.getFileName().equals(moduleName))
 				return m;

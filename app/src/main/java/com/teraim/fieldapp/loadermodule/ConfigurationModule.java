@@ -45,6 +45,7 @@ public abstract class ConfigurationModule {
 	private Integer linesOfRawData;
 	protected Object essence;
 	protected String baseBundlePath;
+	public boolean isBundle = false;
 	private boolean notFound=false;
 	private String fullPath;
 	//freezeSteps contains the number of steps required to freeze the object. Should be -1 if not set specifically by specialized classes.
@@ -85,6 +86,7 @@ public abstract class ConfigurationModule {
 	//Stores version number. Can be different from frozen version during load.
 	public void setNewVersion(float version) {
 		this.newVersion=version;
+		Log.d("vortex","version set to "+version);
 	}
 
 	//Freeze version number when load succesful

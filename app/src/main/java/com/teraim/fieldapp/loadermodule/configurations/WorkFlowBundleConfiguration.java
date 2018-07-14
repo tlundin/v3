@@ -83,7 +83,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 		cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
 		//make debugConsole globally available, so we dont have to pass it to each subclass.
 		WorkFlowBundleConfiguration.debugConsole = debugConsole;
-
+		isBundle = true;
+		hasSimpleVersion=true;
 	}
 
 	@Override
@@ -145,25 +146,11 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 					o.addRow("");
 					o.addRedText("malformed version number in workflow bundle for application "+myApplication);
 				}			
-			}
-			float frozenVersion = getFrozenVersion();
-			float frozenAppVersion = getFrozenAppVersion();
-			Log.d("vortex","frozenappv "+frozenAppVersion+" appv "+appVersion);
-			//If Major and no version update, return here and load all files from fozen.
-			if (frozenVersion!=-1 && frozenAppVersion >= appVersion && versionControl!=null && versionControl.equals("Major")) {				
-				return new LoadResult(this,ErrorCode.majorVersionNotUpdated);
-			}
-			else if ((frozenVersion!=-1 && frozenAppVersion < appVersion && versionControl !=null && versionControl.equals("Major")))
-				return new LoadResult(this,ErrorCode.majorVersionUpdated);
-			Log.d("vortex","frozen Worfklowfile version "+frozenVersion);
-			if (frozenVersion!=-1 && newWorkflowVersion==frozenVersion) {
-				//Log.d("vortex","Returning same old!");
-				return new LoadResult(this,ErrorCode.sameold);
-			}
-				
 		}
+
+	}
 		
-		this.setNewVersion(newWorkflowVersion);
+
 		return null;
 	}
 

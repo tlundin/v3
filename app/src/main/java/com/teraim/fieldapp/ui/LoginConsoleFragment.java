@@ -236,7 +236,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				intent.setAction(MenuActivity.INITSTARTS);
 				LocalBroadcastManager.getInstance(this.getActivity()).sendBroadcast(intent);
 				Log.d("vortex", "Loading In Memory Modules");
-				myLoader.loadModules(false,false);
+				myLoader.loadModules(null,false);
 				loginConsole.draw();
 				Log.d("vortex", "loginConsole object " + loginConsole);
 			} else
@@ -367,11 +367,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	CharSequence logTxt="";
 
 	@Override
-	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logTxt,boolean socketBroken) {
+	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logText,boolean socketBroken) {
 		Log.d("vortex","Arrives to loadsucc with ID: "+loaderId);
 		ph.put(PersistenceHelper.ALL_MODULES_FROZEN+loaderId,true);
-
-		this.logTxt = TextUtils.concat(this.logTxt,logTxt);
+		Log.d("baza","logtxt incoming: "+logText.toString());
+		this.logTxt = TextUtils.concat(this.logTxt,logText);
 		Log.d("baza","logtxt now "+this.logTxt.toString());
 		//If load successful, create database and import data into it. 
 		if (loaderId.equals("moduleLoader")) {
@@ -392,11 +392,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 				Table t = (Table) m.getEssence();
 				myDb = new DbHelper(mActivity.getApplicationContext(), t, globalPh, ph, bundleName);
-
-				if (allFrozen && (socketBroken || !majorVersionChange)) {
+                boolean majorVersionControl = "major".equals(globalPh.get(PersistenceHelper.VERSION_CONTROL));
+				if (socketBroken && allFrozen || (majorVersionControl && allFrozen && !majorVersionChange)) {
 					//no need to load.
 					Log.d("baloo","no need to load...socket broken or no majorchange and allfrozen");
-					loadSuccess(_loaderId, majorVersionChange, logTxt,socketBroken);
+					loadSuccess(_loaderId, majorVersionChange, "\ndb modules unchanged",socketBroken);
 				} else {
 					//Load configuration files asynchronously.
 					Constants.getDBImportModules(globalPh, ph, server(), bundleName, debugConsole, myDb, t, new AsyncLoadDoneCb() {

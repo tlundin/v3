@@ -432,10 +432,10 @@ public class ConfigMenu extends PreferenceActivity {
 						Log.d("vortex","sync stopped");
 						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
 					}
-					if (gs != null)  {
+
 						askForRestart();
 
-					}
+
 
 
 				} //change the sync state if user swapped method.
@@ -446,10 +446,17 @@ public class ConfigMenu extends PreferenceActivity {
 				}
 
 				else if (letp.getKey().equals(PersistenceHelper.LOG_LEVEL)) {
-					if (gs != null)  {
+
 						askForRestart();
 
-					}
+
+				}
+
+				else if (letp.getKey().equals(PersistenceHelper.VERSION_CONTROL)) {
+
+						askForRestart();
+
+
 				}
 
 			}

@@ -3,6 +3,7 @@ package com.teraim.fieldapp.log;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.TextView;
 import com.teraim.fieldapp.ui.MenuActivity;
 
@@ -28,6 +29,7 @@ public class PassiveLogger implements LoggerI {
 
     }
     public void addRedText(String text) {
+        Log.d("amazon","hasred!");
         if (!hasRed) {
             hasRed = true;
             LocalBroadcastManager.getInstance(myContext).sendBroadcast(new Intent(MenuActivity.REDRAW));

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.PushbackReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,36 +41,56 @@ public class WebLoader extends Loader {
 	protected LoadResult doInBackground(ConfigurationModule... params) {
 		ConfigurationModule module = params[0];
 		URL url;
+		float version = -1;
 		try {
 			url = new URL(module.getURL());
 			Log.d("vortex","trying to open connection");
 			URLConnection ucon = url.openConnection();
 			Log.d("vortex","setting timeout");
 			ucon.setConnectTimeout(5000);
-			//if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) { ucon.setRequestProperty("Connection", "close"); }
 			in = ucon.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			StringBuilder sb = new StringBuilder();
-			//check if simple version.
-			float version = -1;
-			if (module.hasSimpleVersion) {
-				String headerRow1 = reader.readLine();
-				version = getVersion(headerRow1, null);
-				//If the file is not readable or reachable, header is null.
+			InputStreamReader inStream = new InputStreamReader(in, "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			//check version for xml file.
+			String headerRow1,headerRow2;
+			if (module.isBundle) {
+				reader.mark(500) ;
+				headerRow1 = reader.readLine();
+				headerRow2 = reader.readLine();
 				if (headerRow1 == null) {
 					Log.e("vortex", "cannot read data..exiting");
 					return new LoadResult(module, ErrorCode.IOError);
 				}
+				Log.d("amazon","h1: "+headerRow1);
+                Log.d("amazon","h2: "+headerRow2);
+				reader.reset();
+				version = getVersion(null,headerRow2);
 
+			} else {
+				if (module.hasSimpleVersion) {
+					headerRow1 = reader.readLine();
+					if (headerRow1 == null) {
+						Log.e("vortex", "cannot read data..exiting");
+						return new LoadResult(module, ErrorCode.IOError);
+					}
+					version = getVersion(headerRow1,null);
+				}
 			}
+
+			StringBuilder sb = new StringBuilder();
+
+				//If the file is not readable or reachable, header is null.
+
 			//setresult runs a parser before returning. Parser is depending on module type.
 			LoadResult loadResult = read(module,version,reader,sb);
             if (loadResult!=null && loadResult.errCode==ErrorCode.loaded) {
 				loadResult = parse(module);
 				if (loadResult.errCode==ErrorCode.parsed)
 					return freeze(module);
-				else
+				else {
+					Log.d("abba",module.getLabel()+" returns "+loadResult.errorMessage);
 					return loadResult;
+				}
 			}
 			else
 				return loadResult;
@@ -103,7 +124,7 @@ public class WebLoader extends Loader {
 			return new LoadResult(module, ErrorCode.reloadDependant,e.getDependendant());
 		}
 		finally {
-			try {if (in!=null)in.close();}catch (Exception e){}
+			try {if (in!=null)in.close();}catch (Exception ignored){}
         }
 	}
 

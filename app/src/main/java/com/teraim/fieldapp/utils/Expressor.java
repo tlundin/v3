@@ -311,6 +311,7 @@ public class Expressor {
 
 
 	public static String analyze(List<EvalExpr> expressions) {
+		Log.d("vortex","analyze with "+expressions);
 		return analyze(expressions,GlobalState.getInstance().getVariableCache().getContext().getContext());
 	}
 	public static int[] intAnalyzeList(List<EvalExpr> expressions) {

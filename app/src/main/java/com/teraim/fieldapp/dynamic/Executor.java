@@ -262,7 +262,11 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
         Log.d("hash","local: "+myContext.getHash());
         Log.d("hash","global: "+gs.getVariableCache().getContext());
         if (myContext.getHash()==null) {
-            myContext.setHash(DB_Context.evaluate(wf.getContext()));
+        	//use global context if wf is null
+        	if (wf!=null)
+            	myContext.setHash(DB_Context.evaluate(wf.getContext()));
+        	else
+        		myContext.setHash(gs.getVariableCache().getContext());
         }
         gs.setDBContext(myContext.getHash());
 

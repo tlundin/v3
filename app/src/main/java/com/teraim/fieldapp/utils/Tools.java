@@ -771,7 +771,7 @@ public class Tools {
 			} else
 				Log.e("nils","List "+variable.getId()+" has too few parameters: "+listValues.toString());
 		} else
-			Log.e("nils","List "+variable.getId()+" has strange parameters: "+listValues.toString());
+			Log.e("nils","List "+variable.getId()+" has strange parameters: "+listValues);
 		return opt;
 	}
 

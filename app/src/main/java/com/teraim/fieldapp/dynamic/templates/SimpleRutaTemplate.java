@@ -263,8 +263,6 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 						//copy
 						prevRutor.add(0,rl);
 						selectedListA.notifyDataSetChanged();
-						Log.d("vortex","in simpleruta, after refreshkey, before menu redraw. PI: "+pi+" CurrentR_: "+currentRuta.getValue()+"\nkeyhash: "+gs.getVariableCache().getContext().toString());
-
 						Log.d("vortex","in simpleruta, after refreshkey, after menu redraw!!");
 						Start.singleton.changePage(new ProvytaTemplate(), "Provyta");					
 					}
@@ -285,6 +283,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		});
 
 		myContext.getContainer("Aggregation_panel_3").draw();
+
 
 		return v;
 

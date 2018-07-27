@@ -152,7 +152,6 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		myLayouts.add(root);
 		myLayouts.add(new WF_Container("Field_List_panel_1", fieldListPanel , root));
 		myLayouts.add(new WF_Container("Aggregation_panel_3", aggregatePanel, root));
-		//		myLayouts.add(new WF_Container("Filter_panel_4", (LinearLayout)v.findViewById(R.id.filterPanel), root));
 		myLayouts.add(new WF_Container("Field_List_panel_2", (FrameLayout)v.findViewById(R.id.Selected), root));
 		myContext.addContainers(getContainers());
 

@@ -77,8 +77,10 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 		o = gs.getLogger();
 
 		mBluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
-		mBluetoothAdapter.setName(Constants.BLUETOOTH_NAME);
-		Log.d("vortex","My bluetooth name is now: "+mBluetoothAdapter.getName());
+		if (mBluetoothAdapter!=null) {
+			mBluetoothAdapter.setName(Constants.BLUETOOTH_NAME);
+			Log.d("vortex", "My bluetooth name is now: " + mBluetoothAdapter.getName());
+		}
 		//showNotification();
 		brr = new BroadcastReceiver() {
 			@Override
@@ -132,7 +134,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 			if (mBluetoothAdapter==null) {
 				Log.e("NILS","bt adaptor null in bluetoothremotedevice service CREATE");
-
+				return;
 			} 
 			//If we need to turn on bluetooth, wait for broadcast.
 			if (!mBluetoothAdapter.isEnabled())	{

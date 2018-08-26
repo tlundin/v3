@@ -21,7 +21,8 @@ public abstract class ConfigurationModule {
 
 
 
-	public enum Type {
+
+    public enum Type {
 		json,
 		xml,
 		csv,
@@ -168,6 +169,12 @@ public abstract class ConfigurationModule {
 
 	public String getLabel() {
 		return printedLabel;
+	}
+
+	//if all values saved at once to the database
+	public boolean commit() {
+		//default implementation does nothing.
+		return true;
 	}
 
 	//Freeze this configuration. counter is used by some dependants.

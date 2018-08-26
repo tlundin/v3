@@ -63,7 +63,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
         isDebug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
         requiredAttributes.clear();
         if (isDebug) {
-            requiredAttributes.add(GisConstants.RutaID);
+            requiredAttributes.add(NamedVariables.AreaTerm);
             requiredAttributes.add(GisConstants.ObjectID);
         }
     }
@@ -178,7 +178,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             reader.endObject();
                             String uuid = attributes.remove(GisConstants.FixedGid);
                             //Log.d("vortex","FixedGid: "+uuid);
-                            String rutaId = attributes.remove(GisConstants.RutaID);
+                            String areaTerm = attributes.remove(NamedVariables.AreaTerm);
 
                             String objectId = attributes.get(GisConstants.ObjectID);
                             if (uuid!=null) {
@@ -188,22 +188,16 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             }
                             else {
                                 return new LoadResult(this,ErrorCode.Aborted,"missing 'FIXEDGID', cannot continue");
-                                //generatedUID=true;
-                                //Log.e("vortex","Missing Global ID for ruta: "+rutaId+" objectid: "+objectId+" gistyp: "+fileName);
-
-                                //keyChain.put("uid", UUID.randomUUID().toString());
-                                //attributes.put("GENERATEDUID","true");
                             }
                             //keyChain.put("år", Constants.HISTORICAL_TOKEN_IN_DATABASE);
 
 
-                            if (rutaId==null) {
-                                Log.e("vortex", "ingen ruta ID!!!!");
+                            if (areaTerm==null) {
+                                Log.e("vortex", "ingen "+NamedVariables.AreaTerm+" ID!!!!");
                                 //return new LoadResult(this,ErrorCode.ParseError,"MISSING Ruta ID for globalid: "+uuid+" objectid: "+objectId+" gistyp: "+fileName);
                             }
                             else {
-                                //Log.d("vortex","RUTA ID: "+rutaId);
-                                keyChain.put(NamedVariables.AreaTerm, rutaId);
+                                keyChain.put(NamedVariables.AreaTerm, areaTerm);
                             }
 
                             if (objectId == null) {

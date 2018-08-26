@@ -228,7 +228,9 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 				keyz.put("linje",getAttribute(reader));
 			}else if (name.equals("abo")) {
 				keyz.put("abo",getAttribute(reader));
-			} else if (name.equals("Vars")) {
+			} else if (name.equals("trakt")) {
+				keyz.put("trakt",getAttribute(reader));
+			}else if (name.equals("Vars")) {
 				//found variables array. Time to return and report progress.
 				for (String k:keyz.keySet())
 					allKeys.add(k);
@@ -265,6 +267,11 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 	}
 	boolean firstCall = true;
 
+	@Override
+	public boolean commit() {
+
+		return true;
+	}
 	@Override
 	public boolean freeze(int counter) {
 		if (entries == null)

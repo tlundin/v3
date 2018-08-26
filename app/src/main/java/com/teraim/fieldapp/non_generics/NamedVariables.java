@@ -29,7 +29,8 @@ public class NamedVariables {
 	public static final String STATUS_FIXPUNKTER = "STATUS:status_fixpunkter";
 	public static final String TransportledTyp = "Väg:TransportLedTyp";
 	public static final String BeraknadInomDelyta = "inomDelytaBeraknad";
-	public static final String AreaTerm = "ruta";
+	//this term changes in some cases to "trakt".
+	public static String AreaTerm = "ruta";
 
 	public static final String[] FIXPUNKT_VARS = new String[] {"fixpunkter:FixPunkt1:avstand",
 		"fixpunkter:FixPunkt1:riktning","fixpunkter:FixPunkt2:avstand",

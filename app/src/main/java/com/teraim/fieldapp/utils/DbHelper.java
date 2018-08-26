@@ -6,7 +6,9 @@ import android.content.ContentValues;import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;
+import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;
 import com.teraim.fieldapp.ui.ConfigMenu;
 import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;
 import java.util.Calendar;
@@ -337,11 +339,23 @@ public class DbHelper extends SQLiteOpenHelper {
 
             }
         }
+        //check if this project has area variables. This is required for some special cases.
         Log.d("nils", "Keys added: ");
         Set<String> s = realColumnNameToDB.keySet();
-        for (String e : s)
+        boolean traktP=false,rutaP=false;
+        for (String e : s) {
             Log.d("nils", "Key: " + e + "Value:" + realColumnNameToDB.get(e));
-
+            if (e.equals("ruta"))
+                rutaP=true;
+            else if (e.equals("trakt"))
+                traktP=true;
+        }
+        if (rutaP) {
+            Log.d("areap","Ruta projekt");
+        } else {
+            Log.d("areap","Trakt projekt");
+            NamedVariables.AreaTerm="trakt";
+        }
     }
 
     public void fixYearNull() {
@@ -2275,7 +2289,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-
+    //try to rapidly insert values from a set of keys.
+    //keys need to be mapped to columns, and stored in a ContentValues object.
+    //cache contentvalues objects.
     public boolean fastHistoricalInsert(Map<String, String> keys,
                                         String varId, String value) {
 

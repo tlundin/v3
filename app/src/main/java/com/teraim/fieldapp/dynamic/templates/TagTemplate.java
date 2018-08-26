@@ -197,7 +197,9 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 						//init.
 						dym.clear();
 						dym.init();
+
 						//show default
+						Log.d("hz","redrawing...dym is cleared");
 						pyv.showDelytor(dym.getDelytor(),false);
 						//nyUtlaggB.setEnabled(false);
 						//calculateB.setEnabled(true);

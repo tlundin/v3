@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.ui;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.location.Location;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.teraim.fieldapp.dynamic.types.Delyta;
 import com.teraim.fieldapp.dynamic.types.Marker;
@@ -28,17 +30,12 @@ import com.teraim.fieldapp.utils.Geomatte;
  * This class is used to draw a Provyta with all its parts (delytor)
  */
 public class ProvytaView extends View {
-
-
-
 	private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-
 	private Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pf = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint p100 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-
 	private Paint pSma = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pSmaSelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pySelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);	
@@ -120,7 +117,8 @@ public class ProvytaView extends View {
 		super.onDraw(canvas);			
 		float w = getWidth();
 		float h = getHeight();
-
+		resizeView(this,(int)w,(int)h);
+		Log.d("hz","W: H: "+w+" "+h);
 		boolean largeSize = (h>500);
 		float margY = largeSize?20:0;
 		float cy;
@@ -368,7 +366,9 @@ public class ProvytaView extends View {
 		return new Coord(avst,rikt);
 	}
 
-
+	private void resizeView(View view, int newWidth, int newHeight) {
+		try { Constructor<? extends ViewGroup.LayoutParams> ctor = view.getLayoutParams().getClass().getDeclaredConstructor(int.class, int.class);
+			view.setLayoutParams(ctor.newInstance(newWidth, newHeight)); } catch (Exception e) { e.printStackTrace(); } }
 
 
 

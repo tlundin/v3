@@ -223,12 +223,16 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		//Multiple steps or only one to freeze?
 		if (m.freezeSteps>0) {
 			rowC=0;
+            long t = System.currentTimeMillis();
 			while (rowC<m.freezeSteps) {
 				m.freeze(rowC);
 				if ((rowC++%100)==0)
 					this.publishProgress(rowC,m.freezeSteps);
 
 			}
+			Log.d("freeze","time spent on inserts: "+(System.currentTimeMillis()-t));
+			//store all values at once.
+			m.commit();
 		} else 
 			m.freeze(-1);
 

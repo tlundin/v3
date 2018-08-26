@@ -9,34 +9,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
- 
+
     <FrameLayout
         android:id="@+id/circle"
         android:layout_width="match_parent"
-        android:layout_height="550dp" >
+        android:layout_height="wrap_content"
+        android:layout_weight=".5">
 
     </FrameLayout>
-    
+
     <LinearLayout
         android:id="@+id/areaL"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="wrap_content"
+        android:layout_weight=".1"
         android:background="@drawable/border"
-        android:orientation="horizontal"/>
-   
-<LinearLayout
-    android:id="@+id/tagLayout"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:gravity="center|center_horizontal"
-    android:orientation="vertical" >
+        android:gravity="center"
+        android:orientation="horizontal" />
 
-</LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".4">
+    <LinearLayout
+        android:id="@+id/tagLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center|center_horizontal"
+        android:orientation="vertical">
+    </LinearLayout>
+    </ScrollView>
 
    <RelativeLayout 
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
     

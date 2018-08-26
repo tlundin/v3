@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -435,11 +436,13 @@ public class VariableCache {
             this.deleteCacheEntry(keyChain);
         }
         else {
-            for (Map<String, String> chain : newcache.keySet()) {
+            Map<String,String> chain;
+            for (Iterator<Map<String, String>> it = newcache.keySet().iterator(); it.hasNext();) {
+                chain = it.next();
                 if (SubsetOf(keyChain, chain)) {
                     Log.d("vortex", "found subset chain " + chain.toString());
                     this.refreshCache(chain);
-                    this.deleteCacheEntry(chain);
+                    it.remove();
 
                 }
             }

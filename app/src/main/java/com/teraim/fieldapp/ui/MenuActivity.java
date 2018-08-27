@@ -414,6 +414,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                 case SyncService.MSG_SERVER_READ_MY_DATA:
                     long timestampFromMe = ((Bundle)msg.obj).getLong("maxstamp");
                     gs.getPreferences().put(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY),timestampFromMe);
+                    gs.getDb().saveTimeStamp(gs.getMyTeam(),timestampFromMe);
                     Log.d("burlesk", "ME-->TEAM UPDATED TO? "+timestampFromMe+" --: "+gs.getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY)));
                     //Log.d("biff","Timestamp for last sync in Query is  "+timestampFromMe);
                     break;
@@ -838,8 +839,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
                     if (syncState==R.drawable.insync) {
                         //TODO: REMOVE - IF User is in sync with server, repair the database.
-                        GlobalState.getInstance().getDb().fixYearNull();
-
+                        //GlobalState.getInstance().getDb().fixYearNull();
+                        /*
                         if (GlobalState.getInstance().getDb().fixdoublets())
 
                             new AlertDialog.Builder(this)
@@ -864,7 +865,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                             ;
 
-
+                            */
                     }
                     title = "";
                 }

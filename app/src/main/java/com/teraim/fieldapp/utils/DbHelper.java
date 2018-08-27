@@ -352,6 +352,20 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
+    public void saveTimeStamp(String team,long ts) {
+        Log.d("antrax","Saving timestamp "+ts+ "for team "+team);
+        db().execSQL("insert into variabler (lag,var,value) values ('"+team+"','timestamp_from_me_to_team','"+ts+"')");
+    }
+
+    public Long getTimeStamp(String team) {
+        Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,"timestamp_from_me_to_team"});
+        if (c.getCount() != 0) {
+            c.moveToFirst();
+            return c.getLong(0);
+        }
+        return 0L;
+    }
+
     public boolean fixdoublets() {
             Log.d("markus", "repairing...");
             String colYear = getDatabaseColumnName(YEAR);
@@ -2076,7 +2090,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             if (GlobalState.getInstance()!=null) {
-                Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + team);
+                Long timestamp = getTimeStamp(team);
                 //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
                 timestamp = timestamp == -1 ? 0 : timestamp;

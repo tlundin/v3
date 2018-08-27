@@ -46,7 +46,7 @@
     <string name="sync_pop_header">Synchronization status</string>
     <string name="sync_pop_sync_on">Current state</string>
     <string name="sync_pop_time_since_last_sync">Time since last sync</string>
-    <string name="sync_pop_unsynced_user">Remaining objects</string>
+    <string name="sync_pop_unsynced_user">My unsent entries </string>
     <string name="sync_pop_sync_button_txt">Sync now</string>
     <string name="sync_pop_sync_last_sync">Team data available</string>
     <string name="synk_off">Turned off</string>

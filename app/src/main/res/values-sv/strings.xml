@@ -46,7 +46,7 @@
 	<string name="sync_pop_header">Synkroniseringsstatus</string>
 	<string name="sync_pop_sync_on">Status</string>
 	<string name="sync_pop_time_since_last_sync">Senast synkad</string>
-	<string name="sync_pop_unsynced_user">Mina osynkade</string>
+	<string name="sync_pop_unsynced_user">Mina osynkade poster</string>
 	<string name="sync_pop_sync_button_txt">Synka nu</string>
 	<string name="sync_pop_sync_last_sync">Team data (osynkat)</string>
 	<string name="synk_off">Avstängd</string>

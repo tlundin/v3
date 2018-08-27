@@ -68,11 +68,12 @@ public class PersistenceHelper {
 
 
     SharedPreferences sp;
-
+	SharedPreferences.Editor edit;
 	ArrayList<String> delta = new ArrayList<String>();
 
 	public PersistenceHelper(SharedPreferences sp) {
 		this.sp = sp;
+		edit = sp.edit();
 	}
 
 	public String get(String key,String undefined) {
@@ -83,21 +84,19 @@ public class PersistenceHelper {
 		return sp.getString(key,UNDEFINED);
 	}
 
-	public void put(String key, String value) {
-		sp.edit().putString(key,value).commit();
+	public void put(String key, String value) { edit().putString(key,value).commit();
 
 	}
 	public void put(String key, boolean value) {
-		sp.edit().putBoolean(key,value).commit();
+		edit().putBoolean(key,value).apply();
 	}
 	public void put(String key, int value) {
-		sp.edit().putInt(key,value).commit();
+		edit().putInt(key,value).apply();
 	}
 	public void put(String key, float value) {
-		sp.edit().putFloat(key,value).commit();
+		edit().putFloat(key,value).apply();
 	}
-	public void put(String key, long value) {
-		sp.edit().putLong(key,value).commit();
+	public void put(String key, long value) { edit().putLong(key,value).apply();
 	}
 	public boolean getB(String key) {
 		return sp.getBoolean(key, false);
@@ -113,6 +112,10 @@ public class PersistenceHelper {
 	
 	public long getL(String key) {
 		return sp.getLong(key, -1);
+	}
+
+	private SharedPreferences.Editor edit() {
+		return edit;
 	}
 
 

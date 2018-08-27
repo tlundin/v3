@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
+import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
@@ -23,7 +24,7 @@ public class SyncContentProvider extends ContentProvider {
 
 	private static final String TAG = "SynkDataProvider";
 	public static final String AUTHORITY = "com.teraim.fieldapp.provider";
-	private SharedPreferences ph;
+	private SharedPreferences sp;
 	private DatabaseHelper dbHelper;
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -42,6 +43,17 @@ public class SyncContentProvider extends ContentProvider {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.e("vortex","Not upgrading anything with this helper!!");
 		}
+
+
+		public Long getTimeStamp(String team) {
+			Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,"timestamp_from_me_to_team"});
+			if (c.getCount() != 0) {
+				c.moveToFirst();
+				return c.getLong(0);
+			}
+			return 0L;
+		}
+
 	}
 	@Override
 	public boolean onCreate() {
@@ -62,23 +74,28 @@ public class SyncContentProvider extends ContentProvider {
 			Log.e("vortex","Bundlename was null in content provider!");
 			return null;
 		} else {
-			ph = ctx.getApplicationContext().getSharedPreferences(bundleName, Context.MODE_MULTI_PROCESS);
-
-			if (ph == null) {
+			sp = ctx.getApplicationContext().getSharedPreferences(bundleName, Context.MODE_MULTI_PROCESS);
+			if (sp == null) {
 				Log.e("vortex","persistencehelper null in onCreate");
 				return null;
 			} else
 				if (dbHelper == null) 
 					dbHelper = new DatabaseHelper(getContext(),bundleName);
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
+
 			Cursor c = null;
 			if(selection!=null && selection.equals("syncquery")) {
 				c = db.rawQuery("SELECT count(*) FROM "+DbHelper.TABLE_SYNC, null);
 			} else {
 				//Timestamp key includes team name, since change of team name should lead to resync from zero.
-				Long timestamp = ph.getLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + teamName,0);
+				Long timestamp = sp.getLong(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME + teamName,0);
+				Long timestamp2 = dbHelper.getTimeStamp(teamName);
+				if (timestamp != timestamp2)
+					Log.e("antrax","PS: "+timestamp+", DB: "+timestamp2);
+				timestamp = Math.max(timestamp,timestamp2);
 				Log.d("biff", PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+teamName);
 				Log.d("burlesk", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
+
 
 				c = db.query(DbHelper.TABLE_AUDIT, null,
 						"timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);

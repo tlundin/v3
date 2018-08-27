@@ -467,6 +467,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//Update app version if new
 		//if (majorVersionChange) {
 		float loadedAppVersion = ph.getF(PersistenceHelper.NEW_APP_VERSION);
+		Log.d("antrax","GS VALUE AT START: "+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP));
 		Log.d("vortex", "updating App version to " + loadedAppVersion);
 		ph.put(PersistenceHelper.CURRENT_VERSION_OF_APP, loadedAppVersion);
 		//				}

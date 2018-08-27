@@ -120,6 +120,7 @@ public class GlobalState {
         myC = applicationContext;
         this.globalPh = globalPh;
         this.ph = ph;
+
         this.db = myDb;
         //TODO REMOVE
         db.fixYearNull();
@@ -159,6 +160,10 @@ public class GlobalState {
         //check current state of synk server.
         if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
             getServerSyncStatus();
+        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +getMyTeam()));
+        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_BACKUP));
+        Log.d("antrax","GS VALUE AT START: "+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP));
+        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +getMyTeam()));
 
     }
 
@@ -631,8 +636,6 @@ public class GlobalState {
             String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
 
             Long timestamp = ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
-//            Long timestamp3 = ctx.getSharedPreferences(project, Context.MODE_MULTI_PROCESS).getLong(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM+team,-22);
-//            Long timestamp = getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+team);
             Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_TEAN_TO_ME: "+timestamp);
            timestamp=(timestamp==-1)?0:timestamp;
             Log.d("mama","TS: "+timestamp);

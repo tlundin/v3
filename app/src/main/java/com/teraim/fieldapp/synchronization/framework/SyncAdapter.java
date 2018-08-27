@@ -325,7 +325,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						this.onSyncCanceled();
 					}
 				}
-			}
+			} else
+				Log.e("antrax","no client...NO MESSAGE SENT");
 
 	}
 
@@ -477,11 +478,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			if (reply instanceof String ) {
 				//server read my data succesfully. we can update the read pointer (timestamp) to avoid sending same data again.
 				if (maxStamp > -1) {
+					Log.d("antrax","TRyinh to send my MAXSTAMP to client.");
 					msg = Message.obtain(null, SyncService.MSG_SERVER_READ_MY_DATA);
 					msg.obj = bundle(maxStamp);
 					sendMessage(
 							msg
 					);
+
 				}
 
 				int numberOfRows = Integer.parseInt((String) reply);

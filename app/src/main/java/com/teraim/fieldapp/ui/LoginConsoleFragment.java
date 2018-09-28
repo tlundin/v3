@@ -1,28 +1,16 @@
 package com.teraim.fieldapp.ui;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
@@ -46,17 +34,20 @@ import com.teraim.fieldapp.loadermodule.ModuleLoader.ModuleLoaderListener;
 import com.teraim.fieldapp.loadermodule.configurations.SpinnerConfiguration;
 import com.teraim.fieldapp.loadermodule.configurations.VariablesConfiguration;
 import com.teraim.fieldapp.loadermodule.configurations.WorkFlowBundleConfiguration;
-import com.teraim.fieldapp.log.CriticalOnlyLogger;
-import com.teraim.fieldapp.log.Logger;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.log.PassiveLogger;
 import com.teraim.fieldapp.log.PlainLogger;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 
 public class LoginConsoleFragment extends Fragment implements ModuleLoaderListener {
@@ -156,6 +147,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		final String appRootFolderPath = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/";
 		loginConsole = new PlainLogger(mActivity,"INITIAL");
 		loginConsole.setOutputView(log);
+
 		Tools.onLoadCacheImage(appBaseUrl,"bg_image.jpg", appRootFolderPath+"cache/", new Tools.WebLoaderCb() {
 			@Override
 			public void loaded(Boolean result) {
@@ -230,6 +222,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	public void onResume() {
 		super.onResume();
 		Log.e("vortex","onresume!");
+
 		if (GlobalState.getInstance() == null ) {
 			if (!myLoader.isActive()) {
 				Intent intent = new Intent();

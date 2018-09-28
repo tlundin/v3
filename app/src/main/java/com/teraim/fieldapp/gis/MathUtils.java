@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package com.teraim.fieldapp.gis;
-
 import android.graphics.PointF;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 
 public class MathUtils {
@@ -24,19 +22,23 @@ public class MathUtils {
 	public static float distance(MotionEvent event) {
 		float x = event.getX(0) - event.getX(1);
 		float y = event.getY(0) - event.getY(1);
-		return FloatMath.sqrt(x * x + y * y);
+		return sqrt(x * x + y * y);
 	}
-	
+
+	private static float sqrt(double v) {
+		return (float)Math.sqrt(v);
+	}
+
 	public static float distance(PointF p1, PointF p2) {
 		float x = p1.x - p2.x;
 		float y = p1.y - p2.y;
-		return FloatMath.sqrt(x * x + y * y);
+		return sqrt(x * x + y * y);
 	}
 	
 	public static float distance(float x1, float y1, float x2, float y2) {
 		float x = x1 - x2;
 		float y = y1 - y2;
-		return FloatMath.sqrt(x * x + y * y);
+		return sqrt(x * x + y * y);
 	}
 
 	public static void midpoint(MotionEvent event, PointF point) {
@@ -62,8 +64,10 @@ public class MathUtils {
 		float py = p1.y;
 		float ox = p2.x;
 		float oy = p2.y;
-		p1.x = (FloatMath.cos(angle) * (px-ox) - FloatMath.sin(angle) * (py-oy) + ox);
-		p1.y = (FloatMath.sin(angle) * (px-ox) + FloatMath.cos(angle) * (py-oy) + oy);
+		float cosV = (float)Math.cos((double)angle);
+		float sinV = (float)Math.sin((double)angle);
+		p1.x = (cosV * (px-ox) - sinV * (py-oy) + ox);
+		p1.y = (sinV * (px-ox) + cosV * (py-oy) + oy);
 	}
 	
 	public static float angle(PointF p1, PointF p2) {

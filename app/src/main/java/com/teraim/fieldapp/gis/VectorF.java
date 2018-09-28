@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package com.teraim.fieldapp.gis;
-
 import android.graphics.PointF;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 
 public class VectorF {
@@ -28,8 +26,10 @@ public class VectorF {
 	public final PointF end = new PointF();
 	
 	public void calculateEndPoint() {
-		end.x = FloatMath.cos(angle) * length + start.x;
-		end.y = FloatMath.sin(angle) * length + start.y;
+		float cosV = (float)Math.cos((double)angle);
+		float sinV = (float)Math.sin((double)angle);
+		end.x = cosV * length + start.x;
+		end.y = sinV * length + start.y;
 	}
 	
 	public void setStart(PointF p) {

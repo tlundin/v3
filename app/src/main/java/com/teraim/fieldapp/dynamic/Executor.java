@@ -1,18 +1,8 @@
 package com.teraim.fieldapp.dynamic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,44 +11,41 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
+import com.teraim.fieldapp.dynamic.blocks.AddFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
-import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
-import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
-import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
-import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
-import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
-import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
-import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEveryListEntryBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToListEntry;
+import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.Block;
+import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddColumnsToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddVariableToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateListEntriesFromFieldList;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTableEntriesFromFieldList;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.BlockDeleteMatchingVariables;
+import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
 import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.blocks.ConditionalContinuationBlock;
 import com.teraim.fieldapp.dynamic.blocks.ContainerDefineBlock;
+import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateImageBlock;
-import com.teraim.fieldapp.dynamic.blocks.AddFilter;
+import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSortWidgetBlock;
 import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.JumpBlock;
@@ -67,16 +54,15 @@ import com.teraim.fieldapp.dynamic.blocks.MenuHeaderBlock;
 import com.teraim.fieldapp.dynamic.blocks.NoOpBlock;
 import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.RoundChartBlock;
+import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock.ExecutionBehavior;
-import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
-import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartCameraBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Rule;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
@@ -88,7 +74,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnFlowExecuted
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
 import com.teraim.fieldapp.gis.Tracker;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -96,6 +81,14 @@ import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.Expressor.Atom;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Executor - executes workflow blocks.  
@@ -686,8 +679,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 																	v.deleteValue();
 																	//here we need a onSave event.
 																	//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_setvalue"));
-																} else
-																	Log.d("nils", "Still visible!");
+																}
 
 															}
 														}
@@ -789,8 +781,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 													v.deleteValue();
 													//myContext.registerEvent(new WF_Event_OnSave("Delete_visivar_cond_cont"));
 
-												} else
-													Log.d("bortex", "Still visible!");
+												}
 
 											}
 										}

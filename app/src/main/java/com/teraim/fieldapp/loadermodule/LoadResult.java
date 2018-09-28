@@ -8,6 +8,7 @@ public class LoadResult {
 		newVarPatternVersionLoaded,
 		loaded,
 		bothFilesLoaded,
+		HostNotFound,
 		notFound,
 		ParseError,
 		IOError,

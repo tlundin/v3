@@ -1,17 +1,51 @@
 package com.teraim.fieldapp.utils;
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentValues;import android.content.Context;
-import android.content.DialogInterface;
-import android.database.Cursor;import android.database.SQLException;import android.database.sqlite.SQLiteDatabase;import android.database.sqlite.SQLiteException;import android.database.sqlite.SQLiteOpenHelper;import android.os.Environment;import android.text.TextUtils;import android.util.Log;import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.types.ArrayVariable;import com.teraim.fieldapp.dynamic.types.Location;import com.teraim.fieldapp.dynamic.types.SweLocation;import com.teraim.fieldapp.dynamic.types.Table;import com.teraim.fieldapp.dynamic.types.Variable;import com.teraim.fieldapp.dynamic.types.VariableCache;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;import com.teraim.fieldapp.log.LoggerI;import com.teraim.fieldapp.non_generics.Constants;import com.teraim.fieldapp.synchronization.SyncEntry;import com.teraim.fieldapp.synchronization.SyncEntryHeader;import com.teraim.fieldapp.synchronization.SyncReport;import com.teraim.fieldapp.synchronization.SyncStatus;import com.teraim.fieldapp.synchronization.SyncStatusListener;import com.teraim.fieldapp.synchronization.TimeStampedMap;import com.teraim.fieldapp.synchronization.Unikey;import com.teraim.fieldapp.synchronization.VariableRowEntry;
-import com.teraim.fieldapp.ui.ConfigMenu;
-import com.teraim.fieldapp.ui.MenuActivity;import com.teraim.fieldapp.ui.MenuActivity.UIProvider;import com.teraim.fieldapp.utils.Exporter.ExportReport;import com.teraim.fieldapp.utils.Exporter.Report;import java.io.File;import java.util.ArrayList;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.types.ArrayVariable;
+import com.teraim.fieldapp.dynamic.types.Location;
+import com.teraim.fieldapp.dynamic.types.SweLocation;
+import com.teraim.fieldapp.dynamic.types.Table;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisObject;
+import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.synchronization.SyncEntry;
+import com.teraim.fieldapp.synchronization.SyncEntryHeader;
+import com.teraim.fieldapp.synchronization.SyncReport;
+import com.teraim.fieldapp.synchronization.SyncStatus;
+import com.teraim.fieldapp.synchronization.SyncStatusListener;
+import com.teraim.fieldapp.synchronization.TimeStampedMap;
+import com.teraim.fieldapp.synchronization.Unikey;
+import com.teraim.fieldapp.synchronization.VariableRowEntry;
+import com.teraim.fieldapp.ui.MenuActivity;
+import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
+import com.teraim.fieldapp.utils.Exporter.ExportReport;
+import com.teraim.fieldapp.utils.Exporter.Report;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;import java.util.HashSet;import java.util.Iterator;import java.util.List;import java.util.Map;import java.util.Map.Entry;import java.util.Set;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -57,10 +91,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public String findVarFromUID(String uid,String variableName) {
         String query = "SELECT " + VALUE + " FROM " + TABLE_VARIABLES + " WHERE " + this.getDatabaseColumnName("uid") + " = '" + uid + "' AND " + VARID + " = '" + variableName + "' AND " + getDatabaseColumnName("år") + " = '" + Constants.HISTORICAL_TOKEN_IN_DATABASE + "'";
-        Cursor resultSet = db().rawQuery(query, null);
-        if (resultSet.moveToNext())
-            return resultSet.getString(0);
-        return null;
+        Cursor cursor = db().rawQuery(query, null);
+        String result = null;
+        if (cursor.moveToNext())
+            result = cursor.getString(0);
+        cursor.close();
+        return result;
     }
 
     public Map<String,String> createNotNullSelection(Map<String, String> myKeyHash) {

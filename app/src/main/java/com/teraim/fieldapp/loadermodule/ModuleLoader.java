@@ -1,20 +1,20 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
 import com.teraim.fieldapp.FileLoadedCb;
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.log.PassiveLogger;
-import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import java.util.List;
+
 import static com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode.Unsupported;
 import static com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode.thawed;
 
@@ -234,6 +234,7 @@ public class ModuleLoader implements FileLoadedCb{
                 case Aborted:
                 case notFound:
                 case noData:
+                case HostNotFound:
                 case slowConnection:
                     printError(res);
                     if (module.isRequired() && res.errCode == Unsupported) {

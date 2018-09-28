@@ -1,19 +1,8 @@
 package com.teraim.fieldapp.gis;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,6 +19,14 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.Geomatte;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
 
@@ -61,9 +58,9 @@ public class Tracker extends Service implements LocationListener {
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
 
-	private final Variable myX,myY,myAcc;
+	private final Variable myX, myY, myAcc;
 
-	private final Map<String,String>YearKeyHash = new HashMap<String,String>();
+	private final Map<String, String> YearKeyHash = new HashMap<String, String>();
 
 	public Tracker() {
 		YearKeyHash.put("år", Constants.getYear());
@@ -73,7 +70,6 @@ public class Tracker extends Service implements LocationListener {
 
 
 	}
-
 
 
 	public enum ErrorCode {
@@ -87,11 +83,11 @@ public class Tracker extends Service implements LocationListener {
 	public ErrorCode startScan(Context ctx) {
 		//do we have variables?	
 
-		if(myX==null||myY==null)
+		if (myX == null || myY == null)
 			return ErrorCode.GPS_VARS_MISSING;
 		//does Globalstate exist?
 		GlobalState gs = GlobalState.getInstance();
-		if (gs==null)
+		if (gs == null)
 			return ErrorCode.UNSTABLE;
 
 		try {
@@ -130,6 +126,7 @@ public class Tracker extends Service implements LocationListener {
 				// if GPS Enabled get lat/long using GPS Services
 				if (isGPSEnabled) {
 					if (location == null) {
+
 						locationManager.requestLocationUpdates(
 								LocationManager.GPS_PROVIDER,
 								MIN_TIME_BW_UPDATES,

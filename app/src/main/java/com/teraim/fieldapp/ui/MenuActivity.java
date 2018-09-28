@@ -1,18 +1,5 @@
 package com.teraim.fieldapp.ui;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,10 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.PeriodicSync;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SyncRequest;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,11 +31,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -71,10 +55,20 @@ import com.teraim.fieldapp.synchronization.framework.SyncAdapter;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.utils.BackupManager;
 import com.teraim.fieldapp.utils.PersistenceHelper;
-import com.teraim.fieldapp.utils.Tools;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
-import android.view.ViewGroup.LayoutParams;
 /**
  * Parent class for Activities having a menu row.
  * @author Terje
@@ -104,6 +98,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
     private Button sync_button;
 
 
+
+
     public class Control {
         public volatile boolean flag = false;
         public boolean error=false;
@@ -112,12 +108,26 @@ public class MenuActivity extends Activity implements TrackerListener   {
     public class MThread extends Thread {
         public void stopMe() {}
     }
-    MThread t;
+    private MThread t;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         me = this;
+        //Check that all permissions are granted.
+        /*
+        if(!hasPermissions(this, PERMISSIONS)){
+            Log.d("grox","got here");
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else
+        */
+        continueCreate();
 
+    }
+    private void continueCreate() {
         globalPh = new PersistenceHelper(getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
 
         brr = new BroadcastReceiver() {

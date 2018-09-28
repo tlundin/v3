@@ -1,6 +1,5 @@
 package com.teraim.fieldapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -10,24 +9,21 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.ViewConfiguration;
-import android.widget.Toast;
 
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.templates.LinjePortalTemplate;
-import com.teraim.fieldapp.dynamic.templates.TableDefaultTemplate;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
@@ -42,14 +38,11 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.DrawerMenu;
 import com.teraim.fieldapp.ui.LoginConsoleFragment;
 import com.teraim.fieldapp.ui.MenuActivity;
-import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
-
+import java.util.Arrays;
 
 
 /**
@@ -71,6 +64,7 @@ public class Start extends MenuActivity {
 
 	private ActionBarDrawerToggle mDrawerToggle;
 	private boolean loading = false;
+
 
 	// Constants
 	// The authority for the sync adapter's content provider
@@ -115,11 +109,13 @@ public class Start extends MenuActivity {
 		//This is the frame for all pages, defining the Action bar and Navigation menu.
 		setContentView(R.layout.naviframe);
 		//This combats an issue on the target panasonic platform having to do with http reading.
-		System.setProperty("http.keepAlive", "false");
+		//System.setProperty("http.keepAlive", "false");
 		mDrawerMenu = new DrawerMenu(this);
 		mDrawerToggle = mDrawerMenu.getDrawerToggle();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
+
+
 
 		// Create a Sync account
 		// mAccount = CreateSyncAccount(this);
@@ -140,6 +136,8 @@ public class Start extends MenuActivity {
 		}
 		super.onCreate(savedInstanceState);
 	}
+
+
 
 
 	public boolean isUIThread(){
@@ -216,27 +214,74 @@ public class Start extends MenuActivity {
 	/**
 	 *
 	 */
-	private void checkStatics() {
-		if (GlobalState.getInstance()==null) {
-			loading = true;
+	private String[] PERMISSIONS = {
+			android.Manifest.permission.BLUETOOTH,
+			android.Manifest.permission.BLUETOOTH_ADMIN,
+			android.Manifest.permission.ACCESS_FINE_LOCATION,
+			android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+			android.Manifest.permission.INTERNET,
+			android.Manifest.permission.ACCESS_COARSE_LOCATION,
+			android.Manifest.permission.ACCESS_NETWORK_STATE,
+			android.Manifest.permission.VIBRATE,
+			android.Manifest.permission.READ_SYNC_SETTINGS,
+			android.Manifest.permission.WRITE_SYNC_SETTINGS,
+			android.Manifest.permission.READ_EXTERNAL_STORAGE
+	};
+	private final static int PERMISSION_ALL = 1;
 
-			//Create a global logger.
-
-
-			//Start the login fragment.
-			android.app.FragmentManager fm = getFragmentManager();
-			for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-				fm.popBackStack();
+	public static String hasPermissions(Context context, String... permissions) {
+		if (context != null && permissions != null) {
+			for (String permission : permissions) {
+				if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+					return permission;
+				}
 			}
-			loginFragment = new LoginConsoleFragment();
-			Log.d("vortex","LoginFragment on stack!");
-			fm.beginTransaction()
-					.replace(R.id.content_frame, loginFragment)
-					.commit();
+
+		}
+		return null;
+	}
+
+	private void checkStatics() {
+		String permission=null;
+		//check and ask permissions to load images.
+		if ((permission = Start.hasPermissions(this,PERMISSIONS))!=null) {
+
+			// Permission is not granted
+
+				// No explanation needed; request the permission
+				ActivityCompat.requestPermissions(this,
+						new String[]{permission},
+						PERMISSION_ALL);
+
+				// MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+				// app-defined int constant. The callback method gets the
+				// result of the request.
 
 		} else {
-			Log.d("vortex","Globalstate is not null!");
+			// Permission has already been granted
 
+
+			if (GlobalState.getInstance() == null) {
+				loading = true;
+
+				//Create a global logger.
+
+
+				//Start the login fragment.
+				android.app.FragmentManager fm = getFragmentManager();
+				for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+					fm.popBackStack();
+				}
+				loginFragment = new LoginConsoleFragment();
+				Log.d("vortex", "LoginFragment on stack!");
+				fm.beginTransaction()
+						.replace(R.id.content_frame, loginFragment)
+						.commit();
+
+			} else {
+				Log.d("vortex", "Globalstate is not null!");
+
+			}
 		}
 	}
 
@@ -530,7 +575,7 @@ public class Start extends MenuActivity {
 	public LoggerI getLogger() {
 		Log.d("vortex","getlogger - debuglogger is null? "+(debugLogger==null));
 		if (debugLogger==null) {
-			String logLevel =globalPh.get(PersistenceHelper.LOG_LEVEL);
+			String logLevel = globalPh.get(PersistenceHelper.LOG_LEVEL);
 			if (logLevel == null || logLevel.equals(PersistenceHelper.UNDEFINED) ||
 					logLevel.equals("normal")) {
 				debugLogger = new Logger(this, "DEBUG");
@@ -549,26 +594,32 @@ public class Start extends MenuActivity {
 		return debugLogger;
 	}
 
-	
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+										   String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case PERMISSION_ALL: {
+				// If request is cancelled, the result arrays are empty.
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					this.checkStatics();
+				} else {
+					Log.e("vortex","Permission denied: "+ Arrays.toString(permissions));
+
+				}
+				return;
+			}
+
+			// other 'case' lines to check for other
+			// permissions this app might request.
+		}
+	}
 	
  
     
     
 
 
-    /*
-    public void sayHello() {
-        if (!mBound) return;
-        // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, SyncService.MSG_SAY_HELLO, 0, 0);
-        
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-    */
 
 
 

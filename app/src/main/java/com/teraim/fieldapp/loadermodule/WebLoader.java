@@ -1,32 +1,28 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.PushbackReader;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
-import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParserException;
-
-import android.os.Build;
 import android.util.Log;
 import android.util.MalformedJsonException;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.FileLoadedCb;
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
-import com.teraim.fieldapp.utils.Connectivity;
-import com.teraim.fieldapp.utils.Tools;
+
+import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 
 public class WebLoader extends Loader {
@@ -40,7 +36,7 @@ public class WebLoader extends Loader {
 	@Override
 	protected LoadResult doInBackground(ConfigurationModule... params) {
 		ConfigurationModule module = params[0];
-		URL url;
+		URL url=null;
 		float version = -1;
 		try {
 			url = new URL(module.getURL());
@@ -100,7 +96,9 @@ public class WebLoader extends Loader {
 			return new LoadResult(module,ErrorCode.BadURL);
 
 		} catch (IOException e) {
-			if (e instanceof MalformedJsonException)
+			if (e instanceof UnknownHostException)
+				return new LoadResult(module,ErrorCode.HostNotFound,"Server not found: "+url.getHost());
+			else if (e instanceof MalformedJsonException)
 				return new LoadResult(module,ErrorCode.ParseError,"Malformed JSON: "+e.getMessage()+"\n Did you forget to add a version number of the first row?");
 			else if (e instanceof FileNotFoundException) {
 				return new LoadResult(module,ErrorCode.notFound);
@@ -112,7 +110,6 @@ public class WebLoader extends Loader {
 				PrintWriter pw = new PrintWriter(sw);
 				e.printStackTrace(pw);		
 				e.printStackTrace();
-				Log.d("vortex","gets to here...");
 				return new LoadResult(module,ErrorCode.IOError,sw.toString());
 			}
 		} catch (XmlPullParserException e) {

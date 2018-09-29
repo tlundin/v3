@@ -16,16 +16,18 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateTwoDimensionalDataSourceBlock extends Block {
+class CreateTwoDimensionalDataSourceBlock extends Block {
 
-	String id=null,myChart=null;
+	String id=null;
+    private String myChart=null;
 
-	CategorySeries series;
-	String[] myCategories =null,myVariableNames=null;
+	private final CategorySeries series;
+	private String[] myCategories =null;
+    private String[] myVariableNames=null;
 
-	List<Variable> myVariables;
+	private List<Variable> myVariables;
 	XYMultipleSeriesDataset dataset;
-	final int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
+	private final int[] colors = { Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW };
 

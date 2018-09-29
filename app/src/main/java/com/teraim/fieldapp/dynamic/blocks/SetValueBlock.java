@@ -1,9 +1,9 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.List;
-
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
+import java.util.List;
 
 public class SetValueBlock extends Block {
 
@@ -17,10 +17,10 @@ public class SetValueBlock extends Block {
 	}
 
 
-	String target;
-	ExecutionBehavior executionBehaviour=ExecutionBehavior.update_flow;
-	private List<EvalExpr> expression;
-	private String formula;
+	private final String target;
+	private ExecutionBehavior executionBehaviour=ExecutionBehavior.update_flow;
+	private final List<EvalExpr> expression;
+	private final String formula;
 	
 	public SetValueBlock(String id,String target,String expression,String eb) {
 		this.blockId = id;

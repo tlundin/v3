@@ -21,7 +21,7 @@ public class Connectivity {
         return false;
     }
 
-    public static boolean isAirplaneModeOn(Context context) {
+    private static boolean isAirplaneModeOn(Context context) {
 
         return Settings.Global.getInt(context.getContentResolver(),
                 Settings.System.AIRPLANE_MODE_ON, 0) != 0;

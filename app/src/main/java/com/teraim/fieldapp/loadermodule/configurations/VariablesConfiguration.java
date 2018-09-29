@@ -1,14 +1,5 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
@@ -23,13 +14,20 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 public class VariablesConfiguration extends CSVConfigurationModule {
 
 	
 	private final SpinnerDefinition sd=new SpinnerDefinition();
-	private LoggerI o;
-	private int pGroupIndex = 1;
-	private int pNameIndex = 2;
+	private final LoggerI o;
+	private final int pGroupIndex = 1;
+	private final int pNameIndex = 2;
 	private Table myTable=null;
 	private List<String> cheaderL;
 	private boolean scanHeader;
@@ -46,7 +44,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 
 	}
 
-	public static String NAME = "Variables";
+	public static final String NAME = "Variables";
 	
 
 	@Override
@@ -69,7 +67,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 		return true;
 	}
 
-	GroupsConfiguration gc=null;
+	private GroupsConfiguration gc=null;
 	
 	@Override
     public LoadResult prepare() throws Dependant_Configuration_Missing {
@@ -232,8 +230,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	
 
 	private List<String> trimmed(String[] r) {
-		ArrayList<String> ret = new ArrayList<String>();
-		ret.addAll(Arrays.asList(r).subList(0, Constants.VAR_PATTERN_ROW_LENGTH));
+        ArrayList<String> ret = new ArrayList<String>(Arrays.asList(r).subList(0, Constants.VAR_PATTERN_ROW_LENGTH));
 		return ret;
 	}
 

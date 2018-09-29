@@ -5,7 +5,8 @@ import java.io.Serializable;
 public class RutListEntry implements Serializable {		
 	private static final long serialVersionUID = 7796264436655011442L;
 	public Integer id;
-	public double n,e;
+	private double n;
+    private double e;
 	public String currentDistance;
 	
 	public RutListEntry() {

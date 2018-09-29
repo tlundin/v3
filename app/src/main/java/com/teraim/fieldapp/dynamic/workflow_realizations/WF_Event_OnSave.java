@@ -1,16 +1,15 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
+import java.util.Map;
+
 public class WF_Event_OnSave extends Event {
 
 	Map<Variable, String> varsAffected=null;
-	Listable myListable;
+	private Listable myListable;
 
 	public WF_Event_OnSave(String id) {
 		super(id,EventType.onSave);

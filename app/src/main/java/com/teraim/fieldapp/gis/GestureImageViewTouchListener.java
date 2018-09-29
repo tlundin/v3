@@ -15,7 +15,6 @@
  */
 package com.teraim.fieldapp.gis;
 
-import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,9 +25,9 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 
-public class GestureImageViewTouchListener implements OnTouchListener {
+class GestureImageViewTouchListener implements OnTouchListener {
 
-	private GestureImageView image;
+	private final GestureImageView image;
 	private OnClickListener onClickListener;
 	private OnLongClickListener onLongClickListener;
 	private final PointF current = new PointF();
@@ -56,8 +55,8 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 	private float fitScaleHorizontal = 1.0f;
 	private float fitScaleVertical = 1.0f;
 
-	protected int canvasWidth = 0;
-	protected int canvasHeight = 0;
+	private int canvasWidth = 0;
+	private int canvasHeight = 0;
 
 	private float centerX = 0;
 	private float centerY = 0;
@@ -69,19 +68,19 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 
 	private boolean multiTouch = false;
 
-	private int displayWidth;
-	private int displayHeight;
+	private final int displayWidth;
+	private final int displayHeight;
 
-	private int imageWidth;
-	private int imageHeight;
+	private final int imageWidth;
+	private final int imageHeight;
 
-	private FlingListener flingListener;
-	private FlingAnimation flingAnimation;
-	private ZoomAnimation zoomAnimation;
-	private MoveAnimation moveAnimation;
-	private GestureDetector tapDetector;
-	private GestureDetector flingDetector;
-	private GestureImageViewListener imageListener;
+	private final FlingListener flingListener;
+	private final FlingAnimation flingAnimation;
+	private final ZoomAnimation zoomAnimation;
+	private final MoveAnimation moveAnimation;
+	private final GestureDetector tapDetector;
+	private final GestureDetector flingDetector;
+	private final GestureImageViewListener imageListener;
 
 
 	public GestureImageViewTouchListener(final GestureImageView image, int displayWidth, int displayHeight) {
@@ -410,7 +409,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 
 
 
-	protected void handleUp() {
+	private void handleUp() {
 		//Log.d("vortex","Touched is now false");
 		touched = false;
 		multiTouch = false;
@@ -451,7 +450,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 		image.redraw();
 	}
 
-	protected void handleScale(float scale, float x, float y) {
+	private void handleScale(float scale, float x, float y) {
 
 		currentScale = scale;
 
@@ -479,7 +478,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 		image.redraw();
 	}
 
-	protected boolean handleDrag(float x, float y) {
+	private boolean handleDrag(float x, float y) {
 		current.x = x;
 		current.y = y;
 
@@ -546,23 +545,23 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 	public void setOnLongClickListener(OnLongClickListener l) {
 		this.onLongClickListener=l;
 	}
-	protected void setCanvasWidth(int canvasWidth) {
+	void setCanvasWidth(int canvasWidth) {
 		this.canvasWidth = canvasWidth;
 	}
 
-	protected void setCanvasHeight(int canvasHeight) {
+	void setCanvasHeight(int canvasHeight) {
 		this.canvasHeight = canvasHeight;
 	}
 
-	protected void setFitScaleHorizontal(float fitScale) {
+	void setFitScaleHorizontal(float fitScale) {
 		this.fitScaleHorizontal = fitScale;
 	}
 
-	protected void setFitScaleVertical(float fitScaleVertical) {
+	void setFitScaleVertical(float fitScaleVertical) {
 		this.fitScaleVertical = fitScaleVertical;
 	}
 
-	protected void boundCoordinates() {
+	private void boundCoordinates() {
 		if(next.x < boundaryLeft) {
 			next.x = boundaryLeft;
 		}
@@ -578,7 +577,7 @@ public class GestureImageViewTouchListener implements OnTouchListener {
 		}
 	}
 
-	protected void calculateBoundaries() {
+	private void calculateBoundaries() {
 
 		int effectiveWidth = Math.round( (float) imageWidth * currentScale );
 		int effectiveHeight = Math.round( (float) imageHeight * currentScale );

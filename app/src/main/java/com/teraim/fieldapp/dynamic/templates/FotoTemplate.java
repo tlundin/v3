@@ -1,10 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -37,8 +31,8 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
@@ -46,10 +40,15 @@ import com.teraim.fieldapp.utils.ImageHandler;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class FotoTemplate extends Executor {
 
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 	
 	private GestureLibrary gestureLib;
 	//private ToggleButton gpsB;
@@ -63,7 +62,7 @@ public class FotoTemplate extends Executor {
 	private Button oldpicsButton;
 	private ImageHandler imgHandler;
 	private LocationManager lm;
-	private HashMap<String, ImageButton> buttonM = new HashMap<String,ImageButton>();
+	private final HashMap<String, ImageButton> buttonM = new HashMap<String,ImageButton>();
 	private SweLocation cords;
 	private Switch avstandB;
 	private TextView sydT,vastT,ostT,spT,norrT;
@@ -79,7 +78,7 @@ public class FotoTemplate extends Executor {
 	private Variable myStatusVariable;
 
 	
-	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
 		// Called when the action mode is created; startActionMode() was called
 		@Override
@@ -177,25 +176,25 @@ public class FotoTemplate extends Executor {
 		}  
 */		
 			
-		avstandB = (Switch)v.findViewById(R.id.avstandB);
+		avstandB = v.findViewById(R.id.avstandB);
 		//gpsB = (ToggleButton)v.findViewById(R.id.gpsBtn);
 		//if (gpsB == null)
 		//	Log.e("vortex","OUCCGHHH!!");
 		//gpsT = (TextView)v.findViewById(R.id.gpsText);
 		//GPS_X = (TextView)v.findViewById(R.id.GPS_X);
 		//GPS_Y = (TextView)v.findViewById(R.id.GPS_Y);
-		norr = (ImageButton)v.findViewById(R.id.pic_norr);
-		syd = (ImageButton)v.findViewById(R.id.pic_soder);
-		ost= (ImageButton)v.findViewById(R.id.pic_ost);
-		vast = (ImageButton)v.findViewById(R.id.pic_vast);
-		sp= (ImageButton)v.findViewById(R.id.sp);
-		sydT = (TextView)v.findViewById(R.id.sydT);
-		vastT = (TextView)v.findViewById(R.id.vastT);
-		ostT = (TextView)v.findViewById(R.id.ostT);
-		spT = (TextView)v.findViewById(R.id.spT);
-		norrT = (TextView)v.findViewById(R.id.norrT);
-		compass = (ImageView)v.findViewById(R.id.compass);
-		oldpicsButton = (Button)v.findViewById(R.id.oldpics_button);
+		norr = v.findViewById(R.id.pic_norr);
+		syd = v.findViewById(R.id.pic_soder);
+		ost= v.findViewById(R.id.pic_ost);
+		vast = v.findViewById(R.id.pic_vast);
+		sp= v.findViewById(R.id.sp);
+		sydT = v.findViewById(R.id.sydT);
+		vastT = v.findViewById(R.id.vastT);
+		ostT = v.findViewById(R.id.ostT);
+		spT = v.findViewById(R.id.spT);
+		norrT = v.findViewById(R.id.norrT);
+		compass = v.findViewById(R.id.compass);
+		oldpicsButton = v.findViewById(R.id.oldpics_button);
 		
 		buttonM.clear();
 		//gpsT.setText("");
@@ -404,7 +403,7 @@ public class FotoTemplate extends Executor {
 	@Override
 	protected List<WF_Container> getContainers() {
 		myLayouts = new ArrayList<WF_Container>();
-		myLayouts.add(new WF_Container("root", (RelativeLayout)v.findViewById(R.id.root), null));
+		myLayouts.add(new WF_Container("root", v.findViewById(R.id.root), null));
 		return myLayouts;
 	}
 

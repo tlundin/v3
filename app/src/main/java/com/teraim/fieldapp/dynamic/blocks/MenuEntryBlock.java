@@ -19,7 +19,11 @@ public class MenuEntryBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = 6297016520560017438L;
-	String target,type,label,bgColor,textColor;
+	private final String target;
+    private final String type;
+    private String label;
+    private final String bgColor;
+    private final String textColor;
 	public MenuEntryBlock(String id, String target, String type, String bgColor, String textColor) {
 		this.blockId=id;
 		this.target=target;

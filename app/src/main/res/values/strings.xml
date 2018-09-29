@@ -100,6 +100,8 @@
     <string name="_continue">"Continue"</string>
     <string name="old_xml_message">"The FieldPad version you have installed is too old for this bundle. The required FieldPad version is "</string>
     <string name="warning">Warning</string>
-    <string name="old_xml_message_cont">". Fieldpad will try to use an older version of the XML if you click Continue but this may lead to errors."</string>>
+    <string name="old_xml_message_cont">". Fieldpad will try to use an older version of the XML if you click Continue but this may lead to errors."</string>
+    <string name="none">None</string>
+
 
 </resources>

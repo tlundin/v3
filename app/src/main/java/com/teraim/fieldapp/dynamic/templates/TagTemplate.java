@@ -1,11 +1,6 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.gesture.Gesture;
@@ -51,13 +46,19 @@ import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.ProvytaView;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 
 
 public class TagTemplate extends Executor implements EventListener, OnGesturePerformedListener {
 
 
-	private static final int MAX_TÅG = 5,MAX_DELPUNKTER =6;
+	private static final int MAX_TAG = 5,MAX_DELPUNKTER =6;
 
 	private static final int COLS=MAX_DELPUNKTER;
 
@@ -93,10 +94,10 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 		}
 		View v = inflater.inflate(R.layout.template_tag, container, false);	
 
-		final FrameLayout py = (FrameLayout)v.findViewById(R.id.circle);
-		gl = (LinearLayout)v.findViewById(R.id.tagLayout);
+		final FrameLayout py = v.findViewById(R.id.circle);
+		gl = v.findViewById(R.id.tagLayout);
 
-		areaL = (LinearLayout)v.findViewById(R.id.areaL);
+		areaL = v.findViewById(R.id.areaL);
 
 		dym = DelyteManager.getInstance();
 
@@ -157,9 +158,9 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 //		calculateB = (Button)v.findViewById(R.id.redraw);
 //		calculateB.setEnabled(false);
-		nyUtlaggB = (Button)v.findViewById(R.id.rensa);
+		nyUtlaggB = v.findViewById(R.id.rensa);
 		nyUtlaggB.setEnabled(gs.isMaster()||gs.isSolo());
-		sparaB = (Button)v.findViewById(R.id.spara);
+		sparaB = v.findViewById(R.id.spara);
 		sparaB.setEnabled(false);
 		gl.setEnabled(false);
 /*
@@ -240,7 +241,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 		});
 
 
-		GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 
 		gestureOverlayView.setGestureVisible(false);
 		gestureOverlayView.addOnGesturePerformedListener(this);
@@ -275,6 +276,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 	};
 	 */
 
+	@SuppressLint("DefaultLocale")
 	private void updateAreaField() {
 
 		areaL.removeAllViews();
@@ -300,8 +302,8 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 		for (Integer id:keys) {				
 			el = (LinearLayout)inflater.inflate(R.layout.area_elem, null);
-			h =(TextView)el.findViewById(R.id.header);
-			tv=(TextView)el.findViewById(R.id.value);
+			h = el.findViewById(R.id.header);
+			tv= el.findViewById(R.id.value);
 			h.setText("DY "+id+":");
 			tv.setText((String.format("%.2f", (aMap.get(id)/100f)))+"\u33A1");
 			Log.d("nils","AREA added for delyta "+id+": "+aMap.get(id));
@@ -329,12 +331,12 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 		Log.d("nils","In drawEmptyTable");
 		gl.removeAllViews();
 		TextView header; LinearLayout l,tagRow;
-		for (int j=1;j<=MAX_TÅG;j++) {				
+		for (int j = 1; j<= MAX_TAG; j++) {
 			tagRow = (LinearLayout)inflater.inflate(R.layout.tag_table_row, null);
-			header = (TextView)tagRow.findViewById(R.id.tagHeader);
+			header = tagRow.findViewById(R.id.tagHeader);
 			header.setText("Tåg "+j);
 			gl.addView(tagRow);
-			final TextView tagTextView = ((TextView)tagRow.findViewById(R.id.tagBody));
+			final TextView tagTextView = tagRow.findViewById(R.id.tagBody);
 			tagTextView.setText("Lägg till tåg");
 			final int row = j;
 			tagRow.setOnClickListener(new OnClickListener() {
@@ -399,7 +401,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 
 	}
-	EditText focusedView = null;
+	private EditText focusedView = null;
 
 	private void openEditor(int row, final TextView tagTextView) {
 		//check if there is data for this one.
@@ -408,24 +410,24 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 		View popUpView = inflater.inflate(R.layout.tag_edit_popup_with_rows, null);
 		final PopupWindow mpopup = new PopupWindow(popUpView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, true); //Creation of popup
 		mpopup.setAnimationStyle(android.R.style.Animation_Dialog);   
-		Button avbrytB = (Button)popUpView.findViewById(R.id.avbrytB);
-		Button sparaLB = (Button)popUpView.findViewById(R.id.sparaB);
-		Button hundraB = (Button)popUpView.findViewById(R.id.hundraB);
-		Button rensaB = (Button)popUpView.findViewById(R.id.rensaB);
+		Button avbrytB = popUpView.findViewById(R.id.avbrytB);
+		Button sparaLB = popUpView.findViewById(R.id.sparaB);
+		Button hundraB = popUpView.findViewById(R.id.hundraB);
+		Button rensaB = popUpView.findViewById(R.id.rensaB);
 		final EditText[] ETA = new EditText[MAX_DELPUNKTER];
 		final EditText[] ETR = new EditText[MAX_DELPUNKTER];
-		ETA[0] = (EditText)popUpView.findViewById(R.id.ETA1);
-		ETA[1] = (EditText)popUpView.findViewById(R.id.ETA2);
-		ETA[2] = (EditText)popUpView.findViewById(R.id.ETA3);
-		ETA[3] = (EditText)popUpView.findViewById(R.id.ETA4);
-		ETA[4] = (EditText)popUpView.findViewById(R.id.ETA5);
-		ETA[5] = (EditText)popUpView.findViewById(R.id.ETA6);
-		ETR[0] = (EditText)popUpView.findViewById(R.id.ETR1);
-		ETR[1] = (EditText)popUpView.findViewById(R.id.ETR2);
-		ETR[2] = (EditText)popUpView.findViewById(R.id.ETR3);
-		ETR[3] = (EditText)popUpView.findViewById(R.id.ETR4);
-		ETR[4] = (EditText)popUpView.findViewById(R.id.ETR5);
-		ETR[5] = (EditText)popUpView.findViewById(R.id.ETR6);
+		ETA[0] = popUpView.findViewById(R.id.ETA1);
+		ETA[1] = popUpView.findViewById(R.id.ETA2);
+		ETA[2] = popUpView.findViewById(R.id.ETA3);
+		ETA[3] = popUpView.findViewById(R.id.ETA4);
+		ETA[4] = popUpView.findViewById(R.id.ETA5);
+		ETA[5] = popUpView.findViewById(R.id.ETA6);
+		ETR[0] = popUpView.findViewById(R.id.ETR1);
+		ETR[1] = popUpView.findViewById(R.id.ETR2);
+		ETR[2] = popUpView.findViewById(R.id.ETR3);
+		ETR[3] = popUpView.findViewById(R.id.ETR4);
+		ETR[4] = popUpView.findViewById(R.id.ETR5);
+		ETR[5] = popUpView.findViewById(R.id.ETR6);
 
 		
 
@@ -473,7 +475,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 			return "";
 			}
 		
-		public boolean isLegal(String newVal) {
+		boolean isLegal(String newVal) {
 			if (newVal.length()==0)
 				return false;
 			try {
@@ -496,7 +498,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 			return "";
 			}
 		
-		public boolean isLegal(String newVal) {
+		boolean isLegal(String newVal) {
 			if (newVal.length()==0)
 				return false;
 			try {
@@ -548,8 +550,8 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 				mpopup.dismiss();
 			}
 		});
-		final TextView headerTxt = (TextView)popUpView.findViewById(R.id.headerT);
-		final TextView subHeaderTxt = (TextView)popUpView.findViewById(R.id.subHeaderT);
+		final TextView headerTxt = popUpView.findViewById(R.id.headerT);
+		final TextView subHeaderTxt = popUpView.findViewById(R.id.subHeaderT);
 
 		rensaB.setOnClickListener(new OnClickListener() {
 			@Override
@@ -591,7 +593,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 
 
-	private List<Delyta> delytor = new ArrayList<Delyta>();
+	private final List<Delyta> delytor = new ArrayList<Delyta>();
 
 
 	private void fillTable() {
@@ -610,7 +612,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 					tagView = (LinearLayout)inflater.inflate(R.layout.tag_table_row, null);
 					gl.addView(tagView);
 				} 
-				TextView header = (TextView)tagView.findViewById(R.id.tagHeader);				
+				TextView header = tagView.findViewById(R.id.tagHeader);
 				row++;
 				header.setText("Tåg "+row);
 				String errorTxt="";
@@ -643,20 +645,20 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 	}
 	 */	 
-	private String[] errorArray = new String[MAX_TÅG];
+	private final String[] errorArray = new String[MAX_TAG];
 	
 	private void createDelytorFromTable() {
 		//Empty existing. 
 		dym.clear();
 		List<Coord> tagCoordinateList = new ArrayList<Coord>();
-		for (int row=0;row<MAX_TÅG;row++) {
+		for (int row = 0; row< MAX_TAG; row++) {
 			errorArray[row]=null;
 			LinearLayout tagView = (LinearLayout)gl.getChildAt(row);
 			if (tagView == null) {
 				Log.e("vortex","tagview was null for row "+row);
 				break;
 			}
-			final TextView tagTextView = ((TextView)tagView.findViewById(R.id.tagBody));
+			final TextView tagTextView = tagView.findViewById(R.id.tagBody);
 			
 			String tagT = tagTextView.getText().toString();
 			if (tagT==null||tagT.length()==0) {

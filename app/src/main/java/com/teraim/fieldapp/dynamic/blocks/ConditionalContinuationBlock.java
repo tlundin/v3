@@ -1,18 +1,18 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.List;
-
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 
+import java.util.List;
+
 public class ConditionalContinuationBlock extends Block {
 
-	String elseID,expr;
-	List<String>variables;
-	List<EvalExpr>exprE;
+	private final String elseID;
+    private final String expr;
+	private final List<String>variables;
+	private final List<EvalExpr>exprE;
 	public ConditionalContinuationBlock(String id, List<String> varL,
 			String expr, String elseBlockId) {
 		this.blockId=id;
@@ -34,7 +34,7 @@ public class ConditionalContinuationBlock extends Block {
 	}
     public final static int STOP = 1,JUMP=2,NEXT = 3;
     
-    Integer lastEval = null;
+    private Integer lastEval = null;
     
     public boolean isExpressionOk() {
     	return exprE!=null;

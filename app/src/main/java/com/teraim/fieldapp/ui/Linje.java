@@ -1,48 +1,49 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.utils.Tools;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+
+import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.utils.Tools;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Linje extends View {
 
-	private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p1 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p2 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pp = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint iTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint tagText = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p1 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p2 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pp = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint iTag = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint tagText = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint bm_paint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
 	private static float h=700,w,r;
 	private final LineMarkerFactory lmFactory;
-	private MovingMarker user = new MovingMarker(w,h);
-	private static float TAG_W = 20, TAG_H = 10,Max_Dev_X = 50;
-	private static float LineLengthInMeters=200,areaWidthInMeters=2*Max_Dev_X;
+	private final MovingMarker user = new MovingMarker(w,h);
+	private static final float TAG_W = 20;
+    private static final float TAG_H = 10;
+    private static final float Max_Dev_X = 50;
+	private static final float LineLengthInMeters=200;
+    private static final float areaWidthInMeters=2*Max_Dev_X;
 	private float lineX=0,lineStart=0,lineEnd=0;
-	private String mPole;
-	private Bitmap bm;
+	private final String mPole;
+	private final Bitmap bm;
 
-	private Map <String,Map<String,LineMarker>> markers = new HashMap<>();
+	private final Map <String,Map<String,LineMarker>> markers = new HashMap<>();
 
 
 	public Linje(Context context, String pole) {
@@ -192,9 +193,10 @@ public class Linje extends View {
 	
 	
 	private class LineMarker {
-		private String start,end;
-		public String tag;
-		 int myColor;
+		private final String start;
+        private final String end;
+		final String tag;
+		 final int myColor;
 		
 		 LineMarker(String start,String end,String tag,int color) {
 			this.start=start;
@@ -206,10 +208,10 @@ public class Linje extends View {
 			return end!=null;
 		}
 		
-		public float getStart() {
+		float getStart() {
 			return Float.parseFloat(start);
 		}
-		public float getEnd() {
+		float getEnd() {
 			return Float.parseFloat(end);
 		}
 	}
@@ -217,11 +219,11 @@ public class Linje extends View {
 		
 		
 		
-		Integer[] colors = {Color.parseColor("#CC3232"),Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW,Color.DKGRAY,Color.WHITE};
+		final Integer[] colors = {Color.parseColor("#CC3232"),Color.BLUE,Color.GREEN,Color.RED,Color.YELLOW,Color.DKGRAY,Color.WHITE};
 		int currentColor = 0;
-		Map <String, Integer> assigned = new HashMap<>();
+		final Map <String, Integer> assigned = new HashMap<>();
 		
-		public LineMarker create(String start, String end,String tag) {
+		LineMarker create(String start, String end, String tag) {
 			Integer c = assigned.get(tag);
 			if (c==null) {
 				c = colors[currentColor];
@@ -235,10 +237,11 @@ public class Linje extends View {
 	
 	
 	
-	public class MovingMarker {
+	class MovingMarker {
 		
 		float x=-1,y=-1;
-		float w,h;
+		final float w;
+        final float h;
 		
 		 MovingMarker (float w, float h) {
 			this.w=w;

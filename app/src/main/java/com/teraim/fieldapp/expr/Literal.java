@@ -1,11 +1,12 @@
 package com.teraim.fieldapp.expr;
 
 import com.teraim.fieldapp.dynamic.types.Numerable;
-import com.teraim.fieldapp.dynamic.types.Numerable.Type;
 
 public class Literal implements Numerable {
 
-	private String name,label,value;
+	private final String name;
+    private final String label;
+    private String value;
 	
 	public Literal(String name,String label) {
 		value=null;

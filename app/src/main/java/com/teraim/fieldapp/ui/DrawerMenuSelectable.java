@@ -2,7 +2,6 @@ package com.teraim.fieldapp.ui;
 
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -31,7 +30,7 @@ public class DrawerMenuSelectable implements DrawerMenuItem {
 			TextView tv;
 	        if (convertView == null) {
 	            view = inflater.inflate(R.layout.drawer_menu_selectable, null);
-				tv = (TextView)view.findViewById(R.id.list_content1);
+				tv = view.findViewById(R.id.list_content1);
 				//Log.d("vortex","Menuheader bg text colors: "+bgColor+" "+textColor);
 				if (bgColor!=null)
 					tv.setBackgroundColor(Color.parseColor(bgColor));
@@ -41,7 +40,7 @@ public class DrawerMenuSelectable implements DrawerMenuItem {
 	            // Do some initialization
 	        } else {
 	            view = convertView;
-				tv = (TextView) view.findViewById(R.id.list_content1);
+				tv = view.findViewById(R.id.list_content1);
 	        }
 
 

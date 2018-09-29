@@ -1,5 +1,15 @@
 package com.teraim.fieldapp.dynamic;
 
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.GlobalState.ErrorCode;
+import com.teraim.fieldapp.dynamic.types.Table;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.utils.Tools;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,19 +19,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.provider.SyncStateContract;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.GlobalState.ErrorCode;
-import com.teraim.fieldapp.dynamic.types.FixedVariable;
-import com.teraim.fieldapp.dynamic.types.Table;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.non_generics.NamedVariables;
-import com.teraim.fieldapp.utils.Tools;
-
 
 public class VariableConfiguration implements Serializable {
 
@@ -29,21 +26,33 @@ public class VariableConfiguration implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 942330642338510319L;
-	public static String Col_Variable_Name = "Variable Name";
-	public static String Col_Variable_Label = "Variable Label";
-	public static String Col_Variable_Keys = "Key Chain";
-	public static String Type = "Type";
-	public static String Col_Functional_Group = "Group Name";
-	public static String Col_Variable_Scope = "Scope";
-	public static String Col_Variable_Limits = "Limits";
-	public static String Col_Variable_Dynamic_Limits = "D_Limits";
-	public static String Col_Group_Label = "Member Label";
-	public static String Col_Group_Description = "Member Description";
+	public static final String Col_Variable_Name = "Variable Name";
+	private static final String Col_Variable_Label = "Variable Label";
+	private static final String Col_Variable_Keys = "Key Chain";
+	private static final String Type = "Type";
+	public static final String Col_Functional_Group = "Group Name";
+	private static final String Col_Variable_Scope = "Scope";
+	private static final String Col_Variable_Limits = "Limits";
+	private static final String Col_Variable_Dynamic_Limits = "D_Limits";
+	private static final String Col_Group_Label = "Member Label";
+	private static final String Col_Group_Description = "Member Description";
 
 	public final static String KEY_YEAR = "år";
 
-	public static final List<String>requiredColumns=Arrays.asList(Col_Variable_Keys,Col_Functional_Group,Col_Variable_Name,Col_Variable_Label,Type,"Unit","List Values","Description",Col_Variable_Scope,Col_Variable_Limits,Col_Variable_Dynamic_Limits,Col_Group_Label,Col_Group_Description);
-	private static int KEY_CHAIN=0,FUNCTIONAL_GROUP=1,VARIABLE_NAME=2,VARIABLE_LABEL=3,TYPE=4,UNIT=5,LIST_VALUES=6,DESCRIPTION=7,SCOPE=8,LIMIT=9,D_LIMIT=10,GROUP_LABEL=11, GROUP_DESCRIPTION = 12;
+	private static final List<String>requiredColumns=Arrays.asList(Col_Variable_Keys,Col_Functional_Group,Col_Variable_Name,Col_Variable_Label,Type,"Unit","List Values","Description",Col_Variable_Scope,Col_Variable_Limits,Col_Variable_Dynamic_Limits,Col_Group_Label,Col_Group_Description);
+	private static final int KEY_CHAIN=0;
+    private static final int FUNCTIONAL_GROUP=1;
+    private static final int VARIABLE_NAME=2;
+    private static final int VARIABLE_LABEL=3;
+    private static final int TYPE=4;
+    private static final int UNIT=5;
+    private static final int LIST_VALUES=6;
+    private static final int DESCRIPTION=7;
+    private static final int SCOPE=8;
+    private static final int LIMIT=9;
+    private static final int D_LIMIT=10;
+    private static int GROUP_LABEL=11;
+    private static int GROUP_DESCRIPTION = 12;
 
 	public String getColumn(String columnName, List<String> row) {
 		int cIndex = getTable().getColumnIndex(columnName);
@@ -61,11 +70,11 @@ public class VariableConfiguration implements Serializable {
 		global_sync
 	}
 	
-	Map<String,Integer>fromNameToColumn; 
+	private Map<String,Integer>fromNameToColumn;
 
 
-	Table myTable;
-	GlobalState gs;
+	private final Table myTable;
+	private final GlobalState gs;
 
 
 	public VariableConfiguration(GlobalState gs,Table t) {

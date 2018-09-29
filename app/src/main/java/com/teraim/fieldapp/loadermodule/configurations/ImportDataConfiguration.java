@@ -1,21 +1,9 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.json.JSONException;
-
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.ValuePair;
 import com.teraim.fieldapp.loadermodule.JSONConfigurationModule;
@@ -25,13 +13,21 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class ImportDataConfiguration extends JSONConfigurationModule {
 
-	private LoggerI o;
-	private DbHelper myDb;
+	private final LoggerI o;
+	private final DbHelper myDb;
 	private ArrayList<ValuePair> vars;
 	private Map<String,String> meta,keyz;
-	private Table varTable;
+	private final Table varTable;
 
 	public ImportDataConfiguration(PersistenceHelper globalPh,PersistenceHelper ph, String server, String bundle, LoggerI debugConsole,
 			DbHelper myDb, Table t) {
@@ -104,7 +100,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 		readingKeys,
 		readingVariables,
 	}
-	State state = null;
+	private State state = null;
 
 	@Override
 	public LoadResult parse(JsonReader reader) throws IOException {
@@ -136,16 +132,16 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 	}
 	private class Entry {
 
-		Map<String,String> keys;
-		List<ValuePair> variables;
-		public Entry(Map<String,String> keys, List<ValuePair> variables) {
+		final Map<String,String> keys;
+		final List<ValuePair> variables;
+		Entry(Map<String, String> keys, List<ValuePair> variables) {
 			super();
 			this.keys = keys;
 			this.variables = variables;
 		}
 
 	}
-	private List<Entry> entries = new ArrayList<Entry>();
+	private final List<Entry> entries = new ArrayList<Entry>();
 
 	private LoadResult readVariables(JsonReader reader) throws IOException {
 		String varName = null, value = null;
@@ -203,7 +199,13 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 	}
 
-	String ar,ruta,provyta,delyta,smaprovyta,linje,abo;
+	private String ar;
+    String ruta;
+    String provyta;
+    String delyta;
+    String smaprovyta;
+    String linje;
+    String abo;
 
 
 	private LoadResult readKeys(JsonReader reader) throws IOException {
@@ -242,9 +244,9 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 		return new LoadResult(this,ErrorCode.ParseError,"Error in keys object in importdata");
 	}
 
-	Set<String> skipped = new HashSet<String>();
-	Set<String> allKeys = new HashSet<String>();
-	Set<String> missingVariables = new HashSet<String>();
+	private final Set<String> skipped = new HashSet<String>();
+	private final Set<String> allKeys = new HashSet<String>();
+	private final Set<String> missingVariables = new HashSet<String>();
 
 
 	@Override
@@ -263,7 +265,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 
 	}
-	boolean firstCall = true;
+	private boolean firstCall = true;
 
 	@Override
 	public boolean freeze(int counter) {

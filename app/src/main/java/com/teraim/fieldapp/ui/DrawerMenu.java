@@ -1,16 +1,12 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,19 +17,22 @@ import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.ui.DrawerMenuAdapter.RowType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DrawerMenu {
 
-	private Activity frameActivity;
+	private final Activity frameActivity;
 	private DrawerMenuAdapter mAdapter;
 	private List<DrawerMenuItem> items;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private int currentIndex=0;
-	private Map<Integer,Integer> index; 
+	private SparseArray<Integer> index;
 	private List<Workflow> workflowsL;
 
-	public DrawerMenu(Activity a) {	
+	public DrawerMenu(Activity a) {
 		frameActivity=a;
 		createMenu();
 	}
@@ -86,14 +85,14 @@ public class DrawerMenu {
 				Log.e("vortex","Could not find any entry for menu position "+position);
 		}
 	}
-	public void createMenu() {
+	private void createMenu() {
 		//drawer items
 		//different if already created?
 		items = new ArrayList<DrawerMenuItem>(); 
 		mAdapter = new DrawerMenuAdapter(frameActivity, items);
 
-		mDrawerLayout = (DrawerLayout) frameActivity.findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) frameActivity.findViewById(R.id.left_drawer);
+		mDrawerLayout = frameActivity.findViewById(R.id.drawer_layout);
+		mDrawerList = frameActivity.findViewById(R.id.left_drawer);
 
 		// Set the adapter for the list view
 		mDrawerList.setAdapter(mAdapter);
@@ -103,7 +102,7 @@ public class DrawerMenu {
 		mDrawerToggle = new ActionBarDrawerToggle(
 				frameActivity,                  /* host Activity */
 				mDrawerLayout,         /* DrawerLayout object */
-				R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+				  /* nav drawer icon to replace 'Up' caret */
 				R.string.drawer_open,  /* "open drawer" description */
 				R.string.drawer_close  /* "close drawer" description */
 				) {
@@ -130,7 +129,7 @@ public class DrawerMenu {
 		mAdapter.notifyDataSetChanged();				
 
 		workflowsL = new ArrayList<Workflow>();
-		index = new HashMap<Integer,Integer>();
+		index = new SparseArray<>();
 		currentIndex=0;
 
 	}

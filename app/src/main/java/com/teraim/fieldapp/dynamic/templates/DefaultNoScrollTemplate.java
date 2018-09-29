@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +12,9 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author Terje
@@ -24,7 +24,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 
 public class DefaultNoScrollTemplate extends Executor {
 
-	View view; 
+	private View view;
 	private LinearLayout my_root;
 
 	
@@ -57,7 +57,7 @@ public class DefaultNoScrollTemplate extends Executor {
 		
 		
 //		errorView = (TextView)v.findViewById(R.id.errortext);
-		my_root = (LinearLayout)view.findViewById(R.id.myRoot);
+		my_root = view.findViewById(R.id.myRoot);
 //		my_pie = (LinearLayout)v.findViewById(R.id.pieRoot);
 		if (myContext != null )
 			myContext.addContainers(getContainers());

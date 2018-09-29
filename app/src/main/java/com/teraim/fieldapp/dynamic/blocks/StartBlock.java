@@ -1,12 +1,10 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
 import java.util.List;
 
-import com.teraim.fieldapp.utils.Expressor;
-import com.teraim.fieldapp.utils.Expressor.EvalExpr;
-import com.teraim.fieldapp.utils.Expressor.Token;
-
-import static com.teraim.fieldapp.utils.Expressor.*;
+import static com.teraim.fieldapp.utils.Expressor.preCompileExpression;
 
 /**
  * Startblock.
@@ -20,7 +18,7 @@ public  class StartBlock extends Block {
 	private static final long serialVersionUID = -6860379561128690656L;
 	final private String workflowName;
 	final private String[] args;
-	private String context;
+	private final String context;
 	private List<EvalExpr> contextE=null;
 
 	public StartBlock(String id,String[] args,String wfn, String context) {

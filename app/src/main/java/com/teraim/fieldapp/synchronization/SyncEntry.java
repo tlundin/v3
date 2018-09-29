@@ -34,7 +34,7 @@ public class SyncEntry extends SyncMessage {
     private String target,author;
     private Map<String,String> keys, values;
     private boolean invalid = false;
-    public SyncEntry() {}
+    SyncEntry() {}
 
     public SyncEntry(Type type,String changes,long timeStamp,String target,String author) {
         this.changes=changes;
@@ -89,7 +89,7 @@ public class SyncEntry extends SyncMessage {
             keys = collectPairs(tmp[0].split("\\|"));
             values = collectPairs(tmp[1].split("§"));
             //Log.d("bush","keys: "+keys+" values: "+values);
-        };
+        }
     }
 
 

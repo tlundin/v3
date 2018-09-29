@@ -1,20 +1,20 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.filters;
 
-import java.util.Iterator;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
+import java.util.Iterator;
+import java.util.List;
+
 //Specialized filter. Will filter a list on Prefix.
 public class WF_Column_Name_Filter extends WF_Filter {
 
-	String myPrefix = "";
+	private String myPrefix = "";
 	String filterColumn;
-	private String columnToMatch;
-	private FilterType filterType;
+	private final String columnToMatch;
+	private final FilterType filterType;
 	private boolean totMatch=false;
 
 	public enum FilterType{

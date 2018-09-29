@@ -1,17 +1,15 @@
 package com.teraim.fieldapp.utils;
 
 
-
-import java.util.Set;
-
-
 import android.text.Spanned;
 import android.util.Log;
 
+import java.util.Set;
+
 public class InputFilterListValues implements TextFilter {
 
-	String myPrint="";
-	final Set<String> allowed;
+	private String myPrint="";
+	private final Set<String> allowed;
     public InputFilterListValues(Set<String> allowedValues) {
         this.allowed=allowedValues;
  		myPrint = "[";
@@ -38,7 +36,7 @@ public class InputFilterListValues implements TextFilter {
     }
 
 
-	public boolean isLegal(String input) {
+	private boolean isLegal(String input) {
 		if (input.length()==0) {
 			Log.d("nils","allowing empty string");
 			return true;

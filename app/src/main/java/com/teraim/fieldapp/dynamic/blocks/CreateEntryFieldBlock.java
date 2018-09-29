@@ -8,7 +8,6 @@ import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.utils.Tools.Unit;
@@ -19,14 +18,21 @@ public class CreateEntryFieldBlock extends DisplayFieldBlock {
 	 * 
 	 */
 	private static final long serialVersionUID = 2013870148670474248L;
-	String name,type,label,containerId,postLabel,initialValue;
+	private final String name;
+    String type;
+    private final String label;
+    private final String containerId;
+    String postLabel;
+    private final String initialValue;
 
 	Unit unit;
-	GlobalState gs;
-	boolean isVisible = false,showHistorical,autoOpenSpinner=true;
-	String format;
+	private GlobalState gs;
+	private boolean isVisible = false;
+    private final boolean showHistorical;
+    private boolean autoOpenSpinner=true;
+	private final String format;
 
-	WF_ClickableField myField;
+	private WF_ClickableField myField;
 
 
 	public CreateEntryFieldBlock(String id,String name, 

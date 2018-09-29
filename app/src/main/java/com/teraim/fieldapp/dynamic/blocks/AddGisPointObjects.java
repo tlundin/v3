@@ -1,16 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -39,7 +28,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.StaticGisPoint;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
@@ -48,34 +36,48 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class AddGisPointObjects extends Block implements FullGisObjectConfiguration {
 
 
 	private static final long serialVersionUID = 7979886099817953005L;
 	private final String objectContextS;
 	private final boolean useIconOnMap;
-	private String nName,
-			target, coordType,locationVariables,imgSource,refreshRate;
+	private final String nName;
+	private final String target;
+	private String coordType;
+	private final String locationVariables;
+	private final String imgSource;
+	private final String refreshRate;
 
 	private Bitmap icon=null;
-	private boolean isVisible;
-	private GisObjectType myType;
-	public boolean loadDone=false;
+	private final boolean isVisible;
+	private final GisObjectType myType;
+	private boolean loadDone=false;
 	private Set<GisObject> myGisObjects;
 	private float radius;
-	private String color;
+	private final String color;
 	private Paint.Style fillType;
 	private PolyType polyType;
-	private String onClick;
-	private String statusVariable;
+	private final String onClick;
+	private final String statusVariable;
 	private DB_Context objectKeyHash;
-	private boolean isUser;
-	private boolean createAllowed;
+	private final boolean isUser;
+	private final boolean createAllowed;
 	private GisLayer myLayer;
 	private boolean dynamic;
 	private final List<EvalExpr>labelE;
 	private final List<Expressor.EvalExpr> objContextE;
-	private String unevaluatedLabel;
+	private final String unevaluatedLabel;
 	private String thisCheck,lastCheckTimeStamp;
 	private String palette;
 	private String creator;
@@ -338,7 +340,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		Map<String, String> map1,map2;
 		StoredVariableData storedVar1,storedVar2;
 
-		final Pair nullPair = new Pair<String, String>(null,null);
+		final Pair<String, String> nullPair = new Pair<String, String>(null,null);
 
 		if (pickerLocation1 !=null ) {
 
@@ -390,9 +392,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							//Store status var name & value for per uuid.
 							if (statusVarM == null)
 								statusVarM = new HashMap<String, Pair<String, String>>();
-							//ERRUR?
-							statusVarM.put(pickerStatusVars.getKeyColumnValues().get("uid"), new Pair(name, value));
-							//Log.d("gaya", "added statusvar with uid " + pickerStatusVars.getKeyColumnValues().get("uid"));
+							statusVarM.put(pickerStatusVars.getKeyColumnValues().get("uid"), new Pair<>(name, value));
 						}
 
 					} else
@@ -580,18 +580,18 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	}
 
 
-	public void setRadius(String radius) {
+	private void setRadius(String radius) {
 		if (!Tools.isNumeric(radius))
 			return;
 		this.radius = Float.parseFloat(radius);
 	}
 
 	private String print(String[] selectionArgs) {
-		String res="";
+		StringBuilder res= new StringBuilder();
 		for (String s:selectionArgs)
-			res+=s+",";
-		res = res.substring(0, res.length()-1);
-		return res;
+			res.append(s).append(",");
+		res = new StringBuilder(res.substring(0, res.length() - 1));
+		return res.toString();
 	}
 
 

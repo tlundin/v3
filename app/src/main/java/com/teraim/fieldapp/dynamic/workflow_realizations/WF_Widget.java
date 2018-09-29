@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
@@ -10,9 +9,9 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
 
 public class WF_Widget extends WF_Thing implements Drawable {
 
-	private View myView;
+	private final View myView;
 	private boolean isVisible;
-	protected VariableConfiguration al;
+	final VariableConfiguration al;
 
 
 	public WF_Widget(String id,View v,boolean isVisible,WF_Context myContext) {

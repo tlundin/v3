@@ -1,46 +1,36 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.blocks.AddEntryToFieldListBlock;
+import com.teraim.fieldapp.dynamic.blocks.AddFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisFilter;
 import com.teraim.fieldapp.dynamic.blocks.AddGisLayerBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
-import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
-import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
-import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
-import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
-import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
-import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
-import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddSumOrCountBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToEveryListEntryBlock;
 import com.teraim.fieldapp.dynamic.blocks.AddVariableToListEntry;
+import com.teraim.fieldapp.dynamic.blocks.BarChartBlock;
 import com.teraim.fieldapp.dynamic.blocks.Block;
+import com.teraim.fieldapp.dynamic.blocks.BlockAddAggregateColumnToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddColumnsToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockAddVariableToTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateListEntriesFromFieldList;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTable;
 import com.teraim.fieldapp.dynamic.blocks.BlockCreateTableEntriesFromFieldList;
+import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.BlockDeleteMatchingVariables;
+import com.teraim.fieldapp.dynamic.blocks.BlockGoSub;
 import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.blocks.ConditionalContinuationBlock;
 import com.teraim.fieldapp.dynamic.blocks.ContainerDefineBlock;
+import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
+import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateGisBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateImageBlock;
-import com.teraim.fieldapp.dynamic.blocks.AddFilter;
+import com.teraim.fieldapp.dynamic.blocks.CreateSliderEntryFieldBlock;
 import com.teraim.fieldapp.dynamic.blocks.CreateSortWidgetBlock;
 import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.blocks.JumpBlock;
@@ -50,28 +40,38 @@ import com.teraim.fieldapp.dynamic.blocks.MenuHeaderBlock;
 import com.teraim.fieldapp.dynamic.blocks.NoOpBlock;
 import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.RoundChartBlock;
+import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.dynamic.blocks.SetValueBlock;
-import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
-import com.teraim.fieldapp.dynamic.blocks.BlockCreateTextField;
 import com.teraim.fieldapp.dynamic.blocks.StartCameraBlock;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Not_ClickableField_SumAndCountOfVariables;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.loadermodule.LoadResult;
-import com.teraim.fieldapp.loadermodule.XMLConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
+import com.teraim.fieldapp.loadermodule.XMLConfigurationModule;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	private String myApplication;
-	private LoggerI o;
-	private String cacheFolder;
+	private final LoggerI o;
+	private final String cacheFolder;
 	private String language="se";
 	public static LoggerI debugConsole;
 	private String imageMetaFormat=null;
@@ -110,7 +110,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	}
 
 	//workflows will be added to this one.
-	List<Workflow> bundle = new ArrayList<Workflow>();
+    private final List<Workflow> bundle = new ArrayList<Workflow>();
 	int workFlowC = 0;
 
 	@Override
@@ -210,8 +210,8 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	private static boolean isSum = false;
-	private static boolean isCount = true;
+	private static final boolean isSum = false;
+	private static final boolean isCount = true;
 
 	private List<Block> readBlocks(XmlPullParser parser) throws IOException, XmlPullParserException {
 		List<Block> blocks=new ArrayList<Block>();
@@ -1314,7 +1314,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 
 	}
 
-	Map<String,Block> blockCache = new HashMap<>();
+	private final Map<String,Block> blockCache = new HashMap<>();
 
 	private Block readBlockCreateListEntriesFromFieldList(XmlPullParser parser) throws IOException, XmlPullParserException {
 		//o.addRow("Parsing block: block_create_list_entries_from_field_list...");

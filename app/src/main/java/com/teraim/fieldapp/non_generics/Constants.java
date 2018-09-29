@@ -35,7 +35,7 @@ import java.util.UUID;
 
 public class Constants {
 
-    public final static float VORTEX_VERSION = 6.47f;
+    public final static float VORTEX_VERSION = 6.472f;
     //String constants
     //The root folder for the SD  card is in the global Environment.
     private final static String path = Environment.getExternalStorageDirectory().getPath();
@@ -57,7 +57,7 @@ public class Constants {
     //public static String NILS_BASE_DIR = "/nils";
     public static String UNDEFINED = "undefined";
 
-    public static String Color_Pressed="#4682B4";
+    public static final String Color_Pressed="#4682B4";
 
 
     public static String[] defaultGroupHeader=new String[] {"Label,Description,Group Name,Variable Name,Internet link,P_Familj,P_Class"};
@@ -343,7 +343,7 @@ public class Constants {
     }
 
     private static class DownloadFileTask extends AsyncTask<String, Void, List<String>> {
-        WebLoaderCb cb;
+        final WebLoaderCb cb;
 
         DownloadFileTask(WebLoaderCb cb) {
             this.cb=cb;

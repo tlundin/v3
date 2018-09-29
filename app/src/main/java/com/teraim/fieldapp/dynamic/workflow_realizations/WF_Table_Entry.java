@@ -1,15 +1,15 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.view.View;
 
 import com.teraim.fieldapp.dynamic.types.Variable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class WF_Table_Entry extends WF_ListEntry {
-	protected WF_Context myContext;	
-	protected Variable myVar;
+	private final WF_Context myContext;
+	private Variable myVar;
 
 	public WF_Table_Entry(String id, View v, WF_Context ctx, boolean isVisible) {
 		super(id, v, ctx, isVisible);

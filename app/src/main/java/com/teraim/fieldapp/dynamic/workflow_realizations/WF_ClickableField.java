@@ -1,15 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -54,35 +44,42 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
-import com.teraim.fieldapp.dynamic.types.InnerLayout;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition.SpinnerElement;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Variable.DataType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
-import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
-import com.teraim.fieldapp.utils.Connectivity;
-import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         EventGenerator {
 
 
-    final LinearLayout inputContainer;
+    private final LinearLayout inputContainer;
 
-    protected Map<Variable, VariableView> myVars = new LinkedHashMap<Variable, VariableView>();
+    final Map<Variable, VariableView> myVars = new LinkedHashMap<Variable, VariableView>();
 
     private boolean autoOpenSpinner = true;
-    private GlobalState gs;
+    private final GlobalState gs;
     private static String[] opt=null, val=null;
-    private VariableConfiguration al;
-    private static boolean HIDE = false, SHOW = true;
-    private Map<Variable, String[]> values = new HashMap<Variable, String[]>();
+    private final VariableConfiguration al;
+    private static final boolean HIDE = false;
+    private static final boolean SHOW = true;
+    private final Map<Variable, String[]> values = new HashMap<Variable, String[]>();
 
 
 
@@ -95,18 +92,18 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
     private Drawable originalBackground=null;
     protected View longClickedRow;
 
-    protected boolean iAmOpen = false;
+    boolean iAmOpen = false;
     private Spinner firstSpinner = null;
-    protected List<Rule> myRules;
+    private List<Rule> myRules;
 
-    protected class VariableView {
+    class VariableView {
         View view;
         boolean displayOut;
         String format;
         boolean isVisible;
         boolean showHistorical;
         String listTag;
-        public SpinnerAdapter adapter;
+        SpinnerAdapter adapter;
     }
     public abstract LinearLayout getFieldLayout();
 
@@ -115,7 +112,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         return myVars.keySet();
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
         @Override
@@ -203,21 +200,21 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
                             if (type == DataType.numeric || type == DataType.decimal
                                     || type == DataType.text) {
-                                EditText etview = (EditText) view
+                                EditText etview = view
                                         .findViewById(R.id.edit);
                                 etview.setText("");
                             } else if (type == DataType.list) {
                                 LinearLayout sl = (LinearLayout) view;
-                                Spinner sp = (Spinner) sl.findViewById(R.id.spinner);
+                                Spinner sp = sl.findViewById(R.id.spinner);
                                 if (sp.getTag(R.string.u1) != null) {
-                                    TextView descr = (TextView) sl
+                                    TextView descr = sl
                                             .findViewById(R.id.extendedDescr);
                                     descr.setText("");
                                 }
                                 sp.setSelection(-1);
 
                             } else if (type == DataType.bool) {
-                                RadioGroup rbg = (RadioGroup) view
+                                RadioGroup rbg = view
                                         .findViewById(R.id.radioG);
                                 rbg.check(-1);
                             } else if (type == DataType.auto_increment) {
@@ -278,8 +275,8 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
     private ActionMode mActionMode;
 
-    public WF_ClickableField(final String label, final String descriptionT,
-                             WF_Context context, String id, View view, boolean isVisible, DisplayFieldBlock format) {
+    WF_ClickableField(final String label, final String descriptionT,
+                      WF_Context context, String id, View view, boolean isVisible, DisplayFieldBlock format) {
         super(id, label, descriptionT, context, view, isVisible, format);
         //Log.d("vortex","Creating WF_ClickableField: label: "+label+" descr: "+descriptionT+ " id: "+id);
         //change between horizontal and vertical
@@ -350,8 +347,8 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     VariableView vv = myVars.values().iterator().next();
                     Variable var = myVars.keySet().iterator().next();
                     String value = var.getValue();
-                    RadioButton ja = (RadioButton) vv.view.findViewById(R.id.ja);
-                    RadioButton nej = (RadioButton) vv.view.findViewById(R.id.nej);
+                    RadioButton ja = vv.view.findViewById(R.id.ja);
+                    RadioButton nej = vv.view.findViewById(R.id.nej);
                     if (value == null || var.getValue().equals("false"))
                         ja.setChecked(true);
                     else
@@ -662,7 +659,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         return h;
     }
 
-    protected void save() {
+    void save() {
         Log.d("boo","in save");
         boolean saveEvent = false;
         String newValue = null, existingValue = null;
@@ -683,7 +680,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
             Log.d("boo", "Variable: "+variable.getLabel()+" Existing value: " + existingValue);
             if (type == DataType.bool) {
                 // Get the yes radiobutton.
-                RadioGroup rbg = (RadioGroup) view.findViewById(R.id.radioG);
+                RadioGroup rbg = view.findViewById(R.id.radioG);
                 // If checked set value to True.
                 int id = rbg.getCheckedRadioButtonId();
 
@@ -695,7 +692,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     newValue = null;
             } else if (type == DataType.numeric || type == DataType.text
                     || type == DataType.decimal) {
-                EditText etview = (EditText) view.findViewById(R.id.edit);
+                EditText etview = view.findViewById(R.id.edit);
                 String txt = etview.getText().toString();
                 if (txt.trim().length() > 0)
                     newValue = txt;
@@ -703,7 +700,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     newValue = null;
             } else if (type == DataType.list) {
                 LinearLayout sl = (LinearLayout) view;
-                Spinner sp = (Spinner) sl.findViewById(R.id.spinner);
+                Spinner sp = sl.findViewById(R.id.spinner);
                 int s = sp.getSelectedItemPosition();
                 String v[] = values.get(variable);
                 if (v != null) {
@@ -717,7 +714,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     Log.d("nils", "VALUE FOR SPINNER B " + newValue);
                 }
             } else if (type == DataType.auto_increment) {
-                EditText etview = (EditText) view.findViewById(R.id.edit);
+                EditText etview = view.findViewById(R.id.edit);
                 String s = etview.getText().toString();
                 if (s != null && s.length() > 0) {
                     int val = Integer.parseInt(etview.getText().toString());
@@ -866,7 +863,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
 
     //Check, and if required, create the inputfield elements.
-    protected void createInputFields() {
+    void createInputFields() {
         Log.d("vortex","in createInputFields");
 
         int vc=0;
@@ -891,7 +888,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     // o.addRow("Adding boolean dy-variable with label "+label+", name "+varId+", type "+var.getType().name()+" and unit "+unit.name());
                     View view = LayoutInflater.from(myContext.getContext()).inflate(
                             R.layout.ja_nej_radiogroup, null);
-                    TextView header = (TextView) view.findViewById(R.id.header);
+                    TextView header = view.findViewById(R.id.header);
 
                     if (hist != null && Tools.isNumeric(hist)) {
                         String histTxt = (hist.equals("true") ? gs.getContext().getString(
@@ -912,10 +909,10 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     LinearLayout sl = (LinearLayout) LayoutInflater.from(
                             myContext.getContext()).inflate(
                             R.layout.edit_field_spinner, null);
-                    final TextView sHeader = (TextView) sl.findViewById(R.id.header);
-                    final TextView sDescr = (TextView) sl
+                    final TextView sHeader = sl.findViewById(R.id.header);
+                    final TextView sDescr = sl
                             .findViewById(R.id.extendedDescr);
-                    final Spinner spinner = (Spinner) sl.findViewById(R.id.spinner);
+                    final Spinner spinner = sl.findViewById(R.id.spinner);
 
                     spinner.setAdapter(varV.adapter);
                     inputContainer.addView(sl);
@@ -1002,7 +999,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                                             gView.setVisibility(mode ? View.VISIBLE
                                                     : View.GONE);
                                             if (gView instanceof LinearLayout) {
-                                                EditText et = (EditText) gView
+                                                EditText et = gView
                                                         .findViewById(R.id.edit);
                                                 if (et != null && mode == HIDE) {
                                                     Log.e("nils",
@@ -1031,7 +1028,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             + var.getType().name());
                     View l = LayoutInflater.from(myContext.getContext()).inflate(
                             R.layout.edit_field_text, null);
-                    header = (TextView) l.findViewById(R.id.header);
+                    header = l.findViewById(R.id.header);
 
                     header.setText(varLabel + " " + unit
                             + (hist != null ? " (" + hist + ")" : ""));
@@ -1046,8 +1043,8 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                         if (varV.format != null && varV.format.equals("slider")) {
                             l = LayoutInflater.from(myContext.getContext()).inflate(
                                     R.layout.edit_field_slider, null);
-                            SeekBar sb = (SeekBar) l.findViewById(R.id.seekbar);
-                            final EditText et = (EditText) l.findViewById(R.id.edit);
+                            SeekBar sb = l.findViewById(R.id.seekbar);
+                            final EditText et = l.findViewById(R.id.edit);
                             et.setKeyListener(null);
                             String value = var.getValue();
                             //Initiate seekbar to variable value if any.
@@ -1076,7 +1073,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     } else
                         l = LayoutInflater.from(myContext.getContext()).inflate(
                                 R.layout.edit_field_float, null);
-                    header = (TextView) l.findViewById(R.id.header);
+                    header = l.findViewById(R.id.header);
 
                     String headerTxt = varLabel
                             + ((unit != null && unit.length() > 0) ? " (" + unit + ")"
@@ -1108,9 +1105,9 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     Log.d("vortex", "Adding AUTO_INCREMENT variable " + varLabel);
                     l = LayoutInflater.from(myContext.getContext()).inflate(
                             R.layout.edit_field_numeric, null);
-                    header = (TextView) l.findViewById(R.id.header);
+                    header = l.findViewById(R.id.header);
                     header.setText(varLabel);
-                    @SuppressLint("CutPasteId") EditText etNum = (EditText) l.findViewById(R.id.edit);
+                    @SuppressLint("CutPasteId") EditText etNum = l.findViewById(R.id.edit);
                     etNum.setFocusable(false);
                     inputContainer.addView(l);
                     varV.view=l;
@@ -1123,7 +1120,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         }
     }
     // @Override
-    public void refreshInputFields() {
+    void refreshInputFields() {
         DataType numType;
         Log.d("nils", "In refreshinputfields");
 
@@ -1138,8 +1135,8 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
             View v = entry.getValue().view;
 
             if (numType == DataType.bool) {
-                RadioButton ja = (RadioButton) v.findViewById(R.id.ja);
-                RadioButton nej = (RadioButton) v.findViewById(R.id.nej);
+                RadioButton ja = v.findViewById(R.id.ja);
+                RadioButton nej = v.findViewById(R.id.nej);
                 if (value != null) {
                     if (value.equals("true"))
                         ja.setChecked(true);
@@ -1149,12 +1146,12 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
             } else if (numType == DataType.numeric || numType == DataType.text) {
 
                 // Log.d("nils","refreshing edittext with varid "+variable.getId());
-                EditText et = (EditText) v.findViewById(R.id.edit);
+                EditText et = v.findViewById(R.id.edit);
                 CombinedRangeAndListFilter filter = variable.getLimitFilter();
                 if (filter != null)
                     et.setFilters(new InputFilter[] { filter });
 
-                TextView limit = (TextView) v.findViewById(R.id.limit);
+                TextView limit = v.findViewById(R.id.limit);
                 CharSequence limiTxt = new SpannableString("");
                 et.setTextColor(Color.BLACK);
                 if (variable.isUsingDefault()) {
@@ -1183,7 +1180,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
             } else if (numType == DataType.list) {
                 // this is the spinner.
-                final Spinner sp = (Spinner) v.findViewById(R.id.spinner);
+                final Spinner sp = v.findViewById(R.id.spinner);
 
                 final Handler h = new Handler();
                 if (firstSpinner != null)
@@ -1243,7 +1240,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                 }
 
             } else if (numType == DataType.auto_increment) {
-                EditText et = (EditText) v.findViewById(R.id.edit);
+                EditText et = v.findViewById(R.id.edit);
                 et.setText(value == null ? "0" : value);
             }
 
@@ -1257,7 +1254,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
      * tmp = et.getFilters(); return
      * tmp.length==0?null:(CombinedRangeAndListFilter)tmp[0]; }
      */
-    protected void setAutoOpenSpinner(boolean open) {
+    void setAutoOpenSpinner(boolean open) {
         autoOpenSpinner = open;
     }
 

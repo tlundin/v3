@@ -10,7 +10,7 @@ public class Marker {
 	public int x,y;
 	public int riktning;
 	public int dist;
-	public Bitmap bmp;
+	public final Bitmap bmp;
 	private boolean isCent=false;
 
 	public Marker(Bitmap bmp) {

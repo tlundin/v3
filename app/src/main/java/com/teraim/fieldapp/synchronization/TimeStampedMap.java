@@ -3,10 +3,7 @@ package com.teraim.fieldapp.synchronization;
 import android.content.ContentValues;
 import android.util.Log;
 
-import com.teraim.fieldapp.utils.DbHelper;
-
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +13,7 @@ import java.util.Set;
 public class TimeStampedMap {
 
     //uid, mapped to variable id, mapped to timestamp.
-    private Map<Unikey,Map<String,ContentValues>> myMap = new HashMap();
+    private final Map<Unikey,Map<String,ContentValues>> myMap = new HashMap();
 
     private int size = 0;
 

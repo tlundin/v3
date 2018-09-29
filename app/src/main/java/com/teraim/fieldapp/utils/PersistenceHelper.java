@@ -1,19 +1,8 @@
 package com.teraim.fieldapp.utils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-
 import android.content.SharedPreferences;
-import android.os.Environment;
-import android.util.Log;
 
-import com.teraim.fieldapp.non_generics.Constants;
+import java.util.ArrayList;
 
 public class PersistenceHelper {
 	public static final String UNDEFINED = "";
@@ -25,7 +14,7 @@ public class PersistenceHelper {
 	public static final String SHOW_AUTHOR_KEY = "show_author";
 	public static final String CONFIG_LOCATION = "config_name";
 	public static final String BUNDLE_NAME = "bundle_name";
-	public static final String BACKUP_LOCATION = "backup_location";	
+	public static final String BACKUP_LOCATION = "backup_location";
 	public static final String SERVER_URL = "server_location";
 	public static final String FOLDER = "file_picker";
 	public static final String CURRENT_VERSION_OF_APP = "current_version_of_app_f";
@@ -67,13 +56,11 @@ public class PersistenceHelper {
 	public static final String PotentiallyTimeStampToUseIfInsertDoesNotFail="potential_timestamp";
 
 
-    SharedPreferences sp;
-	SharedPreferences.Editor edit;
+	private final SharedPreferences sp;
 	ArrayList<String> delta = new ArrayList<String>();
 
 	public PersistenceHelper(SharedPreferences sp) {
 		this.sp = sp;
-		edit = sp.edit();
 	}
 
 	public String get(String key,String undefined) {
@@ -84,19 +71,19 @@ public class PersistenceHelper {
 		return sp.getString(key,UNDEFINED);
 	}
 
-	public void put(String key, String value) { edit().putString(key,value).commit();
+	public void put(String key, String value) { sp.edit().putString(key,value).commit();
 
 	}
 	public void put(String key, boolean value) {
-		edit().putBoolean(key,value).apply();
+		sp.edit().putBoolean(key,value).apply();
 	}
 	public void put(String key, int value) {
-		edit().putInt(key,value).apply();
+		sp.edit().putInt(key,value).apply();
 	}
 	public void put(String key, float value) {
-		edit().putFloat(key,value).apply();
+		sp.edit().putFloat(key,value).apply();
 	}
-	public void put(String key, long value) { edit().putLong(key,value).apply();
+	public void put(String key, long value) { sp.edit().putLong(key,value).apply();
 	}
 	public boolean getB(String key) {
 		return sp.getBoolean(key, false);
@@ -105,19 +92,14 @@ public class PersistenceHelper {
 	public int getI(String key) {
 		return sp.getInt(key, -1);
 	}
-	
+
 	public float getF(String key) {
 		return sp.getFloat(key, -1);
 	}
-	
+
 	public long getL(String key) {
 		return sp.getLong(key, -1);
 	}
-
-	private SharedPreferences.Editor edit() {
-		return edit;
-	}
-
 
 
 }

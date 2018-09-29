@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.Location;
@@ -10,9 +7,12 @@ import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.utils.Geomatte;
 
+import java.util.List;
+import java.util.Map;
+
 public class GisMultiPointObject extends GisPathObject {
 
-	private FullGisObjectConfiguration poc;
+	private final FullGisObjectConfiguration poc;
 	
 	public GisMultiPointObject(FullGisObjectConfiguration conf,Map<String, String> keyChain,List<Location> myCoordinates,String statusVar,String statusVal) {
 		super(conf,keyChain,myCoordinates,statusVar,statusVal);

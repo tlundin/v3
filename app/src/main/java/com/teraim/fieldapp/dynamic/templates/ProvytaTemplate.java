@@ -1,9 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,7 +26,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -56,19 +51,23 @@ import com.teraim.fieldapp.non_generics.StatusHandler.Kvot;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 
 public class ProvytaTemplate extends Executor implements EventListener,OnGesturePerformedListener {
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 
 	/* (non-Javadoc)
 	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
-	ViewGroup myContainer = null;
+    private ViewGroup myContainer = null;
 	private GestureLibrary gestureLib;
-	private String[] linjeA=new String[Constants.MAX_NILS_LINJER+1];
+	private final String[] linjeA=new String[Constants.MAX_NILS_LINJER+1];
 	private Variable liv,pyv;
 	private String provytaThatWasSelected=null;
-	private static String NONE_SELECTED = "-";
+	private static final String NONE_SELECTED = "-";
 	private boolean clicked = false;
 
 
@@ -76,7 +75,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 
 
 
-	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
 
 		// Called when the action mode is created; startActionMode() was called
@@ -122,7 +121,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		}
 	};
 
-	ActionMode mActionMode;
+	private ActionMode mActionMode;
 
 
 
@@ -141,19 +140,19 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		Log.d("nils","in onCreateView of provyta_template");
 		myContainer = container;
 		View v = inflater.inflate(R.layout.template_provyta_wf, container, false);	
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
-		ListView selectedList = (ListView)v.findViewById(R.id.SelectedL);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
+		ListView selectedList = v.findViewById(R.id.SelectedL);
 		ViewGroup aggregatePanel = (LinearLayout)v.findViewById(R.id.aggregates);
 		ViewGroup fieldListPanel = (LinearLayout)v.findViewById(R.id.fieldList);
 
-		final Spinner pySpinner = (Spinner)fieldListPanel.findViewById(R.id.pySpinner);
-		final Spinner aboSpinner = (Spinner)fieldListPanel.findViewById(R.id.aboSpinner);
-		final Spinner linjeSpinner = (Spinner)fieldListPanel.findViewById(R.id.linjeSpinner);
+		final Spinner pySpinner = fieldListPanel.findViewById(R.id.pySpinner);
+		final Spinner aboSpinner = fieldListPanel.findViewById(R.id.aboSpinner);
+		final Spinner linjeSpinner = fieldListPanel.findViewById(R.id.linjeSpinner);
 		myLayouts.add(root);
 		myLayouts.add(new WF_Container("Field_List_panel_1", fieldListPanel , root));
 		myLayouts.add(new WF_Container("Aggregation_panel_3", aggregatePanel, root));
 		//		myLayouts.add(new WF_Container("Filter_panel_4", (LinearLayout)v.findViewById(R.id.filterPanel), root));
-		myLayouts.add(new WF_Container("Field_List_panel_2", (FrameLayout)v.findViewById(R.id.Selected), root));
+		myLayouts.add(new WF_Container("Field_List_panel_2", v.findViewById(R.id.Selected), root));
 		myContext.addContainers(getContainers());
 
 
@@ -161,21 +160,21 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 				"Vald Ruta", true,null,new DisplayFieldBlock());
 
 		LinearLayout provytorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
-		TextView h = (TextView)provytorRemainingView.findViewById(R.id.header);
+		TextView h = provytorRemainingView.findViewById(R.id.header);
 		h.setText("Provytor gjorda");
 
-		provOutputValueField = (TextView)provytorRemainingView.findViewById(R.id.outputValueField);
+		provOutputValueField = provytorRemainingView.findViewById(R.id.outputValueField);
 
 		LinearLayout linjerRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
-		h = (TextView)linjerRemainingView.findViewById(R.id.header);
+		h = linjerRemainingView.findViewById(R.id.header);
 		h.setText("Linjer gjorda");		
 
 
-		linjeOutputValueField = (TextView)linjerRemainingView.findViewById(R.id.outputValueField);
+		linjeOutputValueField = linjerRemainingView.findViewById(R.id.outputValueField);
 
 		//WF_ClickableField_Selection aggNo = new WF_ClickableField_Selection_OnSave("Avslutade Rutor:", "De rutor ni avslutat",
 		//		myContext, "AvslRutor",true);
-		Button navi = (Button)fieldListPanel.findViewById(R.id.naviButton);
+		Button navi = fieldListPanel.findViewById(R.id.naviButton);
 		//Button gron = (Button)fieldListPanel.findViewById(R.id.gronB);
 		navi.setOnClickListener(new OnClickListener() {
 			//TODO: CHANGE TO CORRECT GPS
@@ -200,7 +199,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 			}
 		});
 
-		Button greenB = (Button)fieldListPanel.findViewById(R.id.greenB);
+		Button greenB = fieldListPanel.findViewById(R.id.greenB);
 		greenB.setOnClickListener(new OnClickListener() {
 			//TODO: CHANGE TO CORRECT GPS
 			@Override
@@ -212,7 +211,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 			}
 		});
 
-		Button linjeInvB = (Button)fieldListPanel.findViewById(R.id.linjeButton);
+		Button linjeInvB = fieldListPanel.findViewById(R.id.linjeButton);
 		linjeInvB.setOnClickListener(new OnClickListener() {
 			//TODO: CHANGE TO CORRECT GPS
 			@Override
@@ -236,7 +235,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 			}
 		});
 
-		Button nilsInvB  = (Button)fieldListPanel.findViewById(R.id.pyButton);
+		Button nilsInvB  = fieldListPanel.findViewById(R.id.pyButton);
 		nilsInvB.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -253,7 +252,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 			}
 		});
 
-		Button aboInvB  = (Button)fieldListPanel.findViewById(R.id.aboButton);
+		Button aboInvB  = fieldListPanel.findViewById(R.id.aboButton);
 		aboInvB.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -276,7 +275,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		aggregatePanel.addView(linjerRemainingView);
 
 
-		GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 
 		gestureOverlayView.setGestureVisible(false);
 		gestureOverlayView.addOnGesturePerformedListener(this);
@@ -348,7 +347,7 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 				if (mActionMode != null) {
 					return false;
 				}
-				TextView txt1 = (TextView) row.findViewById(android.R.id.text1);
+				TextView txt1 = row.findViewById(android.R.id.text1);
 				Log.d("nils","I believe the user longclicked "+txt1.getText());
 				provytaThatWasSelected = txt1.getText().toString();
 				// Start the CAB using the ActionMode.Callback defined above

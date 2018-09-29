@@ -3,12 +3,6 @@
  */
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.InputStream;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -16,28 +10,32 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.Expressor;
-import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+import com.teraim.fieldapp.utils.Tools;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.InputStream;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author Terje
@@ -55,9 +53,9 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 	private final String scale;
 	private ImageView img = null;
 	private WF_Context myContext;
-	private boolean isVisible;
+	private final boolean isVisible;
 	private String dynImgName;
-	private List<EvalExpr> sourceE;
+	private final List<EvalExpr> sourceE;
 
 	public CreateImageBlock(String id, String nName, String container,
 			String source, String scale, boolean isVisible) {
@@ -121,7 +119,7 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 		});
 	}
 
-	public void showImage() {
+	private void showImage() {
 		Dialog builder = new Dialog(myContext.getContext());
 		builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		builder.getWindow().setBackgroundDrawable(
@@ -228,9 +226,9 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 
 
 	class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-		ImageView bmImage;
+		final ImageView bmImage;
 
-		public DownloadImageTask(ImageView bmImage) {
+		DownloadImageTask(ImageView bmImage) {
 			this.bmImage = bmImage;
 		}
 

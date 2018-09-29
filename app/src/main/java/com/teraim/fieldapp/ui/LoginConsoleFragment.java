@@ -52,7 +52,7 @@ import java.util.Random;
 
 public class LoginConsoleFragment extends Fragment implements ModuleLoaderListener {
 
-	TextView log;
+	private TextView log;
 
 	private LoggerI loginConsole,debugConsole;
 	private PersistenceHelper globalPh,ph;
@@ -73,12 +73,12 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				container, false);
 		TextView versionTxt;
 		Log.e("vortex","oncreatevieww!");
-		log = (TextView)view.findViewById(R.id.logger);
-		versionTxt = (TextView)view.findViewById(R.id.versionTxt);
+		log = view.findViewById(R.id.logger);
+		versionTxt = view.findViewById(R.id.versionTxt);
 
-		final ImageView logo = (ImageView)view.findViewById(R.id.logo);
-		final ImageView bg = (ImageView)view.findViewById(R.id.bgImg);
-		appTxt = (TextView)view.findViewById(R.id.appTxt);
+		final ImageView logo = view.findViewById(R.id.logo);
+		final ImageView bg = view.findViewById(R.id.bgImg);
+		appTxt = view.findViewById(R.id.appTxt);
 
 		//Typeface type=Typeface.createFromAsset(getActivity().getAssets(),
 		//		"clacon.ttf");
@@ -341,7 +341,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				.show();
 	}
 
-	public String server() {
+	private String server() {
 		String serverUrl = globalPh.get(PersistenceHelper.SERVER_URL);
 		if (!serverUrl.endsWith("/"))
 			serverUrl+="/";
@@ -357,7 +357,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		mActivity = activity;
 	}
 
-	CharSequence logTxt="";
+	private CharSequence logTxt="";
 
 	@Override
 	public void loadSuccess(String loaderId, final boolean majorVersionChange, CharSequence logText,boolean socketBroken) {
@@ -506,7 +506,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 	}
 private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-	ImageView bmImage;
+	final ImageView bmImage;
 
 	public DownloadImageTask(ImageView bmImage) {
 		this.bmImage = bmImage;

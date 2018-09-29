@@ -1,19 +1,5 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.UUID;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
@@ -29,22 +15,31 @@ import com.teraim.fieldapp.loadermodule.JSONConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 public class GisObjectConfiguration extends JSONConfigurationModule {
 
-    private LoggerI o;
-    private DbHelper myDb;
-    private List<GisObject> myGisObjects = new ArrayList<GisObject>();
+    private final LoggerI o;
+    private final DbHelper myDb;
+    private final List<GisObject> myGisObjects = new ArrayList<GisObject>();
     private String myType;
-    private boolean generatedUID = false;
-    private Table varTable;
+    private final boolean generatedUID = false;
+    private final Table varTable;
     private boolean isDebug = false;
-    private List<String>requiredAttributes = new ArrayList<>();
+    private final List<String>requiredAttributes = new ArrayList<>();
 
 
     public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
@@ -278,7 +273,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                                         //If single point, next must be number.
                                         if (reader.peek() == JsonToken.NUMBER) {
                                             //Log.d("morphy", "point");
-                                            myGisObjects.add(new GisObject(keyChain, Arrays.asList(readLocation(reader)), attributes));
+                                            myGisObjects.add(new GisObject(keyChain, Collections.singletonList(readLocation(reader)), attributes));
                                         } else {
                                             //next must be an array. Otherwise error.
                                             //[->[
@@ -486,10 +481,10 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
 
-    boolean firstCall = true;
-    Set<String> missingVariables=null;
-    Set<GisObject>dubletter = new HashSet<>();
-    Set<String>seenAlready=new HashSet<>();
+    private boolean firstCall = true;
+    private Set<String> missingVariables=null;
+    private final Set<GisObject>dubletter = new HashSet<>();
+    private final Set<String>seenAlready=new HashSet<>();
     @Override
     public boolean freeze(int counter) {
 

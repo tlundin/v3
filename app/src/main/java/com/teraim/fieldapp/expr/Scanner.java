@@ -4,15 +4,13 @@ package com.teraim.fieldapp.expr;
 
 import java.util.Vector;
 
-import android.util.Log;
-
 
 class Scanner {
 
- private String s;
- private String operatorChars;
+ private final String s;
+ private final String operatorChars;
 
- Vector tokens = new Vector();
+ final Vector tokens = new Vector();
  int index = -1;
 
  public Scanner(String string, String operatorChars) {

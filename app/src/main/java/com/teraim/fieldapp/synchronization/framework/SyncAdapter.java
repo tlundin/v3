@@ -1,16 +1,5 @@
 package com.teraim.fieldapp.synchronization.framework;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -30,13 +19,22 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
 import com.teraim.fieldapp.synchronization.SyncFailed;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Handle the transfer of data between a server and an
@@ -48,15 +46,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 	// Global variables
 	// Define a variable to contain a content resolver instance
-	ContentResolver mContentResolver;
-	SharedPreferences gh;
+    private final ContentResolver mContentResolver;
+	private SharedPreferences gh;
 	private Messenger mClient;
 
 	private final Uri CONTENT_URI = Uri.parse("content://"
 			+ SyncContentProvider.AUTHORITY + "/synk");
 
-	boolean busy = true,internetSync = false;
-	String app=null, user=null, team=null;
+	private boolean busy = true;
+    private boolean internetSync = false;
+	private String app=null;
+    private String user=null;
+    private String team=null;
 	private SharedPreferences ph;
 	/**
 	 * Set up the sync adapter
@@ -122,7 +123,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	
 
 	//Never sync more than 1000 at a time.
-	final int MaxSyncableRows = 1000;
+	private final int MaxSyncableRows = 1000;
 	private List<ContentValues> rowsToInsert=null;
 
 
@@ -188,7 +189,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, null);
 		SyncEntry[] sa =null;
-		StringBuilder targets=new StringBuilder("");
+		StringBuilder targets=new StringBuilder();
 		long maxStamp = -1;
 		int maxToSync=0;
 		if (c!=null) {

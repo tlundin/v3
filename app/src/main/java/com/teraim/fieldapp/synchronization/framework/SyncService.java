@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.synchronization.framework;
 
-import java.util.ArrayList;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
@@ -9,11 +7,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.teraim.fieldapp.Start;
-
-import static com.teraim.fieldapp.synchronization.framework.SyncAdapter.forceSyncToHappen;
 
 /**
  * Define a Service that returns an IBinder for the
@@ -29,7 +24,7 @@ public class SyncService extends Service {
   
     
     
-    static Messenger mClient;
+    private static Messenger mClient;
     
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_SYNC_ERROR_STATE = 2;
@@ -97,7 +92,7 @@ public class SyncService extends Service {
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
+    private final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     /**
      * When binding to the service, we return an interface to our messenger

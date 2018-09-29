@@ -5,7 +5,8 @@ import android.util.Log;
 
 public class InputFilterMinMax implements TextFilter {
 
-	private int min, max;
+	private final int min;
+    private final int max;
 	private String myPrint = "";
 	
 	public InputFilterMinMax(int min, int max) {
@@ -38,7 +39,7 @@ public class InputFilterMinMax implements TextFilter {
 	}
 
 
-	public boolean isLegal(String newVal) {
+	private boolean isLegal(String newVal) {
 		//Log.d("nils","String to test: "+newVal);
 		if (newVal.length()==0)
 			return false;

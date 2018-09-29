@@ -27,7 +27,8 @@ public class NudgeView extends View {
     private static int centralButtonR;
     private NudgeListener listener;
     private float Edge_Margin = 0;
-    int w=0, h=0;
+    private int w=0;
+    private int h=0;
     private float diameter =115;
     private float density;
     private Paint p1,p2,p3,p1neg,p2neg,p3neg;
@@ -273,7 +274,7 @@ public class NudgeView extends View {
 
     }
 
-    boolean calculated=false;
+    private boolean calculated=false;
 
     @Override
     protected void onSizeChanged(int ww, int hh, int oldw, int oldh) {

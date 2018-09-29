@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,9 @@ import android.widget.TextView;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.RutListEntry;
 
-public class RutaAdapter extends ArrayAdapter<RutListEntry> {
+import java.util.List;
+
+class RutaAdapter extends ArrayAdapter<RutListEntry> {
 
 	
 	public RutaAdapter(Context context, int textViewResourceId) {
@@ -36,8 +36,8 @@ public class RutaAdapter extends ArrayAdapter<RutListEntry> {
 		}
 		RutListEntry rl = getItem(position);
 		final String pi = Integer.toString(rl.id);
-		TextView geo = (TextView) v.findViewById(R.id.geo);
-		TextView header = (TextView) v.findViewById(R.id.header);
+		TextView geo = v.findViewById(R.id.geo);
+		TextView header = v.findViewById(R.id.header);
 		header.setText(pi);
 		
 		geo.setText(rl.currentDistance);

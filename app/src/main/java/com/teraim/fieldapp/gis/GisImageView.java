@@ -1,28 +1,10 @@
 package com.teraim.fieldapp.gis;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
-
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,28 +18,23 @@ import android.location.LocationManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.Location;
-import com.teraim.fieldapp.dynamic.types.MapGisLayer;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.DynamicGisPoint;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
+import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisFilter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisMultiPointObject;
@@ -67,8 +44,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisPointObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisPolygonObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.StaticGisPoint;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
@@ -77,6 +52,21 @@ import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Geomatte;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class GisImageView extends GestureImageView implements TrackerListener {
 
@@ -98,7 +88,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	private Handler handler;
 	private Context ctx;
-	private Calendar calendar = Calendar.getInstance();
+	private final Calendar calendar = Calendar.getInstance();
 
 	//Photometadata for the current view.
 	private PhotoMeta photoMetaData;
@@ -230,47 +220,48 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 	}
-	double pXR,pYR;
+	private double pXR;
+    private double pYR;
 	private WF_Gis_Map myMap;
 	private boolean allowZoom;
-	private IntBuffer intBuffer = new IntBuffer();
-	private PathBuffer pathBuffer = new PathBuffer();
+	private final IntBuffer intBuffer = new IntBuffer();
+	private final PathBuffer pathBuffer = new PathBuffer();
 
 
 	private class PathBuffer {
-		private Path[] mBuffer = new Path[500];
+		private final Path[] mBuffer = new Path[500];
 		private int c=0;
 
-		public PathBuffer() {
+		PathBuffer() {
 			for (int i = 0; i<mBuffer.length;i++)
 				mBuffer[i]= new Path();
 		}
 
-		public Path getPath() {
+		Path getPath() {
 			if (c<mBuffer.length)
 				return mBuffer[c++];
 			Log.d("vortex","Ran out of path objects: "+(c++));
 			return new Path();
 		}
 
-		public void reset() {
+		void reset() {
 			c=0;
 		}
 	}
 
 	private class IntBuffer {
 
-		private int[][] mBuffer = new int[1500][2];
+		private final int[][] mBuffer = new int[1500][2];
 		private int c=0;
 
-		public int[] getIntBuf() {
+		int[] getIntBuf() {
 			if (c<mBuffer.length)
 				return mBuffer[c++];
 			Log.d("vortex","Ran out of int arrays..");
 			return new int[2];
 		}
 
-		public void reset() {
+		void reset() {
 			c=0;
 		}
 	}
@@ -498,8 +489,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		double mapDistX = l.getX()-photoMetaData.W;
 		double mapDistY = l.getY()-photoMetaData.S;
 		if ((mapDistX <=imgWReal && mapDistX>=0) && (mapDistY <=imgHReal && mapDistY>=0)) {
-			;
-			//Log.d("inside", " distX: " + mapDistX + " distY: "+mapDistY+" [imgW: "+imgWReal+" imgH: "+imgHReal+"]");
+            //Log.d("inside", " distX: " + mapDistX + " distY: "+mapDistY+" [imgW: "+imgWReal+" imgH: "+imgHReal+"]");
 		}
 		else {
 			//if(mapDistX>imgWReal||mapDistX<0)
@@ -537,7 +527,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	}
 
-	public Location calculateMapLocationForClick(float x, float y) {
+	private Location calculateMapLocationForClick(float x, float y) {
 		//Figure out geo coords from pic coords.
 		clickXY=translateToReal(x,y);
 		mapLocationForClick = translateRealCoordinatestoMap(clickXY);
@@ -649,7 +639,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 	Drawable d1;
 
-	private List<GisObject> candidates = new ArrayList<GisObject>();
+	private final List<GisObject> candidates = new ArrayList<GisObject>();
 
 	@Override
 	protected void dispatchDraw(Canvas canvas) {
@@ -939,8 +929,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		pathBuffer.reset();
 	}
 
-	final static String isFresh = "#7CFC00";
-	final static String isOld = "#D3D3D3";
+	private final static String isFresh = "#7CFC00";
+	private final static String isOld = "#D3D3D3";
 
 
 	public Set<GisObject> findMyTeam() {
@@ -1240,7 +1230,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	 * @param bgPaint
 	 * @param txtPaint
 	 */
-	private Map<int[],Rect> rectBuffer = new HashMap<int[],Rect>();
+	private final Map<int[],Rect> rectBuffer = new HashMap<int[],Rect>();
 
 	private void drawGopLabel(Canvas canvas, int[] xy, String mLabel, float offSet, Paint bgPaint, Paint txtPaint) {
 		Rect bounds = rectBuffer.get(xy);
@@ -1263,7 +1253,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		Rect r;
 		//Log.d("bortex","in drawpoint type "+type.name()+" bitmap: "+bitmap);
-		Log.d("arriba","useI"+useIconOnMap+" bm: "+(bitmap!=null));
+		//Log.d("arriba","useI"+useIconOnMap+" bm: "+(bitmap!=null));
 		if (useIconOnMap && bitmap!=null ) {
 
 			r = new Rect();
@@ -1322,7 +1312,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private int[] riktLinjeStart,riktLinjeEnd;
 
 	private Integer currentDistance=null;
-	final static int TimeOut = 3;
+	private final static int TimeOut = 3;
 
 	private void displayDistanceAndDirection() {
 		final int interval = TimeOut*1000;
@@ -1415,13 +1405,13 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 
-	private Map<String,Paint> paintCache = new HashMap<String,Paint>();
+	private final Map<String,Paint> paintCache = new HashMap<String,Paint>();
 
 	public Paint createPaint(String color, Paint.Style style) {
 		return createPaint(color,style,2);
 	}
 
-	public Paint createPaint(String color, Paint.Style style, int strokeWidth) {
+	private Paint createPaint(String color, Paint.Style style, int strokeWidth) {
 		String key = style==null?color:color+style.name();
 		Paint p = paintCache.get(key);
 		if (p!=null) {
@@ -1459,7 +1449,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		unSelectGop();
 
 	}
-	public void runSelectedWf(GisObject gop) {
+	private void runSelectedWf(GisObject gop) {
 
 		GlobalState.getInstance().setDBContext(new DB_Context(null,gop.getKeyHash()));
 		Log.d("vortex","Setting current keyhash to "+gop.getKeyHash());
@@ -1643,7 +1633,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Log.e("vortex","Touchedgop null in describeSelectedGop");
 	}
 
-	long mostRecentGPSValueTimeStamp=-1;
+	private long mostRecentGPSValueTimeStamp=-1;
 	@Override
 	public void gpsStateChanged(GPS_State newState) {
 		//Log.d("vortex","Got GPS STATECHANGE");

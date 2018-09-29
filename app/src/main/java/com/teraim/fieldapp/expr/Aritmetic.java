@@ -3,12 +3,9 @@ package com.teraim.fieldapp.expr;
 //Variables associate values with names.
 //Copyright 1996 by Darius Bacon; see the file COPYING.
 
-import java.util.Hashtable;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.Numerable;
-import com.teraim.fieldapp.non_generics.Constants;
 
 /**
 * A variable is a simple expression with a name (like "x") and a
@@ -25,7 +22,8 @@ public class Aritmetic extends Expr implements Numerable {
   *         yet exist */
  
 
- private String name,label;
+ private final String name;
+    private final String label;
  private double val;
 
  /**

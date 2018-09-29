@@ -11,14 +11,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -29,7 +27,6 @@ import android.widget.ToggleButton;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -45,9 +42,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_StatusButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ToggleButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
-import com.teraim.fieldapp.expr.SyntaxException;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.Exporter;
@@ -82,14 +77,19 @@ public  class ButtonBlock extends Block  implements EventListener {
 	private String exportFormat = "csv";
 	private String exportFileName = null;
 
-	String onClick,name,containerId;
+	private final String onClick;
+    private final String name;
+    private final String containerId;
 	private Boolean validationResult = true;
-	Type type;
+	private final Type type;
 	private android.graphics.drawable.Drawable originalBackground;
-	private List<EvalExpr>textE,targetE,buttonContextE,statusContextE;
+	private final List<EvalExpr>textE;
+    private final List<EvalExpr> targetE;
+    private final List<EvalExpr> buttonContextE;
+    private List<EvalExpr> statusContextE;
 
-	WF_Context myContext;
-	private boolean isVisible;
+	private WF_Context myContext;
+	private final boolean isVisible;
 	private String statusVar=null;
 	private OnclickExtra extraActionOnClick=null;
 	private GlobalState gs;
@@ -98,10 +98,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 	private String targetMailAdress=null;
 
 
-	private boolean enabled;
+	private final boolean enabled;
 
 	private DB_Context buttonContextOld=null,buttonContext=null;
-	private boolean syncRequired;
+	private final boolean syncRequired;
 	private VariableCache varCache;
 	private WF_Button button = null;
 	private Map<String,String> statusVariableHash=null;
@@ -176,7 +176,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 	}
 
 
-	public String getText() {
+	private String getText() {
 		return Expressor.analyze(textE);
 	}
 
@@ -310,9 +310,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 									popUpView = inflater.inflate(R.layout.rules_popup, null);
 									mpopup = new PopupWindow(popUpView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, true); //Creation of popup
 									mpopup.setAnimationStyle(android.R.style.Animation_Dialog);
-									LinearLayout frame = (LinearLayout)popUpView.findViewById(R.id.pop);
-									Button avsluta = (Button)popUpView.findViewById(R.id.avsluta);
-									Button korrigera = (Button)popUpView.findViewById(R.id.korrigera);
+									LinearLayout frame = popUpView.findViewById(R.id.pop);
+									Button avsluta = popUpView.findViewById(R.id.avsluta);
+									Button korrigera = popUpView.findViewById(R.id.korrigera);
 									avsluta.setOnClickListener(new OnClickListener() {
 
 										@Override
@@ -386,9 +386,9 @@ public  class ButtonBlock extends Block  implements EventListener {
 											if (!ok || ok && isDeveloper) {
 												showPop=true;
 												row = (LinearLayout)inflater.inflate(R.layout.rule_row, null);
-												header = (TextView)row.findViewById(R.id.header);
-												body = (TextView)row.findViewById(R.id.body);
-												indicator = (ImageView)row.findViewById(R.id.indicator);
+												header = row.findViewById(R.id.header);
+												body = row.findViewById(R.id.body);
+												indicator = row.findViewById(R.id.indicator);
 												indicator.setImageResource(indicatorId);
 												Log.d("nils"," Rule header "+r.getRuleHeader()+" rule body: "+r.getRuleText());
 												header.setText(r.getRuleHeader());

@@ -20,7 +20,7 @@ package com.teraim.fieldapp.gis;
  * @author Jason Polites
  *
  */
-public interface MoveAnimationListener {
+interface MoveAnimationListener {
 
 	void onMove(float x, float y);
 	

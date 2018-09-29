@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.TextView;
+
 import com.teraim.fieldapp.ui.MenuActivity;
 
 public class PassiveLogger implements LoggerI {
 
-    StringBuilder log = new StringBuilder();
-    Context myContext;
-    String loggerId;
+    private final StringBuilder log = new StringBuilder();
+    private final Context myContext;
+    private final String loggerId;
     int ticky=0;
-    boolean hasRed=false;
+    private boolean hasRed=false;
 
     public PassiveLogger(Context c,String loggerId) {
         myContext = c;

@@ -1,14 +1,17 @@
 package com.teraim.fieldapp.gis;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -33,20 +36,20 @@ import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
 
 public class Tracker extends Service implements LocationListener {
 
-	Set<TrackerListener> mListeners = null;
+	private Set<TrackerListener> mListeners = null;
 	//Keep track of time between synchronised saves
-	Long oldT = null;
+	private Long oldT = null;
 	// flag for GPS status
 	boolean isGPSEnabled = false;
 
 	// flag for network status
-	boolean isNetworkEnabled = false;
+	private boolean isNetworkEnabled = false;
 
-	boolean canGetLocation = false;
+	private boolean canGetLocation = false;
 
-	Location location; // location
-	double latitude; // latitude
-	double longitude; // longitude
+	private Location location; // location
+	private double latitude; // latitude
+	private double longitude; // longitude
 
 	// The minimum distance to change Updates in meters
 	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
@@ -56,7 +59,7 @@ public class Tracker extends Service implements LocationListener {
 
 
 	// Declaring a Location Manager
-	protected LocationManager locationManager;
+	private LocationManager locationManager;
 
 	private final Variable myX, myY, myAcc;
 
@@ -77,11 +80,12 @@ public class Tracker extends Service implements LocationListener {
 		GPS_NOT_ON,
 		UNSTABLE,
 		GPS_NOT_ENABLED,
-		GPS_OK
+		GPS_OK,
+		MISSING_PERMISSION;
 	}
 
 	public ErrorCode startScan(Context ctx) {
-		//do we have variables?	
+		//do we have variables?
 
 		if (myX == null || myY == null)
 			return ErrorCode.GPS_VARS_MISSING;
@@ -109,12 +113,32 @@ public class Tracker extends Service implements LocationListener {
 				this.canGetLocation = true;
 				// First get location from Network Provider
 				if (isNetworkEnabled) {
+					if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+						// TODO: Consider calling
+						//    ActivityCompat#requestPermissions
+						// here to request the missing permissions, and then overriding
+						//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+						//                                          int[] grantResults)
+						// to handle the case where the user grants the permission. See the documentation
+						// for ActivityCompat#requestPermissions for more details.
+						return ErrorCode.MISSING_PERMISSION;
+					}
 					locationManager.requestLocationUpdates(
 							LocationManager.NETWORK_PROVIDER,
 							MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 					Log.d("Network", "Network");
 					if (locationManager != null) {
+						if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+							// TODO: Consider calling
+							//    ActivityCompat#requestPermissions
+							// here to request the missing permissions, and then overriding
+							//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+							//                                          int[] grantResults)
+							// to handle the case where the user grants the permission. See the documentation
+							// for ActivityCompat#requestPermissions for more details.
+							return ErrorCode.MISSING_PERMISSION;
+						}
 						location = locationManager
 								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 						if (location != null) {
@@ -127,6 +151,16 @@ public class Tracker extends Service implements LocationListener {
 				if (isGPSEnabled) {
 					if (location == null) {
 
+						if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+							// TODO: Consider calling
+							//    ActivityCompat#requestPermissions
+							// here to request the missing permissions, and then overriding
+							//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+							//                                          int[] grantResults)
+							// to handle the case where the user grants the permission. See the documentation
+							// for ActivityCompat#requestPermissions for more details.
+							return ErrorCode.MISSING_PERMISSION;
+						}
 						locationManager.requestLocationUpdates(
 								LocationManager.GPS_PROVIDER,
 								MIN_TIME_BW_UPDATES,

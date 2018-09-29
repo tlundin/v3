@@ -63,9 +63,9 @@ public class TwoPanelsTemplate extends Executor {
 		}
 		View v = inflater.inflate(R.layout.template_two_panels, container, false);
 //		errorView = (TextView)v.findViewById(R.id.errortext);
-		my_root = (LinearLayout)v.findViewById(R.id.myRoot);
-		fieldPanelTop = (LinearLayout)v.findViewById(R.id.fieldPanelTop);
-		fieldPanelBottom = (LinearLayout)v.findViewById(R.id.fieldPanelBottom);
+		my_root = v.findViewById(R.id.myRoot);
+		fieldPanelTop = v.findViewById(R.id.fieldPanelTop);
+		fieldPanelBottom = v.findViewById(R.id.fieldPanelBottom);
 //		my_pie = (LinearLayout)v.findViewById(R.id.pieRoot);
 		myContext.addContainers(getContainers());
 

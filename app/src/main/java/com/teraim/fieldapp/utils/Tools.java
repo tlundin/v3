@@ -1,5 +1,39 @@
 package com.teraim.fieldapp.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.Start;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.Numerable.Type;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
+import com.teraim.fieldapp.loadermodule.ConfigurationModule;
+import com.teraim.fieldapp.loadermodule.LoadResult;
+import com.teraim.fieldapp.loadermodule.ModuleLoader;
+import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.utils.DbHelper.Selection;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -16,7 +50,6 @@ import java.io.PrintWriter;
 import java.io.StreamCorruptedException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -29,45 +62,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Handler;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.Start;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.types.Numerable.Type;
-import com.teraim.fieldapp.loadermodule.ConfigurationModule;
-import com.teraim.fieldapp.loadermodule.LoadResult;
-import com.teraim.fieldapp.loadermodule.ModuleLoader;
-import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.ui.ConfigMenu;
-import com.teraim.fieldapp.utils.DbHelper.Selection;
 
 public class Tools {
 
@@ -138,7 +132,7 @@ public class Tools {
 		StringBuilder result = new StringBuilder();
 		int i=1;
 		for (String key:keyChain.keySet()) {
-			result.append(key+"="+keyChain.get(key)+(i<keyChain.keySet().size()?",":""));
+			result.append(key).append("=").append(keyChain.get(key)).append(i < keyChain.keySet().size() ? "," : "");
 			i++;
 		}
 		return result.toString();
@@ -260,7 +254,7 @@ public class Tools {
 					File file = new File(fileName);
 					FileInputStream fileIn = new FileInputStream(file);
 					int fileLength = (int)file.length();
-					Integer totalBlocks = (int)(fileLength/4096);
+					Integer totalBlocks = fileLength/4096;
 					byte[] buf = new byte[4096];
 					int read = 0,blockC=0;
 					ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
@@ -344,7 +338,7 @@ public class Tools {
 		return Unit.nd;
 	}
 
-	public static void createFoldersIfMissing(File file) {
+	private static void createFoldersIfMissing(File file) {
 		final File parent_directory = file.getParentFile();
 
 		if (null != parent_directory)
@@ -353,7 +347,7 @@ public class Tools {
 		}
 	}
 
-	private static Map<Rect,Integer> inSampleMemory  = new HashMap<Rect,Integer>();
+	private static final Map<Rect,Integer> inSampleMemory  = new HashMap<Rect,Integer>();
 
 	public static Bitmap getScaledImageRegion(Context ctx,String fileName, Rect r) {
 		BitmapRegionDecoder decoder = null;
@@ -1020,9 +1014,9 @@ public class Tools {
 
 
 	private static class DownloadTask extends AsyncTask<String, Void, Boolean> {
-		WebLoaderCb cb;
+		final WebLoaderCb cb;
 
-		public DownloadTask(WebLoaderCb cb) {
+		DownloadTask(WebLoaderCb cb) {
 			this.cb=cb;
 		}
 

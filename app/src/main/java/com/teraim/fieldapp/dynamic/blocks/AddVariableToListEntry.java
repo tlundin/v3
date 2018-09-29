@@ -5,7 +5,6 @@ import android.util.Log;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 
@@ -15,9 +14,15 @@ public class AddVariableToListEntry extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -2748537558779469614L;
-	boolean isVisible = true,isDisplayed=false,showHistorical=false;
-	String targetField,targetList,format,varNameSuffix, initialValue;
-	GlobalState gs;
+	private boolean isVisible = true;
+    private boolean isDisplayed=false;
+    private boolean showHistorical=false;
+	private final String targetField;
+    private final String targetList;
+    private final String format;
+    private final String varNameSuffix;
+    private final String initialValue;
+	private GlobalState gs;
 	
 	public AddVariableToListEntry(String id,String varNameSuffix,
 			String targetList,String targetField, boolean isDisplayed,String format,boolean isVisible,boolean showHistorical,String initialValue) {

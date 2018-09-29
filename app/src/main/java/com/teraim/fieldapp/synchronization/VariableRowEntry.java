@@ -8,8 +8,12 @@ public class VariableRowEntry implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 453476342824385369L;
-	public String var,value,lag,timeStamp,author;
-	public List<String> valueColumns;
+	private final String var;
+    private final String value;
+    private final String lag;
+    private final String timeStamp;
+    private final String author;
+	private final List<String> valueColumns;
 	
 	public VariableRowEntry(String var, String value, String lag, String timeStamp, String author, List<String> values) {
 		this.value=value;

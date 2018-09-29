@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,11 +14,11 @@ import android.view.View;
 
 import com.teraim.fieldapp.dynamic.types.Delyta;
 import com.teraim.fieldapp.dynamic.types.Marker;
-import com.teraim.fieldapp.dynamic.types.MovingMarker;
 import com.teraim.fieldapp.dynamic.types.Point;
 import com.teraim.fieldapp.dynamic.types.Segment;
 import com.teraim.fieldapp.non_generics.DelyteManager.Coord;
-import com.teraim.fieldapp.utils.Geomatte;
+
+import java.util.List;
 
 /**
  * @author Terje
@@ -31,17 +29,17 @@ public class ProvytaView extends View {
 
 
 
-	private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 
-	private Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pf = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p100 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pf = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p100 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 
-	private Paint pSma = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pSma = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pSmaSelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pySelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);	
+	private final Paint pySelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Marker focusMarker;
 	private String msg = "";
 	private List<Delyta> delytor;
@@ -102,10 +100,11 @@ public class ProvytaView extends View {
 
 	final float innerRealRadiusInMeter = 10;
 	final float midRealRadiusInMeter = 50;
-	final float realRadiusinMeter = 100;
-	float rScaleF=0,oScaleF=0;
+	private final float realRadiusinMeter = 100;
+	float rScaleF=0;
+    private float oScaleF=0;
 
-	int indicatorLocation = 0;
+	private int indicatorLocation = 0;
 
 	public void setIndicatorLocation(int deg) {
 		indicatorLocation = deg;
@@ -113,7 +112,7 @@ public class ProvytaView extends View {
 	}
 
 
-	float r;
+	private float r;
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -247,7 +246,7 @@ public class ProvytaView extends View {
 	}
 
 
-	List<Coord> scords=null;
+	private List<Coord> scords=null;
 
 	private boolean isSelected=false;
 
@@ -335,7 +334,7 @@ public class ProvytaView extends View {
 		this.invalidate();
 	}
 
-	public void removeDelytor() {
+	private void removeDelytor() {
 		showDelytor(null,false);
 	}
 

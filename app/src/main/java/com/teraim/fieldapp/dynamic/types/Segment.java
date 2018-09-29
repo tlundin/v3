@@ -3,8 +3,9 @@ package com.teraim.fieldapp.dynamic.types;
 import com.teraim.fieldapp.non_generics.DelyteManager.Coord;
 
 public class Segment {
-	public Coord start,end;
-	public boolean isArc;
+	public final Coord start;
+    public final Coord end;
+	public final boolean isArc;
 	public Segment(Coord start, Coord end, boolean isArc) {
 		super();
 		this.start = start;

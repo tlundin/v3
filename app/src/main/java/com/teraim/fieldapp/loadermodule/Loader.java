@@ -1,43 +1,41 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.ref.WeakReference;
-
-import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.util.Log;
-import android.util.MalformedJsonException;
 import android.util.Xml;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.FileLoadedCb;
-import com.teraim.fieldapp.loadermodule.ConfigurationModule.Type;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.configurations.CI_ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.Tools;
 
+import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.ref.WeakReference;
+
 //Loader might have progressbar.
 
-public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult> {
+abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult> {
 
 
-	private WeakReference<ProgressBar> pb;
-	private WeakReference<TextView> tv;
-	private FileLoadedCb cb;
+	private final WeakReference<ProgressBar> pb;
+	private final WeakReference<TextView> tv;
+	private final FileLoadedCb cb;
 	private LoggerI myLog;
 	String vNo ="";
 	private LoadResult loadR=null;
 	//Values defined in @arrays file, 
-	boolean versionControl;
+    final boolean versionControl;
 
 	 Loader(ProgressBar pb, TextView tv,FileLoadedCb cb, String versionControlS) {
 		this.pb= new WeakReference<>(pb);
@@ -54,7 +52,8 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		 if (h2!=null) {
 			 int p = h2.indexOf("app_version");
 			 if (p>0) {
-				 String vNo = h2.substring(p+13, h2.indexOf('\"', p+13));
+			 	 p = h2.indexOf("version",p+11);
+				 String vNo = h2.substring(p+9, h2.indexOf('\"', p+9));
 				 Log.d("spinn","Version line: "+vNo);
 				 if (Tools.isVersionNumber(vNo))
 					 return Float.parseFloat(vNo);
@@ -89,10 +88,10 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 	}
 
 	private int rowC = 1;
-	protected LoadResult read(ConfigurationModule m, float newVersion, BufferedReader reader,StringBuilder sb) throws IOException {
+	LoadResult read(ConfigurationModule m, float newVersion, BufferedReader reader, StringBuilder sb) throws IOException {
 		String line;
 		float frozenVersion = m.getFrozenVersion();
-		Log.d("abba","module: "+m.getLabel()+" versionC: "+versionControl+" newVersion: "+newVersion+" frozenV: "+frozenVersion);
+		Log.d("vortex","module: "+m.getLabel()+" versionC: "+versionControl+" newVersion: "+newVersion+" frozenV: "+frozenVersion);
 		if (newVersion != -1) {
 			m.setNewVersion(newVersion);
 			if (versionControl) {
@@ -127,7 +126,7 @@ public abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,Load
 		return new LoadResult(m,ErrorCode.loaded);
 	}
 
-	protected LoadResult parse(ConfigurationModule m) throws IOException, XmlPullParserException, JSONException, Dependant_Configuration_Missing {
+	LoadResult parse(ConfigurationModule m) throws IOException, XmlPullParserException, JSONException, Dependant_Configuration_Missing {
 		switch(m.type) {
 			case csv:
 				/*fallthrough*/

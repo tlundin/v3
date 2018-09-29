@@ -2,9 +2,6 @@ package com.teraim.fieldapp.log;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Layout;
 import android.text.Spannable;
@@ -20,13 +17,13 @@ import com.teraim.fieldapp.ui.MenuActivity;
 public class Logger implements LoggerI {
 
 	//CharSequence myTxt = new SpannableString("");
-	SpannableStringBuilder myTxt = new SpannableStringBuilder();
-	SpannableString s;
-	TextView log = null;
-	Context myContext;
-	String loggerId;
+    private SpannableStringBuilder myTxt = new SpannableStringBuilder();
+	private SpannableString s;
+	private TextView log = null;
+	private final Context myContext;
+	private final String loggerId;
 	int ticky=0;
-	boolean hasRed=false;
+	private boolean hasRed=false;
 
 	public Logger(Context c,String loggerId) {
 		myContext = c;
@@ -117,7 +114,7 @@ public class Logger implements LoggerI {
 	}
 
 
-	String tickyIs = null;
+	private String tickyIs = null;
 
 
 

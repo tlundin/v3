@@ -5,7 +5,7 @@ package com.teraim.fieldapp.dynamic.types;
  * 
  * @author Roman Kushnarenko (sromku@gmail.com)
  */
-public class Line
+class Line
 {
 	private final Point _start;
 	private final Point _end;

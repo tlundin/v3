@@ -1,27 +1,25 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition.SpinnerElement;
 import com.teraim.fieldapp.loadermodule.CSVConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
-import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpinnerConfiguration extends CSVConfigurationModule {
 	
 	public final static String NAME = "Spinners";
 	private final static int noOfRequiredColumns=5;			
 	private final SpinnerDefinition sd=new SpinnerDefinition();
-	private LoggerI o;
+	private final LoggerI o;
 	private int c=0;
 
 	public SpinnerConfiguration(Source source,PersistenceHelper globalPh,PersistenceHelper ph, String serverOrFile, LoggerI debugConsole) {

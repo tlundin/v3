@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.synchronization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.util.Log;
 
@@ -14,6 +11,9 @@ import com.teraim.fieldapp.ui.ConfirmCallBack;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -32,14 +32,14 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 		closed
     }
 	private static DataSyncSessionManager singleton=null;
-	Context ctx;
-	ConnectionProvider mConnection;
-	private UIProvider ui;
-	boolean lock = false;
-	LoggerI o;
-	State mState = State.initial;
+	private final Context ctx;
+	private final ConnectionProvider mConnection;
+	private final UIProvider ui;
+	private boolean lock = false;
+	private final LoggerI o;
+	private State mState = State.initial;
 
-	public DataSyncSessionManager(Context ctx, UIProvider ui) {
+	private DataSyncSessionManager(Context ctx, UIProvider ui) {
 		this.ctx=ctx;
 		//setup connection if missing. Asynch callback.
 		o = GlobalState.getInstance().getLogger();
@@ -64,7 +64,7 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 
 	}
 
-	List<Object> messageCache = new ArrayList<Object>();
+	private final List<Object> messageCache = new ArrayList<Object>();
 
 	@Override
 	public void handleMessage(Object obj) {
@@ -139,10 +139,11 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 	}
 
 
-	boolean pSyncDone,mSyncDone;
-	SyncReport syncReport = null;
+	private boolean pSyncDone;
+    private boolean mSyncDone;
+	private SyncReport syncReport = null;
 	private SyncReport partnerSyncReport;
-	boolean nameErr=false;
+	private boolean nameErr=false;
 	
 	private void handle(Object message) {
 		GlobalState gs = GlobalState.getInstance();
@@ -259,7 +260,7 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 						boolean isDeveloper = gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
 						if (isDeveloper)
 							versionText.append(debugTxt);
-						versionText.append("\n\nPartner ("+sp.getPartner()+") found.\nConfirm to start sync");
+						versionText.append("\n\nPartner (").append(sp.getPartner()).append(") found.\nConfirm to start sync");
 						o.addRow("");
 						o.addGreenText("[BT MESSAGE -->PING. VERSIONS OK");
 
@@ -389,7 +390,7 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 	/**Close and destroy this session handler
 	 * 
 	 */
-	public void destroy() {
+    private void destroy() {
 		//Update the world if changes occured.
 		if (syncReport!=null&&syncReport.hasChanges())
 			GlobalState.getInstance().sendEvent(Executor.REDRAW_PAGE);

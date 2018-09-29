@@ -14,19 +14,19 @@ import com.teraim.fieldapp.utils.Expressor;
 
 import org.achartengine.model.CategorySeries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CreateCategoryDataSourceBlock extends Block {
 
 	private final List<Expressor.EvalExpr> argumentE;
-	String id=null,myChart=null;
+	String id=null;
+    private String myChart=null;
 
-	CategorySeries series;
-	String[] myCategories =null;
+	private final CategorySeries series;
+	private String[] myCategories =null;
 
 
-	final int[] colors = { Color.RED, Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN,
+	private final int[] colors = { Color.RED, Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN,
 			Color.YELLOW,Color.BLACK,Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.RED,
 			Color.YELLOW };
 	

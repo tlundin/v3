@@ -8,10 +8,8 @@ import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection_OnSave;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Slider;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
-import com.teraim.fieldapp.utils.Tools.Unit;
 
 public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 
@@ -19,14 +17,23 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 	 *
 	 */
 	private static final long serialVersionUID = 2013870148670474248L;
-	String name,type,label,containerId,initialValue,group,textColor,backgroundColor;
+	private String name;
+    String type;
+    private final String label;
+    private final String containerId;
+    private final String initialValue;
+    private final String group;
+    String textColor;
+    String backgroundColor;
 	private final int min,max;
-	GlobalState gs;
-	boolean isVisible = false,showHistorical,autoOpenSpinner=true;
+	private GlobalState gs;
+	private boolean isVisible = false;
+    private final boolean showHistorical;
+    boolean autoOpenSpinner=true;
 
 
-	WF_ClickableField myField;
-	String variableName=null;
+	private WF_ClickableField myField;
+	private String variableName=null;
 
 	public CreateSliderEntryFieldBlock(String id, String name,
 									   String containerId, boolean isVisible, boolean showHistorical, String initialValue, String label, String variableName, String group,String textColor,String backgroundColor,int min,int max,String verticalFormat,String verticalMargin) {
@@ -51,7 +58,7 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 	/**
 	 * @return the name
 	 */
-	public String getName() {
+    private String getName() {
 		return name;
 	}
 

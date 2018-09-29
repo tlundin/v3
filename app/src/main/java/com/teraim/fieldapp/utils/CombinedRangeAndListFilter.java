@@ -1,26 +1,24 @@
 package com.teraim.fieldapp.utils;
 
+import android.os.Vibrator;
+import android.text.SpannableString;
+import android.text.Spanned;
+
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.utils.FilterFactory.Range;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import android.os.Vibrator;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.util.Log;
-
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.utils.FilterFactory.Range;
-
 public class CombinedRangeAndListFilter implements TextFilter {
 
-	List<TextFilter> myFilters;
-	String myPrint = "";
-	boolean hasDefault = false;
-	private Variable mVar;
-	private Vibrator myVibrator;
+	private final List<TextFilter> myFilters;
+	private String myPrint = "";
+	private boolean hasDefault = false;
+	private final Variable mVar;
+	private final Vibrator myVibrator;
 
 	public CombinedRangeAndListFilter(Vibrator vib, Variable myVar, Set<String> allowedValues, List<Range> allowedRanges, boolean hasDefault) {
 		this.hasDefault=hasDefault;

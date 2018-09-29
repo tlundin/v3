@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +14,13 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithoutValue_Filter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ListInputTemplate extends Executor {
 	private LinearLayout sortPanel;
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 
 
 	
@@ -29,7 +29,7 @@ public class ListInputTemplate extends Executor {
 	/* (non-Javadoc)
 	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
-	ViewGroup myContainer = null;
+    private ViewGroup myContainer = null;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -42,16 +42,16 @@ public class ListInputTemplate extends Executor {
 		
 		myContainer = container;
 		View v = inflater.inflate(R.layout.template_list_input_wf, container, false);	
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
-		sortPanel = (LinearLayout)v.findViewById(R.id.sortPanel);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
+		sortPanel = v.findViewById(R.id.sortPanel);
 
 		myLayouts.add(root);
-		myLayouts.add(new WF_Container("Field_List_panel_1", (LinearLayout)v.findViewById(R.id.fieldList), root));
+		myLayouts.add(new WF_Container("Field_List_panel_1", v.findViewById(R.id.fieldList), root));
 		myLayouts.add(new WF_Container("Sort_Panel_1", sortPanel, root));
-		myLayouts.add(new WF_Container("Aggregation_panel_3", (LinearLayout)v.findViewById(R.id.aggregates), root));
-		myLayouts.add(new WF_Container("Filter_panel_4", (LinearLayout)v.findViewById(R.id.filterPanel), root));
-		myLayouts.add(new WF_Container("Field_List_panel_2", (LinearLayout)v.findViewById(R.id.Selected), root));
-		myLayouts.add(new WF_Container("Button_panel_5", (LinearLayout)v.findViewById(R.id.Button_panel_5), root));
+		myLayouts.add(new WF_Container("Aggregation_panel_3", v.findViewById(R.id.aggregates), root));
+		myLayouts.add(new WF_Container("Filter_panel_4", v.findViewById(R.id.filterPanel), root));
+		myLayouts.add(new WF_Container("Field_List_panel_2", v.findViewById(R.id.Selected), root));
+		myLayouts.add(new WF_Container("Button_panel_5", v.findViewById(R.id.Button_panel_5), root));
 		myContext.addContainers(getContainers());
 
 		if (wf!=null) {
@@ -90,7 +90,7 @@ public class ListInputTemplate extends Executor {
 		return true;
 	}
 
-	Filter f = new WF_OnlyWithoutValue_Filter("_filter");
+	private final Filter f = new WF_OnlyWithoutValue_Filter("_filter");
 	private boolean toggleStateH = true;
 	private void hideEdited(String target) {
 		final WF_Static_List fieldList = (WF_Static_List)myContext.getFilterable(target);

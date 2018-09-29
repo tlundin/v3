@@ -1,24 +1,23 @@
 package com.teraim.fieldapp.webservices;
 
-import java.io.EOFException;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-public class WebService extends AsyncTask<String, String, String>{
+class WebService extends AsyncTask<String, String, String>{
 
 	//public final String SERVICE_URI = "http://teraim.com/vortexservice.php?";
 
-	public interface WsCallback {
+	interface WsCallback {
 		void doSomething(String res);
 	}
 
-	WsCallback myC;
+	private final WsCallback myC;
 	public WebService(WsCallback c) {
 		super();
 		myC = c;

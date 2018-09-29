@@ -5,18 +5,17 @@ import android.util.Log;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filterable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter;
-import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_RegExp_Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter.FilterType;
+import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_RegExp_Filter;
 import com.teraim.fieldapp.log.LoggerI;
 
 public class AddFilter extends Block {
 
-	private String target;
-	private String type;
-	private String selectionField;
-	private String selectionPattern;
+	private final String target;
+	private final String type;
+	private final String selectionField;
+	private final String selectionPattern;
 
 	public AddFilter(String id, String target, String type,
 					 String selectionField, String selectionPattern, LoggerI o) {

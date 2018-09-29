@@ -12,7 +12,10 @@ public class AddEntryToFieldListBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -8389535736187888854L;
-	String target= null,namn= null,label=null,description=null;
+	private String target= null;
+    private String namn= null;
+    private String label=null;
+    private String description=null;
 
 	
 	public AddEntryToFieldListBlock(String id,String namn,String target,

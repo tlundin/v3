@@ -1,20 +1,19 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
-import com.teraim.fieldapp.log.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WF_Container extends WF_Thing implements Container {
 
-	private ViewGroup me;
-	Container parent;
-	List<WF_Widget> myItems;
+	private final ViewGroup me;
+	private final Container parent;
+	private List<WF_Widget> myItems;
 
 	public WF_Container(String id, ViewGroup container, Container parent) {
 		super(id);

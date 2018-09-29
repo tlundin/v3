@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.database.Cursor;
 import android.util.Log;
 
@@ -13,9 +7,15 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WF_Instance_List extends WF_Static_List implements EventListener,EventGenerator{
 	private final DisplayFieldBlock entryFormat;
@@ -25,11 +25,11 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 
 
-	private Map<String,WF_ClickableField_Selection> entryFields = new HashMap<>();
+	private final Map<String,WF_ClickableField_Selection> entryFields = new HashMap<>();
 
 
 	private int index = 0;
-	private String variatorColumn;
+	private final String variatorColumn;
 	private Set<List<String>> selectedRows = new HashSet<>();
 
 
@@ -37,7 +37,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 	private String namePrefix;
 
-	private Map<String, String> myKeyHash;
+	private final Map<String, String> myKeyHash;
 
 
 	//private Set<String> mySuffixes=new HashSet<String>();
@@ -69,7 +69,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 
 	//A set containing all variable suffices used in EntryFields.
-	private Set<String> suffices = new HashSet<String>();
+	private final Set<String> suffices = new HashSet<String>();
 
 
 	private class VarPars{
@@ -80,10 +80,11 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 			this.format=format;
 			this.defaultValue = defaultValue;
 		}
-		boolean showHistorical;
-		boolean isVisible;
-		boolean isDisplayed;
-		String format,defaultValue;
+		final boolean showHistorical;
+		final boolean isVisible;
+		final boolean isDisplayed;
+		final String format;
+        final String defaultValue;
 	}
 
 	@Override

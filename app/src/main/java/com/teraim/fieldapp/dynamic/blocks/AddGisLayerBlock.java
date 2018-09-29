@@ -15,10 +15,13 @@ public class AddGisLayerBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -4149408006972701777L;
-	private String name, label,target;
-	private boolean isVisible, hasWidget;
+	private final String name;
+    private final String label;
+    private final String target;
+	private final boolean isVisible;
+    private final boolean hasWidget;
 	private WF_Gis_Map myGis;
-	private boolean showLabels;
+	private final boolean showLabels;
 	
 	public AddGisLayerBlock(String id, String name, String label,
 			String target, boolean isVisible, boolean hasWidget, boolean showLabels) {

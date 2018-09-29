@@ -15,8 +15,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.teraim.fieldapp.R.id.root;
-
 /**
  * 
  * @author Terje
@@ -65,9 +63,9 @@ public class TwoColumnTemplate extends Executor {
 		}
 		View v = inflater.inflate(R.layout.template_two_columns, container, false);
 //		errorView = (TextView)v.findViewById(R.id.errortext);
-		my_root = (LinearLayout)v.findViewById(R.id.myRoot);
-		fieldPanelLeft = (LinearLayout)v.findViewById(R.id.fieldPanelLeft);
-		fieldPanelRight = (LinearLayout)v.findViewById(R.id.fieldPanelRight);
+		my_root = v.findViewById(R.id.myRoot);
+		fieldPanelLeft = v.findViewById(R.id.fieldPanelLeft);
+		fieldPanelRight = v.findViewById(R.id.fieldPanelRight);
 //		my_pie = (LinearLayout)v.findViewById(R.id.pieRoot);
 		myContext.addContainers(getContainers());
 

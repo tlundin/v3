@@ -19,7 +19,7 @@ public class Unikey {
     public String getSpy() {
         return spy;
     }
-    public String getKey() {
+    private String getKey() {
         return rep;
     }
 

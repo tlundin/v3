@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import android.graphics.Path;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.LatLong;
@@ -15,13 +9,16 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.utils.Expressor;
-import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GisObject {
 
 	
-	protected static final double ClickThresholdInMeters = 30;
-	protected double distanceToClick=-1;
+	static final double ClickThresholdInMeters = 30;
+	double distanceToClick=-1;
 	private String label=null;
 	private String statusVariableId=null,statusVariableValue=null;
 	private Variable statusVariable = null;
@@ -47,8 +44,8 @@ public class GisObject {
 		this.keyChain=keyChain;this.myCoordinates=myCoordinates;this.attributes=attributes;
 	}
 
-	public GisObject(FullGisObjectConfiguration conf,
-			Map<String, String> keyChain,List<Location> myCoordinates,String statusVarName,String statusVariableValue) {
+	GisObject(FullGisObjectConfiguration conf,
+              Map<String, String> keyChain, List<Location> myCoordinates, String statusVarName, String statusVariableValue) {
 		this.keyChain=keyChain;
 		this.foc = conf;
 		this.myCoordinates=myCoordinates;
@@ -60,9 +57,9 @@ public class GisObject {
 	
 
 	protected CoordinateType coordinateType = CoordinateType.sweref;
-	protected List<Location> myCoordinates = new ArrayList<Location>();
-	protected final Map<String, String> keyChain;
-	protected Map<String, String> attributes;
+	List<Location> myCoordinates = new ArrayList<Location>();
+	private final Map<String, String> keyChain;
+	private Map<String, String> attributes;
 	private boolean isUseful;
 	private boolean isDefect;
 	

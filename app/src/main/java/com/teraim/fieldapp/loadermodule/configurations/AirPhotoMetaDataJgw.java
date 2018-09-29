@@ -1,10 +1,8 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
 import android.graphics.BitmapFactory;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
@@ -12,17 +10,14 @@ import com.teraim.fieldapp.loadermodule.PhotoMetaI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Created by terje on 3/18/2018.
  */
 
 public class AirPhotoMetaDataJgw extends CI_ConfigurationModule implements PhotoMetaI {
 
-    private String[] pars = new String[6];
-    private String imgUrlorPath;
+    private final String[] pars = new String[6];
+    private final String imgUrlorPath;
     private double Width,Height;
     public AirPhotoMetaDataJgw(PersistenceHelper gPh, PersistenceHelper ph,
                                ConfigurationModule.Source source, String urlOrPath, String fileName, String moduleName) {

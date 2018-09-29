@@ -10,11 +10,11 @@ public abstract class Event {
 		onActivityResult, onContextChange, onFlowExecuted
 	}
 	
-	private  String generatorId;
-	private  EventType myType;
+	private final String generatorId;
+	private final EventType myType;
 	public final static String EXTERNAL_SOURCE = "ext";
 
-	public Event (String fromId, EventType et) {
+	protected Event(String fromId, EventType et) {
 		this.generatorId = fromId;
 		myType = et;
 	}

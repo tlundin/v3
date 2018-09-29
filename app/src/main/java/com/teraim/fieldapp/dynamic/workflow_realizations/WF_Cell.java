@@ -7,7 +7,7 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import java.util.Map;
 import java.util.Set;
 
-public interface WF_Cell {
+interface WF_Cell {
 
 	
 	void addVariable(final String varId, boolean displayOut, String format, boolean isVisible, boolean showHistorical, String prefetchValue);

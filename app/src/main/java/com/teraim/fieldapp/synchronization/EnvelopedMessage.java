@@ -9,7 +9,7 @@ public class EnvelopedMessage extends SyncMessage {
 	 */
 	private static final long serialVersionUID = 3247832794025535224L;
 
-	private SyncMessage aMessage;
+	private final SyncMessage aMessage;
 
 	public EnvelopedMessage(SyncMessage aMessage) {
 		super();

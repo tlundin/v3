@@ -1,7 +1,7 @@
 package com.teraim.fieldapp.expr;
 
 
-public class SyntaxException extends Exception {
+class SyntaxException extends Exception {
 
  /** An error code meaning the input string couldn't reach the end
      of the input; the beginning constituted a legal expression,

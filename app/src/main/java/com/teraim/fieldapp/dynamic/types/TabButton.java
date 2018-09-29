@@ -7,10 +7,11 @@ import android.graphics.Rect;
  */
 public class TabButton {
     //Full rect, cut rect..
-    public Rect r,fr;
-    public float centY;
-    private String text;
-    public String fullText;
+    public final Rect r;
+    public final Rect fr;
+    public final float centY;
+    private final String text;
+    public final String fullText;
 
     public TabButton(String textOnButton, Rect tabButtonRect, Rect fullRect,float v,String origText) {
         this.text = textOnButton;

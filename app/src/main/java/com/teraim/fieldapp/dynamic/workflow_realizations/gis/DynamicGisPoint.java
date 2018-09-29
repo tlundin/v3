@@ -1,20 +1,19 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
-import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.Variable;
 
+import java.util.Map;
+
 public class DynamicGisPoint extends GisPointObject {
 	
-	boolean multivar = false;
-	Variable myXVar,myYVar,myXYVar;
+	private boolean multivar = false;
+	private Variable myXVar;
+    private Variable myYVar;
+    private Variable myXYVar;
 	
 	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Variable x, Variable y, String statusVar,String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);

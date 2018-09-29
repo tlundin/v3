@@ -1,24 +1,20 @@
 package com.teraim.fieldapp.utils;
 
-import java.io.IOException;
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+
+import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
+import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
+
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.JsonWriter;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
-import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
-
 public class CSVExporter extends Exporter {
 
-	StringWriter sw;
-	int varC=0;
+	private StringWriter sw;
+	private int varC=0;
 
 
 	public CSVExporter(Context ctx) {

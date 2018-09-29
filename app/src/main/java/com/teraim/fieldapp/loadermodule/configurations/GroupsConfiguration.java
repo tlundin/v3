@@ -1,12 +1,5 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
@@ -17,14 +10,20 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class GroupsConfiguration extends CSVConfigurationModule {
 
-	private LoggerI o;
+	private final LoggerI o;
 	private boolean scanHeader;
 	private String[] groupsFileHeaderS;
-	Map <String, List<List<String>>> groups;
-	int groupIndex = -1;
-	int nameIndex = -1;
+	private Map <String, List<List<String>>> groups;
+	private int groupIndex = -1;
+	private int nameIndex = -1;
 	private static GroupsConfiguration singleton=null;
 
 	public GroupsConfiguration(Source source,PersistenceHelper globalPh,PersistenceHelper ph, String serverOrFile, String bundle, LoggerI debugConsole) {

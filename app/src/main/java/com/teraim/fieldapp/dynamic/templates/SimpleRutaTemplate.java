@@ -1,13 +1,6 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -50,16 +43,24 @@ import com.teraim.fieldapp.utils.Exporter.Report;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 
 
 public class SimpleRutaTemplate extends Executor implements OnGesturePerformedListener {
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 
 
 	/* (non-Javadoc)
 	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
-	ViewGroup myContainer = null;
+    private ViewGroup myContainer = null;
 	private GestureLibrary gestureLib;
 	private List<Integer> rutor;
 	private  ArrayAdapter<Integer> fieldListAdapter;
@@ -84,23 +85,23 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		Log.d("nils","in onCreateView of ruta_template");
 		myContainer = container;
 		View v = inflater.inflate(R.layout.template_ruta_wf, container, false);	
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
-		ListView fieldList = (ListView)v.findViewById(R.id.fieldListL);
-		ListView selectedList = (ListView)v.findViewById(R.id.SelectedL);
-		LinearLayout aggregatePanel = (LinearLayout)v.findViewById(R.id.aggregates);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
+		ListView fieldList = v.findViewById(R.id.fieldListL);
+		ListView selectedList = v.findViewById(R.id.SelectedL);
+		LinearLayout aggregatePanel = v.findViewById(R.id.aggregates);
 		myLayouts.add(root);
-		myLayouts.add(new WF_Container("Field_List_panel_1", (LinearLayout)v.findViewById(R.id.fieldList), root));
+		myLayouts.add(new WF_Container("Field_List_panel_1", v.findViewById(R.id.fieldList), root));
 		myLayouts.add(new WF_Container("Aggregation_panel_3", aggregatePanel, root));
-		myLayouts.add(new WF_Container("Filter_panel_4", (LinearLayout)v.findViewById(R.id.filterPanel), root));
-		myLayouts.add(new WF_Container("Field_List_panel_2", (LinearLayout)v.findViewById(R.id.Selected), root));
+		myLayouts.add(new WF_Container("Filter_panel_4", v.findViewById(R.id.filterPanel), root));
+		myLayouts.add(new WF_Container("Field_List_panel_2", v.findViewById(R.id.Selected), root));
 		myContext.addContainers(getContainers());
 
 
 		LinearLayout rutorRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
-		TextView h = (TextView)rutorRemainingView.findViewById(R.id.header);
+		TextView h = rutorRemainingView.findViewById(R.id.header);
 		h.setText("Rutor gjorda");
 
-		rutOutputValueField = (TextView)rutorRemainingView.findViewById(R.id.outputValueField);
+		rutOutputValueField = rutorRemainingView.findViewById(R.id.outputValueField);
 
 
 		aggregatePanel.addView(rutorRemainingView);
@@ -146,7 +147,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 							"Vill du klarmarkera? ":"VARNING!! DU HAR "+noOfSyncE+" OSYNKADE INMATNINGAR!! Vill du verkligen klarmarkera?")
 							.setPositiveButton("Ja - den är klar!", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) { 							
-									rutaKlar = varCache.getVariable(al.createRutaKeyMap(), NamedVariables.RUTA_KLAR_ANVÄNDARE);
+									rutaKlar = varCache.getVariable(al.createRutaKeyMap(), NamedVariables.RUTA_KLAR_AV_ANVANDARE);
 									rutaKlar.setValue("1");
 									export(true,currentRuta);
 									varCache.getVariable(NamedVariables.CURRENT_RUTA).setValue(null);
@@ -180,7 +181,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		//CreateEntryFieldBlock x = new CreateEntryFieldBlock("typSpinner","RutaSorteringsTyp", "Aggregation_panel_3",true,"DDD",false,Constants.NO_DEFAULT_VALUE,null,true);
 		//x.create(myContext);
 
-		GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 
 		gestureOverlayView.setGestureVisible(false);
 		gestureOverlayView.addOnGesturePerformedListener(this);
@@ -220,7 +221,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 				final Integer rl = rutor.get(position);
 				final String pi = rl.toString();
 				final Map<String,String>rKeyChain = Tools.createKeyMap("år",Constants.getYear(),"ruta",pi);
-				rutaKlar = varCache.getVariable(rKeyChain, NamedVariables.RUTA_KLAR_ANVÄNDARE);
+				rutaKlar = varCache.getVariable(rKeyChain, NamedVariables.RUTA_KLAR_AV_ANVANDARE);
 				String rutaKS = rutaKlar.getValue();
 				final boolean rutaK = rutaKS!=null&&rutaKS.equals("1");
 				String msg = null;
@@ -349,7 +350,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		String rutaSorteringsTyp = varCache.getVariableValue(al.createRutaKeyMap(), "RutaSorteringsTyp");
 
 		//Build up filename
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm");
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH_mm");
 		Date date = new Date();
 		String dS = (dateFormat.format(date));
 		String typPrefix = rutaSorteringsTyp==null||rutaSorteringsTyp.equals("Normal")?"N_":

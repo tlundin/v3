@@ -1,15 +1,8 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,26 +13,32 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 	private final int textColorC;
 	final LinearLayout outputContainer;
 	private final DisplayFieldBlock displayFieldFormat;
 
-	protected WF_Context myContext;
-	protected String myDescription;
+	final WF_Context myContext;
+	String myDescription;
 	private boolean showAuthor  = false;
-	protected Map<Variable,OutC> myOutputFields = new HashMap<Variable,OutC>();
+	final Map<Variable,OutC> myOutputFields = new HashMap<Variable,OutC>();
 
 	//Hack! Used to determine what is the master key for this type of element.
 	//If DisplayOut & Virgin --> This is master key.
 	boolean virgin=true;
 	//Removed myVar 2.07.15
 	//protected Variable myVar;
-	public abstract LinearLayout getFieldLayout();
-	private TextView myHeader;
+	protected abstract LinearLayout getFieldLayout();
+	private final TextView myHeader;
 	private String entryFieldAuthor = null;
-	protected int backgroundColor=Color.TRANSPARENT;
+	int backgroundColor=Color.TRANSPARENT;
 
 	//	public abstract String getFormattedText(Variable varId, String value);
 
@@ -51,21 +50,22 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		return s;
 	}
 
-	public class OutC {
-		public OutC(LinearLayout ll, String f) {
+	class OutC {
+		OutC(LinearLayout ll, String f) {
 			view = ll;
 			format = f;
 		}
-		public OutC() {}
+		OutC() {}
 
-        public LinearLayout view;
-		public String format;
+        LinearLayout view;
+		String format;
 	}
 
-	public class OutSpin extends OutC {
-		public String[] opt,val;
+	class OutSpin extends OutC {
+		final String[] opt;
+        final String[] val;
 
-		public OutSpin(LinearLayout ll, String[] opt, String[] val) {
+		OutSpin(LinearLayout ll, String[] opt, String[] val) {
 			this.view = ll;
 			this.opt=opt;
 			this.val=val;
@@ -75,14 +75,14 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 
 	@SuppressWarnings("WrongConstant")
-	public WF_Not_ClickableField(String id, final String label, final String descriptionT, WF_Context myContext,
-								 View view, boolean isVisible, DisplayFieldBlock format) {
+    WF_Not_ClickableField(String id, final String label, final String descriptionT, WF_Context myContext,
+                          View view, boolean isVisible, DisplayFieldBlock format) {
 		super(id,view,myContext,isVisible);
 
 
 		this.myContext = myContext;
-		myHeader = (TextView)getWidget().findViewById(R.id.editfieldtext);
-		outputContainer = (LinearLayout)getWidget().findViewById(R.id.outputContainer);
+		myHeader = getWidget().findViewById(R.id.editfieldtext);
+		outputContainer = getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
 		//Log.d("taxx","variable label: "+label+" variable ID: "+id);
 		textColorC = Color.parseColor(format.getTextColor());
@@ -107,7 +107,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 		//Log.d("vortex","setting background to "+this.backgroundColor);
 
-		LinearLayout topElem = (LinearLayout)getWidget().findViewById(R.id.entryRoot);
+		LinearLayout topElem = getWidget().findViewById(R.id.entryRoot);
 
 		//ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)bg.getLayoutParams());
 		if (topElem!=null)
@@ -155,12 +155,12 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 	}
 
 
-	public void refreshOutputField(Variable variable,OutC outC) {
+	void refreshOutputField(Variable variable, OutC outC) {
 
 
 		LinearLayout ll = outC.view;
-		TextView o = (TextView)ll.findViewById(R.id.outputValueField);
-		TextView u = (TextView)ll.findViewById(R.id.outputUnitField);			
+		TextView o = ll.findViewById(R.id.outputValueField);
+		TextView u = ll.findViewById(R.id.outputUnitField);
 		String value = variable.getValue();
 
 		//Log.d("nils","In refreshoutputfield for variable "+variable.getId()+" with value "+variable.getValue());

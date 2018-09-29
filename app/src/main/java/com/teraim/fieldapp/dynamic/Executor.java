@@ -101,10 +101,10 @@ import java.util.Set;
 public abstract class Executor extends Fragment implements AsyncResumeExecutorI {
 
 
-	public static final String STOP_ID = "STOP";
+	private static final String STOP_ID = "STOP";
 
 	public static final String REDRAW_PAGE = "executor_redraw_page";
-    public static final String REFRESH_AFTER_SUBFLOW_EXECUTION = "executor_refresh_after_subflow";
+    private static final String REFRESH_AFTER_SUBFLOW_EXECUTION = "executor_refresh_after_subflow";
 
 
 
@@ -134,8 +134,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 	protected LoggerI o;
 	private IntentFilter ifi;
-	protected BroadcastReceiver brr;
-	private Map<String,String> jump= new HashMap<String,String>();
+	private BroadcastReceiver brr;
+	private final Map<String,String> jump= new HashMap<String,String>();
 	private Set<Variable> visiVars;
 
 	protected VariableConfiguration al;
@@ -273,7 +273,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 
 
-	protected Workflow getFlow() {
+	private Workflow getFlow() {
 		Workflow wf=null;
 
 		//Find out the name of the workflow to execute.

@@ -8,15 +8,6 @@ package com.teraim.fieldapp.dynamic.workflow_realizations;
  */
 
 
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -26,36 +17,42 @@ import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.EventBroker;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.blocks.CoupledVariableGroupBlock;
-import com.teraim.fieldapp.dynamic.blocks.CreateCategoryDataSourceBlock;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.DataSource;
 import com.teraim.fieldapp.dynamic.types.Rule;
-import com.teraim.fieldapp.dynamic.types.SimpleChartDataSource;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filterable;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WF_Context {
 
-	private Context ctx;
+	private final Context ctx;
 	private final List<WF_Static_List> lists=new ArrayList<WF_Static_List>();
 	private final List<WF_Table> tables=new ArrayList<WF_Table>();
-	private Map<String,Drawable> drawables;
+	private final Map<String,Drawable> drawables;
 	private List<WF_Container> containers;
 	private final Executor myTemplate;
-	private EventBroker eventBroker;
-	private Set<Rule> rules=new HashSet<Rule>();
-	private Set<Integer> executedBlocks = new HashSet<Integer>();
+	private final EventBroker eventBroker;
+	private final Set<Rule> rules=new HashSet<Rule>();
+	private final Set<Integer> executedBlocks = new HashSet<Integer>();
 	private final int rootContainerId; 
 	private String statusVariable=null;
-	private List<Filterable> filterables;
+	private final List<Filterable> filterables;
 	private WF_Gis_Map currentGis;
-	private List<WF_Gis_Map> gisses;
+	private final List<WF_Gis_Map> gisses;
 	private boolean hasGPSTracker = false;
 	private DB_Context myHash;
 	private Workflow myWorkflow;
@@ -64,9 +61,9 @@ public class WF_Context {
 	private List<String> contextVariables = null;
 	private boolean myEndIsNear=false;
 	private boolean hasMenu = false;
-	private Map<String,List<WF_ClickableField_Slider>> sliderGroupM=new HashMap<String, List<WF_ClickableField_Slider>>();
-	private Map<String,CoupledVariableGroupBlock> mySliderGroups = new HashMap<String, CoupledVariableGroupBlock>();
-	private Map<String,DataSource> chartGroupM = new HashMap<String, DataSource>();
+	private final Map<String,List<WF_ClickableField_Slider>> sliderGroupM=new HashMap<String, List<WF_ClickableField_Slider>>();
+	private final Map<String,CoupledVariableGroupBlock> mySliderGroups = new HashMap<String, CoupledVariableGroupBlock>();
+	private final Map<String,DataSource> chartGroupM = new HashMap<String, DataSource>();
 
 
 	public WF_Context(Context ctx,Executor e,int rootContainerId) {
@@ -237,7 +234,7 @@ public class WF_Context {
 
 	}
 
-	public void emptyContainers() {
+	private void emptyContainers() {
 		if (containers!=null)
 			for (Container c:containers) 
 				c.removeAll();

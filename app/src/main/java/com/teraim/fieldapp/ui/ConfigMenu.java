@@ -4,9 +4,6 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +13,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -24,8 +20,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
@@ -34,8 +28,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
@@ -46,13 +38,11 @@ import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
-
 import java.io.File;
-import java.net.URISyntaxException;
 
 public class ConfigMenu extends PreferenceActivity {
-	final SettingsFragment sf = new SettingsFragment();
-	static boolean askForRestart = false;
+	private final SettingsFragment sf = new SettingsFragment();
+	private static boolean askForRestart = false;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -345,18 +335,18 @@ public class ConfigMenu extends PreferenceActivity {
 				String path = Constants.VORTEX_ROOT_DIR + bundleName + "/config";
 				File folder = new File(path);
 				StringBuilder textToDisplay = new StringBuilder("Location: " + path);
-				String filesList = "<FOLDER IS EMPTY. PLEASE ADD CONFIGURATION FILES!>";
+				StringBuilder filesList = new StringBuilder("<FOLDER IS EMPTY. PLEASE ADD CONFIGURATION FILES!>");
 				if (!folder.exists())
 					folder.mkdir();
 				File[] files = folder.listFiles();
 				if (files!=null && files.length>0) {
-					filesList="";
+					filesList = new StringBuilder();
 					for (File f:files) {
-						filesList+=f.getName()+",";
+						filesList.append(f.getName()).append(",");
 					}
-					filesList = filesList.substring(0,filesList.length()-1);
+					filesList = new StringBuilder(filesList.substring(0, filesList.length() - 1));
 				}
-				textToDisplay.append("\n"+filesList);
+				textToDisplay.append("\n").append(filesList);
 				folderPref.setSummary(textToDisplay.toString());
 				folderPref.getEditor().putString(path,"").commit();
 			}

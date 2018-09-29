@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,16 +14,19 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.DelyteManager;
 import com.teraim.fieldapp.ui.ProvytaView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PageWithDelytaTemplate extends Executor {
 
 	@Override
 	protected List<WF_Container> getContainers() {		
 		myLayouts = new ArrayList<WF_Container>();
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		myLayouts.add(root);
-		myLayouts.add(new WF_Container("Field_panel_1", (LinearLayout)v.findViewById(R.id.fieldList), root));
-		myLayouts.add(new WF_Container("Aggregation_panel_3", (LinearLayout)v.findViewById(R.id.aggregates), root));
-		myLayouts.add(new WF_Container("Description_panel_2", (LinearLayout)v.findViewById(R.id.Description), root));
+		myLayouts.add(new WF_Container("Field_panel_1", v.findViewById(R.id.fieldList), root));
+		myLayouts.add(new WF_Container("Aggregation_panel_3", v.findViewById(R.id.aggregates), root));
+		myLayouts.add(new WF_Container("Description_panel_2", v.findViewById(R.id.Description), root));
 		
 		return myLayouts;
 	}
@@ -36,9 +36,9 @@ public class PageWithDelytaTemplate extends Executor {
 		return true;
 	}
 
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 	ViewGroup myContainer = null;
-	View v;
+	private View v;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

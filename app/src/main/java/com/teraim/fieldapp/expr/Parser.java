@@ -3,12 +3,10 @@ package com.teraim.fieldapp.expr;
 //Operator-precedence parser.
 //Copyright 1996 by Darius Bacon; see the file COPYING.
 
+import com.teraim.fieldapp.GlobalState;
+
 import java.util.Hashtable;
 import java.util.Vector;
-
-import android.content.Context;
-
-import com.teraim.fieldapp.GlobalState;
 
 
 /** 
@@ -48,7 +46,7 @@ conditional function: if(test, then, else).
 public class Parser {
 
 
- private GlobalState gs;
+ private final GlobalState gs;
  private final Aritmetic pi;
  public Parser(GlobalState gs) {
 	 this.gs = gs;
@@ -91,7 +89,7 @@ public class Parser {
   *
   *       @param input the unparsed expression
   *      @exception SyntaxException if the input is unparsable */
- public Expr parseString(String input) throws SyntaxException {
+ private Expr parseString(String input) throws SyntaxException {
 	tokens = new Scanner(input, operatorChars);
 	return reparse();
  }

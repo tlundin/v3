@@ -1,28 +1,25 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 
-
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.DelyteManager;
 import com.teraim.fieldapp.non_generics.DelyteManager.Coord;
 import com.teraim.fieldapp.non_generics.DelyteManager.ErrCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Delyta {
 
 	public List<Segment> tag;
 	private List<Coord> rawData=null;
-	static final int Rad = 100;
-	int delNr = -1;
-	float area = -1;
-	boolean background = false;
+	private static final int Rad = 100;
+	private int delNr = -1;
+	private float area = -1;
+	private boolean background = false;
 	public float mySouth, myWest;
 	private static final Coord South = new Coord(100,180);
 	private static final Coord West = new Coord(100,90);
@@ -31,7 +28,7 @@ public class Delyta {
 		Color.parseColor("#4d90fe"),Color.parseColor("#EE7600"),Color.parseColor("#8A9A5B"),Color.DKGRAY,Color.MAGENTA,Color.YELLOW};
 
 	private float myNumX=NO_VALUE,myNumY=NO_VALUE;
-	private DelyteManager dym;
+	private final DelyteManager dym;
 
 	public Delyta(DelyteManager dym) {
 		this.dym=dym;
@@ -138,7 +135,7 @@ public class Delyta {
 	}
 
 
-	public boolean contains(int avst, int rikt, Polygon p) {
+	private boolean contains(int avst, int rikt, Polygon p) {
 
 
 
@@ -295,7 +292,7 @@ public class Delyta {
 		return max;
 	}
 
-	public static int pDist(float from, float to) {
+	private static int pDist(float from, float to) {
 		if (to <= from)
 			return (int)(from-to);
 		else
@@ -312,7 +309,7 @@ public class Delyta {
 		return tag;
 	}
 
-	public float calcArea() {
+	private float calcArea() {
 		List<Coord> areaC=new ArrayList<Coord>();
 		//Area is calculated using Euler. 
 		for (Segment s:tag) {

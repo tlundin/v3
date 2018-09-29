@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+@SuppressWarnings("SyntaxError")
 public class DbHelper extends SQLiteOpenHelper {
 
     /* Database Version*/public static final int DATABASE_VERSION = 11;/* Books table name*/
@@ -59,7 +60,12 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String TABLE_SYNC = "sync";
 
 
-    public static final String VARID = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", AUTHOR = "author",YEAR="år";
+    private static final String VARID = "var";
+    private static final String VALUE = "value";
+    private static final String TIMESTAMP = "timestamp";
+    public static final String LAG = "lag";
+    private static final String AUTHOR = "author";
+    public static final String YEAR="år";
     private static final String[] VAR_COLS = new String[]{TIMESTAMP, AUTHOR, LAG, VALUE};
     //	private static final Set<String> MY_VALUES_SET = new HashSet<String>(Arrays.asList(VAR_COLS));
 
@@ -69,9 +75,9 @@ public class DbHelper extends SQLiteOpenHelper {
     private PersistenceHelper globalPh = null;
 
     private final Map<String, String> realColumnNameToDB = new HashMap<String, String>();
-    private Map<String, String> dbColumnNameToReal = new HashMap<String, String>();
+    private final Map<String, String> dbColumnNameToReal = new HashMap<String, String>();
 
-    Context ctx;
+    private final Context ctx;
 
     public void eraseSyncObjects() {
         db().delete(TABLE_SYNC,null,null);
@@ -205,15 +211,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public class LocationAndTimeStamp {
-        public boolean old;
-        public Location location;
-        public LocationAndTimeStamp(boolean isOld,Location loc) {
+        public final boolean old;
+        public final Location location;
+        LocationAndTimeStamp(boolean isOld, Location loc) {
             location=loc;
             old = isOld;
         }
     }
 
-    final static long TenDays = 3600*24*7*2*1000;
+    private final static long TenDays = 3600*24*7*2*1000;
 
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
@@ -250,10 +256,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //Helper class that wraps the Cursor.
     public class DBColumnPicker {
-        Cursor c;
+        final Cursor c;
         private static final String NAME = "var", VALUE = "value", TIMESTAMP = "timestamp", LAG = "lag", CREATOR = "author";
 
-        public DBColumnPicker(Cursor c) {
+        DBColumnPicker(Cursor c) {
             this.c = c;
         }
 
@@ -326,7 +332,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void init(ArrayList<String> keyParts, PersistenceHelper appPh) {
+    private void init(ArrayList<String> keyParts, PersistenceHelper appPh) {
 
         //check if keyParts are known or if a new is needed.
 
@@ -393,7 +399,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db().execSQL("insert into variabler (lag,var,value) values ('"+team+"','timestamp_from_me_to_team','"+ts+"')");
     }
 
-    public Long getTimeStamp(String team) {
+    private Long getTimeStamp(String team) {
         Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,"timestamp_from_me_to_team"});
         if (c.getCount() != 0) {
             c.moveToFirst();
@@ -894,7 +900,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db().insert(TABLE_AUDIT, null, values);
     }
 
-    public Cursor getExistingVariableCursor(String name, Selection s) {
+    private Cursor getExistingVariableCursor(String name, Selection s) {
         //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         Cursor c = db().query(TABLE_VARIABLES, new String[]{"id", "timestamp", "value", "var", "author"},
                 s.selection, s.selectionArgs, null, null, null, null);
@@ -920,8 +926,8 @@ public class DbHelper extends SQLiteOpenHelper {
 */
 
     public class StoredVariableData {
-        public StoredVariableData(String name, String value, String timestamp,
-                                  String lag, String author) {
+        StoredVariableData(String name, String value, String timestamp,
+                           String lag, String author) {
             this.timeStamp = timestamp;
             this.value = value;
             this.lagId = lag;
@@ -929,11 +935,11 @@ public class DbHelper extends SQLiteOpenHelper {
             this.name = name;
         }
 
-        public String name;
-        public String timeStamp;
-        public String value;
-        public String lagId;
-        public String creator;
+        public final String name;
+        public final String timeStamp;
+        public final String value;
+        public final String lagId;
+        public final String creator;
     }
 
     //public final static int MAX_RESULT_ROWS = 500;
@@ -1059,7 +1065,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public int getId(Selection s) {
+    private int getId(Selection s) {
         //Log.d("nils","In getId with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         Cursor c = db().query(TABLE_VARIABLES, new String[]{"id"},
                 s.selection, s.selectionArgs, null, null, null, null);
@@ -1089,7 +1095,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //Insert or Update existing value. Synchronize tells if var should be synched over blutooth.
     //This is done in own thread.
-    ContentValues insertContentValues = new ContentValues();
+    private final ContentValues insertContentValues = new ContentValues();
 
     public void insertVariable(Variable var, String newValue, boolean syncMePlease) {
 
@@ -1459,7 +1465,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public String getRealColumnNameFromDatabaseName(String databaseColumnName) {
+    private String getRealColumnNameFromDatabaseName(String databaseColumnName) {
         if (databaseColumnName == null || databaseColumnName.length() == 0)
             return null;
         String ret = dbColumnNameToReal.get(databaseColumnName);
@@ -1470,12 +1476,12 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    int synC = 0;
+    private int synC = 0;
 
 
 
 
-    public SyncReport synchronise2(MenuActivity.Control control,SyncReport changes,SyncEntry[] ses, UIProvider ui, LoggerI o, SyncStatusListener syncListener) {
+    private SyncReport synchronise2(MenuActivity.IncomingHandler.Control control, SyncReport changes, SyncEntry[] ses, UIProvider ui, LoggerI o, SyncStatusListener syncListener) {
 
         if (ses == null || ses.length==0) {
             Log.d("sync", "SE[] empty in sync");
@@ -1699,7 +1705,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return cv;
     }
 
-    StringBuilder whereClause = new StringBuilder();
+    private final StringBuilder whereClause = new StringBuilder();
 
     private int delete(Map<String,String> keys, long timeStamp, String team) throws SQLException {
 
@@ -2065,7 +2071,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-    public boolean diffMoreThanThreshold(long time) {
+    private boolean diffMoreThanThreshold(long time) {
         return (time/86400 > 0);
     }
 
@@ -2269,7 +2275,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    final ContentValues valuez = new ContentValues();
+    private final ContentValues valuez = new ContentValues();
     final static String NULL = "null";
 
 
@@ -2429,7 +2435,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    Map<String,Map<Map<String,String>,Map<String,String>>> mapCache= new HashMap<String, Map<Map<String, String>, Map<String, String>>>();
+    private final Map<String,Map<Map<String,String>,Map<String,String>>> mapCache= new HashMap<String, Map<Map<String, String>, Map<String, String>>>();
 
     public Map<String, String> preFetchValuesForAllMatchingKey(Map<String, String> keyChain, String namePrefix) {
         Map<String, String> ret = null;
@@ -2704,7 +2710,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return 0;
     }
 
-    public boolean scanSyncEntries(MenuActivity.Control control, int maxR, UIProvider ui) {
+    public boolean scanSyncEntries(MenuActivity.IncomingHandler.Control control, int maxR, UIProvider ui) {
 
 
         Cursor c = db().rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc",null); // limit "+maxR, null);

@@ -1,18 +1,12 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -20,6 +14,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.util.Log;
@@ -44,8 +39,8 @@ import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Workflow;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
@@ -66,20 +61,31 @@ import com.teraim.fieldapp.utils.Geomatte;
 import com.teraim.fieldapp.utils.InputFilterMinMax;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 public class LinjePortalTemplate extends Executor implements LocationListener, EventListener {
-	List<WF_Container> myLayouts;
-	VariableCache varCache;
-	DbHelper db;
+	private List<WF_Container> myLayouts;
+	private VariableCache varCache;
+	private DbHelper db;
 
-	private SweLocation myL=null;
-	EditText meterEd,meterEnEd;
-	String currentLinje,currentYear;
-	private LinearLayout aggregatePanel,fieldList,selectedPanel,numTmp,fieldListB;
+	private SweLocation myL = null;
+	private EditText meterEd;
+	private EditText meterEnEd;
+	private String currentLinje;
+	private String currentYear;
+	private LinearLayout aggregatePanel, fieldList, selectedPanel, numTmp, fieldListB;
 	private String stratum;
 	private Linje linje;
 	private RelativeLayout intervallL;
-	private Button startB,stopB;
+	private Button startB, stopB;
 	private FrameLayout linjeF;
 	private TextView gpsView;
 	private WF_Container root;
@@ -92,10 +98,10 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	//private SweLocation center = new SweLocation(6564201.573, 517925.98);
 
 	private LocationManager lm;
-	private Variable linjeStatus,linjeStartEast,linjeStartNorth;
+	private Variable linjeStatus, linjeStartEast, linjeStartNorth;
 
 	private final int d = 25;
-	private final double[][] startDistFromCenter = {{0,-d},{0,-d},{0,-d},{d,0},{d,0},{d,0},{0,d},{0,d},{0,d},{-d,0},{-d,0},{-d,0}};
+	private final double[][] startDistFromCenter = {{0, -d}, {0, -d}, {0, -d}, {d, 0}, {d, 0}, {d, 0}, {0, d}, {0, d}, {0, d}, {-d, 0}, {-d, 0}, {-d, 0}};
 	private SweLocation center;
 	private String histNorr;
 	private String histOst;
@@ -104,33 +110,33 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		Log.d("nils","in onCreateView of LinjePortalTemplate");
+							 Bundle savedInstanceState) {
+		Log.d("nils", "in onCreateView of LinjePortalTemplate");
 		if (myContext == null) {
-			Log.d("vortex","hasnt survived create...exiting.");
+			Log.d("vortex", "hasnt survived create...exiting.");
 			return null;
 		}
 		//myContext.resetState();
 		//Listen to LinjeStarted and LinjeDone events.
 		myContext.registerEventListener(this, EventType.onBluetoothMessageReceived);
-		View v = inflater.inflate(R.layout.template_linje_portal_wf, container, false);	
-		root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
-		aggregatePanel = (LinearLayout)v.findViewById(R.id.aggregates);
-		fieldList = (LinearLayout)v.findViewById(R.id.fieldList);
-		fieldListB = (LinearLayout)fieldList.findViewById(R.id.fieldListB);
+		View v = inflater.inflate(R.layout.template_linje_portal_wf, container, false);
+		root = new WF_Container("root", v.findViewById(R.id.root), null);
+		aggregatePanel = v.findViewById(R.id.aggregates);
+		fieldList = v.findViewById(R.id.fieldList);
+		fieldListB = fieldList.findViewById(R.id.fieldListB);
 		//ListView selectedList = (ListView)v.findViewById(R.id.SelectedL);
-		selectedPanel = (LinearLayout)v.findViewById(R.id.selected);
+		selectedPanel = v.findViewById(R.id.selected);
 
-		lm = (LocationManager)this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+		lm = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
 
 		stopB = new Button(this.getActivity());
-		startB = (Button)fieldList.findViewById(R.id.startB);
+		startB = fieldList.findViewById(R.id.startB);
 
 		varCache = gs.getVariableCache();
 		al = gs.getVariableConfiguration();
 		db = gs.getDb();
-		currentYear = varCache.getVariableValue(null,"Current_Year");
-		currentLinje = varCache.getVariableValue(null,"Current_Linje");
+		currentYear = varCache.getVariableValue(null, "Current_Year");
+		currentLinje = varCache.getVariableValue(null, "Current_Linje");
 
 		if (currentLinje == null) {
 			AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
@@ -142,33 +148,31 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			});
 			alert.setIcon(android.R.drawable.ic_dialog_alert);
 			alert.show();
-		}
-		else {
-			Log.d("nils","Current Linje is "+currentLinje);
-			startPunkt = startDistFromCenter[Integer.parseInt(currentLinje)-1];
-			northW = startPunkt[1]<0;
-			southW = startPunkt[1]>0;
+		} else {
+			Log.d("nils", "Current Linje is " + currentLinje);
+			startPunkt = startDistFromCenter[Integer.parseInt(currentLinje) - 1];
+			northW = startPunkt[1] < 0;
+			southW = startPunkt[1] > 0;
 			if (!northW && !southW) {
-				eastW = startPunkt[0]>0;
-				westW = startPunkt[0]<0;
+				eastW = startPunkt[0] > 0;
+				westW = startPunkt[0] < 0;
 			}
 
-			Log.e("nils","eastW: "+eastW+" westW: "+westW+" southW:"+southW+" northW: "+northW);
-			Map<String,String>pyKeyMap = al.createLinjeKeyMap();
-			linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR,currentYear,"ruta",varCache.getVariableValue(null,"Current_Ruta"),"linje",currentLinje);
+			Log.e("nils", "eastW: " + eastW + " westW: " + westW + " southW:" + southW + " northW: " + northW);
+			Map<String, String> pyKeyMap = al.createLinjeKeyMap();
+			linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "ruta", varCache.getVariableValue(null, "Current_Ruta"), "linje", currentLinje);
 			linjeStatus = varCache.getVariable(linjeKey, NamedVariables.STATUS_LINJE);
 			Variable pyCentrumNorr = varCache.getVariable(pyKeyMap, "CentrumGPSNS");
 			Variable pyCentrumOst = varCache.getVariable(pyKeyMap, "CentrumGPSEW");
 			histNorr = pyCentrumNorr.getHistoricalValue();
 			histOst = pyCentrumOst.getHistoricalValue();
-			Log.d("nils","pyKEyMap: "+pyKeyMap.toString());
-			Log.d("nils","Historical norr ost: "+histNorr+" "+histOst);
+			Log.d("nils", "pyKEyMap: " + pyKeyMap.toString());
+			Log.d("nils", "Historical norr ost: " + histNorr + " " + histOst);
 
 
+			stratum = varCache.getVariableValue(al.createRutaKeyMap(), NamedVariables.STRATUM_HISTORICAL);
 
-			stratum = varCache.getVariableValue(al.createRutaKeyMap(),NamedVariables.STRATUM_HISTORICAL);
-
-			Log.d("nils","STRATUM: "+stratum);
+			Log.d("nils", "STRATUM: " + stratum);
 			//			status = Active.INITIAL;
 			stopB.setText("KLAR");
 
@@ -177,25 +181,24 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			linjeStartEast = varCache.getVariable(linjeKey, "!linjestartEast");
 			linjeStartNorth = varCache.getVariable(linjeKey, "!linjestartNorth");
 
-			if (linjeStatus.getValue()!=null) {
+			if (linjeStatus.getValue() != null) {
 				if (linjeStatus.getValue().equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR)) {
-					if (linjeStartEast.getValue()!=null && linjeStartNorth!=null) {
+					if (linjeStartEast.getValue() != null && linjeStartNorth != null) {
 						double lStartE = Double.parseDouble(linjeStartEast.getValue());
 						double lStartN = Double.parseDouble(linjeStartNorth.getValue());
 
-						setStart(lStartE,lStartN);
-						Log.d("nils","Linjestatus was STATUS_STARTAD_MEN_INTE_KLAR");
+						setStart(lStartE, lStartN);
+						Log.d("nils", "Linjestatus was STATUS_STARTAD_MEN_INTE_KLAR");
 					} else {
-						Log.d("nils","Status changed back to initial, because of missing values for startE,startN");
-						linjeStatus.setValue(Constants.STATUS_INITIAL);	
+						Log.d("nils", "Status changed back to initial, because of missing values for startE,startN");
+						linjeStatus.setValue(Constants.STATUS_INITIAL);
 						center = null;
 					}
+				} else if (linjeStatus.getValue().equals(Constants.STATUS_AVSLUTAD_OK)) {
+					Log.d("nils", "Linjestatus is Avslutad");
 				}
-				else if (linjeStatus.getValue().equals(Constants.STATUS_AVSLUTAD_OK)){
-					Log.d("nils","Linjestatus is Avslutad");						
-				} 
 			} else {
-				Log.e("nils","Linjestatus was null");
+				Log.e("nils", "Linjestatus was null");
 				linjeStatus.setValue(Constants.STATUS_INITIAL);
 				center = null;
 			}
@@ -213,7 +216,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			 */
 
 
-			LinearLayout filterPanel = (LinearLayout)v.findViewById(R.id.filterPanel);
+			LinearLayout filterPanel = v.findViewById(R.id.filterPanel);
 			myLayouts = new ArrayList<WF_Container>();
 			myLayouts.add(root);
 			myLayouts.add(new WF_Container("Field_List_panel_1", fieldList, root));
@@ -222,56 +225,56 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			myLayouts.add(new WF_Container("Field_List_panel_2", selectedPanel, root));
 			myContext.addContainers(getContainers());
 
-			gpsView = (TextView)aggregatePanel.findViewById(R.id.gpsView);
+			gpsView = aggregatePanel.findViewById(R.id.gpsView);
 			gpsView.setText("Söker...");
 
 			intervallL = (RelativeLayout) inflater.inflate(R.layout.intervall_popup, null);
-			numTmp  = (LinearLayout)inflater.inflate(R.layout.edit_field_numeric, null);
+			numTmp = (LinearLayout) inflater.inflate(R.layout.edit_field_numeric, null);
 
-			avgrSp = (Spinner) intervallL.findViewById(R.id.avgrTyp);
+			avgrSp = intervallL.findViewById(R.id.avgrTyp);
 
 			//			List<String>avgrTyper = Arrays.asList(new String[] {"�kermark","Sl�ttervall","Vatten","Otillg�nglig v�tmark","Otillg�nglig brant","Rasrisk","Tomt/Bebyggelse","On�bar biotop�","Betr�dnadsf�rbud"});			
 
-			List<String>avgrTyperRaw = al.getListElements(al.getCompleteVariableDefinition(NamedVariables.AVGRTYP));
+			List<String> avgrTyperRaw = al.getListElements(al.getCompleteVariableDefinition(NamedVariables.AVGRTYP));
 			String[] tmp;
 			String[] avgrTyper = new String[avgrTyperRaw.size()];
-			avgrValueA=new String[avgrTyperRaw.size()];
-			int c=0;
-			for (String s:avgrTyperRaw) {
-				s=s.replace("{", "");
-				s=s.replace("}", "");								
+			avgrValueA = new String[avgrTyperRaw.size()];
+			int c = 0;
+			for (String s : avgrTyperRaw) {
+				s = s.replace("{", "");
+				s = s.replace("}", "");
 				tmp = s.split("=");
-				if (tmp==null||tmp.length!=2) {
-					Log.e("nils","found corrupt element: "+s);
+				if (tmp == null || tmp.length != 2) {
+					Log.e("nils", "found corrupt element: " + s);
 					o.addRow("");
-					o.addRedText("Variabeln Avgränsning:AvgrTyp saknar värden.");					
-					avgrValueA[c]="null";
-					avgrTyper[c]="****";
+					o.addRedText("Variabeln Avgränsning:AvgrTyp saknar värden.");
+					avgrValueA[c] = "null";
+					avgrTyper[c] = "****";
 				} else {
-					avgrValueA[c]=tmp[1];
-					avgrTyper[c]=tmp[0];
+					avgrValueA[c] = tmp[1];
+					avgrTyper[c] = tmp[0];
 				}
 				c++;
 			}
-			ArrayAdapter<String> sara=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,avgrTyper);
+			ArrayAdapter<String> sara = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, avgrTyper);
 			avgrSp.setAdapter(sara);
 
-			linjeF = (FrameLayout) filterPanel.findViewById(R.id.linje);
+			linjeF = filterPanel.findViewById(R.id.linje);
 
-			linje = new Linje(getActivity(),(eastW?"E":(westW?"W":(northW?"N":(southW?"S":"?")))));
+			linje = new Linje(getActivity(), (eastW ? "E" : (westW ? "W" : (northW ? "N" : (southW ? "S" : "?")))));
 
 			linjeF.addView(linje);
 
-			List<String>startAlt = (histOst != null && histNorr != null)?Arrays.asList("Sätt startpunkt här","Använd beräknad startpunkt","Starten måste kartinventeras","Hela linjen i karta"):
-				Arrays.asList("Sätt startpunkt här");
+			List<String> startAlt = (histOst != null && histNorr != null) ? Arrays.asList("Sätt startpunkt här", "Använd beräknad startpunkt", "Starten måste kartinventeras", "Hela linjen i karta") :
+					Collections.singletonList("Sätt startpunkt här");
 
 			final int startIHar = startAlt.indexOf("Sätt startpunkt här");
 			final int startIKart = startAlt.indexOf("Starten måste kartinventeras");
 			final int helaIKart = startAlt.indexOf("Hela linjen i karta");
 			final int anvandTeoriStart = startAlt.indexOf("Använd beräknad startpunkt");
-			final LinearLayout startSpinnerL = (LinearLayout)inflater.inflate(R.layout.edit_field_spinner, null);
-			final Spinner startSp= (Spinner)startSpinnerL.findViewById(R.id.spinner);
-			ArrayAdapter<String> ara=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,startAlt);
+			final LinearLayout startSpinnerL = (LinearLayout) inflater.inflate(R.layout.edit_field_spinner, null);
+			final Spinner startSp = startSpinnerL.findViewById(R.id.spinner);
+			ArrayAdapter<String> ara = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, startAlt);
 			startSp.setAdapter(ara);
 
 
@@ -282,7 +285,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 					AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
 					alert.setTitle("Stopp!");
-					alert.setMessage("Vill du säkert avsluta och klarmarkera?");					
+					alert.setMessage("Vill du säkert avsluta och klarmarkera?");
 					alert.setCancelable(false);
 					alert.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int whichButton) {
@@ -299,31 +302,34 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 						}
 					});
 					alert.show();
-				}});
+				}
+			});
 
 			startB.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					if (startSpinnerL.getParent() !=null)
-						((ViewGroup)startSpinnerL.getParent()).removeView(startSpinnerL);
+					if (startSpinnerL.getParent() != null)
+						((ViewGroup) startSpinnerL.getParent()).removeView(startSpinnerL);
 					if (!linjeStatus.getValue().equals(Constants.STATUS_STARTAD_MEN_INTE_KLAR)) {
 						if (linjeStatus.getValue().equals(Constants.STATUS_AVSLUTAD_OK)) {
 							new AlertDialog.Builder(v.getContext()).setTitle("Linjen markerad avslutad!")
-							.setMessage("Vill du göra om linjen?")
-							.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int which) { 												
-									linjeStatus.setValue(Constants.STATUS_INITIAL);
-									startB.performClick();
-									gpsView.setText("");
-								}})
-								.setNegativeButton("Nej",new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) { 
-										// continue with delete
-									}})
+									.setMessage("Vill du göra om linjen?")
+									.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+											linjeStatus.setValue(Constants.STATUS_INITIAL);
+											startB.performClick();
+											gpsView.setText("");
+										}
+									})
+									.setNegativeButton("Nej", new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+											// continue with delete
+										}
+									})
 									.setCancelable(false)
 									.setIcon(android.R.drawable.ic_dialog_alert)
-									.show();								
+									.show();
 						}
 						if (linjeStatus.getValue().equals(Constants.STATUS_INITIAL)) {
 							AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext());
@@ -334,42 +340,42 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 							alert.setPositiveButton("Kör igång", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int whichButton) {
-									if (startSp.getSelectedItemPosition()==startIHar&&myL==null) {									
+									if (startSp.getSelectedItemPosition() == startIHar && myL == null) {
 										new AlertDialog.Builder(LinjePortalTemplate.this.getActivity())
-										.setTitle("Din position är okänd!")
-										.setMessage("Eftersom GPSen ännu inte hittat din position, så kan du inte använda det här alternativet")
-										.setPositiveButton("Jag förstår!", new DialogInterface.OnClickListener() {
-											public void onClick(DialogInterface dialog, int which) { 
-												// continue with delete
-											}
-										})
-										.setCancelable(false)
-										.setIcon(android.R.drawable.ic_dialog_alert)
-										.show();
+												.setTitle("Din position är okänd!")
+												.setMessage("Eftersom GPSen ännu inte hittat din position, så kan du inte använda det här alternativet")
+												.setPositiveButton("Jag förstår!", new DialogInterface.OnClickListener() {
+													public void onClick(DialogInterface dialog, int which) {
+														// continue with delete
+													}
+												})
+												.setCancelable(false)
+												.setIcon(android.R.drawable.ic_dialog_alert)
+												.show();
 									} else {
 
 										//should intervall be opened?
-										if (startSp.getSelectedItemPosition()==startIKart||
-												startSp.getSelectedItemPosition()==helaIKart) {
-											int start=0,end=-1;
+										if (startSp.getSelectedItemPosition() == startIKart ||
+												startSp.getSelectedItemPosition() == helaIKart) {
+											int start = 0, end = -1;
 
-											if (startSp.getSelectedItemPosition()==helaIKart) 										
+											if (startSp.getSelectedItemPosition() == helaIKart)
 												end = 200;
-											openInterVallPopup(start,end);
-											double teoriNorr = Double.parseDouble(histNorr)+startPunkt[1];
-											double teoriOst = Double.parseDouble(histOst)+startPunkt[0];
-											setStart(teoriOst,teoriNorr);
-										}  else if (startSp.getSelectedItemPosition()==startIHar) {
+											openInterVallPopup(start, end);
+											double teoriNorr = Double.parseDouble(histNorr) + startPunkt[1];
+											double teoriOst = Double.parseDouble(histOst) + startPunkt[0];
+											setStart(teoriOst, teoriNorr);
+										} else if (startSp.getSelectedItemPosition() == startIHar) {
 
-											setStart(myL.east,myL.north);
+											setStart(myL.east, myL.north);
 
-										} else if (startSp.getSelectedItemPosition()==anvandTeoriStart) {	
-											Log.d("nils","I should en up here.");
-											double teoriNorr = Double.parseDouble(histNorr)+startPunkt[1];
-											double teoriOst = Double.parseDouble(histOst)+startPunkt[0];
-											setStart(teoriOst,teoriNorr);	
-										} else 
-											Log.d("nils","startSPinner: "+startSp.getSelectedItemPosition());
+										} else if (startSp.getSelectedItemPosition() == anvandTeoriStart) {
+											Log.d("nils", "I should en up here.");
+											double teoriNorr = Double.parseDouble(histNorr) + startPunkt[1];
+											double teoriOst = Double.parseDouble(histOst) + startPunkt[0];
+											setStart(teoriOst, teoriNorr);
+										} else
+											Log.d("nils", "startSPinner: " + startSp.getSelectedItemPosition());
 										/*
 										if (gs.syncIsAllowed()) {
 											gs.triggerTransfer();
@@ -382,28 +388,29 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 								}
 
 
-
 							});
 							alert.setNegativeButton("Avbryt", new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int whichButton) {
 
-								}});
+								}
+							});
 							alert.show();
 						}
 					}
 
-				}});
+				}
+			});
 
-			Log.d("nils","year: "+currentYear+" Ruta: "+varCache.getVariableValue(null,"Current_Ruta")+" Linje: "+currentLinje);
+			Log.d("nils", "year: " + currentYear + " Ruta: " + varCache.getVariableValue(null, "Current_Ruta") + " Linje: " + currentLinje);
 
-			Map<String,String> keySet = Tools.createKeyMap(VariableConfiguration.KEY_YEAR,currentYear,"ruta",varCache.getVariableValue(null,"Current_Ruta"),"linje",currentLinje);
+			Map<String, String> keySet = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "ruta", varCache.getVariableValue(null, "Current_Ruta"), "linje", currentLinje);
 
-			Selection selection = db.createSelection(keySet,"!linjeobjekt");
+			Selection selection = db.createSelection(keySet, "!linjeobjekt");
 
 			List<ColumnDescriptor> columns = new ArrayList<ColumnDescriptor>();
-			columns.add(new ColumnDescriptor("meter",true,false,true));
-			columns.add(new ColumnDescriptor("value",false,true,false));
-			WF_Linje_Meter_List selectedList = new WF_Linje_Meter_List("selected_list", true, myContext,columns, selection,"!linjeobjekt",keySet,linje,avgrValueA,avgrTyper);
+			columns.add(new ColumnDescriptor("meter", true, false, true));
+			columns.add(new ColumnDescriptor("value", false, true, false));
+			WF_Linje_Meter_List selectedList = new WF_Linje_Meter_List("selected_list", true, myContext, columns, selection, "!linjeobjekt", keySet, linje, avgrValueA, avgrTyper);
 
 			selectedList.addSorter(new WF_TimeOrder_Sorter());
 
@@ -414,17 +421,17 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 			//Variable linjeObj = al.getVariableInstance(NamedVariables.LINJEOBJEKT);
 			List<String> lobjT = al.getCompleteVariableDefinition(NamedVariables.LINJEOBJEKT);
-			List<String>objTypes = al.getListElements(lobjT);
-			if (objTypes!=null)
-				Log.d("nils","Found objTypes! "+objTypes.toString());
+			List<String> objTypes = al.getListElements(lobjT);
+			if (objTypes != null)
+				Log.d("nils", "Found objTypes! " + objTypes.toString());
 
 			//Generate buttons.
 			TextView spc = new TextView(this.getActivity());
 			spc.setWidth(20);
 
-			Button b;			
-			for (final String linjeObjLabel:objTypes) {
-				if (stratum !=null && linjeObjLabel.equals(NamedVariables.RENSTIG)&&
+			Button b;
+			for (final String linjeObjLabel : objTypes) {
+				if (stratum != null && linjeObjLabel.equals(NamedVariables.RENSTIG) &&
 						!stratum.equals("10"))
 					continue;
 
@@ -442,12 +449,12 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 					b.setText("Liten fjällstig");
 				else
 					b.setText(linjeObjLabel);
-				b.setOnClickListener(new OnClickListener() {			
+				b.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 
 						if (linjeObjLabel.equals("Avgränsning"))
-							openInterVallPopup(-1,-1);
+							openInterVallPopup(-1, -1);
 						else
 							openInterVallPopup(linjeObjLabel);
 					}
@@ -473,13 +480,11 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	}
 
 
-
-
 	private void setEnded() {
 		startB.setBackgroundResource(android.R.drawable.btn_default);
 		startB.setText("STARTA");
-		linjeStatus.setValue(Constants.STATUS_AVSLUTAD_OK);						
-		fieldListB.setVisibility(View.INVISIBLE);	
+		linjeStatus.setValue(Constants.STATUS_AVSLUTAD_OK);
+		fieldListB.setVisibility(View.INVISIBLE);
 		myContext.registerEvent(new WF_Event_OnSave(LinjePortalId));
 	}
 
@@ -495,7 +500,17 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 	@Override
 	public void onResume() {
-		myL=null;
+		myL = null;
+		if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			// TODO: Consider calling
+			//    ActivityCompat#requestPermissions
+			// here to request the missing permissions, and then overriding
+			//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+			//                                          int[] grantResults)
+			// to handle the case where the user grants the permission. See the documentation
+			// for ActivityCompat#requestPermissions for more details.
+			return;
+		}
 		lm.requestLocationUpdates(
 				LocationManager.GPS_PROVIDER,
 				0,
@@ -567,7 +582,10 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 	}
 
-	boolean eastW,southW,northW,westW = false;
+	private boolean eastW;
+    private boolean southW;
+    private boolean northW;
+    private boolean westW = false;
 	private String refreshGPSInfo() {
 
 		double x=0,y=0;
@@ -634,7 +652,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	}
 
 	private void openInterVallPopup(String linjeObjLabel) {	 
-		meterEd = (EditText)numTmp.findViewById(R.id.edit);
+		meterEd = numTmp.findViewById(R.id.edit);
 		meterEd.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "200")});
 		openInterVallPopup(Linjetyp.PUNKT,linjeObjLabel,null);
 	}
@@ -642,11 +660,11 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 
 	private void openInterVallPopup(int start, int end) {		
-		meterEd = (EditText)intervallL.findViewById(R.id.avgrStart);
+		meterEd = intervallL.findViewById(R.id.avgrStart);
 		if (start!=-1)
 			meterEd.setText(start+"");
 		meterEd.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "199")});
-		meterEnEd = (EditText)intervallL.findViewById(R.id.avgrSlut);
+		meterEnEd = intervallL.findViewById(R.id.avgrSlut);
 		if (end!=-1)
 			meterEnEd.setText(end+"");
 		meterEnEd.setFilters(new InputFilter[]{ new InputFilterMinMax("1", "200")});		
@@ -654,7 +672,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 	}
 
-	Dialog complexD=null;
+	private Dialog complexD=null;
 
 	private void openInterVallPopup(final Linjetyp typ,final String linjeObjLabel, ViewGroup myView) {
 		complexD = null;
@@ -889,10 +907,11 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	}
 
 
-	private static String ticker = "       ...Väntar på GPS...        ";
+	private static final String ticker = "       ...Väntar på GPS...        ";
 
 
-	private int tStrLen = 10, curPos=0;
+	private final int tStrLen = 10;
+    private int curPos=0;
 	private void updateStatus() {
 		int end = curPos+tStrLen;
 		if (end>ticker.length())
@@ -906,21 +925,21 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 		gpsView.setText(cString);		
 	}
 
-	boolean tickerRunning=false;
-	void startRepeatingTask() {
+	private boolean tickerRunning=false;
+	private void startRepeatingTask() {
 		curPos = 0;
 		tickerRunning = true;
 		mStatusChecker.run(); 
 	}
 
-	void stopRepeatingTask() {
+	private void stopRepeatingTask() {
 		mHandler.removeCallbacks(mStatusChecker);
 		tickerRunning = false;
 
 	}
 	private Handler mHandler;
-	private int mInterval = 250;
-	Runnable mStatusChecker = new Runnable() {
+	private final int mInterval = 250;
+	private final Runnable mStatusChecker = new Runnable() {
 		@Override 
 		public void run() {
 			updateStatus(); //this function can change value of mInterval.

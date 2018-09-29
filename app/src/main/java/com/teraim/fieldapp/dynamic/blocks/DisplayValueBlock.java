@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.view.ViewGroup;
-
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
@@ -14,10 +12,14 @@ public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerat
 
 	private static final long serialVersionUID = 9151756426062334462L;
 
-	private String namn,label,formula, containerId,format;
-	boolean isVisible = false;
-	Unit unit;
-	GlobalState gs;
+	private final String namn;
+	private final String label;
+	private final String formula;
+	private final String containerId;
+	private final String format;
+	private boolean isVisible = false;
+	private final Unit unit;
+	private GlobalState gs;
 	
 	public DisplayValueBlock(String id,String namn, String label,Unit unit,
 			String formula, String containerId,boolean isVisible,String format,String textColor,String bgColor,String verticalFormat,String verticalMargin ) {

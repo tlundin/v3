@@ -1,13 +1,11 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import android.app.ActionBar;
 import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.R;
@@ -19,7 +17,7 @@ public class WF_TextBlockWidget extends WF_Widget {
 		if (label!=null) {
 			Log.d("vortex","Label is: "+label);
 			Log.d("bortex","Margins: "+horizontalMargin+","+verticalMargin+" t: "+textSize);
-			TextView tv =((TextView)getWidget().findViewById(R.id.text_block));
+			TextView tv = getWidget().findViewById(R.id.text_block);
 			//tv.setText("Sliders in a group can have values auto-level In this case to a sum of 100.");
 			tv.setText(Html.fromHtml(label));
 			if (textSize!=-1)

@@ -1,5 +1,13 @@
 package com.teraim.fieldapp.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.util.JsonWriter;
+import android.util.Log;
+
+import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
+import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -8,21 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.app.Activity;
-import android.content.Context;
-import android.util.JsonWriter;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
-import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
-
 public class JSONExporter extends Exporter {
 
-	JsonWriter writer;
-	StringWriter sw;
-	int varC=0;
+	private JsonWriter writer;
+	private StringWriter sw;
+	private int varC=0;
 
 	public JSONExporter(Context ctx) {
 		super(ctx);		
@@ -152,7 +150,7 @@ public class JSONExporter extends Exporter {
 		}
 	}
 
-	public void writeHeader() throws IOException {
+	private void writeHeader() throws IOException {
 		Date now = new Date();
 		//File header.
 		Log.d("nils","Exporting database");

@@ -1,37 +1,38 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
+import android.util.Log;
+
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
+import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
+import com.teraim.fieldapp.dynamic.types.DB_Context;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.Variable.DataType;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
+import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.ui.Linje;
+import com.teraim.fieldapp.utils.DbHelper.Selection;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import android.util.Log;
-
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
-import com.teraim.fieldapp.dynamic.types.DB_Context;
-import com.teraim.fieldapp.dynamic.types.ColumnDescriptor;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.types.Variable.DataType;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
-import com.teraim.fieldapp.non_generics.NamedVariables;
-import com.teraim.fieldapp.ui.Linje;
-import com.teraim.fieldapp.utils.DbHelper.Selection;
-
 
 public class WF_Linje_Meter_List extends WF_List implements EventListener {
 	//final String variableName;
-	final Selection s;
-	final String[] columnNames;
-	final List<ColumnDescriptor> cd;
-	final String varId;
-	int myHeaderCol = 0;
-	Map<String,String> listElemSelector;
-	Linje linjeV;
-	String[] avgrT,avgrV;
+	private final Selection s;
+	private final String[] columnNames;
+	private final List<ColumnDescriptor> cd;
+	private final String varId;
+	private int myHeaderCol = 0;
+	private final Map<String,String> listElemSelector;
+	private final Linje linjeV;
+	private final String[] avgrT;
+    private final String[] avgrV;
 
 	//Variablename should always be first element of columns. Will be used as header.
 	public WF_Linje_Meter_List(String id, boolean isVisible, WF_Context ctx, List<ColumnDescriptor> columns, Selection selection, 

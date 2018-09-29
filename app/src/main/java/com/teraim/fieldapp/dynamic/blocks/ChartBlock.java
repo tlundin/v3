@@ -25,21 +25,26 @@ import org.achartengine.model.CategorySeries;
 public abstract class ChartBlock  extends Block implements EventListener {
 
     GraphicalView chart;
-    protected Context ctx;
-    protected WF_Context myContext;
-    protected int insertIndex = -1;
-    String label, container, name, margins;
-    boolean displayValues = true, isVisible = true;
-    int height, width;
-    float textSize;
-    protected DataSource myDataSource;
-    protected WF_Widget myWidget;
-    protected WF_Container myContainer;
-    protected int[] intMargins=null;
+    Context ctx;
+    WF_Context myContext;
+    private int insertIndex = -1;
+    final String label;
+    private final String container;
+    final String name;
+    final String margins;
+    boolean displayValues = true;
+    private boolean isVisible = true;
+    private int height;
+    private int width;
+    final float textSize;
+    DataSource myDataSource;
+    private WF_Widget myWidget;
+    private WF_Container myContainer;
+    int[] intMargins=null;
 
-    public ChartBlock(String blockId, String name, String label, String container,
-                      String textSize, String margins, int height, int width, boolean displayValues,
-                      boolean isVisible) {
+    ChartBlock(String blockId, String name, String label, String container,
+               String textSize, String margins, int height, int width, boolean displayValues,
+               boolean isVisible) {
         super();
         float textSizeF = 10;
         try {

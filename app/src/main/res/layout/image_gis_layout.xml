@@ -15,14 +15,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="60dp"
-        android:divider="@drawable/gis_icon_divider"
-        android:dividerPadding="25dp"
-        android:gravity="right|center_horizontal"
+        android:layout_gravity="bottom|end"
         android:orientation="vertical"
-        android:showDividers="end" >
+        android:layout_marginBottom="50dp"
+        >
 
         <ImageButton
             android:id="@+id/menuB"
@@ -43,12 +39,10 @@
 
         <ImageButton
             android:id="@+id/objectMenuB"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="#0000"
-            android:paddingRight="5dp"
-            android:scaleType="center"
             android:src="@drawable/gis_object_menu_button" />
 
         <ImageButton

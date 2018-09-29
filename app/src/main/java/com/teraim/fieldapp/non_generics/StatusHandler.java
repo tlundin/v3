@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.non_generics;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -14,14 +8,18 @@ import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class StatusHandler {
 
 
-	private DbHelper dbh;
-	private GlobalState gs;
+	private final DbHelper dbh;
+	private final GlobalState gs;
 	private Map<String, String> keySet;
 	private int noOfProvytor=-1,noOfRutor=-1;
-	private PersistenceHelper ph;
+	private final PersistenceHelper ph;
 
 
 	public StatusHandler(GlobalState gs) {
@@ -32,15 +30,15 @@ public class StatusHandler {
 
 
 	public class Kvot {
-		int done;
-		int tot;
+		final int done;
+		final int tot;
 
-		public Kvot(int done, int tot) {
+		Kvot(int done, int tot) {
 			this.done=done;
 			this.tot=tot;
 		}
 
-		public boolean allDone() {
+		boolean allDone() {
 			return done==tot;
 		}
 
@@ -156,7 +154,7 @@ public class StatusHandler {
 		return new Kvot(done,noOfRutor);
 	}
 
-	public int selectThoseDone(List<String> statusL){
+	private int selectThoseDone(List<String> statusL){
 		int ret = 0;
 		if (statusL != null) {		
 			for (String val:statusL) {

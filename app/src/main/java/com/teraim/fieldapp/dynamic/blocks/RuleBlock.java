@@ -1,12 +1,12 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.Rule;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+
+import java.util.List;
 
 public  class RuleBlock extends Block {
 
@@ -14,7 +14,7 @@ public  class RuleBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = 2045031005203874392L;
-	private Rule r;
+	private final Rule r;
 	private enum Scope {
 		block,
 		flow,

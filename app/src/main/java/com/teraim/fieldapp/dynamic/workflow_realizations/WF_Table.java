@@ -1,13 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +21,14 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class WF_Table extends WF_List  {
 
 	//protected final List<Listable> tableRows = new  ArrayList<Listable>(); //Instantiated in constructor
@@ -37,19 +37,19 @@ public class WF_Table extends WF_List  {
 	private final View headerCell;
 	protected List<? extends Listable> filteredList;
 
-	protected WF_Context myContext;
-	protected GlobalState gs;
-	protected VariableConfiguration al;
+	private final WF_Context myContext;
+	private final GlobalState gs;
+	private final VariableConfiguration al;
 	private String myVariator;
 	private LinearLayout headerV;
-	private LayoutInflater inflater ;
-	private TableLayout tableView;
+	private final LayoutInflater inflater ;
+	private final TableLayout tableView;
 	//The index of the currently selected column.
 	private int selectedColumnIndex =-1;
 
 	private int rowNumber=0, numberOfColumns =1;
 	private final String ColHeadId = "TableHeader";
-	private WF_Table_Row headerRow;
+	private final WF_Table_Row headerRow;
 	private boolean tableTypeSimple;
 
 	private String varNamePrefix;
@@ -57,7 +57,7 @@ public class WF_Table extends WF_List  {
 	//How about using the Container's panel?? TODO
 	public WF_Table(String id,String label,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
-		tableView = (TableLayout)tableV.findViewById(R.id.table);
+		tableView = tableV.findViewById(R.id.table);
         myContext = ctx;
 		gs = GlobalState.getInstance();
 		o = gs.getLogger();
@@ -83,7 +83,7 @@ public class WF_Table extends WF_List  {
 
 	private Map<String, Map<String, String>> allInstances;
 
-	Map<String,Set<String>>varIdMap=new HashMap<String,Set<String>>();
+	private final Map<String,Set<String>>varIdMap=new HashMap<String,Set<String>>();
 	//Creates new rows and adds dataset to each.
 	public void addRows(List<List<String>> rows,String variatorColumn, String selectionPattern) {
 
@@ -115,7 +115,7 @@ public class WF_Table extends WF_List  {
 		}
 	}
 	//Create a new row + dataset.
-	public void addRow(List<String> row) {		
+    private void addRow(List<String> row) {
 		WF_Table_Row rowWidget = new WF_Table_Row(this,(rowNumber++)+"",inflater.inflate(R.layout.table_row, null),myContext,true);
 		rowWidget.addEntryField(row);
 		add(rowWidget);
@@ -147,7 +147,7 @@ public class WF_Table extends WF_List  {
 		return selectedColumnIndex;
 	}
 
-	public int getNumberofColumns() {
+	private int getNumberofColumns() {
 		return numberOfColumns;
 	}
 
@@ -211,10 +211,10 @@ public class WF_Table extends WF_List  {
 */
 	
 	//Keep column keys in memory.
-	private List<String> columnKeys = new ArrayList<String>();
+	private final List<String> columnKeys = new ArrayList<String>();
 
 	
-	public void addColumn(String header, String colKey, String type, int width,String backgroundColor, String textColor) {
+	private void addColumn(String header, String colKey, String type, int width, String backgroundColor, String textColor) {
 		//Copy the key and add the variator.
 		Map<String, String> colHash = Tools.copyKeyHash(myContext.getKeyHash());
 		colHash.put(myVariator, colKey);
@@ -242,7 +242,7 @@ public class WF_Table extends WF_List  {
 
 
 
-		public AggregateColumn(String label, Expressor.EvalExpr expressionE, String format, AggregateFunction aggregationFunction,boolean isLogical) {
+		AggregateColumn(String label, Expressor.EvalExpr expressionE, String format, AggregateFunction aggregationFunction, boolean isLogical) {
 			myCells=new ArrayList<View>();
 			myRows = new ArrayList<WF_Table_Row>();
 			this.expressionE=expressionE;
@@ -254,18 +254,18 @@ public class WF_Table extends WF_List  {
 		}
 
 		final boolean isLogical;
-		Expressor.EvalExpr expressionE;
-		List<View>myCells;
-		List<WF_Table_Row>myRows;
-		String format;
-		AggregateFunction aggF;
-		String label;
+		final Expressor.EvalExpr expressionE;
+		final List<View>myCells;
+		final List<WF_Table_Row>myRows;
+		final String format;
+		final AggregateFunction aggF;
+		final String label;
 
 		public List<View> getMyCells() {
 			return myCells;
 		}
 
-		public void addRow(View textView, WF_Table_Row myRow) {
+		void addRow(View textView, WF_Table_Row myRow) {
 				myCells.add(textView);
 				myRows.add(myRow);
 		}

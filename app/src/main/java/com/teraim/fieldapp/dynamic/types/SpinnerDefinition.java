@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.util.Log;
-
 public class SpinnerDefinition implements Serializable {
 	
 	/**
@@ -20,8 +18,10 @@ public class SpinnerDefinition implements Serializable {
 		 * 
 		 */
 		private static final long serialVersionUID = 9162426573700197032L;
-		public String value,opt,descr; 
-		public List<String> varMapping = new ArrayList<String>();	
+		public final String value;
+        public final String opt;
+        public final String descr;
+		public final List<String> varMapping = new ArrayList<String>();
 		public SpinnerElement(String val,String opt,String vars,String descr) {
 			this.value = val;
 			this.opt = opt.replace("\"", "");
@@ -37,7 +37,7 @@ public class SpinnerDefinition implements Serializable {
 	}
 	
 	String spinnerId;
-	Map<String,List<SpinnerElement>> myElements = new HashMap<String,List<SpinnerElement>>();
+	private final Map<String,List<SpinnerElement>> myElements = new HashMap<String,List<SpinnerElement>>();
 	
 	public List<SpinnerElement> get(String spinnerId){
 		return myElements.get(spinnerId.toLowerCase());

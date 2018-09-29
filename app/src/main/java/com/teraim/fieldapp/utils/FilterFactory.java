@@ -1,5 +1,11 @@
 package com.teraim.fieldapp.utils;
 
+import android.content.Context;
+import android.os.Vibrator;
+import android.util.Log;
+
+import com.teraim.fieldapp.dynamic.types.Variable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,34 +13,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.content.Context;
-import android.os.Vibrator;
-import android.util.Log;
-
-import com.teraim.fieldapp.dynamic.types.Variable;
-
 public class FilterFactory {
 
-	public static final int MAX_MIN = 999999999;
+	private static final int MAX_MIN = 999999999;
 
-	static FilterFactory singleton;
+	private static FilterFactory singleton;
 	
-	private Map<String, CombinedRangeAndListFilter> filterCache = new HashMap<String, CombinedRangeAndListFilter>();
+	private final Map<String, CombinedRangeAndListFilter> filterCache = new HashMap<String, CombinedRangeAndListFilter>();
 
 	private int currentMin;
 
-	private Vibrator myVibrator;
+	private final Vibrator myVibrator;
 	
 	public static class Range {
-		public String minS,maxS;
+		final String minS;
+        final String maxS;
 		int min, max;
-		public Range(int min, int max) {
+		Range(int min, int max) {
 			this.min=min;
 			this.max=max;
 			minS = min+"";
 			maxS = max+"";
 		}
-		public Range(String min,String max) {
+		Range(String min, String max) {
 			this.maxS=max;
 			this.minS=min;
 			try {

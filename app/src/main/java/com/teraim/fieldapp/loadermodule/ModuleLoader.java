@@ -20,12 +20,14 @@ import static com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode.thawed;
 
 public class ModuleLoader implements FileLoadedCb{
     private final LoggerI frontPageLog;
-    private Configuration myModules;
-    private LoggerI o,debug;
-    private ModuleLoaderListener caller;
-    private String loaderId,bundleName;
-    private Context ctx;
-    private boolean allFrozen;
+    private final Configuration myModules;
+    private final LoggerI o;
+    private final LoggerI debug;
+    private final ModuleLoaderListener caller;
+    private final String loaderId;
+    private final String bundleName;
+    private final Context ctx;
+    private final boolean allFrozen;
     private boolean active=false,socketBroken=false;
     //not known before loading bundle file.
     private Boolean majorVersionUpdated=null;
@@ -57,7 +59,7 @@ public class ModuleLoader implements FileLoadedCb{
     }
 
 
-    ConfigurationModule module=null;
+    private ConfigurationModule module=null;
 
     public boolean isActive() {
         return active;

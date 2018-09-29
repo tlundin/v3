@@ -1,14 +1,11 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import android.util.Log;
 
 
 public class Configuration {
 	
-	private List<ConfigurationModule> mModules;
+	private final List<ConfigurationModule> mModules;
 
 	
 	public Configuration(List<ConfigurationModule> modules) {

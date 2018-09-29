@@ -1,21 +1,20 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.graphics.Paint.Style;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.Geomatte;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GisPolygonObject extends GisPathObject {
 
-	Map<String, List<Location>> polygons;
+	private Map<String, List<Location>> polygons;
 	private FullGisObjectConfiguration conf;
 	//String representation of polygon.
 	private String polyString;
@@ -41,7 +40,7 @@ public class GisPolygonObject extends GisPathObject {
 		//Log.d("vortex","polygons key "+polygons.keySet()+" cont: "+polygons.values());
 	}
 
-	public static Map<String, List<Location>> buildMap(String polygons,String coordType) {
+	private static Map<String, List<Location>> buildMap(String polygons, String coordType) {
 		int i=1;
 		if (polygons==null) 
 			return null;

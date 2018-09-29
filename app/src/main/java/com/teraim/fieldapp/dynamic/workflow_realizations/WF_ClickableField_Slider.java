@@ -40,7 +40,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 
 		context.registerEventListener(this, Event.EventType.onSave);
 		ll = (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(R.layout.output_field_slider_element,null);
-		sb = (SeekBar)ll.findViewById(R.id.spinnerOut);
+		sb = ll.findViewById(R.id.spinnerOut);
 		sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -205,10 +205,10 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		if (!myVars.isEmpty()) {
 			this.var=var;
 			//Has to set value for inner view as well.
-			etview = (EditText) myVars.get(var).view.findViewById(R.id.edit);
+			etview = myVars.get(var).view.findViewById(R.id.edit);
 			OutC outC = myOutputFields.get(var);
 			LinearLayout ll = outC.view;
-			tv = (TextView)ll.findViewById(R.id.outputValueField);
+			tv = ll.findViewById(R.id.outputValueField);
 
 		} else {
 			Log.e("vortex", "cannot initialize seekbar! empty? " + myVars.isEmpty());
@@ -220,7 +220,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		setSeekBarAccordingToVariableValue();
 	}
 
-	public void setSeekBarAccordingToVariableValue() {
+	private void setSeekBarAccordingToVariableValue() {
 
 		if (var!=null && var.getValue()!=null) {
 			try {
@@ -242,7 +242,7 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 	}
 
 
-	public String getGroup() {
+	private String getGroup() {
 		return groupName;
 	}
 
@@ -285,8 +285,8 @@ public class WF_ClickableField_Slider extends WF_ClickableField implements Event
 		return max;
 	}
 
-	boolean sliderWasDecreased = false;
-	boolean sliderWasIncreased = false;
+	private boolean sliderWasDecreased = false;
+	private boolean sliderWasIncreased = false;
 
 	public void wasDecreased() {
 		sliderWasDecreased=true;

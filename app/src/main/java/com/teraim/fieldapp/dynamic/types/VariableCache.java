@@ -1,15 +1,12 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import android.content.ContentValues;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.Variable.DataType;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.TmpVal;
-import com.teraim.fieldapp.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,14 +14,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import static com.teraim.fieldapp.utils.Tools.*;
+import static com.teraim.fieldapp.utils.Tools.copyKeyHash;
+import static com.teraim.fieldapp.utils.Tools.cutKeyMap;
 
 
 public class VariableCache {
@@ -32,9 +26,9 @@ public class VariableCache {
     private final static String vCol = "value";
     String varID;
     //private Map<String,List<Variable>> oldcache = new ConcurrentHashMap<String,List<Variable>>();
-    private Map<Map<String, String>, Map<String, Variable>> newcache = new HashMap<Map<String, String>, Map<String, Variable>>();
-    private GlobalState gs;
-    private LoggerI o;
+    private final Map<Map<String, String>, Map<String, Variable>> newcache = new HashMap<Map<String, String>, Map<String, Variable>>();
+    private final GlobalState gs;
+    private final LoggerI o;
     private Map<String, Variable> currentCache, globalCache;
     private Map<String, String> currentHash;
     private DB_Context myDbContext;
@@ -128,7 +122,7 @@ public class VariableCache {
         return ret;
     }
 
-    public void refreshCache(Map<String, String> myKeyHash) {
+    private void refreshCache(Map<String, String> myKeyHash) {
         //Map<String, Variable> ret = newcache.remove(myKeyHash);
         Map<String, Variable> ret = newcache.get(myKeyHash);
         if (ret != null) {
@@ -146,7 +140,7 @@ public class VariableCache {
             Log.e("vortex", "key hash does not exist in deletecacheentry." + myKeyHash);
     }
 
-    Map<String, Variable> createAllVariablesForKey(Map<String, String> myKeyHash) {
+    private Map<String, Variable> createAllVariablesForKey(Map<String, String> myKeyHash) {
         //Log.d("vorto","adding hash "+myKeyHash);
         GlobalState gs = GlobalState.getInstance();
         long time = System.currentTimeMillis();
@@ -503,8 +497,8 @@ public class VariableCache {
 
     //Insert when unique key value pair is known.
     //cache last chain to save some time.
-    Map<String,String> prevChain = null;
-    final static String uniqueKey = "uid";
+    private Map<String,String> prevChain = null;
+    private final static String uniqueKey = "uid";
     public boolean turboRemoveOrInvalidate(String uniqueKeyValue, String spy,String variableName, boolean invalidate) {
 //        if (prevValue!=null && prevValue.equals(uniqueKeyValue))
         //Log.d("bascar","turbo1 "+uniqueKeyValue+" "+variableName);

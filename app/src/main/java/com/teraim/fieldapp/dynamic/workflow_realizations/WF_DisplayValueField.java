@@ -1,12 +1,8 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.List;
-
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,16 +17,19 @@ import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Tools.Unit;
 
+import java.util.List;
+
 public class WF_DisplayValueField extends WF_Widget implements EventListener {
 
 
 	private final DisplayFieldBlock displayFieldFormat;
-	private String formula,label;
-	protected GlobalState gs;
-	protected Unit unit;
-	private String format;
-	private List<EvalExpr> formulaE;
-	private WF_Context myContext;
+	private final String formula;
+    private final String label;
+	private final GlobalState gs;
+	private final Unit unit;
+	private final String format;
+	private final List<EvalExpr> formulaE;
+	private final WF_Context myContext;
 
 	@SuppressWarnings("WrongConstant")
 	public WF_DisplayValueField(String id, String formula, WF_Context ctx, Unit unit,
@@ -109,10 +108,10 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 
 	@Override
 	public void postDraw() {
-		TextView header = (TextView)getWidget().findViewById(R.id.header);
+		TextView header = getWidget().findViewById(R.id.header);
 		header.setText(label);
-		LinearLayout topElem = (LinearLayout)getWidget().findViewById(R.id.entryRoot);
-		LinearLayout lastElem = (LinearLayout)getWidget().findViewById(R.id.lastElement);
+		LinearLayout topElem = getWidget().findViewById(R.id.entryRoot);
+		LinearLayout lastElem = getWidget().findViewById(R.id.lastElement);
 		//ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams)bg.getLayoutParams());
 		topElem.setPadding(0,displayFieldFormat.getVerticalMargin(),0,0);
 		lastElem.setPadding(0,0,0,displayFieldFormat.getVerticalMargin());

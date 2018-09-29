@@ -1,13 +1,5 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
-import org.json.JSONException;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,7 +7,14 @@ import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
 
-public class FileLoader extends Loader {
+import org.json.JSONException;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+class FileLoader extends Loader {
 
 	public FileLoader(ProgressBar pb, TextView tv, FileLoadedCb cb,
 			String versionControlS) {

@@ -3,10 +3,8 @@ package com.teraim.fieldapp.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Display;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -25,8 +23,8 @@ import com.teraim.fieldapp.non_generics.Constants;
 public class BarcodeReader implements EventListener {
 
     private WF_Context myContext;
-    BarcodeDetector detector;
-    Variable barCodeTarget;
+    private final BarcodeDetector detector;
+    private Variable barCodeTarget;
 
     public BarcodeReader(WF_Context myContext, String targetVariableName) {
         detector =

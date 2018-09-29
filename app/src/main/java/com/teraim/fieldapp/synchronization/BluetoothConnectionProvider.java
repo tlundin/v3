@@ -1,14 +1,5 @@
 package com.teraim.fieldapp.synchronization;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.StreamCorruptedException;
-import java.util.Iterator;
-import java.util.Set;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -26,6 +17,15 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.ConnectionListener.ConnectionEvent;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.StreamCorruptedException;
+import java.util.Iterator;
+import java.util.Set;
+
 /**
  * 
  * @author Terje
@@ -40,12 +40,12 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 	private BroadcastReceiver brr=null;
 
 	//Try connecting five times. 
-	private int AttemptsBeforeGivingUp = 5;
+	private final int AttemptsBeforeGivingUp = 5;
 
 	//Convenience
-	private GlobalState gs;
-	private LoggerI o;
-	private Context ctx;
+	private final GlobalState gs;
+	private final LoggerI o;
+	private final Context ctx;
 
 	//Threads
 	private ClientConnectThread mClient=null;
@@ -53,7 +53,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 	private ConnectedThread mConnected_T = null;
 
 	//Adapter.
-	private BluetoothAdapter mBluetoothAdapter;
+	private final BluetoothAdapter mBluetoothAdapter;
 
 	private InternalState internalState = InternalState.closed;
 
@@ -292,7 +292,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 	private class ServerThread extends Thread {
 		private final BluetoothServerSocket mmServerSocket;
 
-		public ServerThread() {
+		ServerThread() {
 			// Use a temporary object that is later assigned to mmServerSocket,
 			// because mmServerSocket is final
 			BluetoothServerSocket tmp = null;
@@ -340,7 +340,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 
 		/** Will cancel the listening socket, and cause the thread to finish */
-		public void cancel() {
+        void cancel() {
 			try {
 				mmServerSocket.close();
 			} catch (IOException e) { }
@@ -362,7 +362,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 		int 	attempts = 		AttemptsBeforeGivingUp;
 		boolean success	 =		false;
 
-		public ClientConnectThread(BluetoothDevice device) {
+		ClientConnectThread(BluetoothDevice device) {
 			// Use a temporary object that is later assigned to mmSocket,
 			// because mmSocket is final
 			BluetoothSocket tmp = null;
@@ -380,7 +380,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 		}
 
-		public int attemptsRemaining() {
+		int attemptsRemaining() {
 			return attempts;
 		}
 
@@ -436,7 +436,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 
 		/** Will cancel an in-progress connection, and close the socket */
-		public void cancel() {
+        void cancel() {
 			attempts=0;
 			try {
 				mmSocket.close();
@@ -466,9 +466,9 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 		//private final OutputStream mmOutStream;
 		private final ObjectOutputStream obj_out;
 		private final ObjectInputStream obj_in;
-		private GlobalState gs;
+		private final GlobalState gs;
 
-		public ConnectedThread(GlobalState gs, BluetoothSocket socket) {
+		ConnectedThread(GlobalState gs, BluetoothSocket socket) {
 			this.gs=gs;
 			mmSocket = socket;
 			InputStream tmpIn = null;
@@ -531,7 +531,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 		}
 
 		// Write object with ObjectOutputStream
-		public void write(Object message) {
+        void write(Object message) {
 			try {
 
 				obj_out.writeObject(message);
@@ -544,7 +544,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 		/* Call this from the main activity to shutdown the connection */
 
-		public void cancel() {
+		void cancel() {
 			if (mConnected_T==null ) {
 				Log.d("vortex","I was already closed...");
 				return;

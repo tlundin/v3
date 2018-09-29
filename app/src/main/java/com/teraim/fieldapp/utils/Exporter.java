@@ -1,10 +1,6 @@
 package com.teraim.fieldapp.utils;
 
-import java.util.Map;
-
-import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
@@ -24,7 +20,7 @@ public abstract class Exporter {
 		EXPORTFORMAT_UNKNOWN
 	}
 	public static class Report {
-		public Report(String res,int vars) {
+		Report(String res, int vars) {
 			this.result=res;
 			this.noOfVars=vars;
 			er = ExportReport.OK;
@@ -42,13 +38,13 @@ public abstract class Exporter {
 
 	}
 	
-	protected GlobalState gs;
-	protected VariableConfiguration al;
-	protected PersistenceHelper ph;
-	protected PersistenceHelper globalPh;
+	final GlobalState gs;
+	final VariableConfiguration al;
+	final PersistenceHelper ph;
+	final PersistenceHelper globalPh;
 	protected static Exporter instance;
-	protected final ExportDialog eDialog;
-	protected Context ctx;
+	final ExportDialog eDialog;
+	final Context ctx;
 
 	public static Exporter getInstance(Context ctx, String type) {
 
@@ -73,7 +69,7 @@ public abstract class Exporter {
 		return null;
 
 	}
-	protected Exporter(Context ctx) {
+	Exporter(Context ctx) {
 		this.gs=GlobalState.getInstance();
 		al = gs.getVariableConfiguration();
 		ph = gs.getPreferences();

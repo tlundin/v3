@@ -1,13 +1,13 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.List;
-
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 
-public class WF_Event extends Event {
+import java.util.List;
 
-	EventType t;
-	List<String> parameters;
+class WF_Event extends Event {
+
+	private final EventType t;
+	private final List<String> parameters;
 	
 
 	

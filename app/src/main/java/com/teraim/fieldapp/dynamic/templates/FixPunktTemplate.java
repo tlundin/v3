@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.FragmentTransaction;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
@@ -17,8 +14,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.teraim.fieldapp.R;
@@ -26,9 +21,12 @@ import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.ui.FixPunktFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FixPunktTemplate extends Executor implements OnGesturePerformedListener {
-	List<WF_Container> myLayouts;
+	private List<WF_Container> myLayouts;
 
 
 	
@@ -39,7 +37,7 @@ public class FixPunktTemplate extends Executor implements OnGesturePerformedList
 	 */
 	//ViewGroup myContainer = null;
 	private GestureLibrary gestureLib;
-	View v;
+	private View v;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,14 +52,14 @@ public class FixPunktTemplate extends Executor implements OnGesturePerformedList
 		myContext.addContainers(getContainers());
 	
 		//Gestures
-	    GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+	    GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 	    gestureOverlayView.setGestureVisible(false);
 	    gestureOverlayView.addOnGesturePerformedListener(this);
 	    gestureLib = GestureLibraries.fromRawResource(this.getActivity(), R.raw.gestures);
 	    if (!gestureLib.load()) {      	
 	    	        Log.i("nils", "Load gesture libraries failed.");  
 	    	    }  
-	    Button framB = (Button)v.findViewById(R.id.framB);
+	    Button framB = v.findViewById(R.id.framB);
 	    
 	    framB.setOnClickListener(new OnClickListener() {
 			
@@ -112,11 +110,11 @@ public class FixPunktTemplate extends Executor implements OnGesturePerformedList
 		myLayouts = new ArrayList<WF_Container>();
 		Log.d("nils","in onCreateView of fixpunkt_template");
 		//myContainer = container;
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		myLayouts.add(root);
-		myLayouts.add(new WF_Container("Field_List_panel_1", (LinearLayout)v.findViewById(R.id.fieldList), root));
-		myLayouts.add(new WF_Container("Aggregation_panel_3", (LinearLayout)v.findViewById(R.id.aggregates), root));
-		myLayouts.add(new WF_Container("Description_panel_2", (FrameLayout)v.findViewById(R.id.Description), root));
+		myLayouts.add(new WF_Container("Field_List_panel_1", v.findViewById(R.id.fieldList), root));
+		myLayouts.add(new WF_Container("Aggregation_panel_3", v.findViewById(R.id.aggregates), root));
+		myLayouts.add(new WF_Container("Description_panel_2", v.findViewById(R.id.Description), root));
 		return myLayouts;
 	}
 

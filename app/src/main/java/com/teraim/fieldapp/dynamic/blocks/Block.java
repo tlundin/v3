@@ -1,8 +1,8 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.io.Serializable;
-
 import com.teraim.fieldapp.log.LoggerI;
+
+import java.io.Serializable;
 
 /**
  * Abstract base class Block
@@ -12,8 +12,8 @@ import com.teraim.fieldapp.log.LoggerI;
  */
 public abstract  class Block implements Serializable {
 	private static final long serialVersionUID = -8275181338935274930L;
-	protected LoggerI o;
-	protected String blockId;
+	LoggerI o;
+	String blockId;
 	
 	
 	public String getBlockId() {

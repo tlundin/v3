@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -34,6 +31,9 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.ImageHandler;
 
+import java.io.File;
+import java.util.ArrayList;
+
 public class OldPhotosFragment extends Fragment implements OnGesturePerformedListener {
 
 	private GestureLibrary gestureLib;
@@ -53,9 +53,9 @@ public class OldPhotosFragment extends Fragment implements OnGesturePerformedLis
 		gs = GlobalState.getInstance();
 		Log.d("nils","in onCreateView of old photos");
 		v = inflater.inflate(R.layout.template_foto_right, container, false);	
-		TextView header = (TextView)v.findViewById(R.id.header);
+		TextView header = v.findViewById(R.id.header);
 		header.setText("Historiska foton hårifrån ("+Constants.getHistoricalPictureYear()+")");
-		GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 		gestureOverlayView.setGestureVisible(false);
 		gestureOverlayView.addOnGesturePerformedListener(this);
 		gestureLib = GestureLibraries.fromRawResource(this.getActivity(), R.raw.gestures);
@@ -63,18 +63,18 @@ public class OldPhotosFragment extends Fragment implements OnGesturePerformedLis
 			Log.i("nils", "Load gesture libraries failed.");  
 		}  
 
-		norr = (ImageButton)v.findViewById(R.id.pic_norr);
+		norr = v.findViewById(R.id.pic_norr);
 		norr.setOnClickListener(ruby(Type.NORR));	
-		syd = (ImageButton)v.findViewById(R.id.pic_soder);
+		syd = v.findViewById(R.id.pic_soder);
 		syd.setOnClickListener(ruby(Type.SYD));	
-		ost= (ImageButton)v.findViewById(R.id.pic_ost);
+		ost= v.findViewById(R.id.pic_ost);
 		ost.setOnClickListener(ruby(Type.OST));	
-		vast = (ImageButton)v.findViewById(R.id.pic_vast);
+		vast = v.findViewById(R.id.pic_vast);
 		vast.setOnClickListener(ruby(Type.VAST));	
-		sp= (ImageButton)v.findViewById(R.id.pic_sp);
+		sp= v.findViewById(R.id.pic_sp);
 		sp.setOnClickListener(ruby(Type.SMA));	
 		
-		Button bildFelB = (Button)v.findViewById(R.id.felibild);
+		Button bildFelB = v.findViewById(R.id.felibild);
 		
 		bildFelB.setOnClickListener(new OnClickListener() {
 			
@@ -92,7 +92,7 @@ public class OldPhotosFragment extends Fragment implements OnGesturePerformedLis
 				// set prompts.xml to alertdialog builder
 				alertDialogBuilder.setView(promptsView);
  
-				final EditText userInput = (EditText) promptsView
+				final EditText userInput = promptsView
 						.findViewById(R.id.felibildE);
 			
 				if (fotoKommentar!=null) {

@@ -1,23 +1,21 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventGenerator;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.non_generics.Constants;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventListener,EventGenerator{
 
@@ -28,16 +26,16 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 
 	private class EntryField {
 		WF_ClickableField cfs;
-		Set<String> varIDs;
+		final Set<String> varIDs;
 
-		public EntryField() {
+		EntryField() {
 			varIDs = new HashSet<String>();
 		}
 	}
 
 
-	private Map<String,EntryField> entryFields = new HashMap<String,EntryField>();
-	int index = 0;
+	private final Map<String,EntryField> entryFields = new HashMap<String,EntryField>();
+	private int index = 0;
 
 	public WF_List_UpdateOnSaveEvent(String id, WF_Context ctx, boolean isVisible, final DisplayFieldBlock format) {
 		super(id, ctx,null,isVisible);
@@ -46,7 +44,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 		long t1 = System.currentTimeMillis();
 		this.myEntryFieldFormat = format;
 	}
-	int cr=0;
+	private int cr=0;
 
 	public void setRows(List<List<String>> rows) {
 		//if (myRows==null && entryFields==null) {

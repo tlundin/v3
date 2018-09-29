@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -19,11 +17,16 @@ public  class AddSumOrCountBlock extends DisplayFieldBlock {
 	 * 
 	 */
 	private static final long serialVersionUID = -4139158043307360229L;
-	String containerId, label, postLabel,myPattern, target,result;
-	WF_Not_ClickableField_SumAndCountOfVariables.Type type;
-	String format;
+	private final String containerId;
+    private final String label;
+    private final String postLabel;
+    private final String myPattern;
+    private final String target;
+    private final String result;
+	private final WF_Not_ClickableField_SumAndCountOfVariables.Type type;
+	private final String format;
 
-	boolean isVisible = true;
+	private boolean isVisible = true;
 	private VariableConfiguration al;
 	public AddSumOrCountBlock(String id,String containerId, String label,String postLabel,
 			String filter, String target,

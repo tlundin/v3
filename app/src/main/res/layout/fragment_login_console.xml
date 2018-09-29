@@ -67,8 +67,8 @@
 
     <ImageView
         android:id="@+id/teraimlogo"
-        android:layout_width="100px"
-        android:layout_height="100px"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_margin="16dp"
         android:src="@drawable/teraim_small_w"
         android:layout_alignParentRight="true"

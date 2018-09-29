@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.synchronization.framework;
 
-import java.util.ArrayList;
-
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -15,10 +13,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.util.Log;
 
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import java.util.ArrayList;
 
 public class SyncContentProvider extends ContentProvider {
 
@@ -45,7 +44,7 @@ public class SyncContentProvider extends ContentProvider {
 		}
 
 
-		public Long getTimeStamp(String team) {
+		Long getTimeStamp(String team) {
 			Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,"timestamp_from_me_to_team"});
 			if (c.getCount() != 0) {
 				c.moveToFirst();
@@ -134,8 +133,8 @@ public class SyncContentProvider extends ContentProvider {
 	        return result;
 	    }
 
-	SQLiteDatabase db;
-	int currentCount=0;
+	private SQLiteDatabase db;
+	private int currentCount=0;
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		int count = values.getAsInteger("count");

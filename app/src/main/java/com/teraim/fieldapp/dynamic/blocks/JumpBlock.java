@@ -4,7 +4,7 @@ public class JumpBlock extends Block {
 
 	
 	
-	String nextBlockId;
+	private final String nextBlockId;
 	
 	private static final long serialVersionUID = -8381560803516157091L;
 

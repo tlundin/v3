@@ -1,17 +1,17 @@
 package com.teraim.fieldapp.utils;
 
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.LatLong;
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 
+import java.util.List;
+
 
 
 public class Geomatte {
-	final static double d2r = (Math.PI / 180.0);
+	private final static double d2r = (Math.PI / 180.0);
 	//calculate haversine distance for linear distance
 
 

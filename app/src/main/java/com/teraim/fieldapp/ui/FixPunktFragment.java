@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import android.app.Fragment;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
@@ -29,29 +23,35 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Marker;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.non_generics.NamedVariables;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class FixPunktFragment extends Fragment implements OnGesturePerformedListener {
 
 	
 	
-	final Set<FixPunkt>fixPunkter=new HashSet<FixPunkt>();
-	GlobalState gs;
+	private final Set<FixPunkt>fixPunkter=new HashSet<FixPunkt>();
+	private GlobalState gs;
 	private GestureLibrary gestureLib;
-	protected List<Marker> markers;
+	private List<Marker> markers;
 	
 	private class FixPunkt {
-		public FixPunkt(Variable avst, Variable rikt) {
+		FixPunkt(Variable avst, Variable rikt) {
 			this.avst=avst;
 			this.rikt=rikt;
 		}
-		Variable avst;
-		Variable rikt;
+		final Variable avst;
+		final Variable rikt;
 	}
 	
-	final int png[] = new int[] {R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt};
+	private final int[] png = new int[] {R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt};
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		gs = GlobalState.getInstance();
@@ -61,9 +61,9 @@ public class FixPunktFragment extends Fragment implements OnGesturePerformedList
 		View v = inflater.inflate(R.layout.template_fixpunkt_right, container, false);	
 		
 	
-		final FrameLayout fl = (FrameLayout)v.findViewById(R.id.circle);
+		final FrameLayout fl = v.findViewById(R.id.circle);
 		
-		final Button backB = (Button)v.findViewById(R.id.createBackB);
+		final Button backB = v.findViewById(R.id.createBackB);
 		backB.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View v) {
@@ -118,7 +118,7 @@ public class FixPunktFragment extends Fragment implements OnGesturePerformedList
 		fl.addView(fyv);
 		
 		
-	    GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+	    GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 	    gestureOverlayView.setGestureVisible(false);
 	    gestureOverlayView.addOnGesturePerformedListener(this);
 	    gestureLib = GestureLibraries.fromRawResource(this.getActivity(), R.raw.gestures);

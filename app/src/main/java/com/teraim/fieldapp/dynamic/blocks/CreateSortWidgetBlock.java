@@ -18,9 +18,15 @@ public class CreateSortWidgetBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = 4728236327056430480L;
-	String containerId,type,target,selF,selP,dispF,name;
-	Filterable targetList;
-	boolean isVisible = true;
+	private final String containerId;
+    private final String type;
+    private final String target;
+    private final String selF;
+    private final String selP;
+    private final String dispF;
+    private final String name;
+	private Filterable targetList;
+	private boolean isVisible = true;
 	
 
 	public CreateSortWidgetBlock(String id,String name,String type,String containerId, String targetId,String selectionField,String displayField,String selectionPattern,boolean isVisible) {

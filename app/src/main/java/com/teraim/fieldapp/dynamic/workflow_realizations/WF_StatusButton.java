@@ -13,7 +13,6 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.Expressor;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Terje on 2016-08-24.
@@ -26,8 +25,8 @@ public class WF_StatusButton extends WF_Button {
 
     private final String statusVariableName;
     private final WF_Context myContext;
-    private List<Expressor.EvalExpr> hash;
-    Variable statusVariable=null;
+    private final List<Expressor.EvalExpr> hash;
+    private Variable statusVariable=null;
     private Status myStatus=Status.none;
 
     public static Button createInstance(int statusOrdinal, String text, Context ctx) {

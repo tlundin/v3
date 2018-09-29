@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -13,7 +14,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -21,9 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
-import android.os.Handler;
-import android.widget.SeekBar;
 
 /**
  * Created by Terje on 2016-07-08.
@@ -34,11 +31,13 @@ import android.widget.SeekBar;
 
 public class CoupledVariableGroupBlock extends Block implements EventListener {
     private final List<Expressor.EvalExpr> argumentE;
-    String groupName, function, argument;
+    private final String groupName;
+    private String function;
+    private String argument;
     private Integer currentEvaluationOfArg = null;
-    long delay=25;
+    private long delay=25;
 
-    WF_Context myC;
+    private WF_Context myC;
     private boolean active=false;
 
     public CoupledVariableGroupBlock(String id, String groupName, String function, String argument, String delay) {
@@ -126,7 +125,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
     }
 
-    Set<Variable> myVariables;
+    private Set<Variable> myVariables;
     private boolean isOneofMyVariables(Variable v) {
         if (myVariables.isEmpty()) {
             List<WF_ClickableField_Slider> sliders = myC.getSliderGroupMembers(getName());
@@ -153,10 +152,10 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         return groupName;
     }
 
-    int currentSum = 0;
+    private int currentSum = 0;
 
 
-    Handler handler =null;
+    private Handler handler =null;
     public void resetCounter() {
         if (handler!=null) {
             handler.removeCallbacksAndMessages(null);
@@ -167,13 +166,14 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
 
     private class Range {
 
-        public Range(int min, int max) {
+        Range(int min, int max) {
             this.min=min;
             this.max=max;
         }
-        int min,max;
+        final int min;
+        final int max;
 
-        public boolean outsideRange(int sumToReach) {
+        boolean outsideRange(int sumToReach) {
             Log.d("bob","SumtoReach "+sumToReach+" min:"+min+" max: "+max);
             return sumToReach>max || sumToReach<min;
         }
@@ -368,16 +368,16 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         return function.equalsIgnoreCase(CoupledVariableGroupBlock.MIN_SUM);
     }
 
-    public boolean functionIsSticky() {
+    private boolean functionIsSticky() {
         return function.toUpperCase().startsWith(CoupledVariableGroupBlock.SUM_STICKY);
     }
-    public boolean functionIsStickyLimits() {
+    private boolean functionIsStickyLimits() {
         return function.toUpperCase().startsWith(CoupledVariableGroupBlock.SUM_STICKY_LIMITS);
     }
-    public boolean functionIsStickyLimitsMin() {
+    private boolean functionIsStickyLimitsMin() {
         return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM_STICKY_MIN);
     }
-    public boolean functionIsStickyLimitsMax() {
+    private boolean functionIsStickyLimitsMax() {
         return function.equalsIgnoreCase(CoupledVariableGroupBlock.SUM_STICKY_MAX);
     }
     private void updateSliderVariables(List<WF_ClickableField_Slider> sliders) {
@@ -386,7 +386,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
         }
     }
 
-    final static Random r = new Random();
+    private final static Random r = new Random();
 
     private void increaseSlider(WF_ClickableField_Slider slider, int remainingDifference) {
         int curr = slider.getPosition();
@@ -444,7 +444,7 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     //removes a slider and subtracts its current value from the target to reach.
     //This is done when the user has touched a slider. The touched slider should no longer be adjusted.
 
-    Set<WF_ClickableField_Slider> touchedSliders=null;
+    private Set<WF_ClickableField_Slider> touchedSliders=null;
     public void removeSliderFromCalibration(WF_ClickableField_Slider slider) {
         if (slider==null)
             return;

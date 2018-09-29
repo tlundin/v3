@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -54,6 +48,12 @@ import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.ProvytaView;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 
 public class ProvytaNivaTemplate extends Executor implements EventListener, OnGesturePerformedListener {
 
@@ -67,7 +67,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 	private ViewGroup fieldListPanel;
 	private ButtonBlock fixPunkter;
 	private ButtonBlock taBild;
-	private ButtonBlock[] delyteKnappar = new ButtonBlock[DelyteManager.MAX_DELYTEID];
+	private final ButtonBlock[] delyteKnappar = new ButtonBlock[DelyteManager.MAX_DELYTEID];
 	private ButtonBlock smayteKnapp;
 	private StatusHandler statusHandler;
 	private Button tagSidaB;
@@ -109,16 +109,16 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		LinearLayout smaRemainingView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 		LinearLayout synkadMedView = (LinearLayout)inflater.inflate(R.layout.display_value_textview_horizontal, null);
 
-		TextView h = (TextView)delytorRemainingView.findViewById(R.id.header);
+		TextView h = delytorRemainingView.findViewById(R.id.header);
 		h.setText("Delytor gjorda");
-		h = (TextView)smaRemainingView.findViewById(R.id.header);
+		h = smaRemainingView.findViewById(R.id.header);
 		h.setText("Småytor gjorda");
-		h = (TextView)synkadMedView.findViewById(R.id.header);
+		h = synkadMedView.findViewById(R.id.header);
 		h.setText("Synkad mot: ");
 
-		delOutputValueField = (TextView)delytorRemainingView.findViewById(R.id.outputValueField);
-		smaOutputValueField= (TextView)smaRemainingView.findViewById(R.id.outputValueField);
-		partnerOutputValueField= (TextView)synkadMedView.findViewById(R.id.outputValueField);
+		delOutputValueField = delytorRemainingView.findViewById(R.id.outputValueField);
+		smaOutputValueField= smaRemainingView.findViewById(R.id.outputValueField);
+		partnerOutputValueField= synkadMedView.findViewById(R.id.outputValueField);
 
 		smaOutputValueField.setText("");
 		partnerOutputValueField.setText("");
@@ -135,7 +135,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 
 		provytaViewPanel.addView(pyv);
 
-		GestureOverlayView gestureOverlayView = (GestureOverlayView)v.findViewById(R.id.gesture_overlay);
+		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
 
 		gestureOverlayView.setGestureVisible(false);
 		gestureOverlayView.addOnGesturePerformedListener(this);
@@ -347,11 +347,11 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 	protected List<WF_Container> getContainers() {
 		myLayouts = new ArrayList<WF_Container>();
 		//myContainer = container;
-		WF_Container root = new WF_Container("root", (LinearLayout)v.findViewById(R.id.root), null);
+		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		myLayouts.add(root);
-		myLayouts.add(new WF_Container("Field_List_panel_1", (LinearLayout)v.findViewById(R.id.fieldList), root));
-		myLayouts.add(new WF_Container("Aggregation_panel_3", (LinearLayout)v.findViewById(R.id.aggregates), root));
-		myLayouts.add(new WF_Container("Description_panel_1", (FrameLayout)v.findViewById(R.id.Description), root));
+		myLayouts.add(new WF_Container("Field_List_panel_1", v.findViewById(R.id.fieldList), root));
+		myLayouts.add(new WF_Container("Aggregation_panel_3", v.findViewById(R.id.aggregates), root));
+		myLayouts.add(new WF_Container("Description_panel_1", v.findViewById(R.id.Description), root));
 		return myLayouts;
 	}
 

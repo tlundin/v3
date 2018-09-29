@@ -1,15 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,11 +16,19 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.types.Line;
 import com.teraim.fieldapp.dynamic.types.TabButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.GisObjectType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
 import com.teraim.fieldapp.gis.GisImageView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** A view for showing buttons, selecting GPS menu objects
  *
@@ -249,16 +247,16 @@ public class GisObjectsMenu extends View {
 
 	private class MenuButton {
 
-		public RectF myRect;
-		public FullGisObjectConfiguration myMenuItem;
-		public boolean isSelected=false;
+		final RectF myRect;
+		final FullGisObjectConfiguration myMenuItem;
+		boolean isSelected=false;
 
-		public MenuButton(FullGisObjectConfiguration menuItem, RectF rf) {
+		MenuButton(FullGisObjectConfiguration menuItem, RectF rf) {
 			myRect = rf;
 			myMenuItem=menuItem;
 		}
 
-		public void toggleSelected() {
+		void toggleSelected() {
 			isSelected=!isSelected;
 		}
 
@@ -276,7 +274,7 @@ public class GisObjectsMenu extends View {
 	}
 
 	//Before opening the menu, make sure all palettes are in place.
-	String userSelectedPalette = null;
+    private String userSelectedPalette = null;
 
 	public void setMenuItems(Map<String,List<FullGisObjectConfiguration>> myMenuItems, GisImageView gis, WF_Gis_Map map) {
 		//Create Menu items.
@@ -461,9 +459,9 @@ public class GisObjectsMenu extends View {
 				path.moveTo(tb.fr.left - spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
 				path.lineTo(tb.fr.left - spacingAroundTabs*2, tb.fr.top + tb.r.height() + spacingAroundTabs);
 				path.lineTo(PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
-				path.lineTo(PaddingX, canvas.getHeight() - PaddingY);
-				path.lineTo(canvas.getWidth() - PaddingX, canvas.getHeight() - PaddingY);
-				path.lineTo(canvas.getWidth() - PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
+				path.lineTo(PaddingX, getHeight() - PaddingY);
+				path.lineTo(getWidth() - PaddingX, getHeight() - PaddingY);
+				path.lineTo(getWidth() - PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
 				path.lineTo(tb.fr.right + spacingAroundTabs*2, tb.fr.top + tb.fr.height() + spacingAroundTabs);
 				path.lineTo(tb.fr.right + spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
 				//path.lineTo(600, 300);

@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.List;
-
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.R;
@@ -25,21 +22,29 @@ import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.util.List;
+
 public class AddGisFilter extends Block implements GisFilter {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3888638684411710898L;
-	String id, nName, label, targetObjectType,targetLayer,
-	expression, imgSource, 
-	color;
-	float radius;
-	Style fillType;
-	PolyType polyType;
-	boolean hasWidget=true,isActive=true;
+	private final String id;
+    private final String nName;
+    private final String label;
+    private final String targetObjectType;
+    private final String targetLayer;
+    String expression;
+    private final String imgSource;
+    private final String color;
+	private float radius;
+	private Style fillType;
+	private PolyType polyType;
+	private boolean hasWidget=true;
+    private boolean isActive=true;
 	private WF_Gis_Map myGis;
-	private List<EvalExpr> expressionE;
+	private final List<EvalExpr> expressionE;
 
 
 	public AddGisFilter(String id, String nName, String label, String targetObjectType,String targetLayer,
@@ -103,8 +108,8 @@ public class AddGisFilter extends Block implements GisFilter {
 					//LinearLayout layersL = (LinearLayout)myGis.getWidget().findViewById(R.id.FiltersL);
 					LayoutInflater li = LayoutInflater.from(myContext.getContext());
 					View filtersRow = li.inflate(R.layout.filters_row, null);
-					TextView filterNameT = (TextView)filtersRow.findViewById(R.id.filterName);
-					CheckBox lShow = (CheckBox)filtersRow.findViewById(R.id.cbShow);
+					TextView filterNameT = filtersRow.findViewById(R.id.filterName);
+					CheckBox lShow = filtersRow.findViewById(R.id.cbShow);
 					filterNameT.setText(this.getLabel());
 					lShow.setChecked(isActive);
 					lShow.setOnCheckedChangeListener(new OnCheckedChangeListener() {

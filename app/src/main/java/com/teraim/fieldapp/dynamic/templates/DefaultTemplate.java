@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +11,9 @@ import android.widget.ListView;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -63,7 +63,7 @@ public class DefaultTemplate extends Executor {
 		}
 		View v = inflater.inflate(R.layout.template_wf_default, container, false);	
 //		errorView = (TextView)v.findViewById(R.id.errortext);
-		my_root = (LinearLayout)v.findViewById(R.id.myRoot);
+		my_root = v.findViewById(R.id.myRoot);
 //		my_pie = (LinearLayout)v.findViewById(R.id.pieRoot);
 		myContext.addContainers(getContainers());
 

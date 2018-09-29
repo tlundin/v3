@@ -37,7 +37,7 @@ public class Polygon
 	public static class Builder
 	{
 		private List<Point> _vertexes = new ArrayList<Point>();
-		private List<Line> _sides = new ArrayList<Line>();
+		private final List<Line> _sides = new ArrayList<Line>();
 		private BoundingBox _boundingBox = null;
 
 		private boolean _firstPoint = true;
@@ -274,9 +274,9 @@ public class Polygon
 
 	private static class BoundingBox
 	{
-		public float xMax = Float.NEGATIVE_INFINITY;
-		public float xMin = Float.NEGATIVE_INFINITY;
-		public float yMax = Float.NEGATIVE_INFINITY;
-		public float yMin = Float.NEGATIVE_INFINITY;
+		float xMax = Float.NEGATIVE_INFINITY;
+		float xMin = Float.NEGATIVE_INFINITY;
+		float yMax = Float.NEGATIVE_INFINITY;
+		float yMin = Float.NEGATIVE_INFINITY;
 	}
 }

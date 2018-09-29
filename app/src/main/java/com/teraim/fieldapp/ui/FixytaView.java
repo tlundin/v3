@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -17,6 +15,8 @@ import com.teraim.fieldapp.dynamic.types.Marker;
 import com.teraim.fieldapp.dynamic.types.MovingMarker;
 import com.teraim.fieldapp.non_generics.DelyteManager.Coord;
 
+import java.util.List;
+
 /**
  * @author Terje
  * 
@@ -27,14 +27,14 @@ public class FixytaView extends View {
 
 
 
-	private Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 
-	private Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p20 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p20 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+	private final Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	
-	private MovingMarker user = null;
+	private final MovingMarker user = null;
 	private List<Marker> fixpunkter;
 	private String msg = "";
 
@@ -79,8 +79,9 @@ public class FixytaView extends View {
 	}
 
 
-	final double realRadiusinDeciMeter = 200;
-	double rScaleF=0,oScaleF=0;
+	private final double realRadiusinDeciMeter = 200;
+	private double rScaleF=0;
+    private double oScaleF=0;
 
 	@Override
 	protected void onDraw(Canvas canvas) {

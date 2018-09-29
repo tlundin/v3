@@ -1,25 +1,22 @@
 package com.teraim.fieldapp.dynamic;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import android.content.Context;
-import android.os.Handler;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Event_OnSave;
-import com.teraim.fieldapp.non_generics.Constants;
-
 public class EventBroker {
 
-	Map<EventType,List<EventListener>> eventListeners= new ConcurrentHashMap<EventType,List<EventListener>>();
-	private GlobalState gs;
+	private final Map<EventType,List<EventListener>> eventListeners= new ConcurrentHashMap<EventType,List<EventListener>>();
+	private final GlobalState gs;
 
 
 	public EventBroker(Context ctx) {

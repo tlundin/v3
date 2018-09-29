@@ -1,20 +1,19 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.Map;
-
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
-import com.teraim.fieldapp.dynamic.blocks.DisplayValueBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
+
+import java.util.Map;
 
 public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 
 
-	private Map<String, String> myHash;
+	private final Map<String, String> myHash;
 
 	public WF_Cell_Widget(Map<String, String> columnKeyHash, String headerT, String descriptionT,
 			WF_Context context, String id,boolean isVisible) {

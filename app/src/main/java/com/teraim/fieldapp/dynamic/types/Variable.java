@@ -1,13 +1,5 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -15,11 +7,19 @@ import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.DbHelper;
+import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.FilterFactory;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
-import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.Tools.Unit;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -35,52 +35,52 @@ public class Variable implements Serializable {
 
 
 
-	Map<String, String> keyChain = new HashMap <String,String>();
-	Map<String,String> histKeyChain=null;
+	private Map<String, String> keyChain = new HashMap <String,String>();
+	private Map<String,String> histKeyChain=null;
 	//String value=null;
-	protected String name=null;
-	protected DataType myType=null;
-	protected String myValue=null;
+    private String name=null;
+	private DataType myType=null;
+	private String myValue=null;
 
-	protected Map<String, Boolean> currentRuleState;
-	protected String[] myValueColumn = new String[1];
-	protected Selection mySelection=null;
+	private Map<String, Boolean> currentRuleState;
+	private final String[] myValueColumn = new String[1];
+	private Selection mySelection=null;
 
-	protected String myLabel = null;
+	private String myLabel = null;
 
-	protected Set<String> myRules = null;
+	private Set<String> myRules = null;
 
-	protected DbHelper myDb;
+	final DbHelper myDb;
 
-	protected List<String> myRow;
+	private List<String> myRow;
 
-	protected String myStringUnit;
+	private String myStringUnit;
 
-	protected boolean isSynchronized = true;
+	private boolean isSynchronized = true;
 
-	protected boolean unknown=true;
+	boolean unknown=true;
 
-	protected boolean isKeyVariable = false;
+	private boolean isKeyVariable = false;
 
-	protected String realValueColumnName;
+	private final String realValueColumnName;
 
-	protected Selection histSelection;
+	private Selection histSelection;
 
-	protected GlobalState gs;
+	private final GlobalState gs;
 
 	protected Boolean iAmIllegal=null;
 
-	protected boolean iAmOutOfRange=false;
+	private boolean iAmOutOfRange=false;
 
 	protected String iAmPartOfKeyChain=null;
 
-	protected String myHistory = null;
+	private String myHistory = null;
 
-	protected boolean historyChecked = false;
+	private boolean historyChecked = false;
 
-	protected Long timeStamp=null;
+	Long timeStamp=null;
 
-	private VariableConfiguration al;
+	private final VariableConfiguration al;
 
 	private String myDefaultValue=null;
 
@@ -252,8 +252,8 @@ public class Variable implements Serializable {
 	public boolean isSyncNext() {
 		return isSynchronizedNext;
 	}
-	protected void insert(final String value,
-						  final boolean isSynchronized) {
+	void insert(final String value,
+                final boolean isSynchronized) {
 		//Insert into database at some point in time.
 		this.isSynchronizedNext= isSynchronized;
 		//gs.getVariableCache().save(this);
@@ -430,7 +430,7 @@ public class Variable implements Serializable {
 	}
 
 
-	public void addRules(String rules) {
+	private void addRules(String rules) {
 		if (rules == null||rules.length()==0)
 			return;
 		String[] ruleA = rules.split(",");
@@ -444,7 +444,7 @@ public class Variable implements Serializable {
 	}
 
 
-	public void refreshRuleState() {}
+	private void refreshRuleState() {}
 	/*
 		Log.d("nils", "Refreshing rulestate for "+this.getId());
 		iAmIllegal = false;	
@@ -494,8 +494,8 @@ public class Variable implements Serializable {
 		iAmOutOfRange = oor;
 	}
 
-	final static String[] timeStampS = new String[] {"timestamp"};
-	final static String[] authorS = new String[] {"author"};
+	private final static String[] timeStampS = new String[] {"timestamp"};
+	private final static String[] authorS = new String[] {"author"};
 
 	public Long getTimeOfInsert() {
 		if (timeStamp!=null) {

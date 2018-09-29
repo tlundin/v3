@@ -1,14 +1,14 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockAddColumnsToTable extends Block {
 
@@ -17,7 +17,12 @@ public class BlockAddColumnsToTable extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -3041902713022605254L;
-	private String name=null,target=null,label=null,type=null,colKey=null,width=null;
+	private final String name=null;
+    private String target=null;
+    private String label=null;
+    private String type=null;
+    private String colKey=null;
+    private String width=null;
 	private String textColor=null,backgroundColor=null;
 
 	public BlockAddColumnsToTable(String id, String target, String label,

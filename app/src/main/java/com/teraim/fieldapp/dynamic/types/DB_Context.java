@@ -1,17 +1,17 @@
 package com.teraim.fieldapp.dynamic.types;
 
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DB_Context implements Serializable {
 	
@@ -24,7 +24,7 @@ public class DB_Context implements Serializable {
 	private final String contextS;
 	private final String err;
 
-	public DB_Context(String err) {
+	private DB_Context(String err) {
 		keyHash=null;
 		this.err=err;
 		this.contextS="";

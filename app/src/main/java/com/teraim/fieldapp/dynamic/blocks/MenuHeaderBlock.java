@@ -3,8 +3,6 @@
  */
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 
@@ -20,7 +18,9 @@ public class MenuHeaderBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -2542614941496953004L;
-	String label,textColor, bgColor;
+	private final String label;
+    private final String textColor;
+    private final String bgColor;
 
 	public MenuHeaderBlock(String id, String label, String textColor,
 			String bgColor) {

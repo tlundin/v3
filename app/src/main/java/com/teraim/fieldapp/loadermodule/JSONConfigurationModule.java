@@ -1,20 +1,18 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.IOException;
-import java.text.NumberFormat;
-
-import org.json.JSONException;
-
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+
 public abstract class JSONConfigurationModule extends ConfigurationModule {
 
-	public JSONConfigurationModule(PersistenceHelper gPh,PersistenceHelper ph,
-			Source source, String urlOrPath, String fileName, String moduleName) {
+	protected JSONConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph,
+                                      Source source, String urlOrPath, String fileName, String moduleName) {
 		super(gPh,ph, Type.json, source, urlOrPath, fileName, moduleName);
 	}
 

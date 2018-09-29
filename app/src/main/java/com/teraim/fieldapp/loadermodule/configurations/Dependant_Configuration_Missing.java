@@ -7,7 +7,7 @@ public class Dependant_Configuration_Missing extends Exception {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	String depM;
+	private final String depM;
 	
 	public Dependant_Configuration_Missing(String dependantModule) {
 		depM = dependantModule;

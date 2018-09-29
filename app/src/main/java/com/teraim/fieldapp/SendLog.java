@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-import com.teraim.fieldapp.utils.PersistenceHelper;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,7 +29,7 @@ public class SendLog extends Activity {
         setFinishOnTouchOutside (false); // prevent users from dismissing the dialog by tapping outside
         setContentView (R.layout.send_log);
 
-        button1 = (Button) findViewById(R.id.button1);
+        button1 = findViewById(R.id.button1);
 
         button1.setOnClickListener(new View.OnClickListener() {
 
@@ -44,7 +42,7 @@ public class SendLog extends Activity {
 
         });
 
-        button2 = (Button) findViewById(R.id.button2);
+        button2 = findViewById(R.id.button2);
 
         button2.setOnClickListener(new View.OnClickListener() {
 

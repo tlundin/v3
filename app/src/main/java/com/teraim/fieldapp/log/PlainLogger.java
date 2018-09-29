@@ -5,8 +5,8 @@ import android.widget.TextView;
 
 public class PlainLogger implements LoggerI {
     private final Context myContext;
-    TextView txt;
-    String loggerId;
+    private TextView txt;
+    private final String loggerId;
 
     public PlainLogger(Context c, String loggerId) {
         myContext = c;

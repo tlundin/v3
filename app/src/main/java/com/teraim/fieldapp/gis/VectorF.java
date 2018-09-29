@@ -17,12 +17,12 @@ package com.teraim.fieldapp.gis;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
-public class VectorF {
+class VectorF {
 	
-	public float angle;
+	private float angle;
 	public float length;
 	
-	public final PointF start = new PointF();
+	private final PointF start = new PointF();
 	public final PointF end = new PointF();
 	
 	public void calculateEndPoint() {

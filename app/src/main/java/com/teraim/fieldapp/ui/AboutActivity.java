@@ -2,12 +2,9 @@ package com.teraim.fieldapp.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,7 +17,7 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 public class AboutActivity extends Activity {
 
 
-    boolean gone = true;
+    private boolean gone = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +26,7 @@ public class AboutActivity extends Activity {
 
         super.onCreate(savedInstanceState);
        if (GlobalState.getInstance()!=null) {
-            final TextView logView = (TextView)findViewById(R.id.LoadDetails);
+            final TextView logView = findViewById(R.id.LoadDetails);
             logView.setVisibility(View.GONE);
             CharSequence log = GlobalState.getInstance().getLogTxt();
             if (log!=null)
@@ -39,10 +36,10 @@ public class AboutActivity extends Activity {
 
             String bName = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
             float version = GlobalState.getInstance().getPreferences().getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
-            TextView ver = (TextView)findViewById(R.id.BundleNameAndVersion);
+            TextView ver = findViewById(R.id.BundleNameAndVersion);
             ver.setText(bName+" "+((version==-1)?"":version));
-           Button feedbackButton = (Button)findViewById(R.id.feedbackButton);
-           final Button buttonDetails = (Button)findViewById(R.id.buttonDetails);
+           Button feedbackButton = findViewById(R.id.feedbackButton);
+           final Button buttonDetails = findViewById(R.id.buttonDetails);
            ((TextView)findViewById(R.id.fieldpad)).setText("FIELD PAD");
            ((TextView)findViewById(R.id.fieldpad_version)).setText("Version "+Constants.VORTEX_VERSION);
 

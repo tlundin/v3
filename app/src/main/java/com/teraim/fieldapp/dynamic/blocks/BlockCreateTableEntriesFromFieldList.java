@@ -1,28 +1,29 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
+import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
-
 
 public class BlockCreateTableEntriesFromFieldList extends Block {
 
-	String type=null,target=null, selectionField=null,selectionPattern=null;
-	String labelField=null,descriptionField=null,uriField=null,variatorColumn=null;
+	private String type=null;
+    private String target=null;
+    private String selectionField=null;
+    private String selectionPattern=null;
+	private String labelField=null;
+    private String descriptionField=null;
+    private String uriField=null;
+    private String variatorColumn=null;
 	String typeField=null,keyField = null;
-	private static Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
+	private static final Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
 
 
 	public BlockCreateTableEntriesFromFieldList(String id, String type,String target,

@@ -1,19 +1,19 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.Set;
-
-import android.os.Handler;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 
 public class AddVariableToEveryListEntryBlock extends Block {
 
-	String target,variableSuffix,format;
-	boolean displayOut,isVisible,showHistorical;
+	private final String target;
+    private final String variableSuffix;
+    private final String format;
+	private final boolean displayOut;
+    private final boolean isVisible;
+    private final boolean showHistorical;
 	private String initialValue=null;
 	private static final long serialVersionUID = 3621078864866872867L;
 

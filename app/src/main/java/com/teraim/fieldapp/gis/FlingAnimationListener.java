@@ -20,7 +20,7 @@ package com.teraim.fieldapp.gis;
  * @author Jason Polites
  *
  */
-public interface FlingAnimationListener {
+interface FlingAnimationListener {
 
 	void onMove(float x, float y);
 	

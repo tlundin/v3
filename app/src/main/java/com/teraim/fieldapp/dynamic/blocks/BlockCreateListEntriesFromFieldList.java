@@ -1,14 +1,8 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Alphanumeric_Sorter;
@@ -20,11 +14,21 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_TimeOrder_Sorter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithValue_Filter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
-    private static Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
-    private String id,type,containerId,selectionPattern,selectionField,variatorColumn;
-    boolean isVisible = true;
+    private static final Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
+    private final String id;
+    private final String type;
+    private final String containerId;
+    private final String selectionPattern;
+    private final String selectionField;
+    private final String variatorColumn;
+    private final boolean isVisible = true;
     public BlockCreateListEntriesFromFieldList(String id,String namn, String type,
                                                String containerId, String selectionPattern, String selectionField,String variatorColumn,
                                                String textColor, String bgColor,String verticalFormat,String verticalMargin) {
@@ -41,7 +45,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
     private static final long serialVersionUID = -5618217142115636962L;
 
-    WF_Static_List myList = null;
+    private WF_Static_List myList = null;
 
     public void create(WF_Context myContext) {
         //prefetch values from db.
@@ -137,8 +141,8 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
 
 
-    List<AddVariableToEveryListEntryBlock> associatedVariablesList;
-    List<AddFilter>associatedFiltersList;
+    private List<AddVariableToEveryListEntryBlock> associatedVariablesList;
+    private List<AddFilter>associatedFiltersList;
 
     public void associateVariableBlock(AddVariableToEveryListEntryBlock bl) {
         if (associatedVariablesList==null)

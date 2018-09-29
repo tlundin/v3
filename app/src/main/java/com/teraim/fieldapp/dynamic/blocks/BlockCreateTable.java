@@ -16,7 +16,10 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
  */
 public class BlockCreateTable extends Block {
 
-    String type,name,container,label;
+    private final String type;
+    private final String name;
+    private final String container;
+    private final String label;
     private WF_Table myTable;
     private boolean isVisible = true;
 

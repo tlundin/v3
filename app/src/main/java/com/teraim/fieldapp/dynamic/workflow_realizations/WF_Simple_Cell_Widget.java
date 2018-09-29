@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,11 +18,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
@@ -37,16 +25,20 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.utils.Connectivity;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell, EventListener {
 
 
-	private Map<String, String> myHash;
-	private CheckBox myCheckBox;
+	private final Map<String, String> myHash;
+	private final CheckBox myCheckBox;
 	private Variable myVariable = null;
 	private Drawable originalBackground;
-	private Context ctx;
+	private final Context ctx;
 	private ActionMode mActionMode;
 	private static final int backgroundColor=Color.TRANSPARENT;
 
@@ -71,7 +63,7 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell, EventLi
 
 	}
 
-	private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+	private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
 
 		// Called when the action mode is created; startActionMode() was called
 		@Override

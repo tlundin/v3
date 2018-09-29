@@ -3,7 +3,6 @@ package com.teraim.fieldapp.synchronization.framework;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -11,7 +10,7 @@ import android.os.Bundle;
  * Implement AbstractAccountAuthenticator and stub out all
  * of its methods
  */
-public class Authenticator extends AbstractAccountAuthenticator {
+class Authenticator extends AbstractAccountAuthenticator {
     // Simple constructor
     public Authenticator(Context context) {
         super(context);

@@ -1,27 +1,23 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
+import android.graphics.Bitmap;
+import android.graphics.Paint.Style;
+
+import com.teraim.fieldapp.dynamic.types.Location;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.graphics.Bitmap;
-import android.graphics.Paint.Style;
-import android.util.Log;
-
-import com.teraim.fieldapp.dynamic.types.Location;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.workflow_realizations.gis.FullGisObjectConfiguration.PolyType;
-import com.teraim.fieldapp.utils.Tools;
-
 
 public abstract class GisPointObject extends GisObject {
 
-	protected FullGisObjectConfiguration poc; 
+	final FullGisObjectConfiguration poc;
 
 	
 	private int[] xy=new int[2];
 	
-	public GisPointObject(FullGisObjectConfiguration poc,Map<String, String> keyChain,List<Location> myCoordinates, String statusVar, String statusVal) {
+	GisPointObject(FullGisObjectConfiguration poc, Map<String, String> keyChain, List<Location> myCoordinates, String statusVar, String statusVal) {
 		super(poc,keyChain,myCoordinates,statusVar,statusVal);
 		this.poc=poc;
 		
@@ -74,7 +70,7 @@ public abstract class GisPointObject extends GisObject {
 	}
 	
 	
-	private Map<GisFilter,Boolean> filterCache = new HashMap<GisFilter,Boolean>();
+	private final Map<GisFilter,Boolean> filterCache = new HashMap<GisFilter,Boolean>();
 	
 	public boolean hasCachedFilterResult(GisFilter filter) {
 		return filterCache.get(filter)!=null;

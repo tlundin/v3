@@ -1,14 +1,14 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.io.Serializable;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.blocks.ButtonBlock;
 import com.teraim.fieldapp.dynamic.blocks.RuleBlock;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
+import java.io.Serializable;
+import java.util.List;
 
 /** Saves the relationship between status variables.
 */
@@ -18,7 +18,7 @@ public class StatusGraph implements Serializable {
 
 
 	private static final long serialVersionUID = -7055792327173981534L;
-	private GlobalState gs;
+	private final GlobalState gs;
 
 
 	public StatusGraph(GlobalState gs) {

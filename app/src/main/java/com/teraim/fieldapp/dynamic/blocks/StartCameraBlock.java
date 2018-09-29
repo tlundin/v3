@@ -24,7 +24,7 @@ public class StartCameraBlock extends Block implements EventListener {
     private final List<Expressor.EvalExpr> fileNameE;
     private final String rawName;
    // private String fileName;
-    private int TAKE_PHOTO_CODE = 0;
+    private final int TAKE_PHOTO_CODE = 0;
     private WF_Context myContext;
 
     public StartCameraBlock(String id, String fileName) {

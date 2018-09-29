@@ -1,19 +1,16 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Fragment;
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.blocks.Block;
 import com.teraim.fieldapp.dynamic.blocks.PageDefineBlock;
 import com.teraim.fieldapp.dynamic.blocks.StartBlock;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
-import com.teraim.fieldapp.utils.Expressor;
-import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 //Workflow
 public class Workflow implements Serializable {
@@ -120,7 +117,7 @@ public class Workflow implements Serializable {
 	}
 
 
-    boolean called = false;
+    private boolean called = false;
 	public PageDefineBlock getMyPageDefineBlock() {
 		if (called)
 			return myPDefBl;

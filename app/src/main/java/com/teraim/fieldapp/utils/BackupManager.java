@@ -1,5 +1,14 @@
 package com.teraim.fieldapp.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.ui.ExportDialog;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,20 +19,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.ui.ExportDialog;
-
 public class BackupManager {
 
 	private static BackupManager singleton;
-	private GlobalState gs;
-	private Context ctx;
+	private final GlobalState gs;
+	private final Context ctx;
 
 	public BackupManager(GlobalState gs) {
 		this.gs = gs;
@@ -131,7 +131,7 @@ public class BackupManager {
 	}
 	
 	
-	public File createOrFindBackupStorageDir() {
+	private File createOrFindBackupStorageDir() {
 
 		//String state = Environment.getExternalStorageState();
 		//Log.d("vortex","ext state: "+state);
@@ -316,7 +316,7 @@ public class BackupManager {
 	public boolean restoreDatabase() {
 		return restoreDatabase(Constants.BACKUP_FILE_NAME);
 	}
-	public boolean restoreDatabase(String backupFileName) {
+	private boolean restoreDatabase(String backupFileName) {
 		String appName = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME);
 		File dbFile = ctx.getDatabasePath(appName);
 		Log.d("vortex","starting restore for "+dbFile);

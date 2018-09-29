@@ -2,9 +2,6 @@ package com.teraim.fieldapp.log;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -13,16 +10,15 @@ import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.ui.MenuActivity;
 
 public class CriticalOnlyLogger implements LoggerI {
-	boolean hasRed=false;
-	SpannableStringBuilder myTxt = new SpannableStringBuilder();
-	SpannableString s;
-	TextView log = null;
-	Context myContext;
+	private boolean hasRed=false;
+	private final SpannableStringBuilder myTxt = new SpannableStringBuilder();
+	private SpannableString s;
+	private TextView log = null;
+	private final Context myContext;
 	
 	public CriticalOnlyLogger(Context myContext) {
 		this.myContext = myContext;

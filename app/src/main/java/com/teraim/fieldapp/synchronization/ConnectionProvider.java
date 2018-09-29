@@ -1,11 +1,11 @@
 package com.teraim.fieldapp.synchronization;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.synchronization.ConnectionListener.ConnectionEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -35,12 +35,12 @@ public abstract class ConnectionProvider {
 			Log.e("vortex","failed to remove listener in unregister!");
 	}
 
-	protected void broadcastEvent(ConnectionEvent ce) {
+	void broadcastEvent(ConnectionEvent ce) {
 		for (ConnectionListener listener:listeners)
 			listener.handleEvent(ce);
 	}
 	
-	protected void broadcastData(Object message) {
+	void broadcastData(Object message) {
 		for (ConnectionListener listener:listeners)
 			listener.handleMessage(message);
 	}

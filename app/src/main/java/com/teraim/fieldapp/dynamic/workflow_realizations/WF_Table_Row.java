@@ -1,10 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -20,20 +14,25 @@ import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Listable> {
 	private final WF_Table myWfTable;
-	List<String> myRow;
-	List<WF_Cell> myColumns;
-	private WF_Context myContext;
+	private List<String> myRow;
+	private List<WF_Cell> myColumns;
+	private final WF_Context myContext;
 	private LinearLayout myBody;
-	private TextView headerT;
-	private String id;
+	private final TextView headerT;
+	private final String id;
 
 	public WF_Table_Row(WF_Table myWfTable,String id,View v,WF_Context ctx,boolean isVisible) {
 		super(id,v,isVisible,ctx);
 		myColumns=null;
 		myContext = ctx;
-		headerT = (TextView)v.findViewById(R.id.headerT);
+		headerT = v.findViewById(R.id.headerT);
 		this.id=id;
 
 		this.myWfTable = myWfTable;
@@ -117,7 +116,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 
 	public View addNoClickHeaderCell(String label, String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
-		TextView tv=(TextView)emptyCell.findViewById(R.id.headerT);
+		TextView tv= emptyCell.findViewById(R.id.headerT);
 		tv.setText(label);
 		((TableRow)this.getWidget()).addView(emptyCell);
 		if (backgroundColor!=null)
@@ -127,12 +126,12 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		return emptyCell;
 	}
 
-	int headerIndex=1;
+	private int headerIndex=1;
 
 	//Add a cell of purely graphical nature.
 	public void addHeaderCell(String label, String backgroundColor, String textColor) {
 		View headerC = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_header,null);
-		TextView headerT = (TextView)headerC.findViewById(R.id.headerT);
+		TextView headerT = headerC.findViewById(R.id.headerT);
 		headerT.setText(label);
 		((TableRow)this.getWidget()).addView(headerC);
 		if (backgroundColor!=null)
@@ -194,7 +193,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 	public TextView addAggregateTextCell(String backgroundColor, String textColor) {
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_text_aggregate,null);
 		View bg = emptyCell.findViewById(R.id.outputContainer);
-		TextView tv=(TextView)emptyCell.findViewById(R.id.contentT);
+		TextView tv= emptyCell.findViewById(R.id.contentT);
 
 		((TableRow)this.getWidget()).addView(emptyCell);
 		bg.setBackgroundColor(Color.parseColor(backgroundColor));
@@ -208,7 +207,7 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		View emptyCell = LayoutInflater.from(myContext.getContext()).inflate(R.layout.cell_field_logical_aggregate,null);
 
 		//View bg = (View)emptyCell.findViewById(R.id.outputContainer);
-		CheckBox cb=(CheckBox) emptyCell.findViewById(R.id.contentT);
+		CheckBox cb= emptyCell.findViewById(R.id.contentT);
 
 		((TableRow)this.getWidget()).addView(emptyCell);
 		//((TableRow)this.getWidget()).setBackgroundColor(Color.parseColor(backgroundColor));

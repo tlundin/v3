@@ -6,9 +6,7 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 import com.teraim.fieldapp.utils.Expressor;
-import com.teraim.fieldapp.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BlockAddAggregateColumnToTable extends Block {
@@ -20,9 +18,16 @@ public class BlockAddAggregateColumnToTable extends Block {
 	private static final long serialVersionUID = -3041902713022605254L;
 	private Expressor.EvalExpr expressionE=null;
 
-	String target,  expression, aggregationFunction, aggreagationVariable, format,  width, label;
-	String backgroundColor, textColor;
-	boolean isDisplayed;
+	private final String target;
+    private final String expression;
+    private final String aggregationFunction;
+    private String aggreagationVariable;
+    private final String format;
+    private final String width;
+    private final String label;
+	private final String backgroundColor;
+    private final String textColor;
+	private final boolean isDisplayed;
 
 	public BlockAddAggregateColumnToTable(String id, String label, String target, String expression, String aggregationFunction,
 										   String format, String width, String backgroundColor, String textColor,boolean isDisplayed) {

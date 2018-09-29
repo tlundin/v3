@@ -4,8 +4,8 @@ package com.teraim.fieldapp.dynamic.types;
 
 public class LatLong implements Location {
 
-	public final double	latitude;
-	public final double longitude;
+	private final double	latitude;
+	private final double longitude;
 
 		
 	public LatLong(double latitude, double longitude) {

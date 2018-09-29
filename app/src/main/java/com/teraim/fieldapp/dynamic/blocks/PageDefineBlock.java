@@ -1,9 +1,9 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.List;
-
 import com.teraim.fieldapp.utils.Expressor;
 import com.teraim.fieldapp.utils.Expressor.EvalExpr;
+
+import java.util.List;
 
 /**
  * Page Definition block
@@ -17,9 +17,9 @@ public  class PageDefineBlock extends Block {
 	 */
 	private static final long serialVersionUID = -5680503647867451267L;
 	private String pageName="",pageType=null;
-	private boolean hasGPS;
+	private final boolean hasGPS;
 	private boolean goBackAllowed=true;
-	private List<EvalExpr>pageLabelE;
+	private final List<EvalExpr>pageLabelE;
 
 
 	public String getPageName() {

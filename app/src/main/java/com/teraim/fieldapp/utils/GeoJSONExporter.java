@@ -1,40 +1,35 @@
 package com.teraim.fieldapp.utils;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
-
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
-import com.teraim.fieldapp.utils.Exporter.Report;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GeoJSONExporter extends Exporter {
 
 	private StringWriter sw;
 	private JsonWriter writer;
-	private List<String> coordLess = new ArrayList<>();
-	private Map<String,String> rutMap = new HashMap<>();
-	private Map<String,String> authorMap = new HashMap<>();
+	private final List<String> coordLess = new ArrayList<>();
+	private final Map<String,String> rutMap = new HashMap<>();
+	private final Map<String,String> authorMap = new HashMap<>();
 	private int varC=0,exx=0;
 
 
-	protected GeoJSONExporter(Context ctx) {
+	GeoJSONExporter(Context ctx) {
 		super(ctx);
 
 	}

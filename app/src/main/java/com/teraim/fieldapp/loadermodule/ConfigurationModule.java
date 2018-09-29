@@ -1,11 +1,5 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import android.provider.MediaStore.Files;
 import android.util.Log;
 
 import com.teraim.fieldapp.FileLoadedCb;
@@ -14,6 +8,11 @@ import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 
 //Class that describes the specific load behaviour for a certain type of input data.
@@ -33,27 +32,30 @@ public abstract class ConfigurationModule {
 		file,
 		internet
 	}
-	public Source source;
-	public Type type;
-	public String fileName;
-	private String rawData,printedLabel,frozenPath;
+	public final Source source;
+	public final Type type;
+	public final String fileName;
+	private String rawData;
+    private final String printedLabel;
+    private final String frozenPath;
 	protected float newVersion;
-	protected PersistenceHelper globalPh,ph;
+	protected final PersistenceHelper globalPh;
+    protected final PersistenceHelper ph;
 	private boolean IamLoaded=false;
-	protected String versionControl;
+	protected final String versionControl;
 
 	private Integer linesOfRawData;
 	protected Object essence;
-	protected String baseBundlePath;
+	protected final String baseBundlePath;
 	public boolean isBundle = false;
 	private boolean notFound=false;
-	private String fullPath;
+	private final String fullPath;
 	//freezeSteps contains the number of steps required to freeze the object. Should be -1 if not set specifically by specialized classes.
 	protected int freezeSteps=-1;
 	//tells if this module is stored on disk or db.
 	protected boolean isDatabaseModule = false,hasSimpleVersion=true;
 
-	public ConfigurationModule(PersistenceHelper gPh,PersistenceHelper ph, Type type, Source source, String urlOrPath,String fileName,String moduleName) {
+	protected ConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph, Type type, Source source, String urlOrPath, String fileName, String moduleName) {
 		this.source=source;
 		this.type=type;
 		
@@ -171,7 +173,7 @@ public abstract class ConfigurationModule {
 	}
 
 	//Freeze this configuration. counter is used by some dependants.
-	public boolean freeze(int counter) throws IOException {
+	public boolean freeze(int counter) {
 		this.setEssence();
 		if (essence!=null) {
 			final String fPath = frozenPath;
@@ -244,7 +246,7 @@ public abstract class ConfigurationModule {
 	}
 
 	//Must set essence before freeze.
-	public abstract void setEssence();
+	protected abstract void setEssence();
 
     //If thawed, set essence from file.
     public void setEssence(Object result) {

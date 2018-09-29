@@ -1,14 +1,5 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import android.graphics.Path;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -21,6 +12,13 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisPolygonObject;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 import com.teraim.fieldapp.gis.GisImageView;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 /**
  *
  * A Layer holds the GIS Objects drawn in GisImageView, created by block_add_gis_layer.
@@ -32,8 +30,10 @@ import com.teraim.fieldapp.utils.PersistenceHelper;
 
 public class GisLayer {
 
-	private String name, label;
-	private boolean hasWidget,hasDynamic=false;
+	private final String name;
+    private final String label;
+	private final boolean hasWidget;
+    private boolean hasDynamic=false;
 	private Map<String,Set<GisObject>> myObjects;
 	private boolean showLabels;
 	private Map<String, Set<GisFilter>> myFilters;
@@ -280,7 +280,7 @@ public class GisLayer {
 		}
 	}
 
-	private static int[] xy= new int[2];
+	private static final int[] xy= new int[2];
 
 	public static void markIfUseful(GisObject go, GisImageView gisImageView) {
 

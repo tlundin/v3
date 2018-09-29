@@ -1,12 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import android.app.ProgressDialog;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +9,16 @@ import android.widget.TableLayout.LayoutParams;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filterable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Sortable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 
@@ -31,12 +27,12 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	private final List<Sorter> mySorters=new ArrayList<>();
 	private List<Listable> filteredList;
 
-	protected WF_Context myContext;
-	protected GlobalState gs;
-	protected VariableCache varCache;
+	final WF_Context myContext;
+	final GlobalState gs;
+	VariableCache varCache;
 	//Keep track if list has changed and needs to be recalculated.
 	private boolean redraw = false;
-	private ViewGroup myW;
+	private final ViewGroup myW;
 
 	//Table needs to send only part of its layout to list
 	 WF_List(String id,boolean isVisible,WF_Context ctx, View v) {
@@ -106,7 +102,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	//	return list;
 	//}
 
-	public void add(Listable l) {
+	void add(Listable l) {
 		list.add(l);
 		redraw=true;
 	}
@@ -115,16 +111,16 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 		return list;
 	}
 
-	public void clear() {
+	void clear() {
 		list.clear();
 	}
 
-	protected void resetOnEvent() {
+	void resetOnEvent() {
 		redraw=true;
 	}
 
-	int intC=0;
-	boolean drawActive = false;
+	private int intC=0;
+	private boolean drawActive = false;
 	public void draw() {
 		//Log.d("draw","DRAW CALLED "+ (++intC)+" times in list"+this.getId());
 		Log.d("nils","DrawActive "+drawActive);
@@ -174,7 +170,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 
 	//Return true if incremental.
 
-	public boolean prepareIncrementalDraw(Listable l) {
+	boolean prepareIncrementalDraw(Listable l) {
 		if (l==null || l.getKey()==null) {
 			if (l!=null) {
 				o.addRow("");
@@ -239,7 +235,7 @@ public abstract class WF_List extends WF_Widget implements Sortable,Filterable {
 	}
 
 
-	protected void prepareDraw() {
+	void prepareDraw() {
 		Log.d("zorg","DISCARDED ALL");
 		myW.removeAllViews();
 	}

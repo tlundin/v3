@@ -8,12 +8,16 @@ public class PingMessage extends SyncMessage {
 	 * 
 	 */
 
-	private String partnerApp,partner,partnerTeam,myTime;
-	float appVersion,softwareVersion;
-	private boolean requestAll; 
+	private final String partnerApp;
+	private final String partner;
+	private final String partnerTeam;
+	private final String myTime;
+	private final float appVersion;
+    private final float softwareVersion;
+	private final boolean requestAll;
 		
-	public PingMessage(String name, String app, String team,
-			float appVersion, float softwareVersion, boolean requestAll, String myTime) {
+	PingMessage(String name, String app, String team,
+                float appVersion, float softwareVersion, boolean requestAll, String myTime) {
 		this.partner = name;
 		this.partnerApp = app;
 		this.partnerTeam = team;

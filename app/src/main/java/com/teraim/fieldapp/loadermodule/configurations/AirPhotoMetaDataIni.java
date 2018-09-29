@@ -2,17 +2,10 @@ package com.teraim.fieldapp.loadermodule.configurations;
 
 import android.util.Log;
 
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.PhotoMetaI;
-import com.teraim.fieldapp.loadermodule.configurations.CI_ConfigurationModule;
-import com.teraim.fieldapp.loadermodule.configurations.Dependant_Configuration_Missing;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
 //implements the PhotoMeta interface.
@@ -40,7 +33,10 @@ public class AirPhotoMetaDataIni extends CI_ConfigurationModule implements Photo
     }
 
 
-    String s,w,e,n;
+    private String s;
+    private String w;
+    private String e;
+    private String n;
 
 
 

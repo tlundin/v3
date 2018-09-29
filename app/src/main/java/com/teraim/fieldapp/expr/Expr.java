@@ -11,7 +11,7 @@ public abstract class Expr {
  /** Calculate the expression's value.
   * @return the value given the current variable values */
 
- public abstract Double value();
+ protected abstract Double value();
 
  /** Binary operator: addition        */  public static final int ADD =  0;  
  /** Binary operator: subtraction     */  public static final int SUB =  1;
@@ -102,7 +102,7 @@ public abstract class Expr {
 //stack machine.
 
 class LiteralExpr extends Expr {
- Double v;
+ private final Double v;
  LiteralExpr(double v) { 
 	 this.v = v; 
  }
@@ -112,8 +112,8 @@ class LiteralExpr extends Expr {
 }
 
 class UnaryExpr extends Expr {
- int rator;
- Expr rand;
+ private final int rator;
+ private final Expr rand;
 
  UnaryExpr(int rator, Expr rand) { 
 	this.rator = rator;
@@ -146,8 +146,9 @@ class UnaryExpr extends Expr {
 }
 
 class BinaryExpr extends Expr {
- int rator;
- Expr rand0, rand1;
+ private final int rator;
+ private final Expr rand0;
+    private final Expr rand1;
 
  BinaryExpr(int rator, Expr rand0, Expr rand1) {
 	this.rator = rator;
@@ -224,7 +225,9 @@ class BinaryExpr extends Expr {
 }
 
 class ConditionalExpr extends Expr {
- Expr test, consequent, alternative;
+ private final Expr test;
+    private final Expr consequent;
+    private final Expr alternative;
 
  ConditionalExpr(Expr test, Expr consequent, Expr alternative) {
 	this.test = test;

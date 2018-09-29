@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -16,19 +13,22 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_ClickableField implements EventListener {
 
 	private final DisplayFieldBlock format;
-	private WF_Static_List targetList;
-	private WF_Context myContext;
-	String myPattern;
+	private final WF_Static_List targetList;
+	private final WF_Context myContext;
+	private final String myPattern;
 	private Set<Variable> allMatchingVariables=null;
 
 	public enum Type {
 		sum,
 		count
 	}
-	Type myType;
+	private final Type myType;
 
 	public WF_Not_ClickableField_SumAndCountOfVariables(String header, String descriptionT, WF_Context myContext,
 														String myTarget, String pattern, Type sumOrCount, boolean isVisible, DisplayFieldBlock format) {
@@ -95,7 +95,7 @@ public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_Clickab
 		return "SUM_AND_COUNT "+this.getId();
 	}
 
-	public void matchAndRecalculateMe() {
+	private void matchAndRecalculateMe() {
 		String variablesWithNoValue = "[";
 		Long sum=Long.valueOf(0);
 		if (targetList==null)

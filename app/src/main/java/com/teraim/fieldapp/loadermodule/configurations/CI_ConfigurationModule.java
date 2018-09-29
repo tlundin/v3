@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public abstract class CI_ConfigurationModule extends ConfigurationModule {
 
-    public CI_ConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph,ConfigurationModule.Type type,
-                                  ConfigurationModule.Source source, String urlOrPath, String fileName, String moduleName) {
+    protected CI_ConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph, ConfigurationModule.Type type,
+                                     ConfigurationModule.Source source, String urlOrPath, String fileName, String moduleName) {
         super(gPh,ph, type, source, urlOrPath, fileName, moduleName);
     }
 

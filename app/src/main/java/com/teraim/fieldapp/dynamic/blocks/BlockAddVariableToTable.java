@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.Set;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -9,14 +7,21 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 
+import java.util.Set;
+
 public class BlockAddVariableToTable extends Block {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6892340768823185014L;
-	String target=null,variableSuffix=null,format=null,initialValue=null;
-	boolean displayOut=false,isVisible=true,showHistorical=false;
+	private String target=null;
+    private String variableSuffix=null;
+    private String format=null;
+    private String initialValue=null;
+	private boolean displayOut=false;
+    private boolean isVisible=true;
+    private boolean showHistorical=false;
 	
 	
 	public BlockAddVariableToTable(String id,String target, String variableSuffix,

@@ -1,10 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +10,16 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout.LayoutParams;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter;
-import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter.FilterType;
+import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Filter;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 
 public class WF_SorterWidget extends WF_Widget {
@@ -30,8 +29,8 @@ public class WF_SorterWidget extends WF_Widget {
 	private final LayoutInflater inflater;
 
 
-	WF_Filter existing;
-	WF_List targetList;
+	private WF_Filter existing;
+	private final WF_List targetList;
 
 	public WF_SorterWidget(String name,WF_Context ctx, final String type, final WF_List targetList,final ViewGroup container,final String selectionField, final String displayField,String selectionPattern,boolean isVisible) {
 		super(name,new LinearLayout(ctx.getContext()),isVisible,ctx);
@@ -123,10 +122,7 @@ public class WF_SorterWidget extends WF_Widget {
 							if (sortFacets!=null) {
 								String facets[] = sortFacets.split("\\|");
 								if (facets.length>0) {
-									for (String facet:facets) {
-										//Log.d("vortex","Adding facet "+facet);
-										txts.add(facet);
-									}
+                                    Collections.addAll(txts, facets);
 								}
 							}
 

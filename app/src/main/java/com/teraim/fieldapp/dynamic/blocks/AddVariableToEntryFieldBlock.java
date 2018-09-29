@@ -1,13 +1,8 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
 import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ClickableField_Selection;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 
 
@@ -18,9 +13,14 @@ public class AddVariableToEntryFieldBlock extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -7978000865030730562L;
-	boolean displayOut,isVisible,showHistorical;
-	String target,namn,format,initialValue;
-	GlobalState gs;
+	private final boolean displayOut;
+    private final boolean isVisible;
+    private final boolean showHistorical;
+	private final String target;
+    private final String namn;
+    private final String format;
+    private final String initialValue;
+	private GlobalState gs;
 	
 	public AddVariableToEntryFieldBlock(String id,String target,String namn,boolean displayOut,String format,boolean isVisible,boolean showHistorical,String initialValue)  {
 		this.blockId=id;

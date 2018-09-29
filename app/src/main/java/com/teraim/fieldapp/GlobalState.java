@@ -1,13 +1,5 @@
 package com.teraim.fieldapp;
 
-import java.io.File;
-import java.io.StringReader;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
@@ -54,6 +46,14 @@ import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
+import java.io.File;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 
 /**
  *
@@ -71,15 +71,15 @@ public class GlobalState {
 
     private static Context myC = null;
     private String imgMetaFormat = Constants.DEFAULT_IMG_FORMAT;
-    private LoggerI logger;
+    private final LoggerI logger;
     private PersistenceHelper ph = null;
     private DbHelper db = null;
     private Parser parser = null;
     private VariableConfiguration artLista = null;
     //Map workflows into a hash with name as key.
-    private Map<String, Workflow> myWfs;
+    private final Map<String, Workflow> myWfs;
     //Spinner definitions
-    private SpinnerDefinition mySpinnerDef;
+    private final SpinnerDefinition mySpinnerDef;
     private DrawerMenu myDrawerMenu;
 
     public String TEXT_LARGE;
@@ -88,14 +88,14 @@ public class GlobalState {
 
     private PersistenceHelper globalPh = null;
     private Tracker myTracker = null;
-    private ConnectionManager myConnectionManager;
-    private BackupManager myBackupManager;
+    private final ConnectionManager myConnectionManager;
+    private final BackupManager myBackupManager;
 
 
-    private VariableCache myVariableCache;
+    private final VariableCache myVariableCache;
     private static Account mAccount;
     private GisObject selectedGop;
-    private CharSequence logTxt;
+    private final CharSequence logTxt;
 
     public static GlobalState getInstance() {
 
@@ -233,7 +233,7 @@ public class GlobalState {
      * Mapping workflow to workflow name.
      */
 
-    public Map<String, Workflow> mapWorkflowsToNames(List<Workflow> l) {
+    private Map<String, Workflow> mapWorkflowsToNames(List<Workflow> l) {
         Map<String, Workflow> ret = null;
         if (l == null)
             Log.e("NILS", "Parse Error: Workflowlist is null in SetWorkFlows");
@@ -416,7 +416,7 @@ public class GlobalState {
     }
 
 
-    Handler mHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
 
         @Override
         public void handleMessage(Message msg) {
@@ -460,10 +460,10 @@ public class GlobalState {
             Log.e("vortex", "NO MESSAGE NO HANDLER!!");
     }
 
-    SyncMessage message;
+    private SyncMessage message;
 
 
-    private StatusHandler myStatusHandler;
+    private final StatusHandler myStatusHandler;
 
 
     public void setSyncMessage(SyncMessage message) {
@@ -615,7 +615,7 @@ public class GlobalState {
     }
 
 
-    public String getMyId() {
+    private String getMyId() {
         return Settings.Secure.getString(getContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
     }
@@ -691,7 +691,7 @@ public class GlobalState {
         private List<TeamMember> team = null;
         private Date lastUpdate;
 
-        public SyncGroup(String json) {
+        SyncGroup(String json) {
             //insert current data on the sync status for the team.
             //{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
             if (json != null) {
@@ -738,11 +738,11 @@ public class GlobalState {
     }
 
     public class TeamMember {
-        public int unsynched;
-        public String user;
-        private Long date;
+        public final int unsynched;
+        public final String user;
+        private final Long date;
 
-        public TeamMember(String user, int uns, Long date) {
+        TeamMember(String user, int uns, Long date) {
             unsynched = uns;
             this.user = user;
             this.date = date;

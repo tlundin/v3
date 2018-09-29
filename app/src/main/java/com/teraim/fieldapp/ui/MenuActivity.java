@@ -1,7 +1,7 @@
 package com.teraim.fieldapp.ui;
 
 import android.accounts.Account;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -23,6 +22,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -65,8 +65,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
 /**
@@ -74,7 +72,7 @@ import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
  * @author Terje
  *
  */
-public class MenuActivity extends Activity implements TrackerListener   {
+public class MenuActivity extends AppCompatActivity implements TrackerListener   {
 
 
     private BroadcastReceiver brr;
@@ -84,8 +82,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
     private boolean initdone=false,initfailed=false;
     private MenuActivity me;
     private Account mAccount;
-    Runnable syncP;
-    Handler handler;
+    private Runnable syncP;
+    private Handler handler;
 
     public final static String REDRAW = "com.teraim.fieldapp.menu_redraw";
     public static final String INITDONE = "com.teraim.fieldapp.init_done";
@@ -98,20 +96,11 @@ public class MenuActivity extends Activity implements TrackerListener   {
     private Button sync_button;
 
 
-
-
-    public class Control {
-        public volatile boolean flag = false;
-        public boolean error=false;
+    static class MThread extends Thread {
+        void stopMe() {}
     }
-    final Control control = new Control();
-    public class MThread extends Thread {
-        public void stopMe() {}
-    }
+
     private MThread t;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,13 +157,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             .setMessage("The action you just performed mandates a synchronisation. Please synchronise with your partner before continuing.")
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    uiLock=null;
-                                }
-                            })
+                            .setPositiveButton(R.string.ok, (dialog, which) -> uiLock=null)
                             .show();
                 }
 
@@ -219,31 +202,22 @@ public class MenuActivity extends Activity implements TrackerListener   {
         if(Build.VERSION.SDK_INT>=21){
             mPopupWindow.setElevation(5.0f);
         }
-        Button closeButton = (Button) syncpop.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Dismiss the popup window
-                mPopupWindow.dismiss();
-            }
+        Button closeButton = syncpop.findViewById(R.id.close_button);
+        closeButton.setOnClickListener(view -> {
+            // Dismiss the popup window
+            mPopupWindow.dismiss();
         });
-        sync_button = (Button) syncpop.findViewById(R.id.sync_button);
-        sync_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Try to force immediate.
-                SyncAdapter.forceSyncToHappen();
-            }
+        sync_button = syncpop.findViewById(R.id.sync_button);
+        sync_button.setOnClickListener(view -> {
+            //Try to force immediate.
+            SyncAdapter.forceSyncToHappen();
         });
-        Button refresh_button = (Button) syncpop.findViewById(R.id.refresh_button);
-        refresh_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rowBuffer.clear();
-                gs.getServerSyncStatus();
-            }
+        Button refresh_button = syncpop.findViewById(R.id.refresh_button);
+        refresh_button.setOnClickListener(view -> {
+            rowBuffer.clear();
+            gs.getServerSyncStatus();
         });
-        sync_switch = (Switch) syncpop.findViewById(R.id.sync_switch);
+        sync_switch = syncpop.findViewById(R.id.sync_switch);
 
 
         sync_switch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
@@ -275,7 +249,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
     }
 
     //Tracker callback.
-    GPS_State latestSignal=null;
+    private GPS_State latestSignal=null;
     private final static long GPS_TIME_THRESHOLD = 15000;
 
     @Override
@@ -283,9 +257,6 @@ public class MenuActivity extends Activity implements TrackerListener   {
         if (signal.state == GPS_State.State.newValueReceived) {
             Log.d("glapp","Got gps signal!");
             latestSignal = signal;
-        } else {
-            //Log.d("glapp", "Got " + signal.state.toString());
-            //latestSignal = null;
         }
         refreshStatusRow();
     }
@@ -295,11 +266,13 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     }
 
-    private boolean gpsSignalIsOld() {
-        long diff = System.currentTimeMillis()-latestSignal.time;
-        return (diff>GPS_TIME_THRESHOLD);
-
-    }
+// --Commented out by Inspection START (9/29/2018 6:36 PM):
+//    private boolean gpsSignalIsOld() {
+//        long diff = System.currentTimeMillis()-latestSignal.time;
+//        return (diff>GPS_TIME_THRESHOLD);
+//
+//    }
+// --Commented out by Inspection STOP (9/29/2018 6:36 PM)
 
     private GPSQuality calculateGPSKQI() {
         if (latestSignal.accuracy<=6)
@@ -363,9 +336,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
     /** Flag indicating whether we have called bind on the service. */
-    boolean mBound;
+    private boolean mBound;
 
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             // This is called when the connection with the service has been
             // established, giving us the object we can use to
@@ -388,54 +361,64 @@ public class MenuActivity extends Activity implements TrackerListener   {
         }
     };
 
-    public boolean isSynkServiceRunning() {
+    private boolean isSynkServiceRunning() {
         return mBound;
     }
 
 
-    Messenger mService = null;
-    boolean syncActive=false, syncError = false, syncDbInsert=false;
+    private Messenger mService = null;
+    private boolean syncActive=false;
+    private boolean syncError = false;
+    private boolean syncDbInsert=false;
 
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
-    AlertDialog uiLock=null;
-    Message reply=null;
+    private final Messenger mMessenger = new Messenger(new IncomingHandler(this));
+    private AlertDialog uiLock=null;
+    private Message reply=null;
     private boolean inSync;
-    Thread sThread = null;
     private volatile int z_totalSynced = 0;
     private volatile int z_totalToSync = 0;
 
 
-    class IncomingHandler extends Handler {
+    public static class IncomingHandler extends Handler {
+
+        final MenuActivity menuActivity;
+
+        public class Control {
+            public volatile boolean flag = false;
+            public boolean error=false;
+        }
+        final Control control = new Control();
 
 
-
-
+        IncomingHandler(MenuActivity menuActivity) {
+            this.menuActivity=menuActivity;
+        }
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
 
                 case SyncService.MSG_SYNC_STARTED:
                     Log.d("vortex","MSG -->SYNC STARTED");
-                    gs.getPreferences().put(PersistenceHelper.TIME_OF_LAST_SYNC_INET+globalPh.get(PersistenceHelper.LAG_ID_KEY),System.currentTimeMillis());
-                    syncActive = true;
-                    syncError=false;
+                    GlobalState.getInstance().getPreferences().put(PersistenceHelper.TIME_OF_LAST_SYNC_INET+menuActivity.globalPh.get(PersistenceHelper.LAG_ID_KEY),System.currentTimeMillis());
+                    menuActivity.syncActive = true;
+                    menuActivity.syncError=false;
                     break;
 
                 case SyncService.MSG_SERVER_READ_MY_DATA:
                     long timestampFromMe = ((Bundle)msg.obj).getLong("maxstamp");
-                    gs.getPreferences().put(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY),timestampFromMe);
-                    gs.getDb().saveTimeStamp(gs.getMyTeam(),timestampFromMe);
-                    Log.d("burlesk", "ME-->TEAM UPDATED TO? "+timestampFromMe+" --: "+gs.getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+globalPh.get(PersistenceHelper.LAG_ID_KEY)));
+                    GlobalState.getInstance().getPreferences().put(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+menuActivity.globalPh.get(PersistenceHelper.LAG_ID_KEY),timestampFromMe);
+                    GlobalState.getInstance().getDb().saveTimeStamp(GlobalState.getInstance().getMyTeam(),timestampFromMe);
+                    Log.d("burlesk", "ME-->TEAM UPDATED TO? "+timestampFromMe+" --: "+GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME+menuActivity.globalPh.get(PersistenceHelper.LAG_ID_KEY)));
                     //Log.d("biff","Timestamp for last sync in Query is  "+timestampFromMe);
                     break;
 
                 case SyncService.MSG_SYNC_DATA_ARRIVING:
-                    syncActive=false;
-                    syncDataArriving=true;
+                    menuActivity.syncActive=false;
+                    menuActivity.syncDataArriving=true;
                     Bundle b = (Bundle)msg.obj;
-                    z_totalSynced=b.getInt("number_of_rows_so_far");
-                    z_totalToSync = b.getInt("number_of_rows_total");
-                    Log.d("vortex","MSG_SYNC_DATA_ARRIVING...total rows to sync is "+z_totalToSync);
+                    menuActivity.z_totalSynced=b.getInt("number_of_rows_so_far");
+                    menuActivity.z_totalToSync = b.getInt("number_of_rows_total");
+                    Log.d("vortex","MSG_SYNC_DATA_ARRIVING...total rows to sync is "+menuActivity.z_totalToSync);
                     break;
 
                 case SyncService.MSG_SYNC_ERROR_STATE:
@@ -446,26 +429,22 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             Log.d("vortex","ERR NOT INTERNET SYNC...");
                             //Send a config changed msg...reload!
                             Log.d("vortex","Turning sync off.");
-                            stopSync();
+                            menuActivity.stopSync();
 
                             break;
                         case SyncService.ERR_SETTINGS:
                             Log.d("vortex","ERR WRONG SETTINGS...");
-                            if (uiLock == null) {
-                                uiLock = new AlertDialog.Builder(MenuActivity.this)
+                            if (menuActivity.uiLock == null) {
+                                menuActivity.uiLock = new AlertDialog.Builder(menuActivity)
                                         .setTitle("Synchronize")
                                         .setMessage("Please enter a team and a user name under Settings.")
                                         .setIcon(android.R.drawable.ic_dialog_alert)
                                         .setCancelable(false)
-                                        .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (syncOn()) {
-                                                    stopSync();
-                                                }
-                                                uiLock=null;
+                                        .setNegativeButton(R.string.close, (dialog, which) -> {
+                                            if (menuActivity.syncOn()) {
+                                                menuActivity.stopSync();
                                             }
+                                            menuActivity.uiLock=null;
                                         })
                                         .show();
                             }
@@ -475,32 +454,32 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         case SyncService.ERR_SERVER_NOT_REACHABLE:
                             Log.d("vortex","Synkserver is currently not reachable.");
                             toastMsg = "Me --> Sync Server. No route";
-                            syncError=true;
+                            menuActivity.syncError=true;
                             break;
                         case SyncService.ERR_SERVER_CONN_TIMEOUT:
                             toastMsg = "Me-->Sync Server. Connection timeout";
                             Log.d("vortex","Synkserver Timeout.");
                             //not an error really..just turn off sync.
-                            syncError=true;
+                            menuActivity.syncError=true;
                             break;
                         default:
                             Log.d("vortex","Any other error!");
                             toastMsg = "Me-->Sync Server. Connection failure.";
-                            syncError=true;
+                            menuActivity.syncError=true;
                             break;
                     }
-                    if (toastMsg !=null && toastMsg.length()>0) {
-                        Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
+                    if (toastMsg.length()>0) {
+                        Toast.makeText(menuActivity.getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
                     }
-                    syncDataArriving=false;
-                    syncActive=false;
+                    menuActivity.syncDataArriving=false;
+                    menuActivity.syncActive=false;
                     break;
 
 
 
                 case SyncService.MSG_SYNC_REQUEST_DB_LOCK:
                     Log.d("vortex","MSG -->SYNC REQUEST DB LOCK");
-                    inSync = false;
+                    menuActivity.inSync = false;
 				/*
 				uiLock = new AlertDialog.Builder(MenuActivity.this)
 				.setTitle("Synchronizing")
@@ -516,26 +495,26 @@ public class MenuActivity extends Activity implements TrackerListener   {
 				})
 				.show();
 				 */
-                    reply = Message.obtain(null, SyncService.MSG_DATABASE_LOCK_GRANTED);
+                    menuActivity.reply = Message.obtain(null, SyncService.MSG_DATABASE_LOCK_GRANTED);
                     try {
-                        mService.send(reply);
+                        menuActivity.mService.send(menuActivity.reply);
                     } catch (RemoteException e) {
                         e.printStackTrace();
-                        syncActive=false;
-                        syncDataArriving=false;
-                        syncError=true;
+                        menuActivity.syncActive=false;
+                        menuActivity.syncDataArriving=false;
+                        menuActivity.syncError=true;
                     }
                     break;
 
                 case SyncService.MSG_DEVICE_IN_SYNC:
                     Log.d("vortex","***DEVICE IN SYNC***");
-                    inSync = true;
-                    syncActive=false;
-                    syncDataArriving=false;
-                    syncError = false;
-                    String team = gs.getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
+                    menuActivity.inSync = true;
+                    menuActivity.syncActive=false;
+                    menuActivity.syncDataArriving=false;
+                    menuActivity.syncError = false;
+                    //String team = GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
                     //update from the server.
-                    gs.getServerSyncStatus();
+                    GlobalState.getInstance().getServerSyncStatus();
 
                     break;
 
@@ -546,32 +525,32 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         //Create ui provider.
 
                         //Check if something needs to be saved. If so, do it on its own thread.
-                        if (!syncDbInsert) {
-                            syncDbInsert = true;
+                        if (!menuActivity.syncDbInsert) {
+                            menuActivity.syncDbInsert = true;
                             control.flag = false;
-                            z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
-                            setSyncState();
-                            z_totalSynced = 0;
-                            final UIProvider ui = new UIProvider(MenuActivity.this);
+                            menuActivity.z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
+                            menuActivity.setSyncState();
+                            menuActivity.z_totalSynced = 0;
+                            final UIProvider ui = new UIProvider(menuActivity.getApplicationContext());
 
-                            Log.d("vortex", "total rows to sync is: " + z_totalToSync);
-                            if (z_totalToSync==0) {
+                            Log.d("vortex", "total rows to sync is: " + menuActivity.z_totalToSync);
+                            if (menuActivity.z_totalToSync==0) {
                                 Log.e("vortex","sync table is empty! Aborting sync");
-                                syncDbInsert=false;
+                                menuActivity.syncDbInsert=false;
 
-                                reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+                                menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
                                 try {
 
 
-                                    mService.send(reply);
+                                    menuActivity.mService.send(menuActivity.reply);
                                 } catch (RemoteException e) {
                                     e.printStackTrace();
                                 }
 
                             } else {
-                                if (t == null) {
-                                    t = new MThread() {
-                                        final int increment = z_totalToSync;
+                                if (menuActivity.t == null) {
+                                    menuActivity.t = new MThread() {
+                                        final int increment = menuActivity.z_totalToSync;
 
                                         @Override
                                         public void stopMe() {
@@ -581,79 +560,69 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                                         @Override
                                         public void run() {
-                                            boolean threadDone = false;
+                                            boolean threadDone;
                                             while (!control.flag) {
 
                                                 threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment, ui);
                                                 Log.d("vortex", "done scanning syncs...threaddone is " + threadDone + " this is thread " + this.getId());
                                                 if (control.error) {
                                                     Log.d("vortex", "Uppsan...exiting");
-                                                    syncError = true;
-                                                    syncActive = false;
-                                                    syncDbInsert = false;
+                                                    menuActivity.syncError = true;
+                                                    menuActivity.syncActive = false;
+                                                    menuActivity.syncDbInsert = false;
                                                     break;
                                                 }
                                                 if (!control.flag && !threadDone) {
-                                                    z_totalSynced += increment;
+                                                    menuActivity.z_totalSynced += increment;
                                                 } else {
                                                     control.flag = threadDone;
 
 
                                                     Log.d("vortex", "End reached for sync. Sending msg safely_stored");
-                                                    if (uiLock != null)
-                                                        uiLock.cancel();
+                                                    if (menuActivity.uiLock != null)
+                                                        menuActivity.uiLock.cancel();
                                                     control.flag = true;
-                                                    uiLock = null;
+                                                    menuActivity.uiLock = null;
 
-                                                    reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-                                                    syncError = false;
-                                                    syncActive = false;
-                                                    syncDataArriving = false;
+                                                    menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
+                                                    menuActivity.syncError = false;
+                                                    menuActivity.syncActive = false;
+                                                    menuActivity.syncDataArriving = false;
 
                                                     try {
-                                                        mService.send(reply);
-                                                        gs.sendEvent(REDRAW_PAGE);
+                                                        menuActivity.mService.send(menuActivity.reply);
+                                                        GlobalState.getInstance().sendEvent(REDRAW_PAGE);
 
                                                     } catch (RemoteException e) {
                                                         e.printStackTrace();
-                                                        syncError = true;
-                                                        syncActive = false;
-                                                        syncDbInsert = false;
-                                                        syncDataArriving = false;
+                                                        menuActivity.syncError = true;
+                                                        menuActivity.syncActive = false;
+                                                        menuActivity.syncDbInsert = false;
+                                                        menuActivity.syncDataArriving = false;
                                                         //Object fuck = null;
                                                         //fuck.equals(fuck);
                                                     }
 
                                                 }
                                                 if (!control.error) {
-                                                    runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            setSyncState();
-                                                        }
-                                                    });
+                                                    menuActivity.runOnUiThread(menuActivity::setSyncState);
                                                 }
 
 
                                             }
                                             Log.d("vortex", "I escaped infite");
 
-                                            syncDbInsert = false;
-                                            t = null;
+                                            menuActivity.syncDbInsert = false;
+                                            menuActivity.t = null;
                                             ui.closeProgress();
                                             if (!control.error) {
-                                                runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        refreshStatusRow();
-                                                    }
-                                                });
+                                                menuActivity.runOnUiThread(menuActivity::refreshStatusRow);
                                             }
                                         }
                                     };
 
-                                    t.setPriority(Thread.MIN_PRIORITY);
-                                    t.start();
+                                    menuActivity.t.setPriority(Thread.MIN_PRIORITY);
+                                    menuActivity.t.start();
 
                                 } else
                                     Log.e("vortex", "EXTRA CALL ON THREADSTART");
@@ -662,18 +631,18 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         } else {
                             Log.e("vortex", "Extra call made to SYNC RELEASE DB LOCK");
                         }
-                        syncActive = false;
-                        syncDataArriving=false;
-                        syncError = false;
+                        menuActivity.syncActive = false;
+                        menuActivity.syncDataArriving=false;
+                        menuActivity.syncError = false;
                     } else {
-                        syncActive=false;
-                        syncDataArriving=false;
-                        syncError=true;
+                        menuActivity.syncActive=false;
+                        menuActivity.syncDataArriving=false;
+                        menuActivity.syncError=true;
                     }
                     break;
             }
             //Log.d("Vortex","Refreshing status row. status is se: "+syncError+" sA: "+syncActive);
-            refreshStatusRow();
+            menuActivity.refreshStatusRow();
         }
 
     }
@@ -707,17 +676,17 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
     private final static int NO_OF_MENU_ITEMS = 6;
 
-    MenuItem mnu[] = new MenuItem[NO_OF_MENU_ITEMS];
-    final static int MENU_ITEM_GPS_QUALITY 	= 0;
-    final static int MENU_ITEM_SYNC_TYPE 	= 1;
-    final static int MENU_ITEM_CONTEXT		= 2;
-    final static int MENU_ITEM_LOG_WARNING 	= 3;
-    final static int MENU_ITEM_SETTINGS 	= 4;
-    final static int MENU_ITEM_ABOUT 		= 5;
+    private final MenuItem[] mnu = new MenuItem[NO_OF_MENU_ITEMS];
+    private final static int MENU_ITEM_GPS_QUALITY 	= 0;
+    private final static int MENU_ITEM_SYNC_TYPE 	= 1;
+    private final static int MENU_ITEM_CONTEXT		= 2;
+    private final static int MENU_ITEM_LOG_WARNING 	= 3;
+    private final static int MENU_ITEM_SETTINGS 	= 4;
+    private final static int MENU_ITEM_ABOUT 		= 5;
 
 
 
-    ImageView animView = null;
+    private ImageView animView = null;
 
     private void createMenu(Menu menu)
     {
@@ -749,7 +718,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         green
     }
 
-    protected void refreshStatusRow() {
+    private void refreshStatusRow() {
         //If init failed, show only log and settings
         if (initfailed ) {
             if (mnu[MENU_ITEM_LOG_WARNING]!=null) {
@@ -800,29 +769,26 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
 
-    boolean animationRunning = false,syncDataArriving=false;
+    private boolean animationRunning = false;
+    private boolean syncDataArriving=false;
 
-    Integer syncState=null;
     private void setSyncState() {
         //Log.d("vortex","Entering setsyncstate");
         String title=null;
         boolean internetSync = globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet");
-        syncState= R.drawable.syncoff;
+        Integer syncState = R.drawable.syncoff;
         int numOfUnsynchedEntries = -1;
         if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth")) {
-            syncState= R.drawable.bt;
+            syncState = R.drawable.bt;
             title = gs.getDb().getNumberOfUnsyncedEntries()+"";
         }
-        else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("NONE"))
-            syncState= null;
-
         else if (internetSync) {
             //Log.d("mama","refresh synk dialog if visible");
             numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
 
             Log.d("mammamia","sync on? "+ContentResolver.getSyncAutomatically(mAccount,Start.AUTHORITY)+"");
             if (syncError) {
-                syncState= R.drawable.syncerr;
+                syncState = R.drawable.syncerr;
                 title = "";
             }
 
@@ -834,7 +800,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                 Log.d("zazz","Unsynched: "+numOfUnsynchedEntries);
                 if (numOfUnsynchedEntries>15) {
                     inSync=false;
-                    syncState= R.drawable.syncon;
+                    syncState = R.drawable.syncon;
                     //request sync here.
                     reply = Message.obtain(null, SyncService.MSG_START_SYNC);
                     try {
@@ -843,11 +809,12 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         e.printStackTrace();
                     }
                 } else {
+                    title = "";
                     //check with server if no more data.
                     GlobalState.SyncGroup sg = gs.getSyncGroup();
                     List team = sg==null?null:sg.getTeam();
-                    syncState= (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
-                    if (syncState==R.drawable.insync) {
+                    syncState = (team!=null && team.isEmpty())? R.drawable.insync:R.drawable.iminsync;
+                    //if (syncState ==R.drawable.insync) {
                         //TODO: REMOVE - IF User is in sync with server, repair the database.
                         //GlobalState.getInstance().getDb().fixYearNull();
                         /*
@@ -876,8 +843,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             ;
 
                             */
-                    }
-                    title = "";
+                    //}
+
                 }
             }
             else if (syncActive) {
@@ -886,34 +853,30 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     rotation.setRepeatCount(Animation.INFINITE);
                     animView.startAnimation(rotation);
                     mnu[MENU_ITEM_SYNC_TYPE].setActionView(animView);
-                    animView.setOnClickListener(new OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            animView.clearAnimation();
-                            mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
-                            mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
-                            animView.setOnClickListener(null);
-                            animationRunning = false;
-                            syncError = false;
-                        }
+                    animView.setOnClickListener(v -> {
+                        animView.clearAnimation();
+                        mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
+                        mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
+                        animView.setOnClickListener(null);
+                        animationRunning = false;
+                        syncError = false;
                     });
                     animationRunning=true;
                 }
-                syncState=R.drawable.syncactive;
+                syncState =R.drawable.syncactive;
                 refreshSynkDialog(syncState,numOfUnsynchedEntries);
                 return;
             }
             else if (syncDataArriving) {
                 title = (z_totalSynced+"/"+z_totalToSync);
-                syncState  = R.drawable.syncactive;
+                syncState = R.drawable.syncactive;
             }
             else if (syncDbInsert) {
                 title = (z_totalSynced+"/"+z_totalToSync);
-                syncState= R.drawable.dbase;
+                syncState = R.drawable.dbase;
             }
             else {
-                syncState= R.drawable.syncon;
+                syncState = R.drawable.syncon;
                 Log.d("vortex","icon set to syncon!");
             }
         }
@@ -924,7 +887,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
         mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
         animView.setOnClickListener(null);
-        Log.d("vortex","drawing icon: "+syncState+"");
+        Log.d("vortex","drawing icon: "+ syncState +"");
         mnu[MENU_ITEM_SYNC_TYPE].setIcon(syncState);
         mnu[MENU_ITEM_SYNC_TYPE].setTitle(title);
         mnu[MENU_ITEM_SYNC_TYPE].setVisible(true);
@@ -952,11 +915,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                                     "Time since last value: " + Math.round((System.currentTimeMillis() - latestSignal.time)/1000)+"s")
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setCancelable(true)
-                            .setNeutralButton("Ok", new Dialog.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            .setNeutralButton("Ok", (dialog, which) -> {
 
-                                }
                             })
                             .show();
                 } else
@@ -977,12 +937,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
                             .setMessage(gs.getVariableCache().getContext().toString())
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setCancelable(false)
-                            .setNeutralButton("Ok",new Dialog.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                            .setNeutralButton("Ok", (dialog, which) -> {
 
-                                }
-                            } )
+                            })
                             .show();
                 }
                 break;
@@ -992,8 +949,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                 final Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.log_dialog_popup);
                 dialog.setTitle("Session Log");
-                final TextView tv=(TextView)dialog.findViewById(R.id.logger);
-                final ScrollView sv=(ScrollView)dialog.findViewById(R.id.logScroll);
+                final TextView tv= dialog.findViewById(R.id.logger);
+                final ScrollView sv= dialog.findViewById(R.id.logScroll);
                 Typeface type=Typeface.createFromAsset(getAssets(),
                         "clacon.ttf");
                 tv.setTypeface(type);
@@ -1011,40 +968,24 @@ public class MenuActivity extends Activity implements TrackerListener   {
 					}
 				});
 				*/
-                Button clear = (Button)dialog.findViewById(R.id.log_clear);
-                clear.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        log.clear();
-                        //if(gs!=null && gs.getVariableCache()!=null)
-                        //   gs.getVariableCache().printCache();
-                        //List<PeriodicSync> l = ContentResolver.getPeriodicSyncs(mAccount, Start.AUTHORITY);
-                        //for (PeriodicSync p:l) {
-                        //    Log.d("marko","Period: "+p.period+" isSyncable: "+ContentResolver.getIsSyncable(mAccount, Start.AUTHORITY)+" isPending? "+ContentResolver.isSyncPending(mAccount,Start.AUTHORITY));
-                        //}
-                    }
+                Button clear = dialog.findViewById(R.id.log_clear);
+                clear.setOnClickListener(v -> {
+                    log.clear();
+                    //if(gs!=null && gs.getVariableCache()!=null)
+                    //   gs.getVariableCache().printCache();
+                    //List<PeriodicSync> l = ContentResolver.getPeriodicSyncs(mAccount, Start.AUTHORITY);
+                    //for (PeriodicSync p:l) {
+                    //    Log.d("marko","Period: "+p.period+" isSyncable: "+ContentResolver.getIsSyncable(mAccount, Start.AUTHORITY)+" isPending? "+ContentResolver.isSyncPending(mAccount,Start.AUTHORITY));
+                    //}
                 });
-                Button scrollD = (Button)dialog.findViewById(R.id.scrollDown);
-                scrollD.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sv.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                sv.fullScroll(ScrollView.FOCUS_DOWN);
-                            }
-                        });
-                    }
-                });
-                Button print = (Button)dialog.findViewById(R.id.printdb);
-                Button printLog = (Button)dialog.findViewById(R.id.printlog);
+                Button scrollD = dialog.findViewById(R.id.scrollDown);
+                scrollD.setOnClickListener(v -> sv.post(() -> sv.fullScroll(ScrollView.FOCUS_DOWN)));
+                Button print = dialog.findViewById(R.id.printdb);
+                Button printLog = dialog.findViewById(R.id.printlog);
 
-                print.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (gs!=null)
-                            BackupManager.getInstance(gs).backupDatabase("dump");
-                    }
+                print.setOnClickListener(v -> {
+                    if (gs!=null)
+                        BackupManager.getInstance(gs).backupDatabase("dump");
                 });
 
                 printLog.setOnClickListener(new OnClickListener() {
@@ -1054,6 +995,8 @@ public class MenuActivity extends Activity implements TrackerListener   {
                     }
 
                     private void printLog(CharSequence logText) {
+                        String crashme = null;
+                        crashme.charAt(0);
                         if (logText==null || logText.length()==0)
                             return;
                         try {
@@ -1104,6 +1047,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         setSyncState();
     }
 
+    @SuppressLint("SetTextI18n")
     private void refreshSynkDialog(Integer syncState, int numberOfUnsynchedItems) {
         if (!mPopupWindow.isShowing()) {
             //Log.d("pop", "pop not showing...exit");
@@ -1115,7 +1059,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         View customView = mPopupWindow.getContentView();
 
         //The current synk status
-        TextView synk_status_display = (TextView) customView.findViewById(R.id.synk_status_display);
+        TextView synk_status_display = customView.findViewById(R.id.synk_status_display);
         String synkStat = getString(R.string.synk_off);
         if (syncState != null) {
             switch (syncState) {
@@ -1149,7 +1093,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         //The current time since last sync was completed.
         final String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
         Long timestamp = GlobalState.getInstance().getPreferences().getL(PersistenceHelper.TIME_OF_LAST_SYNC_INET + team);
-        TextView time_last_sync = (TextView) customView.findViewById(R.id.sync_time_since_last);
+        TextView time_last_sync = customView.findViewById(R.id.sync_time_since_last);
         String time = "-";
         if (timestamp!=-1) {
             Date date = new Date(timestamp);
@@ -1157,15 +1101,15 @@ public class MenuActivity extends Activity implements TrackerListener   {
         }
         time_last_sync.setText(time);
         //Remaining objects to sync
-        TextView unsync = (TextView) customView.findViewById(R.id.sync_objects_remaining);
+        TextView unsync = customView.findViewById(R.id.sync_objects_remaining);
         unsync.setText(Integer.toString(numberOfUnsynchedItems ));
 
         //List of people
 
         GlobalState.SyncGroup syncGroup = gs.getSyncGroup();
 
-        LinearLayout ll = (LinearLayout) customView.findViewById(R.id.list_container);
-        TextView sync_refresh_date = (TextView) customView.findViewById(R.id.sync_refresh_date);
+        LinearLayout ll = customView.findViewById(R.id.list_container);
+        TextView sync_refresh_date = customView.findViewById(R.id.sync_refresh_date);
 
         ll.removeAllViews();
 
@@ -1223,17 +1167,17 @@ public class MenuActivity extends Activity implements TrackerListener   {
         return time;
     }
 
-    private RowBuffer rowBuffer = new RowBuffer();
+    private final RowBuffer rowBuffer = new RowBuffer();
     private  class RowBuffer {
-        Map<String,View> buffer = new HashMap<>();
+        final Map<String,View> buffer = new HashMap<>();
 
-        public View getRow(String name, String obj, String time) {
+        View getRow(String name, String obj, String time) {
             View entry = getRow(name);
             setText(entry,name,obj,time);
             return entry;
         }
 
-        public void clear() {
+        void clear() {
             for (View entry:buffer.values()) {
                 if(entry.getParent()!=null)
                     ((ViewGroup)entry.getParent()).removeView(entry);
@@ -1244,7 +1188,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         private View getRow(String name) {
             View entry = buffer.get(name);
             if (entry == null) {
-                entry = (View)getLayoutInflater().inflate(R.layout.sync_popup_list_row,null);
+                entry = getLayoutInflater().inflate(R.layout.sync_popup_list_row,null);
                 buffer.put(name,entry);
             } else {
                 if(entry.getParent()!=null)
@@ -1253,7 +1197,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
             return entry;
         }
 
-        public View defaultRow(String text) {
+        View defaultRow(String text) {
             View row = getRow("default");
             setText(row,text,"","");
             return row;
@@ -1279,7 +1223,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         } else {
             if (syncMethod.equals("Internet")) {
                 Log.d("vortex","in togglesync internet");
-                if (on ) {
+                if (on) {
                     Log.d("vortex", "Starting sync process");
                     //Check there is name and team.
                     String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
@@ -1290,12 +1234,9 @@ public class MenuActivity extends Activity implements TrackerListener   {
                                 .setMessage("Missing team ["+team+"] or user name ["+user+"]. Please add under the Settings menu")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        syncError=false;
-                                        syncActive=false;
-                                    }
+                                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                    syncError=false;
+                                    syncActive=false;
                                 })
                                 .show();
                     }
@@ -1342,9 +1283,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         };
                         try {
                             Log.d("zazz","Sending start sync.");
-                            ExecutorService threadPoolExecutor = Executors.newSingleThreadExecutor();
                             handler.post(syncP);
-
                             reply = Message.obtain(null, SyncService.MSG_START_SYNC);
                             mService.send(reply);
                         } catch (RemoteException e) {
@@ -1356,11 +1295,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
                     }
                 } else {
-                    if (!on)
                         stopSync();
-
-
-
                 }
 
                 refreshStatusRow();
@@ -1381,9 +1316,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
             syncError=false;
         }
         if (syncDbInsert){
-
             t.stopMe();
-            Log.e("vortex","control flag is now true");
         }
         reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
         try {
@@ -1448,7 +1381,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
 
-    protected void onCloseSync() {
+    private void onCloseSync() {
         Log.d("vortex","IN on close SYNC!!");
         refreshStatusRow();
         DataSyncSessionManager.stop();
@@ -1463,15 +1396,19 @@ public class MenuActivity extends Activity implements TrackerListener   {
      * Caller must override onClose for specific actions to happen when aborting sync.
      */
 
-    public class UIProvider {
+    public static class UIProvider {
 
-        public static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6, PROGRESS = 7,SHOW_PROGRESS=8,CLOSE_PROGRESS=9;
+        static final int LOCK =1, UNLOCK=2, ALERT = 3, UPDATE_SUB = 4, CONFIRM = 5, UPDATE = 6, PROGRESS = 7,SHOW_PROGRESS=8,CLOSE_PROGRESS=9;
         private String row1="",row2="";
         private AlertDialog uiBlockerWindow=null;
-        public static final int Destroy_Sync = 1;
         private ProgressDialog progress;
+        private final Context mContext;
 
-        Handler mHandler= new Handler(Looper.getMainLooper()) {
+        UIProvider(Context context) {
+            mContext = context;
+        }
+
+        final Handler mHandler= new Handler(Looper.getMainLooper()) {
             boolean twoButton=false;
 
             private void showProgress(int max) {
@@ -1498,14 +1435,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         .setMessage("Receiving data..standby")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setCancelable(false)
-                        .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                onClose();
-                            }
-                        })
+                        .setNegativeButton(R.string.close, (dialog, which) -> onClose())
                         .show();
                 twoButton=false;
             }
@@ -1517,23 +1447,11 @@ public class MenuActivity extends Activity implements TrackerListener   {
                         .setMessage("Receiving data..standby")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setCancelable(false)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //onClose must be overridden.
-                                onClose();
-                            }
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                            //onClose must be overridden.
+                            onClose();
                         })
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                cb.confirm();
-
-                            }
-                        })
+                        .setPositiveButton(R.string.ok, (dialog, which) -> cb.confirm())
                         .show();
                 twoButton=true;
             }
@@ -1598,12 +1516,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
 
 
         };
-        private Context mContext;
 
-        public UIProvider(Context context) {
-
-            mContext = context;
-        }
 
 
         public void startProgress(int totalRows) {
@@ -1620,7 +1533,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
             msg.sendToTarget();
 
         }
-        public void closeProgress() {
+        void closeProgress() {
             mHandler.obtainMessage(CLOSE_PROGRESS).sendToTarget();
         }
 
@@ -1659,7 +1572,7 @@ public class MenuActivity extends Activity implements TrackerListener   {
         }
 
 
-        public void onClose() {
+        void onClose() {
 
         }
 

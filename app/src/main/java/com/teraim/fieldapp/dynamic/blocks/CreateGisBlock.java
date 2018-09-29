@@ -1,8 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,13 +23,13 @@ import com.teraim.fieldapp.dynamic.workflow_abstracts.Event.EventType;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
-import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataIni;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule;
 import com.teraim.fieldapp.loadermodule.ConfigurationModule.Source;
 import com.teraim.fieldapp.loadermodule.LoadResult;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.PhotoMetaI;
 import com.teraim.fieldapp.loadermodule.WebLoader;
+import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataIni;
 import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataJgw;
 import com.teraim.fieldapp.loadermodule.configurations.AirPhotoMetaDataXML;
 import com.teraim.fieldapp.log.LoggerI;
@@ -44,6 +41,9 @@ import com.teraim.fieldapp.utils.Tools;
 import com.teraim.fieldapp.utils.Tools.Unit;
 import com.teraim.fieldapp.utils.Tools.WebLoaderCb;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CreateGisBlock extends Block {
 
 	/**
@@ -53,17 +53,19 @@ public class CreateGisBlock extends Block {
 	private static final int MAX_NUMBER_OF_PICS = 100;
 	private final String name,source,containerId,N,E,S,W;
 	Unit unit;
-	GlobalState gs;
-	boolean isVisible = false,showHistorical;
+	private GlobalState gs;
+	private boolean isVisible = false;
+    boolean showHistorical;
 	String format;
 
 	private Cutout cutOut=null;
 
 	private WF_Context myContext;
 	private LoggerI o;
-	private boolean hasSatNav,showTeam;
+	private final boolean hasSatNav;
+    private final boolean showTeam;
 	private WF_Gis_Map gis=null;
-	private List<EvalExpr> sourceE;
+	private final List<EvalExpr> sourceE;
 	private int loadCount=0;
 	private boolean aborted=false;
 	private List<MapGisLayer> mapLayers;
@@ -94,9 +96,8 @@ public class CreateGisBlock extends Block {
 
 
 	//Callback after image has loaded.
-	AsyncResumeExecutorI cb;
-	private int imageHeight;
-	private int imageWidth;
+    private AsyncResumeExecutorI cb;
+    private int imageWidth;
 
 
 
@@ -193,11 +194,11 @@ public class CreateGisBlock extends Block {
 		return false;
 	}
 
-	Rect r = null;
-	PhotoMeta photoMetaData;
-	String cachedImgFilePath="";
+	private Rect r = null;
+	private PhotoMeta photoMetaData;
+	private String cachedImgFilePath="";
 
-	public void createAfterLoad(PhotoMeta photoMeta, final String cacheFolder, final String fileName) {
+	private void createAfterLoad(PhotoMeta photoMeta, final String cacheFolder, final String fileName) {
 		this.photoMetaData=photoMeta;
 		cachedImgFilePath = cacheFolder+fileName;
 		final Container myContainer = myContext.getContainer(containerId);
@@ -206,41 +207,37 @@ public class CreateGisBlock extends Block {
 			LayoutInflater li = LayoutInflater.from(myContext.getContext());
 			final FrameLayout mapView = (FrameLayout)li.inflate(R.layout.image_gis_layout, null);
 			final View avstRL = mapView.findViewById(R.id.avstRL);
-
-			r=null;
+			boolean found = false;
+			GisLayer masterLayer = null;
+			for (MapGisLayer layer:mapLayers) {
+				if (layer.isVisible()) {
+					cachedImgFilePath = cacheFolder + layer.getImageName();
+					found = true;
+					Log.d("gurk","layer with name "+layer.getLabel()+" now visible" );
+					break;
+				}
+				if (layer.getLabel().equals(GisConstants.DefaultTag)) {
+					Log.d("gurk","masterlayer found.");
+					masterLayer = layer;
+				}
+			}
+			if (!found) {
+				if (masterLayer!=null) {
+					masterLayer.setVisible(true);
+					Log.d("gurk", "masterlayer is now visible.");
+				} else
+					Log.e("vortex", "no layer with label Def found");
+			}
 
 			if (cutOut==null) {
-				boolean found = false;
-				GisLayer masterLayer = null;
-				for (MapGisLayer layer:mapLayers) {
-					if (layer.isVisible()) {
-						cachedImgFilePath = cacheFolder + layer.getImageName();
-						found = true;
-						Log.d("gurk","layer with name "+layer.getLabel()+" now visible" );
-						break;
-					}
-					if (layer.getLabel().equals(GisConstants.DefaultTag)) {
-						Log.d("gurk","masterlayer found.");
-						masterLayer = layer;
-					}
-				}
-				if (!found) {
-					if (masterLayer!=null) {
-						masterLayer.setVisible(true);
-						Log.d("gurk", "masterlayer is now visible.");
-					} else
-						Log.e("vortex", "no layer with label Def found");
-				}
 
 				BitmapFactory.Options options = new BitmapFactory.Options();
 				options.inJustDecodeBounds = true;
 				BitmapFactory.decodeFile(cachedImgFilePath, options);
-				imageHeight = options.outHeight;
+                int imageHeight = options.outHeight;
 				imageWidth = options.outWidth;
-				Log.d("vortex","image rect h w is "+imageHeight+","+imageWidth);
-
-				r = new Rect(0,0,imageWidth,imageHeight);
-
+				Log.d("vortex","image rect h w is "+ imageHeight +","+imageWidth);
+				r = new Rect(0,0,imageWidth, imageHeight);
 			} else {
 				Log.d("vortex","This is a cutout!");
 				r = cutOut.r;
@@ -392,7 +389,7 @@ public class CreateGisBlock extends Block {
 
 	//Reloads current flow with a new viewport.
 	//Cache for layers.
-	List<GisLayer> myLayers=null;
+    private List<GisLayer> myLayers=null;
 
 	public void setCutOut(Rect r, List<Location> geoR, List<GisLayer> myLayers) {
 		cutOut = new Cutout();
@@ -401,7 +398,7 @@ public class CreateGisBlock extends Block {
 		this.myLayers = myLayers;
 	}
 
-	public String server(String serverUrl) {
+	private String server(String serverUrl) {
 		if (!serverUrl.endsWith("/"))
 			serverUrl+="/";
 		if (!serverUrl.startsWith("http://"))

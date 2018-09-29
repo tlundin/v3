@@ -1,5 +1,16 @@
 package com.teraim.fieldapp.non_generics;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.Delyta;
+import com.teraim.fieldapp.dynamic.types.Segment;
+import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.types.VariableCache;
+import com.teraim.fieldapp.utils.DbHelper;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -10,20 +21,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.dynamic.types.DB_Context;
-import com.teraim.fieldapp.dynamic.types.Delyta;
-import com.teraim.fieldapp.dynamic.types.Segment;
-import com.teraim.fieldapp.dynamic.types.VariableCache;
-import com.teraim.fieldapp.dynamic.types.Variable;
-import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.utils.DbHelper;
-import com.teraim.fieldapp.utils.Tools;
-
 
 //SLU specific class.
 
@@ -32,11 +29,11 @@ import com.teraim.fieldapp.utils.Tools;
 public class DelyteManager {
 
 	private static DelyteManager instance;
-	boolean hasUnsaved = false;
-	GlobalState gs;
-	VariableConfiguration al;
-	VariableCache varCache;
-	private List<Delyta> myDelytor = new ArrayList<Delyta>();
+	private boolean hasUnsaved = false;
+	private final GlobalState gs;
+	private final VariableConfiguration al;
+	private final VariableCache varCache;
+	private final List<Delyta> myDelytor = new ArrayList<Delyta>();
 	private static int myPyID;
 	private List<Segment> answer;
 	private final static float r = 100;
@@ -47,9 +44,10 @@ public class DelyteManager {
 
 	//helper classes
 	public static class Coord {
-		public float x;
-		public float y;	
-		public  float avst,rikt;
+		public final float x;
+		public final float y;
+		public final float avst;
+		public float rikt;
 		private final static float r = 100;
 		public Coord(int avst,int rikt) {
 			int riktC = rikt-90;
@@ -305,7 +303,7 @@ public class DelyteManager {
 	}
 
 
-	public void calcRemainingYta() {
+	private void calcRemainingYta() {
 		List<Segment> freeArcs = new ArrayList<Segment>();
 		List<Segment> bgPoly;
 
@@ -442,8 +440,7 @@ public class DelyteManager {
 			Segment currentP = it.next();
 			if (isTouching(lastP,currentP)) {
 				Log.d("vortex","YES!");
-				List<Segment>altPoly = new ArrayList<Segment>();
-				altPoly.addAll(bgPoly);
+				List<Segment> altPoly = new ArrayList<Segment>(bgPoly);
 				altPoly.add(currentP);
 				List<Segment>altFreeArcs = new ArrayList<Segment>();
 				altFreeArcs.addAll(freeArcs);
@@ -818,7 +815,7 @@ public class DelyteManager {
 	}
 
 
-	public Delyta createDelyta(String[] tagElems) {								
+	private Delyta createDelyta(String[] tagElems) {
 		if (tagElems!=null) {
 			for (String s:tagElems) {
 				Log.d("nils","tagElem: "+s);

@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -11,7 +10,6 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
 import org.achartengine.chart.BarChart;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
@@ -25,11 +23,15 @@ import org.achartengine.renderer.XYSeriesRenderer;
 public class BarChartBlock extends ChartBlock {
 
     private static final long serialVersionUID = 4030652478782165890L;
-    String label, container,name;
+    private final String label;
+    private final String container;
+    private final String name;
 
-    boolean displayValues=true,isVisible=true;
-    int height,width;
-    float textSize;
+    private boolean displayValues=true;
+    private boolean isVisible=true;
+    private final int height;
+    private final int width;
+    private final float textSize;
     private WF_Widget myWidget;
     private CategorySeries distributionSeries;
     private int lineWidth = 2;
@@ -61,7 +63,7 @@ public class BarChartBlock extends ChartBlock {
         Log.d("vortex","height"+height);
     }
 
-    private String[] mMonth = new String[] {
+    private final String[] mMonth = new String[] {
             "Jan", "Feb" , "Mar", "Apr", "May", "Jun",
             "Jul", "Aug" , "Sep", "Oct", "Nov", "Dec"
     };

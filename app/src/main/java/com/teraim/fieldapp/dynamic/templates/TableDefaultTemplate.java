@@ -1,10 +1,5 @@
 package com.teraim.fieldapp.dynamic.templates;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +15,12 @@ import com.teraim.fieldapp.dynamic.Executor;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_List;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Static_List;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithValue_Filter;
-import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_OnlyWithoutValue_Filter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -40,7 +37,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 	private LinearLayout my_root,displayPanel,tablePanel,filterPanel,filterPop,filterC1,filterC2,filterC3,filterC4;
 	private View filterC1o,filterC2o,filterC3o,filterC4o;
 	private FrameLayout frame;
-	Map<String,Boolean> popupVisible=null;
+	private Map<String,Boolean> popupVisible=null;
 	private Animation popupShow;
 	private Animation popupHide;
 	private boolean animationRunning=false;
@@ -72,20 +69,20 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		this.inflater = inflater;
 		View v = inflater.inflate(R.layout.template_table_default, container, false);
 //		errorView = (TextView)v.findViewById(R.id.errortext);
-		frame = (FrameLayout)v.findViewById(R.id.frame);
-		my_root = (LinearLayout)v.findViewById(R.id.myRoot);
-		displayPanel = (LinearLayout)v.findViewById(R.id.displayPanel);
-		tablePanel = (LinearLayout)v.findViewById(R.id.myTable);
-		filterPanel = (LinearLayout)v.findViewById(R.id.filterPanel);
+		frame = v.findViewById(R.id.frame);
+		my_root = v.findViewById(R.id.myRoot);
+		displayPanel = v.findViewById(R.id.displayPanel);
+		tablePanel = v.findViewById(R.id.myTable);
+		filterPanel = v.findViewById(R.id.filterPanel);
 
 		filterC1o = inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC2o = inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC3o = inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC4o = inflater.inflate(R.layout.filter_pop_inner,null);
-		filterC1 = (LinearLayout)filterC1o.findViewById(R.id.inner);
-		filterC2 = (LinearLayout)filterC2o.findViewById(R.id.inner);
-		filterC3 = (LinearLayout)filterC3o.findViewById(R.id.inner);
-		filterC4 = (LinearLayout)filterC4o.findViewById(R.id.inner);
+		filterC1 = filterC1o.findViewById(R.id.inner);
+		filterC2 = filterC2o.findViewById(R.id.inner);
+		filterC3 = filterC3o.findViewById(R.id.inner);
+		filterC4 = filterC4o.findViewById(R.id.inner);
 		myContext.addContainers(getContainers());
 
 		/*Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -188,7 +185,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 	return true;
 	}
 
-	Filter f = new WF_OnlyWithValue_Filter("_filter");
+	private final Filter f = new WF_OnlyWithValue_Filter("_filter");
 	private boolean toggleStateH = true;
 
 	private void showEdited(String target) {
@@ -245,7 +242,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 	}
 
-	public void closePopIfUp() {
+	private void closePopIfUp() {
 		if (!popupVisible.isEmpty()) {
 			filterPop.startAnimation(popupHide);
 		}

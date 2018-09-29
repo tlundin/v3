@@ -98,5 +98,6 @@
 	<string name="_continue">"Fortsätt"</string>
 	<string name="old_xml_message">"FieldPad versionen du har installerad är för gammal för att köra det här programmet. Du borde installera version "</string>
 	<string name="warning">Varning</string>
-	<string name="old_xml_message_cont">". Om du väljer att fortsätta laddas en äldre version, men det finns risk för fel."</string>>
+	<string name="old_xml_message_cont">". Om du väljer att fortsätta laddas en äldre version, men det finns risk för fel."</string>
+	<string name="none">Ingen bakgrund</string>>
 </resources>

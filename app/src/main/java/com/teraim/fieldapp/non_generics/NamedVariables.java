@@ -48,7 +48,7 @@ public class NamedVariables {
 
 	public static final String NO_OF_AVSLUTADE = "noOfAvslutade";
 	public static final String DELNINGSTAG = "Delningstag";
-	public static final String RUTA_KLAR_ANVÄNDARE = "RutaKlarAvAnvandare";
+	public static final String RUTA_KLAR_AV_ANVANDARE = "RutaKlarAvAnvandare";
 	public static final String FOTO_KOMMENTAR = "FotoKommentar";
 	
 	//FLÖDEN SOM OMNÄMNS

@@ -2,10 +2,10 @@ package com.teraim.fieldapp.dynamic.types;
 
 public class ColumnDescriptor {
 
-	public String colName;
-	public boolean isEditable;
-	public boolean isHeader;
-	public boolean isOutput;
+	public final String colName;
+	private final boolean isEditable;
+	public final boolean isHeader;
+	private final boolean isOutput;
 	
 	public ColumnDescriptor(String name, boolean canEdit, boolean isHeader, boolean isOutput) {
 		this.colName=name;

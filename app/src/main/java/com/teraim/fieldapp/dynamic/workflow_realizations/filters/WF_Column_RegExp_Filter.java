@@ -1,22 +1,20 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.filters;
 
-import java.util.Iterator;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
-import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter.FilterType;
+
+import java.util.Iterator;
+import java.util.List;
 
 //Specialized filter. Will filter a list on entries in column matching Regexp
 
 public class WF_Column_RegExp_Filter extends WF_Filter {
 
-	String regularExpression = "";
+	private String regularExpression = "";
 	String filterColumn;
-	private String columnToMatch;
+	private final String columnToMatch;
 
 
 

@@ -1,5 +1,5 @@
 package com.teraim.fieldapp.exceptions;
 
-public class ParseException extends Exception {
+class ParseException extends Exception {
 
 }

@@ -1,18 +1,18 @@
 package com.teraim.fieldapp.loadermodule;
 
-import java.io.IOException;
+import com.teraim.fieldapp.log.LoggerI;
+import com.teraim.fieldapp.utils.PersistenceHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.utils.PersistenceHelper;
+import java.io.IOException;
 
 public abstract class XMLConfigurationModule extends ConfigurationModule {
 
 	
-	public XMLConfigurationModule(PersistenceHelper gPh,PersistenceHelper ph,
-			Source source, String urlOrPath, String fileName, String moduleName) {
+	protected XMLConfigurationModule(PersistenceHelper gPh, PersistenceHelper ph,
+                                     Source source, String urlOrPath, String fileName, String moduleName) {
 		super(gPh,ph, Type.xml, source, urlOrPath, fileName, moduleName);
 	}
 	protected abstract LoadResult prepare(XmlPullParser parser) throws XmlPullParserException, IOException;

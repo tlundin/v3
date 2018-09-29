@@ -1,16 +1,16 @@
 package com.teraim.fieldapp.ui;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import java.util.List;
+
 public class DrawerMenuAdapter extends ArrayAdapter<DrawerMenuItem> {
 
-	private LayoutInflater mInflater;
+	private final LayoutInflater mInflater;
 
 	public enum RowType {
 		LIST_ITEM, HEADER_ITEM

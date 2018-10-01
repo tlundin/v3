@@ -13,8 +13,7 @@ import java.util.Map;
 
 public class CSVExporter extends Exporter {
 
-	private StringWriter sw;
-	private int varC=0;
+    private int varC=0;
 
 
 	public CSVExporter(Context ctx) {
@@ -25,7 +24,7 @@ public class CSVExporter extends Exporter {
 
 	@Override
 	public Report writeVariables(DBColumnPicker cp) {
-		sw = new StringWriter();
+        StringWriter sw = new StringWriter();
 
 		try {
 			if (cp.moveToFirst()) {
@@ -35,20 +34,20 @@ public class CSVExporter extends Exporter {
 				Log.d("vortex","Exporting csv");
 
 
-				String header="";
+				StringBuilder header= new StringBuilder();
 				for (String key: currentKeys.keySet()) {
-					header+=key+",";
+					header.append(key).append(",");
 				}
-				header+="name,";
-				header+="value,";
-				header+="type,";
-				header+="team,";
-				header+="author,";
-				header+="timestamp";
+				header.append("name,");
+				header.append("value,");
+				header.append("type,");
+				header.append("team,");
+				header.append("author,");
+				header.append("timestamp");
 
 
-				Log.d("vortex",header);
-				sw.write(header);
+				Log.d("vortex", header.toString());
+				sw.write(header.toString());
 				sw.append(System.getProperty("line.separator"));
 				String row,value,var;
 				

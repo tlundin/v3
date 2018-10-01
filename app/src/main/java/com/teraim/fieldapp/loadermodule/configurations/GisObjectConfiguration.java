@@ -36,10 +36,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     private final DbHelper myDb;
     private final List<GisObject> myGisObjects = new ArrayList<GisObject>();
     private String myType;
-    private final boolean generatedUID = false;
     private final Table varTable;
     private boolean isDebug = false;
-    private final List<String>requiredAttributes = new ArrayList<>();
 
 
     public GisObjectConfiguration(PersistenceHelper globalPh, PersistenceHelper ph, Source source, String fileLocation, String fileName, LoggerI debugConsole, DbHelper myDb, Table t) {
@@ -56,6 +54,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
         }
         varTable = t;
         isDebug = globalPh.getB(PersistenceHelper.DEVELOPER_SWITCH);
+        List<String> requiredAttributes = new ArrayList<>();
         requiredAttributes.clear();
         if (isDebug) {
             requiredAttributes.add(GisConstants.RutaID);
@@ -443,7 +442,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     }
 
 
-    private List<Location> readAllLocations(JsonReader reader) {
+    private List readAllLocations(JsonReader reader) {
         List myLocation = new ArrayList<Location>();
         try {
             while (!reader.peek().equals(JsonToken.END_ARRAY)) {
@@ -496,6 +495,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
         if (firstCall) {
             missingVariables=new HashSet<String>();
 
+            boolean generatedUID = false;
             if (generatedUID) {
                 o.addRow("");
                 o.addYellowText("At least one row in file "+fileName+" did not contain FixedGID (UUID). Generated value will be used");

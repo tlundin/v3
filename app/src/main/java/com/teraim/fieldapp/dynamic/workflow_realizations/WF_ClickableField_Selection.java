@@ -9,16 +9,14 @@ import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 public class WF_ClickableField_Selection extends WF_ClickableField {
 
 
-	private final DisplayFieldBlock format;
-
-	@SuppressWarnings("WrongConstant")
+    @SuppressWarnings("WrongConstant")
 	public WF_ClickableField_Selection(String headerT, String descriptionT,
 									   WF_Context context, String id, boolean isVisible, DisplayFieldBlock format) {
 		super(headerT,descriptionT, context, id,
 				LayoutInflater.from(context.getContext()).inflate(format.isHorisontal()?R.layout.selection_field_normal_horizontal:R.layout.selection_field_normal_vertical,null),
 				isVisible,format);
 
-		this.format = format;
+        DisplayFieldBlock format1 = format;
 	}
 
 

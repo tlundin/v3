@@ -25,10 +25,8 @@ public class FlingAnimation implements Animation {
 	private float velocityY;
 	
 	private float factor = 0.80f;
-	
-	private final float threshold = 10;
-	
-	private FlingAnimationListener listener;
+
+    private FlingAnimationListener listener;
 	
 	/* (non-Javadoc)
 	 * @see com.polites.android.Transformer#update(com.polites.android.GestureImageView, long)
@@ -42,8 +40,9 @@ public class FlingAnimation implements Animation {
 		
 		velocityX *= factor;
 		velocityY *= factor;
-		
-		boolean active = (Math.abs(velocityX) > threshold && Math.abs(velocityY) > threshold);
+
+        float threshold = 10;
+        boolean active = (Math.abs(velocityX) > threshold && Math.abs(velocityY) > threshold);
 		
 		if(listener != null) {
 			listener.onMove(dx, dy);

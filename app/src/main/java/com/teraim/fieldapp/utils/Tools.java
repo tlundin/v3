@@ -724,9 +724,9 @@ public class Tools {
 									o.addRedText("The variable "+keyPair[1]+" used for dynamic list "+variable.getLabel()+" is not returning a value");
 								}
 							} else {
-								Log.d("nils","Keypair error: "+keyPair);
+								Log.d("nils","Keypair error: "+ Arrays.toString(keyPair));
 								o.addRow("");
-								o.addRedText("Keypair referenced in List definition for variable "+variable.getLabel()+" cannot be read: "+keyPair);
+								o.addRedText("Keypair referenced in List definition for variable "+variable.getLabel()+" cannot be read: "+ Arrays.toString(keyPair));
 							}
 						}
 
@@ -1211,7 +1211,7 @@ public class Tools {
 			}
 		}
 		if (o==null)
-			Log.d("vortex","returning null in bytestoobject for "+inB+" with l "+inB.length+" inBS "+inB.toString());
+			Log.d("vortex","returning null in bytestoobject for "+ Arrays.toString(inB) +" with l "+inB.length+" inBS "+ Arrays.toString(inB));
 		return o;
 	}
 
@@ -1224,6 +1224,21 @@ public class Tools {
 		}
 		return String.format("%1$-" + length + "s", string);
 		//return String.format("%1$"+length+ "s", string);
+	}
+
+	public static String server(String serverUrl) {
+		assert serverUrl != null;
+		if (!serverUrl.matches("^(https?)://.*$"))
+			if (serverUrl.length() < 4)
+				serverUrl = Constants.DEFAULT_SERVER_URI;
+			else {
+				serverUrl = "http://" + serverUrl;
+
+
+			}
+		if (!serverUrl.endsWith("/"))
+			serverUrl += "/";
+		return serverUrl;
 	}
 
 }

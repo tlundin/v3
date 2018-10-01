@@ -76,18 +76,14 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
     private EditText meterEnEd;
     private String currentLinje;
     private String currentYear;
-    private String currentRuta;
-    private LinearLayout aggregatePanel, fieldList, selectedPanel, numTmp, fieldListB;
+    private LinearLayout numTmp;
+    private LinearLayout fieldListB;
 
     private Linje linje;
     private RelativeLayout intervallL;
-    private Button startB, stopB;
-    private FrameLayout linjeF;
+    private Button startB;
     private TextView gpsView;
-    private WF_Container root;
     private Spinner avgrSp;
-
-    private Map<String, String> linjeKey;
 
     private final static String LinjePortalId = "LinjePortalTemplate";
 
@@ -96,7 +92,6 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
     private LocationManager lm;
     private Variable linjeStatus, linjeStartEast, linjeStartNorth;
     private String[] avgrValueA;
-    private double[] coords;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -111,16 +106,16 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
         //Listen to LinjeStarted and LinjeDone events.
         myContext.registerEventListener(this, EventType.onBluetoothMessageReceived);
         View v = inflater.inflate(R.layout.template_linje_portal_wf, container, false);
-        root = new WF_Container("root", v.findViewById(R.id.root), null);
-        aggregatePanel = v.findViewById(R.id.aggregates);
-        fieldList = v.findViewById(R.id.fieldList);
+        WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
+        LinearLayout aggregatePanel = v.findViewById(R.id.aggregates);
+        LinearLayout fieldList = v.findViewById(R.id.fieldList);
         fieldListB = fieldList.findViewById(R.id.fieldListB);
         //ListView selectedList = (ListView)v.findViewById(R.id.SelectedL);
-        selectedPanel = v.findViewById(R.id.selected);
+        LinearLayout selectedPanel = v.findViewById(R.id.selected);
 
         lm = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        stopB = new Button(this.getActivity());
+        Button stopB = new Button(this.getActivity());
         startB = fieldList.findViewById(R.id.startB);
 
         varCache = gs.getVariableCache();
@@ -132,7 +127,7 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
         Variable currentRutaV = varCache.getVariable("Current_Ruta");
 
         currentLinje = myContext.getKeyHash().get("uid");
-        currentRuta = myContext.getKeyHash().get("trakt");
+        String currentRuta = myContext.getKeyHash().get("trakt");
         currentYear = "2018";
         //Find out the line start coordinates (east, north)
         double east, north;
@@ -140,7 +135,7 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
         if (gpsCoordV.getValue() != null) {
             String[] tmp = gpsCoordV.getValue().split(",");
             int i = 0;
-            coords = new double[tmp.length];
+            double[] coords = new double[tmp.length];
             for (String coord : tmp) {
                 //coords contains the coordinates now.
                 coords[i++] = Double.parseDouble(coord);
@@ -155,7 +150,7 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
         Log.d("nils", "Current Linje is " + currentLinje);
 
 
-        linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "trakt", currentRuta, "linje", currentLinje);
+        Map<String, String> linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "trakt", currentRuta, "linje", currentLinje);
 
         linjeStatus = varCache.getVariable(myContext.getKeyHash(), NamedVariables.STATUS_TRANSEKT);
 
@@ -218,7 +213,7 @@ public class LineMapTemplate extends Executor implements LocationListener, Event
         ArrayAdapter<String> sara = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, avgrTyper);
         avgrSp.setAdapter(sara);
 
-        linjeF = filterPanel.findViewById(R.id.linje);
+        FrameLayout linjeF = filterPanel.findViewById(R.id.linje);
 
         linje = new Linje(getActivity(), ("N"));
 
@@ -768,10 +763,10 @@ enum Linjetyp {
 	private static final String ticker = "       ...Väntar på GPS...        ";
 
 
-	private final int tStrLen = 10;
     private int curPos=0;
 	private void updateStatus() {
-		int end = curPos+tStrLen;
+        int tStrLen = 10;
+        int end = curPos+ tStrLen;
 		if (end>ticker.length())
 			end = ticker.length();
 		if (curPos==ticker.length()) {
@@ -796,12 +791,12 @@ enum Linjetyp {
 
 	}
 	private Handler mHandler;
-	private final int mInterval = 250;
-	private final Runnable mStatusChecker = new Runnable() {
+    private final Runnable mStatusChecker = new Runnable() {
 		@Override
 		public void run() {
 			updateStatus(); //this function can change value of mInterval.
-			mHandler.postDelayed(mStatusChecker, mInterval);
+            int mInterval = 250;
+            mHandler.postDelayed(mStatusChecker, mInterval);
 		}
 	};
 

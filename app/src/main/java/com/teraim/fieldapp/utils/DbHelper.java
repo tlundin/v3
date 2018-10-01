@@ -208,8 +208,6 @@ public class DbHelper extends SQLiteOpenHelper {
         return myNewKeyHash;
     }
 
-
-
     public class LocationAndTimeStamp {
         public final boolean old;
         public final Location location;
@@ -303,7 +301,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    private SQLiteDatabase db() {
+    public SQLiteDatabase db() {
         if (db == null || !db.isOpen())
          db = this.getWritableDatabase();
         return db;
@@ -394,19 +392,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
-    public void saveTimeStamp(String team,long ts) {
-        Log.d("antrax","Saving timestamp "+ts+ "for team "+team);
-        db().execSQL("insert into variabler (lag,var,value) values ('"+team+"','timestamp_from_me_to_team','"+ts+"')");
-    }
 
-    private Long getTimeStamp(String team) {
-        Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,"timestamp_from_me_to_team"});
-        if (c.getCount() != 0) {
-            c.moveToFirst();
-            return c.getLong(0);
-        }
-        return 0L;
-    }
 
     public boolean fixdoublets() {
             Log.d("markus", "repairing...");
@@ -2860,13 +2846,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
             }
         }
-
-
-
-
-
         endTransactionSuccess();
-
         Log.d("berokk","STATS:");
         Log.d("berokk","inserts: "+ sr.inserts);
         Log.d("berokk","insertArrays: "+ sr.insertsArray);
@@ -2880,6 +2860,34 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
+
+    public Long getTimeStampFromTeamToMe(String team) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team);
+    }
+    public void saveTimeStampFromTeamToMe(String team,long ts) {
+        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team,ts);
+    }
+    public Long getTimeStampFromMeToTeam(String team) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team);
+    }
+    public void saveTimeStampFromMeToTeam(String team,long ts) {
+        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team,ts);
+    }
+
+    private void saveSyncTimestamp(String timeStampLabel, String team,long ts) {
+        Log.d("antrax","Saving timestamp "+ts+ "for team "+team);
+        db().execSQL("insert into variabler (lag,var,value) values (?,?,?)",new String[]{team,timeStampLabel,Long.toString(ts)});
+    }
+
+    private Long getSyncTimestamp(String timeStampLabel,String team) {
+        Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,timeStampLabel});
+        if (c.getCount() != 0) {
+            c.moveToFirst();
+            return c.getLong(0);
+        }
+        Log.e("vortex","failed to find team timestamp...returning 0");
+        return 0L;
+    }
 
 
 }

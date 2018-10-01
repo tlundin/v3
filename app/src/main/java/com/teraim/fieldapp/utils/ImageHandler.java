@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -23,14 +24,12 @@ import java.io.File;
 
 public class ImageHandler {
 
-	private final Fragment c;
-	private final GlobalState gs;
-	private final VariableConfiguration al;
+	private final Fragment fragment;
+    private final VariableConfiguration al;
 
-	public ImageHandler(GlobalState gs, Fragment a) {
-		c = a;
-
-		this.gs = gs;
+	public ImageHandler(GlobalState gs, Fragment _fragment) {
+		fragment = _fragment;
+        GlobalState gs1 = gs;
 		this.al = gs.getVariableConfiguration();
 	}
 
@@ -98,7 +97,7 @@ public class ImageHandler {
 			Log.d("nils", "realW realH"+realW+" "+realH);
 
 			//Find out screen size.
-			Display display = c.getActivity().getWindowManager().getDefaultDisplay();
+			Display display = fragment.getActivity().getWindowManager().getDefaultDisplay();
 			Point size = new Point();
 			display.getSize(size);
 			int sWidth = size.x;
@@ -152,20 +151,26 @@ public class ImageHandler {
 				String fileName = createFileName(name,false);
 
 				//String fileName = "R00al.getCurrentRuta()
-				//Toast.makeText(c.getActivity(),
+				//Toast.makeText(fragment.getActivity(),
 				//		"pic" + name + " selected",
 				//		Toast.LENGTH_SHORT).show();
+				currSaving=name;
 
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				File photoFile = new File(Constants.PIC_ROOT_DIR, fileName);
+				if (intent.resolveActivity(fragment.getActivity().getPackageManager()) != null) {
+					// Create the File where the photo should go
+					photoFile = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
 
-				File file = new File(Constants.PIC_ROOT_DIR, fileName);
-
-				currSaving=name;
-				Uri outputFileUri = Uri.fromFile(file);
-
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-				//				intent.putExtra(Strand.KEY_PIC_NAME, name);
-				c.startActivityForResult(intent, Constants.TAKE_PICTURE);
+					// Continue only if the File was successfully created
+					if (photoFile != null) {
+						Uri photoURI = FileProvider.getUriForFile(fragment.getContext(),
+								"com.teraim.fieldapp.fileprovider",
+								photoFile);
+						intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+						fragment.getActivity().startActivityForResult(intent, Constants.TAKE_PICTURE);
+					}
+				}
 
 			}
 
@@ -187,7 +192,7 @@ public class ImageHandler {
 	}
 
 	private void displayErrorMsg() {
-		new AlertDialog.Builder(c.getActivity())
+		new AlertDialog.Builder(fragment.getActivity())
 		.setTitle("Ingen ruta/provyta vald")
 		.setMessage("För att spara och visa bilder måste först ruta och provyta väljas")
 		.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

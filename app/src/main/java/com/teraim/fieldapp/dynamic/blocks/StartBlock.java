@@ -18,13 +18,12 @@ public  class StartBlock extends Block {
 	private static final long serialVersionUID = -6860379561128690656L;
 	final private String workflowName;
 	final private String[] args;
-	private final String context;
-	private List<EvalExpr> contextE=null;
+    private List<EvalExpr> contextE=null;
 
 	public StartBlock(String id,String[] args,String wfn, String context) {
 		workflowName = wfn;
 		this.args = args;
-		this.context = context;
+        String context1 = context;
 		this.blockId=id;
 		if (context !=null)
 			contextE = preCompileExpression(context);

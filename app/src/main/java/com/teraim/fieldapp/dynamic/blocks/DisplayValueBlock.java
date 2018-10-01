@@ -19,9 +19,8 @@ public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerat
 	private final String format;
 	private boolean isVisible = false;
 	private final Unit unit;
-	private GlobalState gs;
-	
-	public DisplayValueBlock(String id,String namn, String label,Unit unit,
+
+    public DisplayValueBlock(String id,String namn, String label,Unit unit,
 			String formula, String containerId,boolean isVisible,String format,String textColor,String bgColor,String verticalFormat,String verticalMargin ) {
 		super(textColor,bgColor,verticalFormat,verticalMargin);
 		this.blockId=id;
@@ -36,8 +35,8 @@ public class DisplayValueBlock extends DisplayFieldBlock implements EventGenerat
 	}
 
 	public void create(final WF_Context myContext) {
-		gs = GlobalState.getInstance();
-		o=gs.getLogger();
+        GlobalState gs = GlobalState.getInstance();
+		o= gs.getLogger();
 		Container myContainer = myContext.getContainer(containerId);
 		if (myContainer != null) {
 		

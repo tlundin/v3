@@ -26,8 +26,7 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
     String textColor;
     String backgroundColor;
 	private final int min,max;
-	private GlobalState gs;
-	private boolean isVisible = false;
+    private boolean isVisible = false;
     private final boolean showHistorical;
     boolean autoOpenSpinner=true;
 
@@ -72,12 +71,12 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 	}
 
 	public Variable create(WF_Context myContext) {
-		gs = GlobalState.getInstance();
+        GlobalState gs = GlobalState.getInstance();
 		Container myContainer = myContext.getContainer(containerId);
 		o = gs.getLogger();
 		if(myContainer !=null) {
 			VariableConfiguration al = gs.getVariableConfiguration();
-			Log.d("vortex","In slider create with hash: "+gs.getVariableCache().getContext());
+			Log.d("vortex","In slider create with hash: "+ gs.getVariableCache().getContext());
 			Variable v = gs.getVariableCache().getVariable(variableName,initialValue,-1);
 			if (v == null) {
 				o.addRow("");
@@ -86,7 +85,7 @@ public class CreateSliderEntryFieldBlock extends DisplayFieldBlock {
 				o.addRow("");
 				o.addRedText("Variable ["+variableName+"] referenced in block_create_slider_entry_field "+this.getBlockId()+" not found.");
 				o.addRow("");
-				o.addRedText("Current context: ["+gs.getVariableCache().getContext()+"]");
+				o.addRedText("Current context: ["+ gs.getVariableCache().getContext()+"]");
 			} else {
 				if (v.getType()!= Variable.DataType.numeric ) {
 					Log.d("vortex","variable "+variableName+" is not numeric in create_slider.");

@@ -13,6 +13,7 @@ import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,8 +37,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 	//Removed myVar 2.07.15
 	//protected Variable myVar;
 	protected abstract LinearLayout getFieldLayout();
-	private final TextView myHeader;
-	private String entryFieldAuthor = null;
+
+    private String entryFieldAuthor = null;
 	int backgroundColor=Color.TRANSPARENT;
 
 	//	public abstract String getFormattedText(Variable varId, String value);
@@ -81,7 +82,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 
 		this.myContext = myContext;
-		myHeader = getWidget().findViewById(R.id.editfieldtext);
+        TextView myHeader = getWidget().findViewById(R.id.editfieldtext);
 		outputContainer = getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
 		//Log.d("taxx","variable label: "+label+" variable ID: "+id);
@@ -193,7 +194,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			if (variable.getType() != Variable.DataType.bool) {
 
 				if (outC instanceof OutSpin) {
-					Log.d("bort","gets here. "+((OutSpin)outC).opt);
+					Log.d("bort","gets here. "+ Arrays.toString(((OutSpin) outC).opt));
 					outS = value;
 					OutSpin os = ((OutSpin)outC);
 					if (os.opt!=null && os.val!=null)						

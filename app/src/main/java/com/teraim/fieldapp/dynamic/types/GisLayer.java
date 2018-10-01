@@ -54,9 +54,11 @@ public class GisLayer {
 		int persistedVisibility = (GlobalState.getInstance()!=null?GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId()):-1);
 		if (persistedVisibility == -1)
 			myVisibility = isVisible;
-		else
+		else {
+			Log.d("zaza","PERSISTED: "+persistedVisibility);
 			//a value of 1 means the layer is visible. 0 invisible.
-			myVisibility = (persistedVisibility==1);
+			myVisibility = (persistedVisibility == 1);
+		}
 
 	}
 
@@ -271,7 +273,7 @@ public class GisLayer {
 					//Log.d("brakka","Useful: "+ gob.getLabel()+" key: "+gob.getKeyHash());
 					c++;
 				} else {
-                    Log.d("brakka","Useless: "+ gob.getLabel()+" key: "+gob.getKeyHash());
+                  Log.d("brakka","Useless: "+gob.getKeyHash());
                 }
 
 			}

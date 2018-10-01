@@ -2,6 +2,7 @@ package com.teraim.fieldapp.synchronization.framework;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.os.Messenger;
 import android.util.Log;
 
 import com.teraim.fieldapp.Start;
+import com.teraim.fieldapp.non_generics.Constants;
 
 /**
  * Define a Service that returns an IBinder for the
@@ -17,7 +19,7 @@ import com.teraim.fieldapp.Start;
  */
 public class SyncService extends Service {
 
-    // Storage for an instance of the sync adapter
+	// Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
@@ -29,20 +31,19 @@ public class SyncService extends Service {
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_SYNC_ERROR_STATE = 2;
 	public static final int MSG_SYNC_REQUEST_DB_LOCK = 3;
-	public static final int MSG_SYNC_RELEASE_DB = 4;
+	public static final int MSG_SYNC_DATA_READY_FOR_INSERT = 4;
 	public static final int MSG_DATA_SAFELY_STORED = 5;
 	public static final int MSG_DATABASE_LOCK_GRANTED = 6;
 	public static final int MSG_SYNC_STARTED = 7;
-	public static final int MSG_DEVICE_IN_SYNC = 8;
+	public static final int MSG_NO_NEW_DATA_FROM_TEAM_TO_ME = 8;
 	public static final int MSG_USER_STOPPED_SYNC = 9;
 	public static final int MSG_SYNC_DATA_ARRIVING = 10;
 	public static final int MSG_START_SYNC = 11;
 	public static final int MSG_SERVER_READ_MY_DATA = 12;
+	public static final int MSG_ALL_SYNCED = 13;
+
 
 	public static final int ERR_UNKNOWN = 0;
-	public static final int ERR_NOT_READY = 1;
-	public static final int ERR_SYNC_BUSY = 2;
-	public static final int ERR_NOT_INTERNET_SYNC = 3;
 	public static final int ERR_SETTINGS = 4;
 	public static final int ERR_SERVER_NOT_REACHABLE = 5;
 	public static final int ERR_SERVER_CONN_TIMEOUT = 6;
@@ -51,14 +52,21 @@ public class SyncService extends Service {
 
 
     static class IncomingHandler extends Handler {
-        @Override
+
+
+		@Override
         public void handleMessage(Message msg) {
 
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
                 	Log.d("vortex","received MSG_REGISTER_CLIENT in SyncService");
                     mClient=msg.replyTo;
-                   	sSyncAdapter.setClient(mClient);
+					Bundle appData =((Bundle)msg.obj);
+					long timestamp_from_team_to_me = 	appData.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME);
+					String app = 						appData.getString("app");
+					String team = 						appData.getString("team");
+					String user = 						appData.getString("user");
+                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,app,team,user);
                     break;
                 case MSG_DATABASE_LOCK_GRANTED:
 					Log.d("vortex","Datalock granted. Inserting");
@@ -67,22 +75,15 @@ public class SyncService extends Service {
                 //When data is safely inserted in database, update current time for last update.
                 case MSG_DATA_SAFELY_STORED:
                 	Log.d("vortex","received MSG_SAFELY_STORED in SyncService");
-                	sSyncAdapter.updateCounters();
+                	sSyncAdapter.safely_stored();
                 	//force a new sync event to check for more data.
 					SyncAdapter.forceSyncToHappen();
                 	break;
-                case MSG_SYNC_ERROR_STATE:
-                	Log.d("vortex","received MSG_ERROR in SyncService");
-                	sSyncAdapter.releaseLock();
-                	break;
 				case MSG_USER_STOPPED_SYNC:
+				    sSyncAdapter.lock();
 					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");
 					break;
-				case MSG_START_SYNC:
-					Log.d("baboo","request to start sync");
-					sSyncAdapter.releaseLock();
-					//sSyncAdapter.onPerformSync(null,null,null,null,null);
-					break;
+
                 default:
                     super.handleMessage(msg);
             }
@@ -135,7 +136,6 @@ public class SyncService extends Service {
          * constructors call super()
          */
 
-    	//sSyncAdapter.releaseLock();
     	if (intent.getAction().equals(Start.MESSAGE_ACTION)) {
     		Log.d("vortex","OnBind returning mMessgenger_Binder");
     		return mMessenger.getBinder();
@@ -143,8 +143,8 @@ public class SyncService extends Service {
     	else {
     		Log.d("vortex","In OnBindm returning syncAdapter_Binder");
     		if (mClient!=null) {
-    			Log.e("vortex","myClient is not Null. Setting sSyncAdapter: "+mClient);
-    			sSyncAdapter.setClient(mClient);
+    			Log.e("vortex","myClient exists already.");
+                sSyncAdapter.resetOnResume();
     		}
     		return sSyncAdapter.getSyncAdapterBinder();
     	}

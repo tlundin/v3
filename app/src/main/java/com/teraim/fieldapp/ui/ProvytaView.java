@@ -34,13 +34,10 @@ public class ProvytaView extends View {
 	private final Paint px = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private final Paint pf = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private final Paint pl = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private final Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private final Paint p100 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 
-	private final Paint pSma = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
+    private final Paint pSma = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint pSmaSelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private final Paint pySelected = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private Marker focusMarker;
+    private Marker focusMarker;
 	private String msg = "";
 	private List<Delyta> delytor;
 
@@ -56,7 +53,8 @@ public class ProvytaView extends View {
 		pf.setStrokeWidth(1);
 
 
-		pySelected.setColor(Color.BLACK);
+        Paint pySelected = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        pySelected.setColor(Color.BLACK);
 		pySelected.setStyle(Style.STROKE);
 		pySelected.setStrokeWidth(3);
 
@@ -74,14 +72,16 @@ public class ProvytaView extends View {
 		pl.setTypeface(Typeface.DEFAULT_BOLD); 
 		pl.setTextSize(15);
 
-		p50.setColor(Color.BLUE);
+        Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        p50.setColor(Color.BLUE);
 		p50.setStrokeWidth(2);
 		p50.setStyle(Style.STROKE);
 
-		p50.setTypeface(Typeface.SANS_SERIF); 
+		p50.setTypeface(Typeface.SANS_SERIF);
 
 
-		p100.setColor(Color.BLACK);
+        Paint p100 = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        p100.setColor(Color.BLACK);
 		p100.setStrokeWidth(3);
 		p100.setStyle(Style.STROKE);
 		p100.setTypeface(Typeface.SANS_SERIF); 
@@ -100,14 +100,10 @@ public class ProvytaView extends View {
 
 	final float innerRealRadiusInMeter = 10;
 	final float midRealRadiusInMeter = 50;
-	private final float realRadiusinMeter = 100;
-	float rScaleF=0;
-    private float oScaleF=0;
+    float rScaleF=0;
 
-	private int indicatorLocation = 0;
-
-	public void setIndicatorLocation(int deg) {
-		indicatorLocation = deg;
+    public void setIndicatorLocation(int deg) {
+        int indicatorLocation = deg;
 		Log.d("nils","got "+deg);
 	}
 
@@ -136,26 +132,27 @@ public class ProvytaView extends View {
 		cy = (h/2+margY);//h/2;
 		//tag.lineTo(w-50,0);
 		//Log.d("NILS","w h r"+w+" "+h+" "+r);
-		oScaleF = r/realRadiusinMeter;
+        float realRadiusinMeter = 100;
+        float oScaleF = r / realRadiusinMeter;
 		//A dot in the middle!
 		canvas.drawPoint(cx, cy, p);
 
 		//rita småprovytorna.
 		//28 cm i diameter
 
-		float sr = 2.8f*oScaleF;
+		float sr = 2.8f* oScaleF;
 		Coord c=null;
 		//6 meter ut på 0,120,240
 		int sDists[] = new int[]{30,50,70};
 		for (int i = 0; i<(abo?3:1);i++) {
 			int sDist = sDists[i];
-			c = calc_xy((int)(sDist*oScaleF),0);		
+			c = calc_xy((int)(sDist* oScaleF),0);
 			canvas.drawCircle(cx,cy+c.y,sr,pSma);
 			canvas.drawCircle(cx,cy+c.y,sr,pf);
-			c = calc_xy((int)(sDist*oScaleF),120);
+			c = calc_xy((int)(sDist* oScaleF),120);
 			canvas.drawCircle(cx+c.x,cy+c.y,sr,pSma);
 			canvas.drawCircle(cx+c.x,cy+c.y,sr,pf);
-			c = calc_xy((int)(sDist*oScaleF),240);
+			c = calc_xy((int)(sDist* oScaleF),240);
 			canvas.drawCircle(cx+c.x,cy+c.y,sr,pSma);
 			canvas.drawCircle(cx+c.x,cy+c.y,sr,pf);
 		}
@@ -246,13 +243,11 @@ public class ProvytaView extends View {
 	}
 
 
-	private List<Coord> scords=null;
-
-	private boolean isSelected=false;
+    private boolean isSelected=false;
 
 
 	public void setSpecial(List<Coord> cords) {
-		scords = cords;
+        List<Coord> scords = cords;
 	}
 
 	public void showDistance(int dist) {

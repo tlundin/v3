@@ -7,9 +7,9 @@ import android.util.Log;
 
 import com.teraim.fieldapp.FileLoadedCb;
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.log.LoggerI;
-import com.teraim.fieldapp.log.PassiveLogger;
 import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 
@@ -21,7 +21,6 @@ import static com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode.thawed;
 public class ModuleLoader implements FileLoadedCb{
     private final LoggerI frontPageLog;
     private final Configuration myModules;
-    private final LoggerI o;
     private final LoggerI debug;
     private final ModuleLoaderListener caller;
     private final String loaderId;
@@ -54,7 +53,7 @@ public class ModuleLoader implements FileLoadedCb{
         this.ctx=ctx;
         //boolean that tells if all files already exist frozen.
         this.allFrozen = allFrozen;
-        o = new PassiveLogger(ctx,"PassiveLog");
+
         bundleName = glPh.get(PersistenceHelper.BUNDLE_NAME);
     }
 
@@ -93,8 +92,8 @@ public class ModuleLoader implements FileLoadedCb{
             module = myModules.next();
         }
         if (module != null) {
-            o.addRow("");
-            o.addText(module.getLabel()+" - ");
+            debug.addRow("");
+            debug.addCriticalText(module.getLabel()+" - ");
             frontPageLog.addRow("Loading " + module.getLabel());
             frontPageLog.draw();
             Log.d("amazon", module.getLabel() + " :");
@@ -104,6 +103,7 @@ public class ModuleLoader implements FileLoadedCb{
 
             //All already loaded and no major update?
             Log.d("beboop","allfrozen: "+allFrozen+" majorupdated: "+majorVersionUpdated);
+
             if (!forced && !detailed && allFrozen && !majorVersionUpdated) {
                 Log.d("beboop","allfrozen and major not updated and not forced and not detailed");
                 onFileLoaded(new LoadResult(module, ErrorCode.sameold));
@@ -115,12 +115,13 @@ public class ModuleLoader implements FileLoadedCb{
                     Log.d("vortex", "no network");
                     if (module.thaw(this)) {
                         thawed(module, new LoadResult(module, thawed));
+                        _loadModules();
                     } else {
                         Log.d("nonet", "thawing started " + module.getLabel());
 
                     }
                 } else {
-                    failAndExitLoad(module,new LoadResult(module,ErrorCode.IOError));
+                    failAndExitLoad(module,new LoadResult(module,socketBroken?ErrorCode.socket_timeout:ErrorCode.IOError,"Network is not reachable."));
                     return;
                 }
 
@@ -142,7 +143,7 @@ public class ModuleLoader implements FileLoadedCb{
             frontPageLog.clear();
             frontPageLog.addRow("Loaded [" + loaderId + "].");
             active=false;
-            caller.loadSuccess(loaderId, majorVersionUpdated, o.getLogText(),socketBroken);
+            caller.loadSuccess(loaderId, majorVersionUpdated, debug.getLogText(),socketBroken);
         }
     }
 
@@ -152,10 +153,18 @@ public class ModuleLoader implements FileLoadedCb{
 
     @Override
     public void onUpdate(Integer ...args) {
-        if (args.length==1)
-            frontPageLog.addText(module.getLabel()+": "+args[0].toString());
-        else
-            frontPageLog.addText(module.getLabel()+": "+args[0].toString()+"/"+args[1].toString());
+        Start.singleton.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                if (args.length==1)
+                    frontPageLog.addText(module.getLabel()+": "+args[0].toString());
+                else
+                    frontPageLog.addText(module.getLabel()+": "+args[0].toString()+"/"+args[1].toString());
+
+            }
+        });
 
     }
 
@@ -173,8 +182,6 @@ public class ModuleLoader implements FileLoadedCb{
         if (module != null) {
             debug.addRow("Module " + res.module.fileName + " loaded. Returns code " + res.errCode.name() + (res.errorMessage != null ? " and errorMessage: " + res.errorMessage : ""));
             Log.d("vortex", "Module " + res.module.fileName + " loaded. Returns code " + res.errCode.name() + (res.errorMessage != null ? " and errorMessage: " + res.errorMessage : ""));
-
-
             switch (res.errCode) {
                 case existingVersionIsMoreCurrent:
                     debug.addCriticalText("*****");
@@ -202,9 +209,16 @@ public class ModuleLoader implements FileLoadedCb{
 
                 case thawed:
                     thawed(module,res);
+                    //if bundle failed to load but was thawed, we know the major version has not been updated.
+                    if (module.isBundle && module.tryingThawAfterFail) {
+                        debug.addRow("");
+                        debug.addRedText("Loading existing file succeeded.");
+                        majorVersionUpdated = false;
+                    }
                     break;
 
                 case frozen:
+                    //if bundle was frozen, we know the major version has been updated.
                     if (module.isBundle) {
                         Log.d("amazon","new bundle version");
                         majorVersionUpdated=true;
@@ -213,17 +227,34 @@ public class ModuleLoader implements FileLoadedCb{
                     String txt = "";
                     if (module.newVersion != -1)
                         txt = txt + "["+Float.toString(module.newVersion)+"] new!";
-                    o.addText(txt);
+                    debug.addCriticalText(txt);
                     break;
                 case thawFailed:
-                    //if thaw failed, remove file and try again.
-                    Log.d("vortex", "Retrying.");
-                    o.addYellowText(" thawing failed. Load from network");
-                    frontPageLog.addText("thaw failed.");
-                    module.deleteFrozen();
-                    module.setFrozenVersion(-1);
-                    module.load(this);
-                    allDone=false;
+                    //check if allfrozen is set. in that case, something is wrong.
+                    if (allFrozen) {
+                        debug.addRedText("Thawing failed. for "+module.getLabel()+". Please restart the App.");
+                        failAndExitLoad(module, new LoadResult(module,ErrorCode.configurationError,"please reload the App."));
+                        return;
+                    }
+                    //if thaw failed, remove file and try again except if it has already tried.
+                    if (module.tryingThawAfterFail) {
+                        Log.d("vortex", "Failing finally.");
+                        debug.addRedText("Thawing failed. for "+module.getLabel()+"..giving up");
+                        if (module.isRequired()) {
+                            failAndExitLoad(module, res);
+                            return;
+                        } else
+                            module.setNotFound();
+
+                    } else {
+                        Log.d("vortex", "Thaw failed..Retrying...reload from network");
+                        debug.addRedText("thaw failed...trying to reload from network");
+                        module.tryingWebAfterFail=true;
+                        module.deleteFrozen();
+                        module.setFrozenVersion(-1);
+                        module.load(this);
+                        allDone = false;
+                    }
                     break;
                 case socket_timeout:
                     //set network to dead.
@@ -239,7 +270,16 @@ public class ModuleLoader implements FileLoadedCb{
                 case HostNotFound:
                 case slowConnection:
                     printError(res);
-                    if (module.isRequired() && res.errCode == Unsupported) {
+                    if (module.tryingWebAfterFail) {
+                        debug.addRow("");
+                        debug.addRedText("Failed to load file from network.");
+                        if (module.isRequired()) {
+                            failAndExitLoad(module,res);
+                            return;
+                        } else
+                            module.setNotFound();
+                    }
+                    else if (module.isRequired() && res.errCode == Unsupported) {
                         if (module.frozenFileExists()) {
                             new AlertDialog.Builder(ModuleLoader.this.ctx).setTitle(R.string.warning)
                                     .setMessage(R.string.old_xml_message+res.errorMessage+R.string.old_xml_message_cont)
@@ -285,13 +325,14 @@ public class ModuleLoader implements FileLoadedCb{
                     } else if (module.frozenFileExists()) {
                         //continue immediately on true = already thawed.
                         Log.d("vortex","frozen exists. ");
-                        o.addRow("");
-                        o.addYellowText("Using current: " );
+                        debug.addRow("");
+                        debug.addRedText("Using current: " );
                         if (module.thaw(this)) {
                             thawed(module,new LoadResult(module, thawed));
                         }
                         else {
-                            Log.d("vortex","Thawing restarted for "+module.getLabel());
+                            Log.d("vortex","Thawing after fail for "+module.getLabel());
+                            module.tryingThawAfterFail=true;
                             allDone=false;
                         }
 
@@ -315,8 +356,8 @@ public class ModuleLoader implements FileLoadedCb{
                             //module.setFrozenVersion(-1);
                             //module.setLoaded(false);
                             Log.d("vortex", "Now retry load of modules");
-                            //o.addRow("");
-                            //o.addGreenText("Reload required for dependant "+res.errorMessage);
+                            //debug.addRow("");
+                            //debug.addGreenText("Reload required for dependant "+res.errorMessage);
                             //majorVersionChange=true;
                             reloadModule.load(this);
                             allDone = false;
@@ -325,7 +366,7 @@ public class ModuleLoader implements FileLoadedCb{
                     }
                     break;
                 default:
-                    o.addText("?: " + res.errCode.name());
+                    debug.addCriticalText("?: " + res.errCode.name());
                     break;
             }
             //Is this module ready? Continue on next.
@@ -339,11 +380,11 @@ public class ModuleLoader implements FileLoadedCb{
     }
 
     private void failAndExitLoad(ConfigurationModule module, LoadResult res) {
-        o.addRedText(" !");
-        o.addText(res.errCode.name());
-        o.addRedText("!");
+        debug.addCriticalText(res.errCode.name());
+        debug.addCriticalText(res.errorMessage);
 
-        frontPageLog.addRedText("Unable to load [" + module.getFileName() + "]");
+
+        frontPageLog.addRedText(module.getLabel()+" [" + res.errCode.name() + "]. Check log for details");
         //printError(res);
 
         //Need to enable the settings menu.
@@ -356,7 +397,7 @@ public class ModuleLoader implements FileLoadedCb{
 
         float frozenModuleVersion = module.getFrozenVersion();
         if (frozenModuleVersion != -1)
-            o.addText(" [" + frozenModuleVersion + "]");
+            debug.addCriticalText(" [" + frozenModuleVersion + "]");
 
 
     }
@@ -378,24 +419,24 @@ public class ModuleLoader implements FileLoadedCb{
         if (errCode==ErrorCode.IOError) {
             Log.d("vortex","Io-error");
             if (ctx!=null && !Connectivity.isConnected(ctx)) {
-                o.addRow("No network");
+                debug.addRow("No network");
                 Log.d("vortex", "No network");
             }
             else {
                 if (res.errorMessage !=null)
-                    o.addRow(res.errorMessage);
+                    debug.addRow(res.errorMessage);
                 else
-                    o.addRow("File not found (Network error)");
+                    debug.addRow("File not found (Network error)");
             }
         } else if (errCode== Unsupported) {
-            o.addRow("");
-            o.addRedText("The version of FieldPad you use cannot run the latest bundle! Min version required is: "+res.errorMessage+".");
+            debug.addRow("");
+            debug.addRedText("The version of FieldPad you use cannot run the latest bundle! Min version required is: "+res.errorMessage+".");
         } else if (errCode==ErrorCode.ParseError) {
-            o.addRow("");
-            o.addRedText("Error. Please check log for details");
+            debug.addRow("");
+            debug.addRedText("Error. Please check log for details");
            Log.e("fall",res.errorMessage==null?"":res.errorMessage);
         } else
-            o.addYellowText(" "+res.errCode.name());
+            debug.addYellowText(" "+res.errCode.name());
 
 
     }

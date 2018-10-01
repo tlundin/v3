@@ -16,7 +16,6 @@ public class BlockCreateTextField extends Block {
 	 */
 	private static final long serialVersionUID = -1134485697631003990L;
 	private final String background;
-	private final String label;
     private final String containerId;
 	private boolean isVisible = true;
 	private final List<EvalExpr> labelE;
@@ -26,7 +25,7 @@ public class BlockCreateTextField extends Block {
 	
 	public BlockCreateTextField(String id, String label, String background, String containerId, boolean isVisible,String textSize,String horiz,String vert) {
 		this.blockId=id;
-		this.label=label;
+        String label1 = label;
 		this.labelE=Expressor.preCompileExpression(label);
 		this.containerId=containerId;
 		this.isVisible = isVisible;

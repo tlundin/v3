@@ -19,8 +19,7 @@ import java.util.Set;
 public class JSONExporter extends Exporter {
 
 	private JsonWriter writer;
-	private StringWriter sw;
-	private int varC=0;
+    private int varC=0;
 
 	public JSONExporter(Context ctx) {
 		super(ctx);		
@@ -28,7 +27,7 @@ public class JSONExporter extends Exporter {
 
 	public Report writeVariables(DBColumnPicker cp) {
 
-		sw = new StringWriter();
+        StringWriter sw = new StringWriter();
 		writer = new JsonWriter(sw);	
 
 		try {

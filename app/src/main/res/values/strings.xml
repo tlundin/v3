@@ -45,7 +45,7 @@
 
     <string name="sync_pop_header">Synchronization status</string>
     <string name="sync_pop_sync_on">Current state</string>
-    <string name="sync_pop_time_since_last_sync">Time since last sync</string>
+    <string name="sync_pop_time_since_last_sync">Time elapsed since last sync</string>
     <string name="sync_pop_unsynced_user">My unsent entries </string>
     <string name="sync_pop_sync_button_txt">Sync now</string>
     <string name="sync_pop_sync_last_sync">Team data available</string>
@@ -102,6 +102,11 @@
     <string name="warning">Warning</string>
     <string name="old_xml_message_cont">". Fieldpad will try to use an older version of the XML if you click Continue but this may lead to errors."</string>
     <string name="none">None</string>
+    <string name="filtering">Filtering</string>
+    <string name="visible">Visible</string>
+    <string name="show_labels">Labels</string>
+    <string name="progress">Progress</string>
+    <string name="map_background">Map background</string>
 
 
 </resources>

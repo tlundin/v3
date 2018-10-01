@@ -21,7 +21,8 @@ public class Workflow implements Serializable {
 	//TODO: List of blocks needs to be a map.
 
 	private List<Block> blocks;
-	private String name,applicationName,applicationVersion;
+	private String name;
+    private String applicationVersion;
 	private DB_Context mContext=null;
 	//Extended context.
 	private int blockP = 0;
@@ -33,7 +34,7 @@ public class Workflow implements Serializable {
 	}
 
 	public Workflow(String bundleName) {
-		this.applicationName=bundleName;
+        String applicationName = bundleName;
 	}
 
 

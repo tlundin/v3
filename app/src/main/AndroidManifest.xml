@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.teraim.fieldapp"
     android:versionCode="34"
     android:versionName="6.44">
@@ -24,14 +25,16 @@
         android:label="@string/app_name"
         android:allowBackup="true"
         android:largeHeap="true"
-        android:theme="@style/MyAppTheme" >
+        android:theme="@style/MyAppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <provider
             android:name=".synchronization.framework.SyncContentProvider"
             android:authorities="com.teraim.fieldapp.provider"
             android:exported="true"
             android:label="collected"
-            android:syncable="true" />
+            android:syncable="true"
+            tools:ignore="ExportedContentProvider" />
 
         <activity
             android:name=".Start"
@@ -68,6 +71,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.teraim.fieldapp.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
         <service
             android:name=".gis.Tracker">
         </service>

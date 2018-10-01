@@ -194,7 +194,7 @@ public class WF_List_UpdateOnSaveEvent extends WF_Static_List implements EventLi
 			t2 += (System.currentTimeMillis() - t1);
 			if (v != null) {
 				//Log.d("vortex","CreateAsync. Adding variable "+v.getId()+" to "+mapmap.get(vs).cfs.label);
-				mapmap.get(vs).cfs.addVariable(v, displayOut, format, isVisible, showHistorical, true);
+				mapmap.get(vs).cfs.addStaticVariable(v, displayOut, format, isVisible, showHistorical);
 			} else {
 				o.addRow("");
 				o.addRedText("Variable with suffix " + vs + " was not found when creating list with id " + getId());

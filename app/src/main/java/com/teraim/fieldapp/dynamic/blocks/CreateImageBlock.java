@@ -47,8 +47,7 @@ import java.util.regex.Pattern;
 	 * 
 	 */
 	private static final long serialVersionUID = 5781622495945524716L;
-	private final String name;
-	private final String container;
+    private final String container;
 	private final String source;
 	private final String scale;
 	private ImageView img = null;
@@ -60,7 +59,7 @@ import java.util.regex.Pattern;
 	public CreateImageBlock(String id, String nName, String container,
 			String source, String scale, boolean isVisible) {
 		this.blockId=id;
-		this.name=nName;
+        String name = nName;
 		this.container = container;
 		this.sourceE=Expressor.preCompileExpression(source);
 		this.source=source;

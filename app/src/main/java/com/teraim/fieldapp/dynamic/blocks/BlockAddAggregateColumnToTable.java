@@ -19,9 +19,7 @@ public class BlockAddAggregateColumnToTable extends Block {
 	private Expressor.EvalExpr expressionE=null;
 
 	private final String target;
-    private final String expression;
     private final String aggregationFunction;
-    private String aggreagationVariable;
     private final String format;
     private final String width;
     private final String label;
@@ -34,9 +32,8 @@ public class BlockAddAggregateColumnToTable extends Block {
 		super();
 		this.blockId=id;
 		this.target=target;
-		this.expression=expression;
+        String expression1 = expression;
 		this.aggregationFunction=aggregationFunction;
-		this.aggreagationVariable=aggreagationVariable;
 		this.format=format;
 		this.width=width;
 		this.isDisplayed=isDisplayed;

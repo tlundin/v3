@@ -19,7 +19,6 @@ public  class AddSumOrCountBlock extends DisplayFieldBlock {
 	private static final long serialVersionUID = -4139158043307360229L;
 	private final String containerId;
     private final String label;
-    private final String postLabel;
     private final String myPattern;
     private final String target;
     private final String result;
@@ -39,7 +38,7 @@ public  class AddSumOrCountBlock extends DisplayFieldBlock {
 		this.target=target;
 		type = sumOrCount;
 		this.result = result;
-		this.postLabel = postLabel;
+        String postLabel1 = postLabel;
 		this.isVisible = isVisible;
 		this.format = format;
 		this.blockId=id;

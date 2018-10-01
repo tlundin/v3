@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/filterName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="Hallmarksstorängar"
@@ -20,22 +20,26 @@
 
     <CheckBox
         android:id="@+id/cbShow"
-        android:color="@color/white"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-         android:layout_marginRight="10dp"
-        android:text="S" />
+        android:layout_marginRight="10dp"
+        android:scaleX="0.60"
+        android:scaleY="0.60"
+        android:button="@drawable/custom_checkbox"
+        />
 
     <CheckBox
         android:id="@+id/cbLabels"
-        android:color="@color/white"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-         android:layout_marginRight="10dp"
-        android:text="L" />
+        android:layout_marginRight="10dp"
+        android:scaleX="0.60"
+        android:scaleY="0.60"
+        android:button="@drawable/custom_checkbox"
+         />
 
 </LinearLayout>

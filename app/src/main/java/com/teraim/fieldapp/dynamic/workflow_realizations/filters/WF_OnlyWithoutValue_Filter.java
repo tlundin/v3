@@ -1,11 +1,9 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.filters;
 
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
+
 import java.util.Iterator;
 import java.util.List;
-
-import android.util.Log;
-
-import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
 //Specialized filter. Will remove elements with a value.
 public class WF_OnlyWithoutValue_Filter extends WF_Filter {

@@ -58,8 +58,7 @@ import java.util.TreeSet;
 public class ProvytaNivaTemplate extends Executor implements EventListener, OnGesturePerformedListener {
 
 
-	private List<WF_Container> myLayouts;
-	private View v;
+    private View v;
 	private DelyteManager dym;
 	private ProvytaView pyv;
 	private TextView delOutputValueField,smaOutputValueField,partnerOutputValueField;
@@ -71,8 +70,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 	private ButtonBlock smayteKnapp;
 	private StatusHandler statusHandler;
 	private Button tagSidaB;
-	private boolean isAbo;
-	//private ButtonBlock spillning;
+    //private ButtonBlock spillning;
 
 	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -101,7 +99,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		dym.setSelected(-1);
 		statusHandler = gs.getStatusHandler();
 
-		isAbo = Constants.isAbo(dym.getPyID());
+        boolean isAbo = Constants.isAbo(dym.getPyID());
 
 		
 
@@ -180,7 +178,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 			DB_Context buttonContext = new DB_Context(null,buttonHash);
 			//Log.e("vortex","Creating knapp för delyta "+i);
 			delyteKnappar[i]=new ButtonBlock("DelBl"+i,"Delyta "+i,"Start_Workflow", "Delyta "+i,"Field_List_panel_1",
-					(isAbo?NamedVariables.WF_DELYTE_INMATNING_ABO:NamedVariables.WF_DELYTE_INMATNING),"action","STATUS:status_delyta",true,
+					(isAbo ?NamedVariables.WF_DELYTE_INMATNING_ABO:NamedVariables.WF_DELYTE_INMATNING),"action","STATUS:status_delyta",true,
 					new OnclickExtra() {						
 				@Override
 				public void onClick() {
@@ -196,7 +194,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 		Map<String,String> buttonHash = al.createProvytaKeyMap();
 		//CHash buttonContext = new CHash(null,buttonHash);
 		Log.d("vortex","context for status_smaprovytor: "+buttonHash.toString());
-		smayteKnapp = new ButtonBlock("_smaprov","Småprovytor","Start_Workflow", "Småprovytor","Field_List_panel_1",(isAbo?WF_ABO_SMA:WF_NILS_SMA),"action", (isAbo?"STATUS:status_abo":"STATUS:status_smaprovytor"),true,null,null,true,"["+buttonHash.toString()+"]",null,false);
+		smayteKnapp = new ButtonBlock("_smaprov","Småprovytor","Start_Workflow", "Småprovytor","Field_List_panel_1",(isAbo ?WF_ABO_SMA:WF_NILS_SMA),"action", (isAbo ?"STATUS:status_abo":"STATUS:status_smaprovytor"),true,null,null,true,"["+buttonHash.toString()+"]",null,false);
 		
 		//new ButtonBlock("_tabild","Foto","Start_Workflow", "fotobutton","Field_List_panel_1",NamedVariables.WF_FOTO,"action", "status_foto",true,null,null,true,xContext,false);
 		/*
@@ -345,7 +343,7 @@ public class ProvytaNivaTemplate extends Executor implements EventListener, OnGe
 
 	@Override
 	protected List<WF_Container> getContainers() {
-		myLayouts = new ArrayList<WF_Container>();
+        List<WF_Container> myLayouts = new ArrayList<WF_Container>();
 		//myContainer = container;
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		myLayouts.add(root);

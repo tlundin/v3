@@ -32,9 +32,8 @@ public class FixytaView extends View {
 
 	private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private final Paint p20 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	private final Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
-	
-	private final MovingMarker user = null;
+
+    private final MovingMarker user = null;
 	private List<Marker> fixpunkter;
 	private String msg = "";
 
@@ -66,10 +65,11 @@ public class FixytaView extends View {
 		p20.setColor(Color.BLUE);
 		p20.setStrokeWidth(2);
 		p20.setStyle(Style.STROKE);		
-		p20.setTypeface(Typeface.SANS_SERIF); 
+		p20.setTypeface(Typeface.SANS_SERIF);
 
 
-		p50.setColor(Color.RED);
+        Paint p50 = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        p50.setColor(Color.RED);
 		p50.setStrokeWidth(3);
 		p50.setStyle(Style.STROKE);
 		p50.setTypeface(Typeface.SANS_SERIF); 
@@ -79,11 +79,7 @@ public class FixytaView extends View {
 	}
 
 
-	private final double realRadiusinDeciMeter = 200;
-	private double rScaleF=0;
-    private double oScaleF=0;
-
-	@Override
+    @Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);			
 		int w = getWidth();
@@ -94,23 +90,24 @@ public class FixytaView extends View {
 		r=(w>=h)?((h/2)-h*.1):((w/2)-w*.1);
 		cx = w/2;
 		cy = h/2;
-		oScaleF = r/realRadiusinDeciMeter;
+        double realRadiusinDeciMeter = 200;
+        double oScaleF = r / realRadiusinDeciMeter;
 		//A dot in the middle!
 		canvas.drawPoint(cx, cy, p);
 
 //		canvas.drawCircle(cx, cy,(int)r, p50);
 //		canvas.drawCircle(cx, cy,(float)(200f*oScaleF), p20);
 		canvas.drawCircle(cx, cy,(float)(int)r, p20);
-		canvas.drawCircle(cx, cy,(float)(100f*oScaleF), p);
-		rScaleF = oScaleF;
+		canvas.drawCircle(cx, cy,(float)(100f* oScaleF), p);
+        double rScaleF = oScaleF;
 		canvas.drawText("200",(int)(cx+r)-20f, cy, p);
 //		canvas.drawText("200",(int)(cx+(200f*oScaleF))-20f, cy, p);
-		canvas.drawText("100",(int)(cx+(100f*oScaleF))-20f, cy, p);
+		canvas.drawText("100",(int)(cx+(100f* oScaleF))-20f, cy, p);
 		canvas.drawText("N",cx,(float)(h*.1), pl);
 
 		for(Marker focusMarker:fixpunkter) {
 			if (focusMarker.hasPosition()) {								
-				if(focusMarker.getDistance()<=realRadiusinDeciMeter) {
+				if(focusMarker.getDistance()<= realRadiusinDeciMeter) {
 					float ux = (float) (cx+focusMarker.x * oScaleF);
 					float uy = (float) (cy+focusMarker.y * oScaleF);
 					ux = ux - Marker.Pic_H/2;
@@ -127,7 +124,7 @@ public class FixytaView extends View {
 				} else {
 					//Log.d("NILS","Blue is outside radius");
 					//Given that blue is outside current Max Radius, draw an arrow to indicate where..					
-					Coord t = new Coord((int)realRadiusinDeciMeter,focusMarker.riktning);
+					Coord t = new Coord((int) realRadiusinDeciMeter,focusMarker.riktning);
 					float x = t.x;
 					float y =  t.y;
 					float zx = (float) (cx+x * oScaleF);

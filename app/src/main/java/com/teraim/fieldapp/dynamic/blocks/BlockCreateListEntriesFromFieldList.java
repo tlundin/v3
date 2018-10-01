@@ -28,7 +28,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
     private final String selectionPattern;
     private final String selectionField;
     private final String variatorColumn;
-    private final boolean isVisible = true;
+
     public BlockCreateListEntriesFromFieldList(String id,String namn, String type,
                                                String containerId, String selectionPattern, String selectionField,String variatorColumn,
                                                String textColor, String bgColor,String verticalFormat,String verticalMargin) {
@@ -56,6 +56,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
         Container myContainer = myContext.getContainer(containerId);
         if (myContainer != null) {
 
+            boolean isVisible = true;
             if (type.equals("selected_values_list")) {
                 o.addRow("This is a selected values type list. Adding Time Order sorter.");
                 myList = new WF_List_UpdateOnSaveEvent(id, myContext, isVisible, this);
@@ -94,7 +95,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
 
 
         VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
-        List<List<String>> rows = cacheMap == null ? null : cacheMap.get(blockId);
+        List<List<String>> rows = cacheMap.get(blockId);
         Log.d("baza", "selectionField: "+selectionField+" selectionPattern: "+selectionPattern+" rows: " + (rows==null?"null":rows.size()));
 
         if (rows == null) {
@@ -111,7 +112,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
             cacheMap.put(blockId, rows);
 
         }
-        if (rows == null || rows.size() == 0) {
+        if (rows.size() == 0) {
             Log.e("vortex", "Selectionfield: " + selectionField + " selectionPattern: " + selectionPattern + " returns zero rows! List cannot be created");
             o.addRow("");
             o.addRedText("Selectionfield: " + selectionField + " selectionPattern: " + selectionPattern + " returns zero rows! List cannot be created");
@@ -132,7 +133,7 @@ public class BlockCreateListEntriesFromFieldList extends DisplayFieldBlock {
         List<List<String>> ret = new ArrayList<List<String>>();
         for (List<String> row: rows) {
             colValue=al.getColumn(columnName, row);
-            if (colValue!=null && colValue.equals(pattern)||colValue.matches(pattern)) {
+            if (colValue!=null && (colValue.equals(pattern)||colValue.matches(pattern))) {
                 ret.add(row);
             }
         }

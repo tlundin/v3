@@ -14,6 +14,7 @@ import org.achartengine.model.CategorySeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class CreateTwoDimensionalDataSourceBlock extends Block {
@@ -85,7 +86,7 @@ class CreateTwoDimensionalDataSourceBlock extends Block {
 					} catch (NumberFormatException e) {}
 					i++;
 				}
-				Log.d("vortex","CurrValues: "+ret.toString());
+				Log.d("vortex","CurrValues: "+ Arrays.toString(ret));
 				return ret;
 			}
 

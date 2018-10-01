@@ -55,10 +55,7 @@ class GestureImageViewTouchListener implements OnTouchListener {
 	private float fitScaleHorizontal = 1.0f;
 	private float fitScaleVertical = 1.0f;
 
-	private int canvasWidth = 0;
-	private int canvasHeight = 0;
-
-	private float centerX = 0;
+    private float centerX = 0;
 	private float centerY = 0;
 
 	private float startingScale = 0;
@@ -77,8 +74,7 @@ class GestureImageViewTouchListener implements OnTouchListener {
 	private final FlingListener flingListener;
 	private final FlingAnimation flingAnimation;
 	private final ZoomAnimation zoomAnimation;
-	private final MoveAnimation moveAnimation;
-	private final GestureDetector tapDetector;
+    private final GestureDetector tapDetector;
 	private final GestureDetector flingDetector;
 	private final GestureImageViewListener imageListener;
 
@@ -113,7 +109,7 @@ class GestureImageViewTouchListener implements OnTouchListener {
 		flingListener = new FlingListener();
 		flingAnimation = new FlingAnimation();
 		zoomAnimation = new ZoomAnimation();
-		moveAnimation = new MoveAnimation();
+        MoveAnimation moveAnimation = new MoveAnimation();
 
 		flingAnimation.setListener(new FlingAnimationListener() {
 			@Override
@@ -546,11 +542,11 @@ class GestureImageViewTouchListener implements OnTouchListener {
 		this.onLongClickListener=l;
 	}
 	void setCanvasWidth(int canvasWidth) {
-		this.canvasWidth = canvasWidth;
+        int canvasWidth1 = canvasWidth;
 	}
 
 	void setCanvasHeight(int canvasHeight) {
-		this.canvasHeight = canvasHeight;
+        int canvasHeight1 = canvasHeight;
 	}
 
 	void setFitScaleHorizontal(float fitScale) {

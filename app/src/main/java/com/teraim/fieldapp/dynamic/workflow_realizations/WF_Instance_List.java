@@ -43,9 +43,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 	//private Set<String> mySuffixes=new HashSet<String>();
 
 
-	private boolean showHistorical;
-
-	final private Map<String,VarPars> parameters;
+    final private Map<String,VarPars> parameters;
 
 	public WF_Instance_List(String id, WF_Context ctx, String variatorColumn, boolean isVisible, DisplayFieldBlock format) {
 		super(id, ctx,null,isVisible);
@@ -89,7 +87,7 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 	@Override
 	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
-		this.showHistorical = showHistorical;
+        boolean showHistorical1 = showHistorical;
 
 		suffices.add(varSuffix);
 		parameters.put(varSuffix,new VarPars(showHistorical,isVisible,displayOut,format,initialValue));

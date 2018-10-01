@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -294,10 +295,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 								}
 								 else
 									statusVariable = null;
-								if (statusVariable==null)
-									Log.d("vorto","statusvar is null! "+statusVariable);
-								else
-									Log.d("vorto","statusvar is not null! "+statusVariable.getValue());
+
 								Set<Rule> myRules = myContext.getRulesThatApply();
 								boolean showPop=false;
 
@@ -330,14 +328,16 @@ public  class ButtonBlock extends Block  implements EventListener {
 
 											Set<Variable> variablesToSave = myContext.getTemplate().getVariables();
 											Log.d("vortex", "Variables To save contains "+(variablesToSave==null?"null":variablesToSave.size()+" objects."));
-											for (Variable var:variablesToSave) {
-												Log.d("vortex","Saving "+var.getLabel());
-												boolean resultOfSave = var.setValue(var.getValue());
+											if (variablesToSave!=null) {
+                                                for (Variable var : variablesToSave) {
+                                                    Log.d("vortex", "Saving " + var.getLabel());
+                                                    boolean resultOfSave = var.setValue(var.getValue());
 												/*if (resultOfSave) {
 													for (int i=0;i<100;i++)
 													Log.e("vortex","KORS I TAKET!!!!!!!!!!!!!!!!!!!!!!!!");
 												}*/
-											}
+                                                }
+                                            }
 											myContext.registerEvent(new WF_Event_OnSave(ButtonBlock.this.getBlockId()));
 											mpopup.dismiss();
 											goBack();
@@ -375,7 +375,6 @@ public  class ButtonBlock extends Block  implements EventListener {
 											else
 												if (type == Rule.Type.ERROR) {
 													indicatorId = R.drawable.btn_icon_started_with_errors;
-													bok = false;
 												}
 												else {
 													indicatorId = R.drawable.btn_icon_started;
@@ -383,7 +382,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 												}
 											if (!bok)
 												validationResult = false;
-											if (!ok || ok && isDeveloper) {
+											if (!ok || isDeveloper) {
 												showPop=true;
 												row = (LinearLayout)inflater.inflate(R.layout.rule_row, null);
 												header = row.findViewById(R.id.header);
@@ -413,7 +412,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 									else
 										Log.d("nils","Found no status variable");
 									Set<Variable> variablesToSave = myContext.getTemplate().getVariables();
-									Log.d("nils", "Variables To save contains "+variablesToSave==null?"null":variablesToSave.size()+" objects.");
+									Log.d("nils", "Variables To save contains "+variablesToSave.size()+" objects.");
 									for (Variable var:variablesToSave) {
 										Log.d("nils","Saving "+var.getLabel());
 										var.setValue(var.getValue());
@@ -489,104 +488,128 @@ public  class ButtonBlock extends Block  implements EventListener {
 											final Exporter exporter = Exporter.getInstance(ctx, exportFormat.toLowerCase());
 
 											//Run export in new thread. Create UI to update user on progress.
-
-											exporter.getDialog().show(((Activity) ctx).getFragmentManager(), "exportdialog");
-
-
-											Thread t = new Thread() {
-												String msg="";
-
-												@Override
-												public void run() {
-													Report jRep = gs.getDb().export(buttonContext.getContext(), exporter, exportFileName);
-													ExportReport exportResult = jRep.getReport();
-													if (exportResult == ExportReport.OK) {
-														msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
-														msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
+                                            if (exporter!=null) {
+                                                exporter.getDialog().show(((Activity) ctx).getFragmentManager(), "exportdialog");
 
 
-														if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
-															//nothing more to do...file is already on disk.
-															} else if (exportMethod.startsWith("mail")) {
-															if (targetMailAdress==null) {
-																((Activity) ctx).runOnUiThread(new Runnable() {
-																	@Override
-																	public void run() {
-																		exporter.getDialog().setCheckSend(false);
-																		exporter.getDialog().setSendStatus("Configuration error");
-																		msg+="\nForwarding to "+exportMethod+" failed."+"\nPlease check your configuration.";
-																	}
+                                                Thread t = new Thread() {
+                                                    String msg = "";
 
-																});
-
-															} else {
-																Tools.sendMail((Activity)ctx,exportFileName + "." + exporter.getType(),targetMailAdress);
-																((Activity) ctx).runOnUiThread(new Runnable() {
-																	@Override
-																	public void run() {
-																		exporter.getDialog().setCheckSend(true);
-																		exporter.getDialog().setSendStatus("OK");
-																		if (!targetMailAdress.isEmpty())
-																			msg+="\nFile forwarded to "+targetMailAdress+".";
-																		else
-																			msg+="\nFile forwarded by mail.";
-																	}
-
-																});
-															}
+                                                    @Override
+                                                    public void run() {
+                                                        Report jRep = gs.getDb().export(buttonContext.getContext(), exporter, exportFileName);
+                                                        ExportReport exportResult = jRep.getReport();
+                                                        if (exportResult == ExportReport.OK) {
+                                                            msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
+                                                            msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
 
 
+                                                            if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
+                                                                //nothing more to do...file is already on disk.
+                                                            } else if (exportMethod.startsWith("mail")) {
+                                                                if (targetMailAdress == null) {
+                                                                    ((Activity) ctx).runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            exporter.getDialog().setCheckSend(false);
+                                                                            exporter.getDialog().setSendStatus("Configuration error");
+                                                                            msg += "\nForwarding to " + exportMethod + " failed." + "\nPlease check your configuration.";
+                                                                        }
 
-														}
+                                                                    });
 
-													} else {
-														if (exportResult == ExportReport.NO_DATA)
-															msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
-														else
-															msg = "Export failed. Reason: " + exportResult;
+                                                                } else {
+                                                                    Tools.sendMail((Activity) ctx, exportFileName + "." + exporter.getType(), targetMailAdress);
+                                                                    ((Activity) ctx).runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            exporter.getDialog().setCheckSend(true);
+                                                                            exporter.getDialog().setSendStatus("OK");
+                                                                            if (!targetMailAdress.isEmpty())
+                                                                                msg += "\nFile forwarded to " + targetMailAdress + ".";
+                                                                            else
+                                                                                msg += "\nFile forwarded by mail.";
+                                                                        }
+
+                                                                    });
+                                                                }
 
 
-													}
+                                                            }
 
-													((Activity) ctx).runOnUiThread(new Runnable() {
-														@Override
-														public void run() {
-															{
-																if (button instanceof WF_StatusButton)  {
-																	((WF_StatusButton)button).changeStatus(WF_StatusButton.Status.ready);
-																}
-																exporter.getDialog().setOutCome(msg);
-															}
-														}
-													});
-												}
-											};
-											t.start();
+                                                        } else {
+                                                            if (exportResult == ExportReport.NO_DATA)
+                                                                msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
+                                                            else
+                                                                msg = "Export failed. Reason: " + exportResult;
 
+
+                                                        }
+
+                                                        ((Activity) ctx).runOnUiThread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                {
+                                                                    if (button instanceof WF_StatusButton) {
+                                                                        ((WF_StatusButton) button).changeStatus(WF_StatusButton.Status.ready);
+                                                                    }
+                                                                    exporter.getDialog().setOutCome(msg);
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                };
+                                                t.start();
+                                            } else
+                                                Log.e("vortex","Exporter null in buttonblock");
 										}
 
 								}
 							} else if (onClick.equals("Start_Camera")) {
 								if (getTarget()!=null) {
 									Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-									File file = new File(Constants.PIC_ROOT_DIR, getTarget());
-									Uri outputFileUri = Uri.fromFile(file);
-									intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-									//				intent.putExtra(Strand.KEY_PIC_NAME, name);
-									((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+									File photoFile=null;
+									if (intent.resolveActivity(ctx.getPackageManager()) != null) {
+										// Create the File where the photo should go
 
+
+										photoFile = new File(Constants.PIC_ROOT_DIR, getTarget());
+
+										// Continue only if the File was successfully created
+										if (photoFile != null) {
+											Uri photoURI = FileProvider.getUriForFile(ctx,
+													"com.teraim.fieldapp.fileprovider",
+													photoFile);
+											intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+											((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+										}
+									}
+									if (photoFile == null) {
+										o.addRow("");
+										o.addRedText("Failed to take picture. Permission or memory problem. BlockId: "+ButtonBlock.this.getBlockId());
+									}
 								} else {
 									o.addRow("");
 									o.addRedText("No target (filename) specified for camera action button. BlockId: "+ButtonBlock.this.getBlockId());
 								}
 							} else if (onClick.equals("barcode")) {
-								myContext.registerEventListener(new BarcodeReader(myContext,getTarget()), Event.EventType.onActivityResult);
 								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-								File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
-								Uri outputFileUri = Uri.fromFile(file);
-								intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-								//				intent.putExtra(Strand.KEY_PIC_NAME, name);
-								((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+								File photoFile;
+								if (intent.resolveActivity(ctx.getPackageManager()) != null) {
+									// Create the File where the photo should go
+									photoFile = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
+
+									// Continue only if the File was successfully created
+									if (photoFile != null) {
+										Uri photoURI = FileProvider.getUriForFile(ctx,
+												"com.teraim.fieldapp.fileprovider",
+												photoFile);
+										intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+										((Activity) ctx).startActivityForResult(intent, Constants.TAKE_PICTURE);
+									}
+								}
+								//wait for image to be captured.
+								myContext.registerEventListener(new BarcodeReader(myContext,getTarget()), Event.EventType.onActivityResult);
 
 							}
 

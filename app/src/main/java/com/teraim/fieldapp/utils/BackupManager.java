@@ -326,7 +326,7 @@ public class BackupManager {
 			File dir = createOrFindBackupStorageDir();
 			
 			if (dir == null) {
-				Log.e("vortex","failed to find backup folder named ["+dir+"]");
+				Log.e("vortex","failed to find backup folder named ["+ Constants.VORTEX_ROOT_DIR+gs.getGlobalPreferences().get(PersistenceHelper.BUNDLE_NAME)+"/backup"+"]");
 				return false;
 				
 			}

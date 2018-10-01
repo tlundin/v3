@@ -160,6 +160,7 @@ public class GlobalState {
         //check current state of synk server.
         if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
             getServerSyncStatus();
+
         Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +getMyTeam()));
         Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_BACKUP));
         Log.d("antrax","GS VALUE AT START: "+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP));
@@ -488,9 +489,6 @@ public class GlobalState {
     }
 
 
-    private Configuration myModules;
-
-
     /*
         public void synchronise(SyncEntry[] ses, boolean isMaster) {
             Log.e("nils,","SYNCHRONIZE. MESSAGES: ");
@@ -527,7 +525,7 @@ public class GlobalState {
 
 
     public void setModules(Configuration myModules) {
-        this.myModules = myModules;
+        Configuration myModules1 = myModules;
     }
 
 
@@ -695,7 +693,6 @@ public class GlobalState {
             //insert current data on the sync status for the team.
             //{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
             if (json != null) {
-                lastUpdate=new Date(System.currentTimeMillis());
                 //clear current state.
                 team = new ArrayList<>();
                 try {
@@ -714,10 +711,13 @@ public class GlobalState {
                         //name, number of unsynced entries, datetime last seen on sync server.
                         addEntry(new TeamMember(user, unsynced, date));
                     }
+                    lastUpdate=new Date(System.currentTimeMillis());
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
             }
         }
 

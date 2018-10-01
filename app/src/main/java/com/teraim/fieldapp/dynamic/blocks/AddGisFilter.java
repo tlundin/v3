@@ -30,13 +30,11 @@ public class AddGisFilter extends Block implements GisFilter {
 	 * 
 	 */
 	private static final long serialVersionUID = 3888638684411710898L;
-	private final String id;
     private final String nName;
     private final String label;
     private final String targetObjectType;
     private final String targetLayer;
     String expression;
-    private final String imgSource;
     private final String color;
 	private float radius;
 	private Style fillType;
@@ -52,13 +50,13 @@ public class AddGisFilter extends Block implements GisFilter {
 			String radius, String color, String polyType, String fillType,
 			boolean hasWidget, LoggerI o) {
 		super();
-		this.id = id;
+        String id1 = id;
 		this.nName = nName;
 		this.label = label;
 		this.targetObjectType = targetObjectType;
 		this.targetLayer = targetLayer;
 		this.expressionE = Expressor.preCompileExpression(expression);
-		this.imgSource = imgSource;
+        String imgSource1 = imgSource;
 		this.color = color;
 		this.fillType=Paint.Style.FILL;
 		if  (fillType !=null) {

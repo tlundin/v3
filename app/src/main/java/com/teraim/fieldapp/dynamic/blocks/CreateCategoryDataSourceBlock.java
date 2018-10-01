@@ -14,6 +14,7 @@ import com.teraim.fieldapp.utils.Expressor;
 
 import org.achartengine.model.CategorySeries;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateCategoryDataSourceBlock extends Block {
@@ -82,7 +83,7 @@ public class CreateCategoryDataSourceBlock extends Block {
 				int[] ret = Expressor.intAnalyzeList(argumentE);
 				//Log.d("botox","values: "+Expressor.analyze(argumentE));
 
-				Log.d("vortex","CurrValues: "+ret.toString());
+				Log.d("vortex","CurrValues: "+ Arrays.toString(ret));
 				return ret;
 			}
 

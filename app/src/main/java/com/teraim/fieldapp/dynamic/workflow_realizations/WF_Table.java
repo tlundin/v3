@@ -48,13 +48,10 @@ public class WF_Table extends WF_List  {
 	private int selectedColumnIndex =-1;
 
 	private int rowNumber=0, numberOfColumns =1;
-	private final String ColHeadId = "TableHeader";
-	private final WF_Table_Row headerRow;
+    private final WF_Table_Row headerRow;
 	private boolean tableTypeSimple;
 
-	private String varNamePrefix;
-	
-	//How about using the Container's panel?? TODO
+    //How about using the Container's panel?? TODO
 	public WF_Table(String id,String label,boolean isVisible,WF_Context ctx, View tableV) {
 		super(id,isVisible,ctx,tableV);	
 		tableView = tableV.findViewById(R.id.table);
@@ -70,7 +67,8 @@ public class WF_Table extends WF_List  {
 				(Context.LAYOUT_INFLATER_SERVICE); 
 		
 		//Add the header.
-		headerRow = new WF_Table_Row(this,ColHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
+        String colHeadId = "TableHeader";
+        headerRow = new WF_Table_Row(this, colHeadId,inflater.inflate(R.layout.header_table_row, null),myContext,true);
 		//Add a first empty cell 
 		headerCell = headerRow.addNoClickHeaderCell(label, null, null);
 		tableView.addView(headerRow.getWidget());
@@ -88,7 +86,7 @@ public class WF_Table extends WF_List  {
 	public void addRows(List<List<String>> rows,String variatorColumn, String selectionPattern) {
 
 		this.myVariator=variatorColumn;
-		this.varNamePrefix=selectionPattern;
+        String varNamePrefix = selectionPattern;
 		allInstances = gs.getDb().preFetchValues(myContext.getKeyHash(), varNamePrefix, myVariator);
 		Log.d("nils","in update entry fields. AllInstances contain "+allInstances.size()+ ": "+allInstances.toString());
 

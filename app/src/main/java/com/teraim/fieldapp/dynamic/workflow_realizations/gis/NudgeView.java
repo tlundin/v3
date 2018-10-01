@@ -26,11 +26,9 @@ public class NudgeView extends View {
     private static  int MARGIN_BOTTOM = 0 ;
     private static int centralButtonR;
     private NudgeListener listener;
-    private float Edge_Margin = 0;
     private int w=0;
     private int h=0;
     private float diameter =115;
-    private float density;
     private Paint p1,p2,p3,p1neg,p2neg,p3neg;
     private RectF rectF;
     private final static float Sweep=90;
@@ -76,7 +74,7 @@ public class NudgeView extends View {
         p3neg.setStyle(Paint.Style.FILL);
 
         DisplayMetrics metrics = new DisplayMetrics();
-        density = context.getResources().getDisplayMetrics().density;
+        float density = context.getResources().getDisplayMetrics().density;
         float sw = context.getResources().getDisplayMetrics().widthPixels;
         //diameter = (int)(sw*.15f);
         MARGIN_RIGHT = (int)dpMeasure(MARGIN_RIGHT);
@@ -281,14 +279,14 @@ public class NudgeView extends View {
         Log.d("vortex","on size changed...new: "+ww+","+hh+", old: "+oldw+","+oldh);
         this.w = ww-MARGIN_RIGHT;
         this.h = hh-MARGIN_BOTTOM;
-        Edge_Margin = diameter /7;
+        float edge_Margin = diameter / 7;
 
         if (!calculated) {
             rectF.set(w - diameter, h - diameter, w, h);
-            upArrow.offset(w - (diameter / 2), (h - diameter) + Edge_Margin);
-            rightA.offset(w - Edge_Margin, h - (diameter) / 2);
-            leftA.offset(w - diameter + Edge_Margin, h - (diameter) / 2);
-            downA.offset(w - diameter / 2, h - Edge_Margin);
+            upArrow.offset(w - (diameter / 2), (h - diameter) + edge_Margin);
+            rightA.offset(w - edge_Margin, h - (diameter) / 2);
+            leftA.offset(w - diameter + edge_Margin, h - (diameter) / 2);
+            downA.offset(w - diameter / 2, h - edge_Margin);
         }
         calculated = true;
 

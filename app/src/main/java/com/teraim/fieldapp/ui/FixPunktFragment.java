@@ -38,8 +38,7 @@ public class FixPunktFragment extends Fragment implements OnGesturePerformedList
 	
 	
 	private final Set<FixPunkt>fixPunkter=new HashSet<FixPunkt>();
-	private GlobalState gs;
-	private GestureLibrary gestureLib;
+    private GestureLibrary gestureLib;
 	private List<Marker> markers;
 	
 	private class FixPunkt {
@@ -54,7 +53,7 @@ public class FixPunktFragment extends Fragment implements OnGesturePerformedList
 	private final int[] png = new int[] {R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt,R.drawable.fixpunkt};
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		gs = GlobalState.getInstance();
+        GlobalState gs = GlobalState.getInstance();
 		VariableCache varCache = gs.getVariableCache();
 		VariableConfiguration al = gs.getVariableConfiguration();
 		Log.d("nils","in onCreateView of fixpunkt_fragment");

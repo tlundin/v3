@@ -1,12 +1,10 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import java.util.Collections;
-import java.util.List;
-
-import android.util.Log;
-
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Sorter;
+
+import java.util.Collections;
+import java.util.List;
 
 
 

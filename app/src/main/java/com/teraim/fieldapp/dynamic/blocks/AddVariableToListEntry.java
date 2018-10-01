@@ -22,9 +22,8 @@ public class AddVariableToListEntry extends Block {
     private final String format;
     private final String varNameSuffix;
     private final String initialValue;
-	private GlobalState gs;
-	
-	public AddVariableToListEntry(String id,String varNameSuffix,
+
+    public AddVariableToListEntry(String id,String varNameSuffix,
 			String targetList,String targetField, boolean isDisplayed,String format,boolean isVisible,boolean showHistorical,String initialValue) {
 		super();
 		this.blockId=id;
@@ -40,7 +39,7 @@ public class AddVariableToListEntry extends Block {
 
 
 	public Variable create(WF_Context myContext) {
-		gs = GlobalState.getInstance();
+        GlobalState gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		VariableConfiguration al = gs.getVariableConfiguration();
 		

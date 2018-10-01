@@ -25,8 +25,7 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 	private final DisplayFieldBlock displayFieldFormat;
 	private final String formula;
     private final String label;
-	private final GlobalState gs;
-	private final Unit unit;
+    private final Unit unit;
 	private final String format;
 	private final List<EvalExpr> formulaE;
 	private final WF_Context myContext;
@@ -37,7 +36,7 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 		super(id, LayoutInflater.from(ctx.getContext()).inflate(displayFieldformat.isHorisontal()?R.layout.display_value_textview_horizontal:R.layout.display_value_textview_vertical,null), isVisible,ctx);
 		this.label=label;
 
-		gs = GlobalState.getInstance();
+        GlobalState gs = GlobalState.getInstance();
 		o = gs.getLogger();
 		this.formula = formula;
 		Log.d("nils","In WF_DisplayValueField Create");

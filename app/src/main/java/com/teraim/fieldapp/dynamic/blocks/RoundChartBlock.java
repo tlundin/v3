@@ -3,15 +3,10 @@ package com.teraim.fieldapp.dynamic.blocks;
 import android.graphics.Color;
 import android.util.Log;
 import android.util.TypedValue;
-import android.widget.LinearLayout;
 
 import com.teraim.fieldapp.dynamic.types.SimpleChartDataSource;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Container;
-import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
-import com.teraim.fieldapp.utils.Tools;
 
 import org.achartengine.ChartFactory;
-import org.achartengine.chart.RoundChart;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;

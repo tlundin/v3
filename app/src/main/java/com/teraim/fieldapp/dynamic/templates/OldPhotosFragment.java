@@ -37,13 +37,7 @@ import java.util.ArrayList;
 public class OldPhotosFragment extends Fragment implements OnGesturePerformedListener {
 
 	private GestureLibrary gestureLib;
-	private View v;
-	private ImageButton norr;
-	private ImageButton syd;
-	private ImageButton ost;
-	private ImageButton vast;
-	private ImageButton sp;
-	private ImageHandler imgHandler;
+    private ImageHandler imgHandler;
 	private GlobalState gs;
 
 	@Override
@@ -52,7 +46,7 @@ public class OldPhotosFragment extends Fragment implements OnGesturePerformedLis
 
 		gs = GlobalState.getInstance();
 		Log.d("nils","in onCreateView of old photos");
-		v = inflater.inflate(R.layout.template_foto_right, container, false);	
+        View v = inflater.inflate(R.layout.template_foto_right, container, false);
 		TextView header = v.findViewById(R.id.header);
 		header.setText("Historiska foton hårifrån ("+Constants.getHistoricalPictureYear()+")");
 		GestureOverlayView gestureOverlayView = v.findViewById(R.id.gesture_overlay);
@@ -61,17 +55,17 @@ public class OldPhotosFragment extends Fragment implements OnGesturePerformedLis
 		gestureLib = GestureLibraries.fromRawResource(this.getActivity(), R.raw.gestures);
 		if (!gestureLib.load()) {      	
 			Log.i("nils", "Load gesture libraries failed.");  
-		}  
+		}
 
-		norr = v.findViewById(R.id.pic_norr);
-		norr.setOnClickListener(ruby(Type.NORR));	
-		syd = v.findViewById(R.id.pic_soder);
-		syd.setOnClickListener(ruby(Type.SYD));	
-		ost= v.findViewById(R.id.pic_ost);
-		ost.setOnClickListener(ruby(Type.OST));	
-		vast = v.findViewById(R.id.pic_vast);
-		vast.setOnClickListener(ruby(Type.VAST));	
-		sp= v.findViewById(R.id.pic_sp);
+        ImageButton norr = v.findViewById(R.id.pic_norr);
+		norr.setOnClickListener(ruby(Type.NORR));
+        ImageButton syd = v.findViewById(R.id.pic_soder);
+		syd.setOnClickListener(ruby(Type.SYD));
+        ImageButton ost = v.findViewById(R.id.pic_ost);
+		ost.setOnClickListener(ruby(Type.OST));
+        ImageButton vast = v.findViewById(R.id.pic_vast);
+		vast.setOnClickListener(ruby(Type.VAST));
+        ImageButton sp = v.findViewById(R.id.pic_sp);
 		sp.setOnClickListener(ruby(Type.SMA));	
 		
 		Button bildFelB = v.findViewById(R.id.felibild);

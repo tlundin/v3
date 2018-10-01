@@ -3,11 +3,8 @@ package com.teraim.fieldapp.ui;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -88,8 +85,6 @@ public class ConfigMenu extends PreferenceActivity {
 						final String name = uri.getQueryParameter("name");
 						final String sync = uri.getQueryParameter("sync");
 						final String control = uri.getQueryParameter("control");
-						//got null on host.
-						String host = uri.getHost();
 						final String server = uri.getPath();
 
 						(new AlertDialog.Builder(this.getActivity())).setTitle("Recieved QR configuration")
@@ -105,48 +100,41 @@ public class ConfigMenu extends PreferenceActivity {
 
 								)
 								.setCancelable(false)
-								.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
+								.setNegativeButton(R.string.cancel, (dialog, which) -> {
 
-									}
-								})
-								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog, int which) {
+                                })
+								.setPositiveButton(R.string.ok, (dialog, which) -> {
 
 
-										if (team != null)
-											teamPref.setText(team);
+                                    if (team != null)
+                                        teamPref.setText(team);
 
-										if (application != null) {
-											appPref.setText(application);
-										}
-										if (name != null)
-											userPref.setText(name);
-										if (sync != null) {
-											syncPref.setValue(sync);
-											syncPref.setSummary(sync);
-										}
-										if (control != null) {
-											versionControlPref.setValue(control);
-											versionControlPref.setSummary(control);
-										}
-										if (server != null)
-											serverPref.setText(server);
-									}
-								})
+                                    if (application != null) {
+                                        appPref.setText(application);
+                                    }
+                                    if (name != null)
+                                        userPref.setText(name);
+                                    if (sync != null) {
+                                        syncPref.setValue(sync);
+                                        syncPref.setSummary(sync);
+                                    }
+                                    if (control != null) {
+                                        versionControlPref.setValue(control);
+                                        versionControlPref.setSummary(control);
+                                    }
+                                    if (server != null)
+                                        serverPref.setText(server);
+                                })
 								.show();
 						askForRestart();
 
 					} else {
 						new AlertDialog.Builder(this.getActivity()).setTitle("Bummer")
 								.setMessage("NO QR code found in image.")
-								.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
+								.setPositiveButton(R.string.ok, (dialog, which) -> {
 
 
-									}
-								})
+                                })
 
 								.setCancelable(false)
 								.setIcon(android.R.drawable.ic_dialog_alert)
@@ -166,7 +154,7 @@ public class ConfigMenu extends PreferenceActivity {
 			//Set default values for the prefs.
 			//			getPreferenceScreen().getSharedPreferences()
 			//			.registerOnSharedPreferenceChangeListener(this);
-			this.getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE)
 					.registerOnSharedPreferenceChangeListener(this);
 
 			//Create a filter that stops users from entering disallowed characters.
@@ -218,8 +206,8 @@ public class ConfigMenu extends PreferenceActivity {
 
 
 			serverPref = (EditTextPreference) findPreference(PersistenceHelper.SERVER_URL);
+			serverPref.setText(Tools.server(serverPref.getText()));
 			serverPref.setSummary(serverPref.getText());
-			serverPref.getEditText().setFilters(new InputFilter[] {filter});
 
 			appPref = (EditTextPreference) findPreference(PersistenceHelper.BUNDLE_NAME);
 			appPref.setSummary(appPref.getText());
@@ -234,73 +222,57 @@ public class ConfigMenu extends PreferenceActivity {
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
 			Preference button = findPreference("reset_cache");
-			button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					new AlertDialog.Builder(getActivity())
-							.setTitle(getResources().getString(R.string.resetCache))
-							.setMessage(getResources().getString(R.string.reset_cache_warn))
-							.setIcon(android.R.drawable.ic_dialog_alert)
-							.setCancelable(false)
-							.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									String bundleName = getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
-									if (bundleName != null && !bundleName.isEmpty()) {
-										Log.d("vortex","Erasing cache for "+bundleName);
-										int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
-										Toast.makeText(getActivity(),n+" "+getResources().getString(R.string.reset_cache_toast),Toast.LENGTH_LONG).show();
-										askForRestart();
-									}
-								}
+			button.setOnPreferenceClickListener(preference -> {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.resetCache))
+                        .setMessage(getResources().getString(R.string.reset_cache_warn))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.ok, (dialog, which) -> {
+                            String bundleName = getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE).getString(PersistenceHelper.BUNDLE_NAME, "");
+                            if (bundleName != null && !bundleName.isEmpty()) {
+                                Log.d("vortex", "Erasing cache for " + bundleName);
+                                int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
+                                Toast.makeText(getActivity(), n + " " + getResources().getString(R.string.reset_cache_toast), Toast.LENGTH_LONG).show();
+                                askForRestart();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, (dialog, which) -> {
 
-							} )
-							.setNegativeButton(R.string.cancel, new OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-
-								}
-							})
-							.show();
-					return true;
-				}
-			});
+                        })
+                        .show();
+                return true;
+            });
 
 			final CheckBoxPreference pref = (CheckBoxPreference)findPreference("local_config");
 			final PreferenceGroup devOpt = (PreferenceGroup)findPreference("developer_options");
 			final Preference folderPref = findPreference(PersistenceHelper.FOLDER);
 			final Preference QRPref = findPreference("scan_qr_code");
 
-			QRPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
-					Uri outputFileUri = Uri.fromFile(file);
-					intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+			QRPref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
+                Uri outputFileUri = Uri.fromFile(file);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
-					startActivityForResult(intent, Constants.QR_SCAN_REQUEST);
-					return true;
-				}
-			});
+                startActivityForResult(intent, Constants.QR_SCAN_REQUEST);
+                return true;
+            });
 			//check if local folder exists. If not, create it.
-			pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object o) {
+			pref.setOnPreferenceChangeListener((preference, o) -> {
 
-					if (pref.isChecked()) {
-						devOpt.removePreference(folderPref);
-						devOpt.addPreference(serverPref);
-					} else {
+                if (pref.isChecked()) {
+                    devOpt.removePreference(folderPref);
+                    devOpt.addPreference(serverPref);
+                } else {
 
-						devOpt.removePreference(serverPref);
-						setFolderPref(folderPref);
-						devOpt.addPreference(folderPref);
+                    devOpt.removePreference(serverPref);
+                    setFolderPref(folderPref);
+                    devOpt.addPreference(folderPref);
 
-					}
-					return true;
-				}
-			});
+                }
+                return true;
+            });
 
 			if (!pref.isChecked()) {
 				devOpt.removePreference(folderPref);
@@ -311,13 +283,10 @@ public class ConfigMenu extends PreferenceActivity {
 				devOpt.addPreference(folderPref);
 			}
 
-			folderPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					setFolderPref(folderPref);
-					return true;
-				}
-			});
+			folderPref.setOnPreferenceClickListener(preference -> {
+                setFolderPref(folderPref);
+                return true;
+            });
 
 
 
@@ -328,27 +297,30 @@ public class ConfigMenu extends PreferenceActivity {
 			//Null if serverbased preference displayed.
 			if (folderPref==null)
 				return;
-			String bundleName = getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS).getString(PersistenceHelper.BUNDLE_NAME,"");
-			if (bundleName == null || bundleName.isEmpty())
+			String bundleName = getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE).getString(PersistenceHelper.BUNDLE_NAME,"");
+			if (bundleName.isEmpty())
 				folderPref.setSummary("Application name missing");
 			else {
 				String path = Constants.VORTEX_ROOT_DIR + bundleName + "/config";
 				File folder = new File(path);
 				StringBuilder textToDisplay = new StringBuilder("Location: " + path);
 				StringBuilder filesList = new StringBuilder("<FOLDER IS EMPTY. PLEASE ADD CONFIGURATION FILES!>");
+				boolean folderExists= true;
 				if (!folder.exists())
-					folder.mkdir();
-				File[] files = folder.listFiles();
-				if (files!=null && files.length>0) {
-					filesList = new StringBuilder();
-					for (File f:files) {
-						filesList.append(f.getName()).append(",");
-					}
-					filesList = new StringBuilder(filesList.substring(0, filesList.length() - 1));
-				}
-				textToDisplay.append("\n").append(filesList);
-				folderPref.setSummary(textToDisplay.toString());
-				folderPref.getEditor().putString(path,"").commit();
+                    folderExists=folder.mkdir();
+				if (folderExists) {
+                    File[] files = folder.listFiles();
+                    if (files != null && files.length > 0) {
+                        filesList = new StringBuilder();
+                        for (File f : files) {
+                            filesList.append(f.getName()).append(",");
+                        }
+                        filesList = new StringBuilder(filesList.substring(0, filesList.length() - 1));
+                    }
+                    textToDisplay.append("\n").append(filesList);
+                    folderPref.setSummary(textToDisplay.toString());
+                    folderPref.getEditor().putString(path, "").commit();
+                }
 			}
 		}
 
@@ -358,7 +330,7 @@ public class ConfigMenu extends PreferenceActivity {
 		 */
 		@Override
 		public void onPause() {
-			this.getActivity().getApplicationContext().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplicationContext().getSharedPreferences("GlobalPrefs", Context.MODE_PRIVATE)
 					.unregisterOnSharedPreferenceChangeListener(this);
 			super.onPause();
 		}
@@ -372,7 +344,7 @@ public class ConfigMenu extends PreferenceActivity {
 		@Override
 		public void onResume() {
 			//this.getPreferenceManager().setSharedPreferencesName(phone);
-			this.getActivity().getApplicationContext().getSharedPreferences("GlobalPrefs", Context.MODE_MULTI_PROCESS)
+			this.getActivity().getApplicationContext().getSharedPreferences("GlobalPrefs", Context.MODE_PRIVATE)
 					.registerOnSharedPreferenceChangeListener(this);
 			//getPreferenceScreen().getSharedPreferences()
 			//.registerOnSharedPreferenceChangeListener(this);
@@ -386,7 +358,7 @@ public class ConfigMenu extends PreferenceActivity {
 				SharedPreferences sharedPreferences, String key) {
 			Preference pref = findPreference(key);
 
-			GlobalState gs = GlobalState.getInstance();
+
 			Account mAccount = GlobalState.getmAccount(getActivity());
 			if (pref instanceof EditTextPreference) {
 				EditTextPreference etp = (EditTextPreference) pref;
@@ -409,45 +381,36 @@ public class ConfigMenu extends PreferenceActivity {
 			else if (pref instanceof ListPreference) {
 				ListPreference letp = (ListPreference) pref;
 				pref.setSummary(letp.getEntry());
-				if (letp.getKey().equals(PersistenceHelper.DEVICE_COLOR_KEY_NEW)) {
-					if (letp.getValue().equals("Master"))
-						Log.d("nils","Changed to MASTER");
+                switch (letp.getKey()) {
+                    case PersistenceHelper.DEVICE_COLOR_KEY_NEW:
+                        switch (letp.getValue()) {
+                            case "Master":
+                                Log.d("nils", "Changed to MASTER");
+                                break;
+                            case "Client":
+                                Log.d("nils", "Changed to CLIENT");
+                                break;
+                            case "Solo":
+                                //Turn off sync if on
+                                getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE).edit().putString(PersistenceHelper.SYNC_METHOD, "NONE").apply();
+                                Log.d("nils", "Changed to SOLO");
+                                Log.d("vortex", "sync stopped");
+                                ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
+                                break;
+                        }
 
-					else if (letp.getValue().equals("Client"))
-						Log.d("nils","Changed to CLIENT");
-					else if (letp.getValue().equals("Solo")) {
-						//Turn off sync if on
-						getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS,Context.MODE_MULTI_PROCESS).edit().putString(PersistenceHelper.SYNC_METHOD,"NONE").apply();
-						Log.d("nils","Changed to SOLO");
-						Log.d("vortex","sync stopped");
-						ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
-					}
+                        askForRestart();
+                        break;
+                    case PersistenceHelper.SYNC_METHOD:
+                    case PersistenceHelper.LOG_LEVEL:
+                    case PersistenceHelper.VERSION_CONTROL:
+                    case PersistenceHelper.LAG_ID_KEY:
+                    case PersistenceHelper.USER_ID_KEY:
 
-						askForRestart();
+                        askForRestart();
 
-
-
-
-				} //change the sync state if user swapped method.
-				else if (letp.getKey().equals(PersistenceHelper.SYNC_METHOD)) {
-
-					askForRestart();
-
-				}
-
-				else if (letp.getKey().equals(PersistenceHelper.LOG_LEVEL)) {
-
-						askForRestart();
-
-
-				}
-
-				else if (letp.getKey().equals(PersistenceHelper.VERSION_CONTROL)) {
-
-						askForRestart();
-
-
-				}
+                        break;
+                }
 
 			}
 
@@ -472,7 +435,7 @@ public class ConfigMenu extends PreferenceActivity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			SharedPreferences sharedPrefs = this.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS);
+			SharedPreferences sharedPrefs = this.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE);
 			if (!sharedPrefs.getString(PersistenceHelper.SYNC_METHOD,"NONE").equals("NONE")&&sharedPrefs.getString(PersistenceHelper.LAG_ID_KEY,PersistenceHelper.UNDEFINED).equals(PersistenceHelper.UNDEFINED)) {
 				Log.d("berra","bopp");
 
@@ -481,13 +444,9 @@ public class ConfigMenu extends PreferenceActivity {
 						.setMessage(R.string.team_missing_error_message)
 						.setIcon(android.R.drawable.ic_dialog_alert)
 						.setCancelable(false)
-						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
+						.setPositiveButton(R.string.ok, (dialog, which) -> {
 
-							}
-
-						})
+                        })
 						.show();
 
 
@@ -500,18 +459,9 @@ public class ConfigMenu extends PreferenceActivity {
 						.setMessage(R.string.restartMessage)
 						.setIcon(android.R.drawable.ic_dialog_alert)
 						.setCancelable(false)
-						.setPositiveButton(R.string.ok,new Dialog.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								Tools.restart(ConfigMenu.this);
-							}
-
-						})
-						.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							}
-						})
+						.setPositiveButton(R.string.ok, (dialog, which) -> Tools.restart(ConfigMenu.this))
+						.setNegativeButton(R.string.cancel, (dialog, which) -> {
+                        })
 						.show();
 
 
@@ -521,6 +471,9 @@ public class ConfigMenu extends PreferenceActivity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+
+
 
 }
 

@@ -58,9 +58,7 @@ class SyntaxException extends Exception {
  private int reason;
  private String expected;
 
- private String fixedInput = "";
-
- private void explainWhere(StringBuffer sb) {
+    private void explainWhere(StringBuffer sb) {
 	if (scanner.isEmpty()) {
 	    sb.append("It's empty!\n");
 	} else if (scanner.atStart()) {
@@ -114,7 +112,7 @@ class SyntaxException extends Exception {
  }
 
  private void explainWhat(StringBuffer sb) {
-	fixedInput = tryToFix();
+     String fixedInput = tryToFix();
 	if (null != fixedInput) {
 	    sb.append("An example of a formula I can parse is ");
 	    quotify(sb, fixedInput);

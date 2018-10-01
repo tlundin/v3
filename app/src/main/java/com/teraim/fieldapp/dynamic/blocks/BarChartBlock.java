@@ -23,18 +23,9 @@ import org.achartengine.renderer.XYSeriesRenderer;
 public class BarChartBlock extends ChartBlock {
 
     private static final long serialVersionUID = 4030652478782165890L;
-    private final String label;
-    private final String container;
-    private final String name;
 
-    private boolean displayValues=true;
-    private boolean isVisible=true;
-    private final int height;
-    private final int width;
-    private final float textSize;
     private WF_Widget myWidget;
     private CategorySeries distributionSeries;
-    private int lineWidth = 2;
     private int insertIndex = -1;
     private WF_Context myContext;
 
@@ -50,16 +41,16 @@ public class BarChartBlock extends ChartBlock {
             Log.d("vortex","error in format...default to 10");
         }
         this.blockId = blockId;
-        this.name = name;
-        this.label = label;
-        this.container = container;
-        this.textSize = textSizeF;
+        String name1 = name;
+        String label1 = label;
+        String container1 = container;
+        float textSize1 = textSizeF;
 
-        this.lineWidth = lineWidth;
-        this.displayValues = displayValues;
-        this.isVisible = isVisible;
-        this.height=height;
-        this.width=width;
+        int lineWidth1 = lineWidth;
+        boolean displayValues1 = displayValues;
+        boolean isVisible1 = isVisible;
+        int height1 = height;
+        int width1 = width;
         Log.d("vortex","height"+height);
     }
 

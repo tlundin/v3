@@ -26,9 +26,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	
 	private final SpinnerDefinition sd=new SpinnerDefinition();
 	private final LoggerI o;
-	private final int pGroupIndex = 1;
-	private final int pNameIndex = 2;
-	private Table myTable=null;
+    private Table myTable=null;
 	private List<String> cheaderL;
 	private boolean scanHeader;
 	private String[] groupsFileHeaderS;
@@ -94,12 +92,13 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	public LoadResult parse(String row, Integer currentRow) {
 
 
-		if (scanHeader && row!=null) {
+        int pNameIndex = 2;
+        if (scanHeader && row!=null) {
 			Log.d("vortex","header is: "+row);			
 			String[] varPatternHeaderS = row.split(",");
 			if (varPatternHeaderS==null||varPatternHeaderS.length<Constants.VAR_PATTERN_ROW_LENGTH) {
 				o.addRow("");
-				o.addRedText("Header corrupt in Variables.csv: "+varPatternHeaderS);
+				o.addRedText("Header corrupt in Variables.csv: "+ Arrays.toString(varPatternHeaderS));
 				return new LoadResult(this,ErrorCode.ParseError,"Corrupt header");
 			}
 			//Remove duplicte group column and varname if group file present. 
@@ -133,7 +132,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 			}
 			List<String> vheaderL = new ArrayList<String>(trimmed(varPatternHeaderS));
 			vheaderL.addAll(cheaderL);
-			myTable = new Table(vheaderL,0,pNameIndex);
+			myTable = new Table(vheaderL,0, pNameIndex);
 			scanHeader=false;
 
 		} else {
@@ -158,7 +157,8 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 						r[i] = r[i].replace("\"", "");
 
 				}
-				String pGroup = r[pGroupIndex];
+                int pGroupIndex = 1;
+                String pGroup = r[pGroupIndex];
 				List<String> trr=trimmed(r);
 				if (pGroup==null || pGroup.trim().length()==0) {
 					//Log.d("nils","found variable "+r[pNameIndex]+" in varpattern");							

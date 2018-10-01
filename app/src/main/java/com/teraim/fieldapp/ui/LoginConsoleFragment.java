@@ -1,11 +1,8 @@
 package com.teraim.fieldapp.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,9 +49,7 @@ import java.util.Random;
 
 public class LoginConsoleFragment extends Fragment implements ModuleLoaderListener {
 
-	private TextView log;
-
-	private LoggerI loginConsole,debugConsole;
+    private LoggerI loginConsole,debugConsole;
 	private PersistenceHelper globalPh,ph;
 	private ModuleLoader myLoader=null,myDBLoader=null;
 	private String bundleName;
@@ -62,7 +57,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 	private DbHelper myDb;
 	private TextView appTxt;
 	private float oldV = -1;
-	private Activity mActivity;
 	private final static String InitialBundleName = "Vortex";
 
 
@@ -73,7 +67,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				container, false);
 		TextView versionTxt;
 		Log.e("vortex","oncreatevieww!");
-		log = view.findViewById(R.id.logger);
+        TextView log = view.findViewById(R.id.logger);
 		versionTxt = view.findViewById(R.id.versionTxt);
 
 		final ImageView logo = view.findViewById(R.id.logo);
@@ -89,7 +83,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		//Create global state
 
 
-		globalPh = new PersistenceHelper(mActivity.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_MULTI_PROCESS));
+		globalPh = new PersistenceHelper(getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE));
 
 		debugConsole = Start.singleton.getLogger();
 
@@ -114,38 +108,27 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 		//TODO: Move this code into above in next release.
 		File folder = new File(Constants.VORTEX_ROOT_DIR+bundleName);
-//		if(!folder.mkdirs())
-//			Log.d("NILS","Failed to create App root folder");
 		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/config");
-//		if(!folder.mkdirs())
-//			Log.("NILS","Failed to create config folder");
 		folder = new File(Constants.VORTEX_ROOT_DIR+bundleName+"/cache");
-//		if(!folder.mkdirs())
-//			Log.e("NILS","Failed to create cache folder");
-
-
 
 		//write down version..quickly! :)
 		globalPh.put(PersistenceHelper.CURRENT_VERSION_OF_PROGRAM, Constants.VORTEX_VERSION);
-
-
-
 
 		bundleName = globalPh.get(PersistenceHelper.BUNDLE_NAME);
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = InitialBundleName;
 
-		ph	 = new PersistenceHelper(mActivity.getApplicationContext().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_MULTI_PROCESS));
+		ph	 = new PersistenceHelper(getActivity().getApplicationContext().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_PRIVATE));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));
-		String appBaseUrl = server()+bundleName.toLowerCase()+"/";
-
-		//Log.d("vortex",  logoUrl);
-		//new DownloadImageTask(logo)
-		//.execute(logoUrl.toLowerCase());
+		String p_serverURL = globalPh.get(PersistenceHelper.SERVER_URL);
+		String checked_URL = Tools.server(p_serverURL);
+		if (!checked_URL.equals(p_serverURL))
+		    globalPh.put(PersistenceHelper.SERVER_URL,checked_URL);
+		String appBaseUrl = checked_URL+bundleName.toLowerCase()+"/";
 		final String appRootFolderPath = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/";
-		loginConsole = new PlainLogger(mActivity,"INITIAL");
+		loginConsole = new PlainLogger(getActivity(),"INITIAL");
 		loginConsole.setOutputView(log);
 
 		Tools.onLoadCacheImage(appBaseUrl,"bg_image.jpg", appRootFolderPath+"cache/", new Tools.WebLoaderCb() {
@@ -191,10 +174,10 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (globalPh.getB("local_config"))
 			myModules = new Configuration(Constants.getCurrentlyKnownModules(ConfigurationModule.Source.file,globalPh,ph,null,bundleName,debugConsole));
 		else
-			myModules = new Configuration(Constants.getCurrentlyKnownModules(ConfigurationModule.Source.internet,globalPh,ph,server(),bundleName,debugConsole));
+			myModules = new Configuration(Constants.getCurrentlyKnownModules(ConfigurationModule.Source.internet,globalPh,ph,globalPh.get(PersistenceHelper.SERVER_URL),bundleName,debugConsole));
 		String loaderId = "moduleLoader";
 		boolean allFrozen = ph.getB(PersistenceHelper.ALL_MODULES_FROZEN+loaderId);
-		myLoader = new ModuleLoader(loaderId,myModules,loginConsole,globalPh,allFrozen,debugConsole,this,mActivity);
+		myLoader = new ModuleLoader(loaderId,myModules,loginConsole,globalPh,allFrozen,debugConsole,this,getActivity());
 
 		if (Constants.FreeVersion && expired())
 			showErrorMsg("The license has expired. The App still works, but you will not be able to export any data.");
@@ -285,8 +268,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 			Log.e("NILS","Failed to create export folder");
 
 		//Set defaults if none.
-		if (globalPh.get(PersistenceHelper.SERVER_URL).equals(PersistenceHelper.UNDEFINED))
-			globalPh.put(PersistenceHelper.SERVER_URL, "www.teraim.com");
 		if (globalPh.get(PersistenceHelper.BUNDLE_NAME).equals(PersistenceHelper.UNDEFINED))
 			globalPh.put(PersistenceHelper.BUNDLE_NAME, InitialBundleName);
 		if (globalPh.get(PersistenceHelper.VERSION_CONTROL).equals(PersistenceHelper.UNDEFINED))
@@ -327,35 +308,17 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 	private void showErrorMsg(String error) {
-		new AlertDialog.Builder(mActivity)
+		new AlertDialog.Builder(getActivity())
 				.setTitle("Error message")
 				.setMessage(error)
 				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setCancelable(false)
-				.setNeutralButton("Ok",new Dialog.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
+				.setNeutralButton("Ok", (dialog, which) -> {
 
-					}
-				} )
+				})
 				.show();
 	}
 
-	private String server() {
-		String serverUrl = globalPh.get(PersistenceHelper.SERVER_URL);
-		if (!serverUrl.endsWith("/"))
-			serverUrl+="/";
-		if (!serverUrl.startsWith("http://"))
-			serverUrl = "http://"+serverUrl;
-		return serverUrl;
-	}
-
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mActivity = activity;
-	}
 
 	private CharSequence logTxt="";
 
@@ -384,7 +347,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				}
 
 				Table t = (Table) m.getEssence();
-				myDb = new DbHelper(mActivity.getApplicationContext(), t, globalPh, ph, bundleName);
+				myDb = new DbHelper(getActivity().getApplicationContext(), t, globalPh, ph, bundleName);
                 boolean majorVersionControl = "major".equals(globalPh.get(PersistenceHelper.VERSION_CONTROL));
 				if (socketBroken && allFrozen || (majorVersionControl && allFrozen && !majorVersionChange)) {
 					//no need to load.
@@ -392,11 +355,11 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					loadSuccess(_loaderId, majorVersionChange, "\ndb modules unchanged",socketBroken);
 				} else {
 					//Load configuration files asynchronously.
-					Constants.getDBImportModules(globalPh, ph, server(), bundleName, debugConsole, myDb, t, new AsyncLoadDoneCb() {
+					Constants.getDBImportModules(globalPh, ph, globalPh.get(PersistenceHelper.SERVER_URL), bundleName, debugConsole, myDb, t, new AsyncLoadDoneCb() {
 						public void onLoadSuccesful(List<ConfigurationModule> modules) {
 							Configuration dbModules = new Configuration(modules);
 							if (modules != null) {
-								myDBLoader = new ModuleLoader(_loaderId, dbModules, loginConsole, globalPh, allFrozen, debugConsole, LoginConsoleFragment.this, mActivity);
+								myDBLoader = new ModuleLoader(_loaderId, dbModules, loginConsole, globalPh, allFrozen, debugConsole, LoginConsoleFragment.this, getActivity());
 								LoginConsoleFragment.this.logTxt = TextUtils.concat(LoginConsoleFragment.this.logTxt, "\nDefaults & GIS modules");
 								myDBLoader.loadModules(majorVersionChange, socketBroken);
 							} else
@@ -418,7 +381,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 
 
 			WorkFlowBundleConfiguration wfC = ((WorkFlowBundleConfiguration)myModules.getModule(bundleName));
-			List<Workflow> workflows = (List<Workflow>)wfC.getEssence();
+			@SuppressWarnings("unchecked") List<Workflow> workflows = (List<Workflow>)wfC.getEssence();
 			String imgMetaFormat = wfC.getImageMetaFormat();
 			Table t = (Table)(myModules.getModule(VariablesConfiguration.NAME).getEssence());
 			SpinnerDefinition sd = (SpinnerDefinition)(myModules.getModule(SpinnerConfiguration.NAME).getEssence());
@@ -426,9 +389,9 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 				Log.e("vortex","table null - load fail");
 				return;
 			}
-			if (mActivity!=null) {
+			if (getActivity()!=null) {
 				final GlobalState gs =
-						GlobalState.createInstance(mActivity.getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt,imgMetaFormat);
+						GlobalState.createInstance(getActivity().getApplicationContext(),globalPh,ph,debugConsole,myDb, workflows, t,sd, this.logTxt,imgMetaFormat);
 
 				//check if backup required.
 				if (gs.getBackupManager().timeToBackup()) {
@@ -440,6 +403,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					loginConsole.addRow(getString(R.string.done_loading));
 					loginConsole.draw();
 				}
+
 				start(gs);
 
 			} else {
@@ -536,6 +500,7 @@ private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	@Override
 	public void loadFail(String loaderId) {
 		Log.d("vortex","loadFail!");
+        ph.put(PersistenceHelper.ALL_MODULES_FROZEN+loaderId,false);
 		LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(MenuActivity.INITFAILED));
 	}
 

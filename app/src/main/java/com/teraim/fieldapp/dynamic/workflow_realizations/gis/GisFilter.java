@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.List;
-
 import android.graphics.Bitmap;
 import android.graphics.Paint.Style;
 

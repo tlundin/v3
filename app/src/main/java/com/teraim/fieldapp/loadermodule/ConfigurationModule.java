@@ -20,7 +20,8 @@ public abstract class ConfigurationModule {
 
 
 
-	public enum Type {
+    public boolean tryingThawAfterFail,tryingWebAfterFail;
+    public enum Type {
 		json,
 		xml,
 		csv,

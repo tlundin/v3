@@ -67,8 +67,8 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 	private ProvytaView pyv;
 	private LayoutInflater inflater;
 	private DelyteManager dym;
-	private VariableConfiguration al;
-	private Button sparaB,nyUtlaggB,calculateB;
+    private Button sparaB;
+    private Button calculateB;
 	private LinearLayout areaL;
 
 
@@ -105,7 +105,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 		py.addView(pyv);
 
-		al = gs.getVariableConfiguration();
+        VariableConfiguration al = gs.getVariableConfiguration();
 		//Get all variables from group "delningstag".
 
 		//Delyta equals variable name..eg. T�g1 = Delyta 1 asf.
@@ -158,7 +158,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 
 //		calculateB = (Button)v.findViewById(R.id.redraw);
 //		calculateB.setEnabled(false);
-		nyUtlaggB = v.findViewById(R.id.rensa);
+        Button nyUtlaggB = v.findViewById(R.id.rensa);
 		nyUtlaggB.setEnabled(gs.isMaster()||gs.isSolo());
 		sparaB = v.findViewById(R.id.spara);
 		sparaB.setEnabled(false);

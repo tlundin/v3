@@ -23,8 +23,6 @@ public class StartCameraBlock extends Block implements EventListener {
     private static final long serialVersionUID = -8381530803516157092L;
     private final List<Expressor.EvalExpr> fileNameE;
     private final String rawName;
-   // private String fileName;
-    private final int TAKE_PHOTO_CODE = 0;
     private WF_Context myContext;
 
     public StartCameraBlock(String id, String fileName) {
@@ -51,6 +49,8 @@ public class StartCameraBlock extends Block implements EventListener {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
                 this.myContext = myContext;
+                // private String fileName;
+                int TAKE_PHOTO_CODE = 0;
                 myContext.getActivity().startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
             } catch (IOException e) {
                 Log.e("vortex", "failed to create image file.");

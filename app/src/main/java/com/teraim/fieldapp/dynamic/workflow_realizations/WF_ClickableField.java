@@ -25,8 +25,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -71,7 +69,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
     private final LinearLayout inputContainer;
 
-    final Map<Variable, VariableView> myVars = new LinkedHashMap<Variable, VariableView>();
+    final Map<Variable, VariableView> myVars = new LinkedHashMap<>();
 
     private boolean autoOpenSpinner = true;
     private final GlobalState gs;
@@ -79,7 +77,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
     private final VariableConfiguration al;
     private static final boolean HIDE = false;
     private static final boolean SHOW = true;
-    private final Map<Variable, String[]> values = new HashMap<Variable, String[]>();
+    private final Map<Variable, String[]> values = new HashMap<>();
 
 
 
@@ -90,7 +88,6 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
     private boolean singleBoolean = false;
 
     private Drawable originalBackground=null;
-    protected View longClickedRow;
 
     boolean iAmOpen = false;
     private Spinner firstSpinner = null;
@@ -187,39 +184,33 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                         createInputFields();
 
                     }
-                    Iterator<Map.Entry<Variable, VariableView>> its = myVars.entrySet()
-                            .iterator();
-                    while (its.hasNext()) {
-                        Map.Entry<Variable, VariableView> pairs = its
-                                .next();
+                    for (Entry<Variable, VariableView> pairs : myVars.entrySet()) {
                         Variable variable = pairs.getKey();
                         Log.d("vortex", "deleting variable " + variable.getId()
                                 + " with value " + variable.getValue());
                         DataType type = variable.getType();
                         View view = pairs.getValue().view;
 
-                            if (type == DataType.numeric || type == DataType.decimal
-                                    || type == DataType.text) {
-                                EditText etview = view
-                                        .findViewById(R.id.edit);
-                                etview.setText("");
-                            } else if (type == DataType.list) {
-                                LinearLayout sl = (LinearLayout) view;
-                                Spinner sp = sl.findViewById(R.id.spinner);
-                                if (sp.getTag(R.string.u1) != null) {
-                                    TextView descr = sl
-                                            .findViewById(R.id.extendedDescr);
-                                    descr.setText("");
-                                }
-                                sp.setSelection(-1);
-
-                            } else if (type == DataType.bool) {
-                                RadioGroup rbg = view
-                                        .findViewById(R.id.radioG);
-                                rbg.check(-1);
-                            } else if (type == DataType.auto_increment) {
-
+                        if (type == DataType.numeric || type == DataType.decimal
+                                || type == DataType.text) {
+                            EditText etview = view
+                                    .findViewById(R.id.edit);
+                            etview.setText("");
+                        } else if (type == DataType.list) {
+                            LinearLayout sl = (LinearLayout) view;
+                            Spinner sp = sl.findViewById(R.id.spinner);
+                            if (sp.getTag(R.string.u1) != null) {
+                                TextView descr = sl
+                                        .findViewById(R.id.extendedDescr);
+                                descr.setText("");
                             }
+                            sp.setSelection(-1);
+
+                        } else if (type == DataType.bool) {
+                            RadioGroup rbg = view
+                                    .findViewById(R.id.radioG);
+                            rbg.check(-1);
+                        }
 
                     }
                     save();
@@ -228,15 +219,13 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     return true;
                 case R.id.menu_info:
                     if (row != null) {
-                        String msg =
-                                "Var_Label: "+al.getVarLabel(row)+"\n" +
-                                        "Var_Desc : "+al.getVariableDescription(row)+"\n";
+                        StringBuilder msg =
+                                new StringBuilder("Var_Label: " + al.getVarLabel(row) + "\n" +
+                                        "Var_Desc : " + al.getVariableDescription(row) + "\n");
                         int i = 1;
 
                         while (row!=null)  {
-                            msg +=
-                                    " Group_Lbl "+i+": "+al.getGroupLabel(row)+"\n"+
-                                            " Group_Desc "+i+":  "+al.getGroupDescription(row)+"\n";
+                            msg.append(" Group_Lbl ").append(i).append(": ").append(al.getGroupLabel(row)).append("\n").append(" Group_Desc ").append(i).append(":  ").append(al.getGroupDescription(row)).append("\n");
                             i++;
                             row = (it.hasNext()?it.next().getBackingDataSet():null);
                         }
@@ -244,15 +233,9 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
                         new AlertDialog.Builder(myContext.getContext())
                                 .setTitle(gs.getString(R.string.description))
-                                .setMessage(msg)
+                                .setMessage(msg.toString())
                                 .setPositiveButton(android.R.string.yes,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(
-                                                    DialogInterface dialog,
-                                                    int which) {
-                                                mode.finish();
-                                            }
-                                        })
+                                        (dialog, which) -> mode.finish())
                                 .setIcon(android.R.drawable.ic_dialog_info).show();
                     }
                     return true;
@@ -301,117 +284,108 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
         // Empty all inputs and save.
         getWidget().setClickable(true);
-        getWidget().setOnLongClickListener(new OnLongClickListener() {
+        getWidget().setOnLongClickListener(v -> {
 
-            @Override
-            public boolean onLongClick(View v) {
-
-                if (mActionMode != null) {
-                    return false;
-                }
-
-
-
-
-                // Start the CAB using the ActionMode.Callback defined above
-                mActionMode = ((Activity) myContext.getContext())
-                        .startActionMode(mActionModeCallback);
-                WF_ClickableField.this.getWidget().setSelected(true);
-                return true;
-
+            if (mActionMode != null) {
+                return false;
             }
+
+
+
+
+            // Start the CAB using the ActionMode.Callback defined above
+            mActionMode = ((Activity) myContext.getContext())
+                    .startActionMode(mActionModeCallback);
+            WF_ClickableField.this.getWidget().setSelected(true);
+            return true;
+
         });
 
-        getWidget().setOnClickListener(new OnClickListener() {
+        getWidget().setOnClickListener(v -> {
+            if (WF_ClickableField.this instanceof WF_ClickableField_Slider) {
+                Log.d("vortex","click denied! I am slider ");
+                return;
+            }
 
-            @Override
-            public void onClick(final View v) {
-                if (WF_ClickableField.this instanceof WF_ClickableField_Slider) {
-                    Log.d("vortex","click denied! I am slider ");
-                    return;
-                }
+            if(inputContainer.getChildCount()==0) {
+                Log.d("boo","creating input fields!");
+                createInputFields();
 
-                if(inputContainer.getChildCount()==0) {
-                    Log.d("boo","creating input fields!");
-                    createInputFields();
+            } else {
+                Log.d("boo","not! creating input fields!");
+            }
+            setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
 
-                } else {
-                    Log.d("boo","not! creating input fields!");
-                }
-                setBackgroundColor(Color.parseColor(Constants.Color_Pressed));
+            // special case. No dialog.
 
-                // special case. No dialog.
+            if (singleBoolean) {
+                Log.d("vortex","singleboolean true..setting radio");
+                VariableView vv = myVars.values().iterator().next();
+                Variable var = myVars.keySet().iterator().next();
+                String value = var.getValue();
+                RadioButton ja = vv.view.findViewById(R.id.ja);
+                RadioButton nej = vv.view.findViewById(R.id.nej);
+                if (value == null || var.getValue().equals("false"))
+                    ja.setChecked(true);
+                else
+                    nej.setChecked(true);
+                save();
+                refresh();
+                //v.setBackgroundDrawable(originalBackground);
+                revertBackgroundColor();
+            } else {
+                // On click, create dialog
+                AlertDialog.Builder alert = new AlertDialog.Builder(v
+                        .getContext());
+                alert.setTitle(label);
+                alert.setMessage(myDescription);
+                refreshInputFields();
+                iAmOpen = true;
 
-                if (singleBoolean) {
-                    Log.d("vortex","singleboolean true..setting radio");
-                    VariableView vv = myVars.values().iterator().next();
-                    Variable var = myVars.keySet().iterator().next();
-                    String value = var.getValue();
-                    RadioButton ja = vv.view.findViewById(R.id.ja);
-                    RadioButton nej = vv.view.findViewById(R.id.nej);
-                    if (value == null || var.getValue().equals("false"))
-                        ja.setChecked(true);
-                    else
-                        nej.setChecked(true);
-                    save();
-                    refresh();
-                    //v.setBackgroundDrawable(originalBackground);
-                    revertBackgroundColor();
-                } else {
-                    // On click, create dialog
-                    AlertDialog.Builder alert = new AlertDialog.Builder(v
-                            .getContext());
-                    alert.setTitle(label);
-                    alert.setMessage(myDescription);
-                    refreshInputFields();
-                    iAmOpen = true;
+                alert.setPositiveButton(R.string.save,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                iAmOpen = false;
+                                save();
+                                refresh();
+                                ViewGroup x = ((ViewGroup) inputContainer
+                                        .getParent());
+                                if (x != null)
+                                    x.removeView(inputContainer);
+                                revertBackgroundColor();
+                                //v.setBackgroundDrawable(originalBackground);
+                            }
+                        });
+                alert.setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int whichButton) {
+                                iAmOpen = false;
+                                ViewGroup x = ((ViewGroup) inputContainer
+                                        .getParent());
+                                if (x != null)
+                                    x.removeView(inputContainer);
+                                revertBackgroundColor();
 
-                    alert.setPositiveButton(R.string.save,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    iAmOpen = false;
-                                    save();
-                                    refresh();
-                                    ViewGroup x = ((ViewGroup) inputContainer
-                                            .getParent());
-                                    if (x != null)
-                                        x.removeView(inputContainer);
-                                    revertBackgroundColor();
-                                    //v.setBackgroundDrawable(originalBackground);
-                                }
-                            });
-                    alert.setNegativeButton(R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                                    int whichButton) {
-                                    iAmOpen = false;
-                                    ViewGroup x = ((ViewGroup) inputContainer
-                                            .getParent());
-                                    if (x != null)
-                                        x.removeView(inputContainer);
-                                    revertBackgroundColor();
+                                //v.setBackgroundDrawable(originalBackground);
+                            }
+                        });
+                if (inputContainer.getParent() != null)
+                    ((ViewGroup) inputContainer.getParent())
+                            .removeView(inputContainer);
+                Dialog d = alert.setView(inputContainer).create();
+                d.setCancelable(false);
+                // WindowManager.LayoutParams lp = new
+                // WindowManager.LayoutParams();
+                // lp.copyFrom(d.getWindow().getAttributes());
+                // lp.height = WindowManager.LayoutParams.FILL_PARENT;
+                // lp.height = 600;
 
-                                    //v.setBackgroundDrawable(originalBackground);
-                                }
-                            });
-                    if (inputContainer.getParent() != null)
-                        ((ViewGroup) inputContainer.getParent())
-                                .removeView(inputContainer);
-                    Dialog d = alert.setView(inputContainer).create();
-                    d.setCancelable(false);
-                    // WindowManager.LayoutParams lp = new
-                    // WindowManager.LayoutParams();
-                    // lp.copyFrom(d.getWindow().getAttributes());
-                    // lp.height = WindowManager.LayoutParams.FILL_PARENT;
-                    // lp.height = 600;
-
-                    d.show();
-
-                }
-                // d.getWindow().setAttributes(lp);
+                d.show();
 
             }
+            // d.getWindow().setAttributes(lp);
 
         });
 
@@ -428,12 +402,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
     private void revertBackgroundColor() {
         if (originalBackground!=null) {
             getWidget().setBackgroundColor(backgroundColor);
-            int sdk = android.os.Build.VERSION.SDK_INT;
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                getWidget().setBackgroundDrawable(originalBackground);
-            } else {
-                getWidget().setBackground(originalBackground);
-            }
+            getWidget().setBackground(originalBackground);
             originalBackground=null;
         } else
             getWidget().setBackgroundColor(backgroundColor);
@@ -444,8 +413,8 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
     private boolean useStatic = false;
 
-    public void addVariable(final Variable var, boolean displayOut,
-                            String format, boolean isVisible, boolean showHistorical,boolean useStatic) {
+    public void addStaticVariable(final Variable var, boolean displayOut,
+                            String format, boolean isVisible, boolean showHistorical) {
         this.useStatic=true;
         addVariable(var,displayOut,format,isVisible,showHistorical);
     }
@@ -1225,10 +1194,9 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             if (value != null) {
                                 for (int i = 0; i < sp.getAdapter().getCount(); i++) {
                                     item = (String) sp.getAdapter().getItem(i);
-                                    if (item == null)
-                                        continue;
-                                    else if (item.equals(value))
+                                    if (item!=null && item.equals(value)) {
                                         sp.setSelection(i);
+                                    }
                                 }
                             }
                         } else {
@@ -1261,7 +1229,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
     public void attachRule(Rule r) {
         if (myRules == null)
-            myRules = new ArrayList<Rule>();
+            myRules = new ArrayList<>();
         myRules.add(r);
         Log.d("vortex","Added rule "+r.getCondition());
     }

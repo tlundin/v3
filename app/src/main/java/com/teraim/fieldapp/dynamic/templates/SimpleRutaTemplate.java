@@ -17,8 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -57,15 +55,10 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 	private List<WF_Container> myLayouts;
 
 
-	/* (non-Javadoc)
-	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-	 */
-    private ViewGroup myContainer = null;
-	private GestureLibrary gestureLib;
+    private GestureLibrary gestureLib;
 	private List<Integer> rutor;
-	private  ArrayAdapter<Integer> fieldListAdapter;
 
-	private Variable rutaKlar;
+    private Variable rutaKlar;
 
 	private TextView rutOutputValueField;
 	private final static int MIN_UNSYNCED = 5;
@@ -83,7 +76,10 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		//myContext.resetState();
 		myLayouts = new ArrayList<WF_Container>();
 		Log.d("nils","in onCreateView of ruta_template");
-		myContainer = container;
+        /* (non-Javadoc)
+         * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+         */
+        ViewGroup myContainer = container;
 		View v = inflater.inflate(R.layout.template_ruta_wf, container, false);	
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		ListView fieldList = v.findViewById(R.id.fieldListL);
@@ -202,84 +198,76 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 				temp.add(Integer.parseInt(val[0]));
 			rutor.addAll(temp);
 			Collections.sort(rutor);		
-		} 
+		}
 
 
-		fieldListAdapter = new ArrayAdapter<Integer>(this.getActivity(),
-				android.R.layout.simple_list_item_1, android.R.id.text1, rutor);
-		final ArrayAdapter selectedListA = new ArrayAdapter(this.getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, prevRutor);
+        ArrayAdapter<Integer> fieldListAdapter = new ArrayAdapter<Integer>(this.getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, rutor);
+		final ArrayAdapter selectedListA = new ArrayAdapter<>(this.getActivity(),android.R.layout.simple_list_item_1, android.R.id.text1, prevRutor);
 		fieldList.setAdapter(fieldListAdapter);
 		selectedList.setAdapter(selectedListA);
-		fieldList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View view,final int position,
-					long arg3) {
+		fieldList.setOnItemClickListener((arg0, view, position, arg3) -> {
 
 
-				final Variable currentRuta = varCache.getGlobalVariable(NamedVariables.CURRENT_RUTA);
-				final Integer rl = rutor.get(position);
-				final String pi = rl.toString();
-				final Map<String,String>rKeyChain = Tools.createKeyMap("år",Constants.getYear(),"ruta",pi);
-				rutaKlar = varCache.getVariable(rKeyChain, NamedVariables.RUTA_KLAR_AV_ANVANDARE);
-				String rutaKS = rutaKlar.getValue();
-				final boolean rutaK = rutaKS!=null&&rutaKS.equals("1");
-				String msg = null;
-				if (rutaK)
-					msg = "Vill du verkligen öppna ruta "+pi+"? Den är markerad klar!!!";
-				else 
-					msg = "Vill du "+(currentRuta.getValue()!=null&&currentRuta.getValue().equals(pi)?"fortsätta":"börja")+" insamling på ruta "+pi+"?";
-				new AlertDialog.Builder(SimpleRutaTemplate.this.getActivity())
-				.setTitle("Starta insamling")
-				.setMessage(msg) 
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setCancelable(false)
-				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+			final Variable currentRuta = varCache.getGlobalVariable(NamedVariables.CURRENT_RUTA);
+			final Integer rl = rutor.get(position);
+			final String pi = rl.toString();
+			final Map<String,String>rKeyChain = Tools.createKeyMap("år",Constants.getYear(),"ruta",pi);
+			rutaKlar = varCache.getVariable(rKeyChain, NamedVariables.RUTA_KLAR_AV_ANVANDARE);
+			String rutaKS = rutaKlar.getValue();
+			final boolean rutaK = rutaKS!=null&&rutaKS.equals("1");
+			String msg = null;
+			if (rutaK)
+				msg = "Vill du verkligen öppna ruta "+pi+"? Den är markerad klar!!!";
+			else
+				msg = "Vill du "+(currentRuta.getValue()!=null&&currentRuta.getValue().equals(pi)?"fortsätta":"börja")+" insamling på ruta "+pi+"?";
+			new AlertDialog.Builder(SimpleRutaTemplate.this.getActivity())
+			.setTitle("Starta insamling")
+			.setMessage(msg)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which)  {		
-						if (rutaK)
-							rutaKlar.setValue("0");
-						currentRuta.setValue(pi);
-						//Nullify currentprovyta and currentlinje
-						varCache.getGlobalVariable(NamedVariables.CURRENT_PROVYTA).deleteValue();
-						varCache.getGlobalVariable(NamedVariables.CURRENT_LINJE).deleteValue();
-						varCache.getGlobalVariable(NamedVariables.CURRENT_DELYTA).deleteValue();
-						varCache.getGlobalVariable(NamedVariables.CURRENT_SMAPROVYTA).deleteValue();
-						//kill the current variable cache.
-						//						gs.getVariableCache().invalidateAll();
-						Variable stratum = varCache.getVariable(rKeyChain,NamedVariables.STRATUM);
-						Variable hStratum = varCache.getVariable(rKeyChain,NamedVariables.STRATUM_HISTORICAL);
-						String strH = stratum.getHistoricalValue();
-						if (strH==null) {
-							o.addRow("");
-							o.addRedText("Stratum missing for ruta "+pi+" Will default to 1");
-							strH="1";
-						}
-						if (hStratum!=null) { 
-							hStratum.setValue(strH);
-							Log.d("nils","HISTORICAL STRATUM SET TO "+hStratum.getValue());
-						} else
-							Log.e("vortex","HISTO_STRATUM NULL!!");
-						//copy
-						prevRutor.add(0,rl);
-						selectedListA.notifyDataSetChanged();
-						Log.d("vortex","in simpleruta, after refreshkey, before menu redraw. PI: "+pi+" CurrentR_: "+currentRuta.getValue()+"\nkeyhash: "+gs.getVariableCache().getContext().toString());
-
-						Log.d("vortex","in simpleruta, after refreshkey, after menu redraw!!");
-						Start.singleton.changePage(new ProvytaTemplate(), "Provyta");					
+				@Override
+				public void onClick(DialogInterface dialog, int which)  {
+					if (rutaK)
+						rutaKlar.setValue("0");
+					currentRuta.setValue(pi);
+					//Nullify currentprovyta and currentlinje
+					varCache.getGlobalVariable(NamedVariables.CURRENT_PROVYTA).deleteValue();
+					varCache.getGlobalVariable(NamedVariables.CURRENT_LINJE).deleteValue();
+					varCache.getGlobalVariable(NamedVariables.CURRENT_DELYTA).deleteValue();
+					varCache.getGlobalVariable(NamedVariables.CURRENT_SMAPROVYTA).deleteValue();
+					//kill the current variable cache.
+					//						gs.getVariableCache().invalidateAll();
+					Variable stratum = varCache.getVariable(rKeyChain,NamedVariables.STRATUM);
+					Variable hStratum = varCache.getVariable(rKeyChain,NamedVariables.STRATUM_HISTORICAL);
+					String strH = stratum.getHistoricalValue();
+					if (strH==null) {
+						o.addRow("");
+						o.addRedText("Stratum missing for ruta "+pi+" Will default to 1");
+						strH="1";
 					}
+					if (hStratum!=null) {
+						hStratum.setValue(strH);
+						Log.d("nils","HISTORICAL STRATUM SET TO "+hStratum.getValue());
+					} else
+						Log.e("vortex","HISTO_STRATUM NULL!!");
+					//copy
+					prevRutor.add(0,rl);
+					selectedListA.notifyDataSetChanged();
+					Log.d("vortex","in simpleruta, after refreshkey, before menu redraw. PI: "+pi+" CurrentR_: "+currentRuta.getValue()+"\nkeyhash: "+gs.getVariableCache().getContext().toString());
 
-				})
-				.setNegativeButton(android.R.string.no,new DialogInterface.OnClickListener() {
+					Log.d("vortex","in simpleruta, after refreshkey, after menu redraw!!");
+					Start.singleton.changePage(new ProvytaTemplate(), "Provyta");
+				}
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {}} ) 
-					.show();
+			})
+			.setNegativeButton(android.R.string.no,new DialogInterface.OnClickListener() {
 
-
-
-			}
+				@Override
+				public void onClick(DialogInterface dialog, int which) {}} )
+				.show();
 
 
 

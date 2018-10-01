@@ -42,16 +42,9 @@ public class Tracker extends Service implements LocationListener {
 	// flag for GPS status
 	boolean isGPSEnabled = false;
 
-	// flag for network status
-	private boolean isNetworkEnabled = false;
+    private Location location; // location
 
-	private boolean canGetLocation = false;
-
-	private Location location; // location
-	private double latitude; // latitude
-	private double longitude; // longitude
-
-	// The minimum distance to change Updates in meters
+    // The minimum distance to change Updates in meters
 	private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
 
 	// The minimum time between updates in milliseconds
@@ -63,13 +56,12 @@ public class Tracker extends Service implements LocationListener {
 
 	private final Variable myX, myY, myAcc;
 
-	private final Map<String, String> YearKeyHash = new HashMap<String, String>();
-
-	public Tracker() {
-		YearKeyHash.put("år", Constants.getYear());
-		myX = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LAT);
-		myY = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_LONG);
-		myAcc = GlobalState.getInstance().getVariableCache().getVariable(YearKeyHash, NamedVariables.MY_GPS_ACCURACY);
+    public Tracker() {
+        Map<String, String> yearKeyHash = new HashMap<String, String>();
+        yearKeyHash.put("år", Constants.getYear());
+		myX = GlobalState.getInstance().getVariableCache().getVariable(yearKeyHash, NamedVariables.MY_GPS_LAT);
+		myY = GlobalState.getInstance().getVariableCache().getVariable(yearKeyHash, NamedVariables.MY_GPS_LONG);
+		myAcc = GlobalState.getInstance().getVariableCache().getVariable(yearKeyHash, NamedVariables.MY_GPS_ACCURACY);
 
 
 	}
@@ -103,17 +95,19 @@ public class Tracker extends Service implements LocationListener {
 					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
 			// getting network status
-			isNetworkEnabled = false;
+            // flag for network status
+            boolean isNetworkEnabled = false;
 			//locationManager
 			//		.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 			if (!isGPSEnabled && !isNetworkEnabled) {
 				return ErrorCode.GPS_NOT_ENABLED;
 			} else {
-				this.canGetLocation = true;
+                boolean canGetLocation = true;
 				// First get location from Network Provider
 				if (isNetworkEnabled) {
-					if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+					if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+							ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 						// TODO: Consider calling
 						//    ActivityCompat#requestPermissions
 						// here to request the missing permissions, and then overriding
@@ -129,7 +123,8 @@ public class Tracker extends Service implements LocationListener {
 							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 					Log.d("Network", "Network");
 					if (locationManager != null) {
-						if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+						if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+								ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 							// TODO: Consider calling
 							//    ActivityCompat#requestPermissions
 							// here to request the missing permissions, and then overriding
@@ -142,8 +137,10 @@ public class Tracker extends Service implements LocationListener {
 						location = locationManager
 								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 						if (location != null) {
-							latitude = location.getLatitude();
-							longitude = location.getLongitude();
+                            // latitude
+                            double latitude = location.getLatitude();
+                            // longitude
+                            double longitude = location.getLongitude();
 						}
 					}
 				}
@@ -151,7 +148,8 @@ public class Tracker extends Service implements LocationListener {
 				if (isGPSEnabled) {
 					if (location == null) {
 
-						if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+						if (ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+								ActivityCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 							// TODO: Consider calling
 							//    ActivityCompat#requestPermissions
 							// here to request the missing permissions, and then overriding

@@ -33,7 +33,6 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     private final List<Expressor.EvalExpr> argumentE;
     private final String groupName;
     private String function;
-    private String argument;
     private Integer currentEvaluationOfArg = null;
     private long delay=25;
 
@@ -84,12 +83,12 @@ public class CoupledVariableGroupBlock extends Block implements EventListener {
     public void onEvent(Event e) {
         Log.d("vortex","in onEvent");
         if (e.getType() == Event.EventType.onSave) {
-            argument = Expressor.analyze(argumentE);
-            Log.d("vortex","in onSave with "+argument);
+            String argument = Expressor.analyze(argumentE);
+            Log.d("vortex","in onSave with "+ argument);
             if (!Tools.isNumeric(argument)){
-                Log.d("vortex","cannot calibrate...argument evaluates to non numeric: "+argument);
+                Log.d("vortex","cannot calibrate...argument evaluates to non numeric: "+ argument);
                 o.addRow("");
-                o.addRedText("Argument to SUM in SliderGroup "+getName()+" is not numeric: "+argument+" Expr: "+argumentE);
+                o.addRedText("Argument to SUM in SliderGroup "+getName()+" is not numeric: "+ argument +" Expr: "+argumentE);
                 return;
             }
             final int sumToReach = Integer.parseInt(argument);

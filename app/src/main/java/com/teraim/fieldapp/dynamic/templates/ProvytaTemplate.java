@@ -59,11 +59,7 @@ import java.util.Map;
 public class ProvytaTemplate extends Executor implements EventListener,OnGesturePerformedListener {
 	private List<WF_Container> myLayouts;
 
-	/* (non-Javadoc)
-	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-	 */
-    private ViewGroup myContainer = null;
-	private GestureLibrary gestureLib;
+    private GestureLibrary gestureLib;
 	private final String[] linjeA=new String[Constants.MAX_NILS_LINJER+1];
 	private Variable liv,pyv;
 	private String provytaThatWasSelected=null;
@@ -138,7 +134,10 @@ public class ProvytaTemplate extends Executor implements EventListener,OnGesture
 		//myContext.resetState();
 		myLayouts = new ArrayList<WF_Container>();
 		Log.d("nils","in onCreateView of provyta_template");
-		myContainer = container;
+        /* (non-Javadoc)
+         * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+         */
+        ViewGroup myContainer = container;
 		View v = inflater.inflate(R.layout.template_provyta_wf, container, false);	
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		ListView selectedList = v.findViewById(R.id.SelectedL);

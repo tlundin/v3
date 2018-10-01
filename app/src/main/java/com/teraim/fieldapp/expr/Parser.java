@@ -65,7 +65,7 @@ public class Parser {
 
  /** Set of Variable's that are allowed to appear in input expressions. 
   * If null, any variable is allowed. */
- private Hashtable allowedVariables = null;
+ private Hashtable<Expr,Expr> allowedVariables = null;
 
  /** Adjust the set of allowed variables: create it (if not yet
   * existent) and add optVariable (if it's nonnull).  If the
@@ -73,14 +73,16 @@ public class Parser {
   * strings that use any other variables.
   *
   * @param optVariable the variable to be allowed, or null */
+ /*
  public void allow(Aritmetic optVariable) {
 	if (null == allowedVariables) {
-	    allowedVariables = new Hashtable();
+	    allowedVariables = new Hashtable<>();
 	    allowedVariables.put(pi, pi);
 	}
 	if (null != optVariable)
 	    allowedVariables.put(optVariable, optVariable);
  }
+*/
 
  Scanner tokens = null;
  private Token token = null;
@@ -157,7 +159,7 @@ public class Parser {
 	    }
 
 	    if (l < precedence)
-		break loop;
+		break;
 
 	    nextToken();
 	    expr = Expr.makeApp2(rator, expr, parseExpr(r));
@@ -276,7 +278,7 @@ public class Parser {
  }
 
  private boolean tryInsertions() {
-	Vector v = tokens.tokens;
+	Vector<Token> v = tokens.tokens;
 	for (int i = tokens.index; 0 <= i; --i) {
 	    Token t;
 	    if (i < v.size()) {
@@ -300,11 +302,11 @@ public class Parser {
  }
 
  private boolean tryDeletions() {
-	Vector v = tokens.tokens;
+	Vector<Token> v = tokens.tokens;
 	for (int i = tokens.index; 0 <= i; --i) {
 	    if (v.size() <= i)
 		continue;
-	    Object t = v.elementAt(i);
+	    Token t = v.elementAt(i);
 	    v.remove(i);
 	    try {
 		reparse();
@@ -317,7 +319,7 @@ public class Parser {
  }
 
  private boolean trySubstitutions() {
-	Vector v = tokens.tokens;
+	Vector<Token> v = tokens.tokens;
 	for (int i = tokens.index; 0 <= i; --i) {
 	    if (v.size() <= i)
 		continue;
@@ -328,7 +330,7 @@ public class Parser {
 		try {
 		    reparse();
 		    return true;
-		} catch (SyntaxException se) { }
+		} catch (SyntaxException ignored) { }
 	    }
 	    v.setElementAt(t, i);
 	}
@@ -350,11 +352,9 @@ public class Parser {
 
 	ts[i++] = new Token(Token.TT_WORD, 0, "x", t);
 
-	for (int k = 0; k < procs1.length; ++k)
-	    ts[i++] = new Token(Token.TT_WORD, 0, procs1[k], t);
+	 for (String aProcs1 : procs1) ts[i++] = new Token(Token.TT_WORD, 0, aProcs1, t);
 
-	for (int m = 0; m < procs2.length; ++m)
-	    ts[i++] = new Token(Token.TT_WORD, 0, procs2[m], t);
+	 for (String aProcs2 : procs2) ts[i++] = new Token(Token.TT_WORD, 0, aProcs2, t);
 
 	ts[i++] = new Token(Token.TT_LE, 0, "<=", t);
 	ts[i++] = new Token(Token.TT_LE, 0, "LE", t);
@@ -365,7 +365,7 @@ public class Parser {
 	ts[i++] = new Token(Token.TT_WORD, 0, "if", t);
 	ts[i++] = new Token(Token.TT_LT, 0, "LT", t);
 	ts[i++] = new Token(Token.TT_GT, 0, "GT", t);
-	ts[i++] = new Token(Token.TT_EQ, 0, "EQ", t);
+	ts[i] = new Token(Token.TT_EQ, 0, "EQ", t);
 
 	
 	return ts;

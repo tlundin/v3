@@ -133,8 +133,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 	protected GlobalState gs;
 
 	protected LoggerI o;
-	private IntentFilter ifi;
-	private BroadcastReceiver brr;
+    private BroadcastReceiver brr;
 	private final Map<String,String> jump= new HashMap<String,String>();
 	private Set<Variable> visiVars;
 
@@ -169,9 +168,9 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			al = gs.getVariableConfiguration();
 			varCache=gs.getVariableCache();
 			o = gs.getLogger();
-			
 
-			ifi = new IntentFilter();
+
+            IntentFilter ifi = new IntentFilter();
 			ifi.addAction(REDRAW_PAGE);
             ifi.addAction(REFRESH_AFTER_SUBFLOW_EXECUTION);
 			//ifi.addAction(BluetoothConnectionService.BLUETOOTH_MESSAGE_RECEIVED);
@@ -211,7 +210,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 			};
 
 			LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(brr,
-					ifi);
+                    ifi);
 			
 			myContext = new WF_Context(this.getActivity(),this,R.id.content_frame);
 			wf = getFlow();

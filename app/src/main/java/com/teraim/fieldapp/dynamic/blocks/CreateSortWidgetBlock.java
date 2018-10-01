@@ -25,8 +25,7 @@ public class CreateSortWidgetBlock extends Block {
     private final String selP;
     private final String dispF;
     private final String name;
-	private Filterable targetList;
-	private boolean isVisible = true;
+    private boolean isVisible = true;
 	
 
 	public CreateSortWidgetBlock(String id,String name,String type,String containerId, String targetId,String selectionField,String displayField,String selectionPattern,boolean isVisible) {
@@ -50,7 +49,7 @@ public class CreateSortWidgetBlock extends Block {
 		if (myContainer != null)  {
 				
 		//Log.d("nils","Sort target is "+target);
-		targetList = ctx.getFilterable(target);
+            Filterable targetList = ctx.getFilterable(target);
 		if (targetList == null) {
 			o.addRow("");
 			o.addRedText("couldn't create sortwidget - could not find target list: "+target);
@@ -58,7 +57,7 @@ public class CreateSortWidgetBlock extends Block {
 		}
 		else {
 			o.addRow("Adding new SorterWidget of type "+type);
-			myContainer.add(new WF_SorterWidget(name,ctx,type,((WF_List)targetList),((WF_Container)myContainer).getViewGroup(), selF,dispF,selP,isVisible));
+			myContainer.add(new WF_SorterWidget(name,ctx,type,((WF_List) targetList),((WF_Container)myContainer).getViewGroup(), selF,dispF,selP,isVisible));
 			//myContainer.add(new WF_Widget(buttonPanel));
 		}
 		

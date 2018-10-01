@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Drawable;
@@ -20,8 +18,7 @@ public class AddGisLayerBlock extends Block {
     private final String target;
 	private final boolean isVisible;
     private final boolean hasWidget;
-	private WF_Gis_Map myGis;
-	private final boolean showLabels;
+    private final boolean showLabels;
 	
 	public AddGisLayerBlock(String id, String name, String label,
 			String target, boolean isVisible, boolean hasWidget, boolean showLabels) {
@@ -42,14 +39,12 @@ public class AddGisLayerBlock extends Block {
 		Drawable gisMap = myContext.getDrawable(target);
 		
 		if (gisMap!=null && gisMap instanceof WF_Gis_Map) {
-			myGis = ((WF_Gis_Map)gisMap);
+            WF_Gis_Map myGis = ((WF_Gis_Map) gisMap);
 			if (!myGis.isZoomLevel()) {
 			final GisLayer gisLayer = new GisLayer(myGis,name,label,isVisible,hasWidget,showLabels);
 			myGis.addLayer(gisLayer);
 			}
 		} else {
-
-			Log.d("vortex", "gismap null? " + (gisMap == null) + " gismap WFGISMAP? " + (gisMap instanceof WF_Gis_Map));
 			if (gisMap==null) {
 				o = GlobalState.getInstance().getLogger();
 				o.addRow("");

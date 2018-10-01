@@ -32,15 +32,14 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 		closed
     }
 	private static DataSyncSessionManager singleton=null;
-	private final Context ctx;
-	private final ConnectionProvider mConnection;
+    private final ConnectionProvider mConnection;
 	private final UIProvider ui;
 	private boolean lock = false;
 	private final LoggerI o;
 	private State mState = State.initial;
 
 	private DataSyncSessionManager(Context ctx, UIProvider ui) {
-		this.ctx=ctx;
+        Context ctx1 = ctx;
 		//setup connection if missing. Asynch callback.
 		o = GlobalState.getInstance().getLogger();
 

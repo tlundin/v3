@@ -1,16 +1,14 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.teraim.fieldapp.dynamic.blocks.AddGisPointObjects;
 import com.teraim.fieldapp.dynamic.types.Location;
-import com.teraim.fieldapp.dynamic.types.Variable;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class StaticGisPoint extends GisPointObject {
 	
 	public StaticGisPoint(FullGisObjectConfiguration conf,Map<String, String> keyChain,Location myLocation, String statusVar, String statusVal) {
-		super(conf,keyChain,Arrays.asList(myLocation),statusVar,statusVal);
+		super(conf,keyChain, Collections.singletonList(myLocation),statusVar,statusVal);
 	}
 
 

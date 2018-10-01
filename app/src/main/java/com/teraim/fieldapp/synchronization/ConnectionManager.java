@@ -1,11 +1,11 @@
 package com.teraim.fieldapp.synchronization;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.content.Context;
 
 import com.teraim.fieldapp.GlobalState;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -16,8 +16,7 @@ import com.teraim.fieldapp.GlobalState;
  */
 public class ConnectionManager {
 
-	private final GlobalState gs;
-	private final Map<ConnectionType,ConnectionProvider> activeConnections = new HashMap<ConnectionType,ConnectionProvider>();
+    private final Map<ConnectionType,ConnectionProvider> activeConnections = new HashMap<ConnectionType,ConnectionProvider>();
 	
 	
 	public enum ConnectionType{
@@ -28,7 +27,7 @@ public class ConnectionManager {
 	
 	//This is a singleton owned by GlobalState.
 	public ConnectionManager(GlobalState gs) {
-		this.gs=gs;
+        GlobalState gs1 = gs;
 		
 	}
 	

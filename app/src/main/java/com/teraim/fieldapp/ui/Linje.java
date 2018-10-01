@@ -31,16 +31,16 @@ public class Linje extends View {
 	private final Paint tagText = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);
 	private Paint bm_paint = new Paint(Paint.FILTER_BITMAP_FLAG);
 
-	private static float h=700,w,r;
-	private final LineMarkerFactory lmFactory;
+	private static float h=700;
+    private static float w;
+    private final LineMarkerFactory lmFactory;
 	private final MovingMarker user = new MovingMarker(w,h);
 	private static final float TAG_W = 20;
     private static final float TAG_H = 10;
     private static final float Max_Dev_X = 50;
 	private static final float LineLengthInMeters=200;
     private static final float areaWidthInMeters=2*Max_Dev_X;
-	private float lineX=0,lineStart=0,lineEnd=0;
-	private final String mPole;
+    private final String mPole;
 	private final Bitmap bm;
 
 	private final Map <String,Map<String,LineMarker>> markers = new HashMap<>();
@@ -99,19 +99,19 @@ public class Linje extends View {
 		//canvas.drawBitmap(bm, 0, 0, bm_paint);
 		h = this.getHeight();
 		w = this.getWidth();
-		r=w/9;
+        float r = w / 9;
 		canvas.drawBitmap(bm, null, new RectF(0, 0, w, h), null);
-		float lineLength = (h-2*(r+w/8));
-		lineEnd = r+w/8;
-		lineStart = h-lineEnd;
+		float lineLength = (h-2*(r +w/8));
+        float lineEnd = r + w / 8;
+        float lineStart = h - lineEnd;
 		float pixelsPerMeter_Y = lineLength/LineLengthInMeters;
 		float pixelsPerMeter_X = w/areaWidthInMeters;
-		lineX = w/2;
-		canvas.drawText(mPole, lineX, w/8-r-10, pp);
-		canvas.drawCircle(lineX, w/8,r, p);
-		canvas.drawText("SLUT",lineX, w/8, p2);
-		canvas.drawCircle(lineX, h-w/8,r, p);
-		canvas.drawText("START",lineX, h-w/8, p2);
+        float lineX = w / 2;
+		canvas.drawText(mPole, lineX, w/8- r -10, pp);
+		canvas.drawCircle(lineX, w/8, r, p);
+		canvas.drawText("SLUT", lineX, w/8, p2);
+		canvas.drawCircle(lineX, h-w/8, r, p);
+		canvas.drawText("START", lineX, h-w/8, p2);
 		canvas.drawLine(lineX, lineEnd, lineX, lineStart, p1);
 		
 		if (!markers.isEmpty()) {
@@ -125,16 +125,16 @@ public class Linje extends View {
 					LineMarker lm = h.getValue();
 					if (lm.isInterval()) {
 
-						float startY = lineStart-lm.getStart()*pixelsPerMeter_Y;
-						float stopY = lineStart-lm.getEnd()*pixelsPerMeter_Y;
-						canvas.drawLine(lineX, startY, lineX+TAG_W, startY, iTag);
-						canvas.drawLine(lineX+TAG_W/2, startY, lineX+TAG_W/2, stopY, iTag);
-						canvas.drawLine(lineX, stopY, lineX+TAG_W, stopY, iTag);
-						canvas.drawText(lm.tag, lineX+TAG_W+2, startY-(startY-stopY)/2, tagText);
+						float startY = lineStart -lm.getStart()*pixelsPerMeter_Y;
+						float stopY = lineStart -lm.getEnd()*pixelsPerMeter_Y;
+						canvas.drawLine(lineX, startY, lineX +TAG_W, startY, iTag);
+						canvas.drawLine(lineX +TAG_W/2, startY, lineX +TAG_W/2, stopY, iTag);
+						canvas.drawLine(lineX, stopY, lineX +TAG_W, stopY, iTag);
+						canvas.drawText(lm.tag, lineX +TAG_W+2, startY-(startY-stopY)/2, tagText);
 					} else {
 						pTag.setColor(lm.myColor);			
-						float left = shiftX+lineX-TAG_W/2;
-						float right = shiftX+lineX+TAG_W/2;
+						float left = shiftX+ lineX -TAG_W/2;
+						float right = shiftX+ lineX +TAG_W/2;
 						float bottom = lineStart - lm.getStart()*pixelsPerMeter_Y+TAG_H/2;
 						float top = bottom-TAG_H;
 						canvas.drawRect(left, top,right,bottom,pTag);
@@ -158,7 +158,7 @@ public class Linje extends View {
 				pTag.setColor(Color.GREEN);
 			else
 				pTag.setColor(Color.RED);
-			canvas.drawCircle(lineX+x*pixelsPerMeter_X, lineStart-y*pixelsPerMeter_Y, 10, pTag);
+			canvas.drawCircle(lineX +x*pixelsPerMeter_X, lineStart -y*pixelsPerMeter_Y, 10, pTag);
 		}
 	}
 	

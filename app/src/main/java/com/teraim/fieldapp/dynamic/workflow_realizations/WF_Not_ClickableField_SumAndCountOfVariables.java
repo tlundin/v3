@@ -18,8 +18,7 @@ import java.util.Set;
 
 public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_ClickableField implements EventListener {
 
-	private final DisplayFieldBlock format;
-	private final WF_Static_List targetList;
+    private final WF_Static_List targetList;
 	private final WF_Context myContext;
 	private final String myPattern;
 	private Set<Variable> allMatchingVariables=null;
@@ -55,7 +54,7 @@ public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_Clickab
 			myContext.registerEventListener(this,EventType.onFlowExecuted);
 
 		}
-		this.format = format;
+        DisplayFieldBlock format1 = format;
 
 	}
 

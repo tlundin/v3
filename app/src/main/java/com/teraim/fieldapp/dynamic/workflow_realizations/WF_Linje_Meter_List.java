@@ -15,6 +15,7 @@ import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.ui.Linje;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 				Variable v = eset.getKey();
 				String oldValue = eset.getValue();
 				String[] sel = v.getSelection().selectionArgs;
-				Log.d("nils","Variable has selector Args "+sel);
+				Log.d("nils","Variable has selector Args "+ Arrays.toString(sel));
 				for (int i=0;i<sel.length;i++)
 					Log.d("nils",sel[i]);
 				Log.d("nils","VALUE: "+v.getValue());

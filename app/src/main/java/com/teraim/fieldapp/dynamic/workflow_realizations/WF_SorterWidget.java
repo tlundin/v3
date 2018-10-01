@@ -24,12 +24,8 @@ import java.util.TreeSet;
 
 public class WF_SorterWidget extends WF_Widget {
 
-	private final String[] alfabet = {
-			"*","ABCD","EFGH","IJKL","MNOP","QRST","UVXY","ZÅÄÖ"};
-	private final LayoutInflater inflater;
 
-
-	private WF_Filter existing;
+    private WF_Filter existing;
 	private final WF_List targetList;
 
 	public WF_SorterWidget(String name,WF_Context ctx, final String type, final WF_List targetList,final ViewGroup container,final String selectionField, final String displayField,String selectionPattern,boolean isVisible) {
@@ -50,7 +46,7 @@ public class WF_SorterWidget extends WF_Widget {
 		Log.d("vortex","orientation: "+((orientation==LinearLayout.HORIZONTAL)?"Horizontal":"Vertical"));
 		buttonPanel.setLayoutParams(lp);
 
-		inflater = LayoutInflater.from(ctx.getContext());
+        LayoutInflater inflater = LayoutInflater.from(ctx.getContext());
 
 		this.targetList=targetList;
 
@@ -75,7 +71,9 @@ public class WF_SorterWidget extends WF_Widget {
 				}
 			};
 			Button b;
-			for (String c:alfabet) {
+            String[] alfabet = {
+                    "*", "ABCD", "EFGH", "IJKL", "MNOP", "QRST", "UVXY", "ZÅÄÖ"};
+            for (String c: alfabet) {
 				b = new Button(ctx.getContext());
 				b.setText(c);
 				b.setOnClickListener(cl);

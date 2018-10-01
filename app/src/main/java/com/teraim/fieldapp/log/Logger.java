@@ -21,13 +21,12 @@ public class Logger implements LoggerI {
 	private SpannableString s;
 	private TextView log = null;
 	private final Context myContext;
-	private final String loggerId;
-	int ticky=0;
+    int ticky=0;
 	private boolean hasRed=false;
 
 	public Logger(Context c,String loggerId) {
 		myContext = c;
-		this.loggerId = loggerId;
+        String loggerId1 = loggerId;
 	}
 
 	public void setOutputView(TextView txt) {
@@ -114,11 +113,7 @@ public class Logger implements LoggerI {
 	}
 
 
-	private String tickyIs = null;
-
-
-
-	private void removeTicky() {
+    private void removeTicky() {
 
 	}
 
@@ -127,7 +122,7 @@ public class Logger implements LoggerI {
 	public void removeLine() {
 		if (s!=null && myTxt.length()>=s.length()) {
 			myTxt = myTxt.delete(myTxt.length() - s.length(), myTxt.length());
-			tickyIs=null;
+            String tickyIs = null;
 		}
 
 	}

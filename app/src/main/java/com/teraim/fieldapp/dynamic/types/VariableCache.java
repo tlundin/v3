@@ -141,7 +141,7 @@ public class VariableCache {
     }
 
     private Map<String, Variable> createAllVariablesForKey(Map<String, String> myKeyHash) {
-        //Log.d("vorto","adding hash "+myKeyHash);
+        Log.d("vorto","adding hash "+myKeyHash);
         GlobalState gs = GlobalState.getInstance();
         long time = System.currentTimeMillis();
         Map<String, Variable> ret = null;

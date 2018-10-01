@@ -28,44 +28,43 @@ import java.lang.ref.WeakReference;
 abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult> {
 
 
-	private final WeakReference<ProgressBar> pb;
-	private final WeakReference<TextView> tv;
 	private final FileLoadedCb cb;
 	private LoggerI myLog;
 	String vNo ="";
-	private LoadResult loadR=null;
-	//Values defined in @arrays file, 
-    final boolean versionControl;
+	//Values defined in @arrays file,
+	final boolean versionControl;
 
-	 Loader(ProgressBar pb, TextView tv,FileLoadedCb cb, String versionControlS) {
-		this.pb= new WeakReference<>(pb);
-		this.tv=new WeakReference<>(tv);
+	Loader(ProgressBar pb, TextView tv,FileLoadedCb cb, String versionControlS) {
+		WeakReference<ProgressBar> pb1 = new WeakReference<>(pb);
+		WeakReference<TextView> tv1 = new WeakReference<>(tv);
 		this.cb=cb;
 		this.versionControl=(versionControlS==null || !versionControlS.equals("Forced"));
 	}
 
 
-	 static float getVersion(String h1,String h2) {
+	static float getVersion(String h1,String h2) {
 
 		Log.d("spinn","Get version with h1:"+h1+" h2: "+h2);
 
-		 if (h2!=null) {
-			 int p = h2.indexOf("app_version");
-			 if (p>0) {
-			 	 p = h2.indexOf("version",p+11);
-				 String vNo = h2.substring(p+9, h2.indexOf('\"', p+9));
-				 Log.d("spinn","Version line: "+vNo);
-				 if (Tools.isVersionNumber(vNo))
-					 return Float.parseFloat(vNo);
-			 }
-		 } else {
-			 String[] header = h1.split(",");
-			 if (header.length >= 2) {
-				 String potVer = header[1].trim();
-				 if (Tools.isVersionNumber(potVer))
-					 return Float.parseFloat(potVer);
-			 }
-		 }
+		if (h2!=null) {
+			int p = h2.indexOf("app_version");
+			if (p>0) {
+				p = h2.indexOf("version",p+11);
+				String vNo = h2.substring(p+9, h2.indexOf('\"', p+9));
+				Log.d("spinn","Version line: "+vNo);
+				if (Tools.isVersionNumber(vNo))
+					return Float.parseFloat(vNo);
+			}
+		} else {
+			if (h1 !=null) {
+				String[] header = h1.split(",");
+				if (header.length >= 2) {
+					String potVer = header[1].trim();
+					if (Tools.isVersionNumber(potVer))
+						return Float.parseFloat(potVer);
+				}
+			}
+		}
 		Log.d("vortex","No version found for simple lookup.");
 		Log.d("vortex","Header row1: "+h1);
 		Log.d("vortex","Header row2: "+h2);
@@ -119,7 +118,7 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 				reader.close();
 				return new LoadResult(m,ErrorCode.Aborted);
 			}
-			if ((rowC++%20)==0) 
+			if ((rowC++%20)==0)
 				this.publishProgress(0,rowC);
 		}
 		m.setRawData(sb.toString(), rowC);
@@ -163,12 +162,12 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 		else
 			return new LoadResult(m,ErrorCode.noData);
 		for (String row:myRows) {
-			loadR = m.parse(row,rowC);
-			if (loadR!=null) {
+			LoadResult loadR = m.parse(row, rowC);
+			if (loadR !=null) {
 				res = loadR;
 				break;
 			}
-			if ((rowC++%20)==0) 
+			if ((rowC++%20)==0)
 				this.publishProgress(rowC,noOfRows);
 
 		}
@@ -181,7 +180,7 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 	}
 
 
-    private LoadResult parseXML(XMLConfigurationModule m) throws XmlPullParserException, IOException {
+	private LoadResult parseXML(XMLConfigurationModule m) throws XmlPullParserException, IOException {
 		XmlPullParser parser = Xml.newPullParser();
 		parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
 		parser.setInput(new StringReader(m.getRawData()));
@@ -191,14 +190,14 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 			return lr;
 		rowC=0;
 		while((lr=m.parse(parser))==null) {
-			if ((rowC++%20)==0) 
+			if ((rowC++%20)==0)
 				this.publishProgress(rowC);
 		}
 		return lr;
 	}
 
 
-    private LoadResult parseJSON(JSONConfigurationModule m) throws IOException, JSONException {
+	private LoadResult parseJSON(JSONConfigurationModule m) throws IOException, JSONException {
 		JsonReader parser = new JsonReader(new StringReader(m.getRawData()));
 		LoadResult lr = m.prepare(parser);
 		if (lr!=null)
@@ -207,7 +206,7 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 
 		while((lr=m.parse(parser))==null) {
 			if ((rowC++%20)==0)
-				this.publishProgress(rowC);				
+				this.publishProgress(rowC);
 
 		}
 
@@ -217,7 +216,7 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 
 
 
-	 LoadResult freeze(ConfigurationModule m) throws IOException {
+	LoadResult freeze(ConfigurationModule m) throws IOException {
 		Log.d("abba","Freeze called for "+m.getLabel());
 		//Multiple steps or only one to freeze?
 		if (m.freezeSteps>0) {
@@ -228,7 +227,7 @@ abstract class Loader extends AsyncTask<ConfigurationModule ,Integer,LoadResult>
 					this.publishProgress(rowC,m.freezeSteps);
 
 			}
-		} else 
+		} else
 			m.freeze(-1);
 
 

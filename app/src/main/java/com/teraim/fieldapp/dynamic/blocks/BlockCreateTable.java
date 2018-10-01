@@ -16,17 +16,15 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
  */
 public class BlockCreateTable extends Block {
 
-    private final String type;
     private final String name;
     private final String container;
     private final String label;
-    private WF_Table myTable;
     private boolean isVisible = true;
 
     public BlockCreateTable(String id, String type, String tableName, String containerId, String label) {
 
         this.blockId=id;
-        this.type=type;
+        String type1 = type;
         this.name=tableName;
         this.container=containerId;
         this.label=label;
@@ -41,7 +39,7 @@ public class BlockCreateTable extends Block {
         View tableView = inflater.inflate(R.layout.table_view, null);
 
         Log.d("vortex","creating table.");
-        myTable = new WF_Table(name, label,isVisible, myContext,tableView);
+        WF_Table myTable = new WF_Table(name, label, isVisible, myContext, tableView);
         Container myContainer;
         if (container!=null) {
             myContainer = myContext.getContainer(container);

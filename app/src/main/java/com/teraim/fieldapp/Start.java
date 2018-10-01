@@ -56,9 +56,6 @@ public class Start extends MenuActivity {
 
     //	private Map<String,List<String>> menuStructure;
 
-    //	private ArrayList<String> rutItems;
-    //	private ArrayList<String> wfItems;
-    private LoginConsoleFragment loginFragment;
     private final AsyncTask<GlobalState, Integer, LoadResult> histT=null;
     public static Start singleton;
     private DrawerMenu mDrawerMenu;
@@ -280,7 +277,9 @@ public class Start extends MenuActivity {
                 for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
                     fm.popBackStack();
                 }
-                loginFragment = new LoginConsoleFragment();
+                //	private ArrayList<String> rutItems;
+                //	private ArrayList<String> wfItems;
+                LoginConsoleFragment loginFragment = new LoginConsoleFragment();
                 Log.d("vortex", "LoginFragment on stack!");
                 fm.beginTransaction()
                         .replace(R.id.content_frame, loginFragment)

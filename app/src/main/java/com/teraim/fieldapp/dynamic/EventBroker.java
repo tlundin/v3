@@ -16,11 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventBroker {
 
 	private final Map<EventType,List<EventListener>> eventListeners= new ConcurrentHashMap<EventType,List<EventListener>>();
-	private final GlobalState gs;
 
 
-	public EventBroker(Context ctx) {
-		gs = GlobalState.getInstance();
+    public EventBroker(Context ctx) {
+        GlobalState gs = GlobalState.getInstance();
 	}
 
 	public void registerEventListener(EventType et,EventListener el) {

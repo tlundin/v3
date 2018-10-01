@@ -19,18 +19,10 @@ import java.util.List;
 
 
 public class ListInputTemplate extends Executor {
-	private LinearLayout sortPanel;
-	private List<WF_Container> myLayouts;
+    private List<WF_Container> myLayouts;
 
 
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-	 */
-    private ViewGroup myContainer = null;
-	@Override
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		if (myContext == null) {
@@ -39,11 +31,14 @@ public class ListInputTemplate extends Executor {
 		}
 		Log.d("nils","in onCreateView of ListInputTemplate");
 		myLayouts = new ArrayList<WF_Container>();
-		
-		myContainer = container;
+
+        /* (non-Javadoc)
+         * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+         */
+        ViewGroup myContainer = container;
 		View v = inflater.inflate(R.layout.template_list_input_wf, container, false);	
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
-		sortPanel = v.findViewById(R.id.sortPanel);
+        LinearLayout sortPanel = v.findViewById(R.id.sortPanel);
 
 		myLayouts.add(root);
 		myLayouts.add(new WF_Container("Field_List_panel_1", v.findViewById(R.id.fieldList), root));

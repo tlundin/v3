@@ -81,19 +81,16 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	private EditText meterEnEd;
 	private String currentLinje;
 	private String currentYear;
-	private LinearLayout aggregatePanel, fieldList, selectedPanel, numTmp, fieldListB;
-	private String stratum;
-	private Linje linje;
+    private LinearLayout numTmp;
+    private LinearLayout fieldListB;
+    private Linje linje;
 	private RelativeLayout intervallL;
-	private Button startB, stopB;
-	private FrameLayout linjeF;
-	private TextView gpsView;
-	private WF_Container root;
-	private Spinner avgrSp;
+	private Button startB;
+    private TextView gpsView;
+    private Spinner avgrSp;
 	private double[] startPunkt;
-	private Map<String, String> linjeKey;
 
-	private final static String LinjePortalId = "LinjePortalTemplate";
+    private final static String LinjePortalId = "LinjePortalTemplate";
 
 	//private SweLocation center = new SweLocation(6564201.573, 517925.98);
 
@@ -120,16 +117,16 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 		//Listen to LinjeStarted and LinjeDone events.
 		myContext.registerEventListener(this, EventType.onBluetoothMessageReceived);
 		View v = inflater.inflate(R.layout.template_linje_portal_wf, container, false);
-		root = new WF_Container("root", v.findViewById(R.id.root), null);
-		aggregatePanel = v.findViewById(R.id.aggregates);
-		fieldList = v.findViewById(R.id.fieldList);
+        WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
+        LinearLayout aggregatePanel = v.findViewById(R.id.aggregates);
+        LinearLayout fieldList = v.findViewById(R.id.fieldList);
 		fieldListB = fieldList.findViewById(R.id.fieldListB);
 		//ListView selectedList = (ListView)v.findViewById(R.id.SelectedL);
-		selectedPanel = v.findViewById(R.id.selected);
+        LinearLayout selectedPanel = v.findViewById(R.id.selected);
 
 		lm = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-		stopB = new Button(this.getActivity());
+        Button stopB = new Button(this.getActivity());
 		startB = fieldList.findViewById(R.id.startB);
 
 		varCache = gs.getVariableCache();
@@ -160,7 +157,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 			Log.e("nils", "eastW: " + eastW + " westW: " + westW + " southW:" + southW + " northW: " + northW);
 			Map<String, String> pyKeyMap = al.createLinjeKeyMap();
-			linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "ruta", varCache.getVariableValue(null, "Current_Ruta"), "linje", currentLinje);
+            Map<String, String> linjeKey = Tools.createKeyMap(VariableConfiguration.KEY_YEAR, currentYear, "ruta", varCache.getVariableValue(null, "Current_Ruta"), "linje", currentLinje);
 			linjeStatus = varCache.getVariable(linjeKey, NamedVariables.STATUS_LINJE);
 			Variable pyCentrumNorr = varCache.getVariable(pyKeyMap, "CentrumGPSNS");
 			Variable pyCentrumOst = varCache.getVariable(pyKeyMap, "CentrumGPSEW");
@@ -170,7 +167,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			Log.d("nils", "Historical norr ost: " + histNorr + " " + histOst);
 
 
-			stratum = varCache.getVariableValue(al.createRutaKeyMap(), NamedVariables.STRATUM_HISTORICAL);
+            String stratum = varCache.getVariableValue(al.createRutaKeyMap(), NamedVariables.STRATUM_HISTORICAL);
 
 			Log.d("nils", "STRATUM: " + stratum);
 			//			status = Active.INITIAL;
@@ -259,7 +256,7 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 			ArrayAdapter<String> sara = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, avgrTyper);
 			avgrSp.setAdapter(sara);
 
-			linjeF = filterPanel.findViewById(R.id.linje);
+            FrameLayout linjeF = filterPanel.findViewById(R.id.linje);
 
 			linje = new Linje(getActivity(), (eastW ? "E" : (westW ? "W" : (northW ? "N" : (southW ? "S" : "?")))));
 
@@ -910,10 +907,10 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 	private static final String ticker = "       ...Väntar på GPS...        ";
 
 
-	private final int tStrLen = 10;
     private int curPos=0;
 	private void updateStatus() {
-		int end = curPos+tStrLen;
+        int tStrLen = 10;
+        int end = curPos+ tStrLen;
 		if (end>ticker.length())
 			end = ticker.length();
 		if (curPos==ticker.length()) {
@@ -938,12 +935,12 @@ public class LinjePortalTemplate extends Executor implements LocationListener, E
 
 	}
 	private Handler mHandler;
-	private final int mInterval = 250;
-	private final Runnable mStatusChecker = new Runnable() {
+    private final Runnable mStatusChecker = new Runnable() {
 		@Override 
 		public void run() {
 			updateStatus(); //this function can change value of mInterval.
-			mHandler.postDelayed(mStatusChecker, mInterval);
+            int mInterval = 250;
+            mHandler.postDelayed(mStatusChecker, mInterval);
 		}
 	};
 

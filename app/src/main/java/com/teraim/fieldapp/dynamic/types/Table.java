@@ -1,19 +1,18 @@
 package com.teraim.fieldapp.dynamic.types;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.log.LoggerI;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import android.annotation.SuppressLint;
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.VariableConfiguration;
-import com.teraim.fieldapp.log.Logger;
-import com.teraim.fieldapp.log.LoggerI;
 
 //SparseArray is not serializable so we cannot use it...so turn off warning.
 @SuppressLint("UseSparseArrays")

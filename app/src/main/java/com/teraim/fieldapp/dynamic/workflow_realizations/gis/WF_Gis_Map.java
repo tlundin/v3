@@ -82,7 +82,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
     private final FrameLayout mapView;
     private final Rect rect;
-    private final PersistenceHelper globalPh;
+    private final PersistenceHelper globalPh,localPh;
     private final GisImageView gisImageView;
     private final WF_Context myContext;
     private final View avstRL;
@@ -204,6 +204,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
         this.realH = realHH; //bmp.getHeight();
         this.photoMeta = photoMeta;
         globalPh = gs.getGlobalPreferences();
+        localPh = gs.getPreferences();
         ctx = myContext.getContext();
         this.avstRL = avstRL;
         createMenuL=getWidget().findViewById(R.id.createMenuL);
@@ -786,11 +787,11 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
         }
         else if (animation.equals(layersPopupShow)) {
             Log.d("vortex","Oooh...it ended!!");
-            FrameLayout layersF = layersPopup.findViewById(R.id.LayersL);
+            FrameLayout layersL = layersPopup.findViewById(R.id.LayersL);
 
             //filterB.setOnCheckedChangeListener(null);
             //mapB.setOnCheckedChangeListener(null);
-            if (layersF.getChildCount()==0) {
+            if (layersL.getChildCount()==0) {
                 layerB.setChecked(true);
                 initializeLayersMenu();
 
@@ -893,6 +894,14 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
     @SuppressLint("InflateParams")
     private void initializeMapBgMenu() {
         int bgId=0;
+
+        TextView layers_header = layersPopup.findViewById(R.id.layer_header);
+        TextView labels_header = layersPopup.findViewById(R.id.labels_header);
+        TextView show_header = layersPopup.findViewById(R.id.show_header);
+        layers_header.setText(R.string.map_background);
+        labels_header.setVisibility(View.INVISIBLE);
+        show_header.setVisibility(View.INVISIBLE);
+
         LayoutInflater li = LayoutInflater.from(myContext.getContext());
         @SuppressLint("InflateParams") View bg = li.inflate(R.layout.map_background_radiogroup,null);
         final RadioGroup radioGroup = bg.findViewById(R.id.radioL);
@@ -941,6 +950,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
             String text;
             gisImageView.hideImage();
             MapGisLayer layer;
+            int previouslyChecked = currentlyChecked;
             //Current layer if visible -> not visible.
             if (currentlyChecked!=-1) {
                 radioB = radioGroup.findViewById(currentlyChecked);
@@ -963,12 +973,13 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
                 Log.d("vortex","found none tag");
             } else {
                 layer = (MapGisLayer) getLayerFromLabel(text);
+                Log.d("vortex","Layer is "+layer);
                 if (layer!=null) {
+
                     layer.setVisible(true);
                     final String cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
-
                     String cachedImgFilePath = cacheFolder + layer.getImageName();
-                    Log.d("vortex", "found layer on checked change: "+cachedImgFilePath+" for text "+text);
+                    Log.d("vortex", "found layer: "+cachedImgFilePath+" for text "+text);
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = true;
                     BitmapFactory.decodeFile(cachedImgFilePath, options);
@@ -979,15 +990,21 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
                     //Rect r = new Rect(0, 0, imageWidth, imageHeight);
                     Bitmap bmp = Tools.getScaledImageRegion(myContext.getContext(),cachedImgFilePath,rect);
                     if (bmp!=null) {
+
                         gisImageView.setImageBitmap(bmp);
+                        //if another map bg shown, swap the pref. layer
+                        if (previouslyChecked !=-1) {
+                            radioB = radioGroup.findViewById(previouslyChecked);
+                            String p_text = radioB.getText().toString();
+                            MapGisLayer prev_layer = (MapGisLayer) getLayerFromLabel(text);
+                            localPh.put(PersistenceHelper.LAYER_VISIBILITY + prev_layer.getImageName(), -1);
+                        }
+                        localPh.put(PersistenceHelper.LAYER_VISIBILITY+layer.getImageName(),1);
                     }
                     currentlyChecked = checkedId;
                 }
                 else
                     Log.d("vortex","oh bugger");
-
-
-
             }
             Log.d("vortex","Checked radiobutton is "+radioGroup.getCheckedRadioButtonId()+" checkedID: "+checkedId+" TEXT: "+((RadioButton) radioGroup.findViewById(checkedId)).getText());
             //group.check(checkedId);
@@ -998,6 +1015,14 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
     @SuppressLint("InflateParams")
     private void initializeFiltersMenu() {
         FrameLayout layersF = layersPopup.findViewById(R.id.LayersL);
+
+        TextView layers_header = layersPopup.findViewById(R.id.layer_header);
+        TextView labels_header = layersPopup.findViewById(R.id.labels_header);
+        TextView show_header = layersPopup.findViewById(R.id.show_header);
+        layers_header.setText(R.string.progress);
+        labels_header.setVisibility(View.GONE);
+        show_header.setVisibility(View.VISIBLE);
+
         layersF.removeAllViews();
         LayoutInflater li = LayoutInflater.from(myContext.getContext());
         LinearLayout layersL = (LinearLayout)li.inflate(R.layout.layers_body,null);
@@ -1035,6 +1060,14 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
     }
     @SuppressLint("InflateParams")
     private void initializeLayersMenu() {
+
+        TextView layers_header = layersPopup.findViewById(R.id.layer_header);
+        TextView labels_header = layersPopup.findViewById(R.id.labels_header);
+        TextView show_header = layersPopup.findViewById(R.id.show_header);
+        layers_header.setText(R.string.layers);
+        labels_header.setVisibility(View.VISIBLE);
+        show_header.setVisibility(View.VISIBLE);
+
         FrameLayout layersF = layersPopup.findViewById(R.id.LayersL);
         layersF.removeAllViews();
         LayoutInflater li = LayoutInflater.from(myContext.getContext());

@@ -20,8 +20,8 @@ public class PageWithAggregationTemplate extends Executor {
 	private int[] scrollPosition;
 
 	@Override
-	protected List<WF_Container> getContainers() {		
-		myLayouts = new ArrayList<WF_Container>();
+	protected List<WF_Container> getContainers() {
+        List<WF_Container> myLayouts = new ArrayList<WF_Container>();
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		myLayouts.add(root);
 		myLayouts.add(new WF_Container("Field_panel_1", v.findViewById(R.id.fieldList), root));
@@ -37,8 +37,7 @@ public class PageWithAggregationTemplate extends Executor {
 		return true;
 	}
 
-	private List<WF_Container> myLayouts;
-	ViewGroup myContainer = null;
+    ViewGroup myContainer = null;
 	private View v;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

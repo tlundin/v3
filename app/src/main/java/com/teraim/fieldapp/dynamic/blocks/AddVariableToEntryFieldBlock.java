@@ -20,9 +20,8 @@ public class AddVariableToEntryFieldBlock extends Block {
     private final String namn;
     private final String format;
     private final String initialValue;
-	private GlobalState gs;
-	
-	public AddVariableToEntryFieldBlock(String id,String target,String namn,boolean displayOut,String format,boolean isVisible,boolean showHistorical,String initialValue)  {
+
+    public AddVariableToEntryFieldBlock(String id,String target,String namn,boolean displayOut,String format,boolean isVisible,boolean showHistorical,String initialValue)  {
 		this.blockId=id;
 		this.target=target;
 		this.namn=namn;
@@ -35,7 +34,7 @@ public class AddVariableToEntryFieldBlock extends Block {
 	}
 	
 	public Variable create(WF_Context myContext) {
-		gs = GlobalState.getInstance();
+        GlobalState gs = GlobalState.getInstance();
 		o = gs.getLogger();
 
 		WF_ClickableField myField = (WF_ClickableField)myContext.getDrawable(target);

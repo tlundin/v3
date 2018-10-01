@@ -12,13 +12,12 @@ public class PassiveLogger implements LoggerI {
 
     private final StringBuilder log = new StringBuilder();
     private final Context myContext;
-    private final String loggerId;
     int ticky=0;
     private boolean hasRed=false;
 
     public PassiveLogger(Context c,String loggerId) {
         myContext = c;
-        this.loggerId = loggerId;
+        String loggerId1 = loggerId;
     }
 
     public void setOutputView(TextView txt) {

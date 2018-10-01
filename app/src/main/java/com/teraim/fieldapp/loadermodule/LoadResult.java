@@ -37,9 +37,7 @@ public class LoadResult {
 	public LoadResult(ConfigurationModule module, ErrorCode errC) {
 		errCode = errC;
 		this.module = module;
+		errorMessage="";
 	}
 
-	public LoadResult(ErrorCode configurationerror, Object object) {
-		// TODO Auto-generated constructor stub
-	}
 }

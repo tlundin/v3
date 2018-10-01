@@ -135,7 +135,7 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 
 			} 
 			//If we need to turn on bluetooth, wait for broadcast.
-			if (!mBluetoothAdapter.isEnabled())	{
+			else if (!mBluetoothAdapter.isEnabled())	{
 				Log.d("vortex","Enabling bluetooth");
 				mBluetoothAdapter.enable();
 
@@ -509,7 +509,9 @@ public class BluetoothConnectionProvider extends ConnectionProvider {
 					//broadcast to all listeners.
 					broadcastData(message);
 				} catch (ClassNotFoundException e) {
-					Log.e("NILS","CLASS NOT FOUND IN Stream for "+message.toString());
+					if (message != null) {
+						Log.e("NILS","CLASS NOT FOUND IN Stream for "+message.toString());
+					}
 					e.printStackTrace();
 				} catch (Exception e) {
 					Log.e("NILS","got strange exception in Inputstream");

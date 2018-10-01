@@ -71,10 +71,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 	float polyVertexX;
     float polyVertexY;
 
-	private int hWidth;
-	private int hHeight;
-
-	private Integer resId = null;
+    private Integer resId = null;
 	private boolean recycle = false;
 	private boolean strict = false;
 
@@ -190,8 +187,8 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 			int imageWidth = getImageWidth();
 			int imageHeight = getImageHeight();
 
-			hWidth = Math.round(((float)imageWidth / 2.0f));
-			hHeight = Math.round(((float)imageHeight / 2.0f));
+            int hWidth = Math.round(((float) imageWidth / 2.0f));
+            int hHeight = Math.round(((float) imageHeight / 2.0f));
 			
 			measuredWidth -= (getPaddingLeft() + getPaddingRight());
 			measuredHeight -= (getPaddingTop() + getPaddingBottom());
@@ -241,7 +238,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 			gestureImageViewTouchListener.setOnLongClickListener(onLongClickListener);
 			
 
-			drawable.setBounds(-hWidth,-hHeight,hWidth,hHeight);
+			drawable.setBounds(-hWidth,-hHeight, hWidth, hHeight);
 
 			super.setOnTouchListener(new OnTouchListener() {
 				@Override

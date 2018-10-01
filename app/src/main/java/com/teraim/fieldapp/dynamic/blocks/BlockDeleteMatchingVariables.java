@@ -18,14 +18,13 @@ public class BlockDeleteMatchingVariables extends Block {
 	 * 
 	 */
 	private static final long serialVersionUID = -1134485697631003990L;
-	private final String label;
     private final String context;
     private String pattern;
 	private List<EvalExpr> contextE;
 	
 	public BlockDeleteMatchingVariables(String id, String label, String target, String pattern) {
 		this.blockId=id;
-		this.label=label;
+        String label1 = label;
 		this.context=target;
 		this.pattern=pattern;
 		if (pattern!=null && pattern.isEmpty())

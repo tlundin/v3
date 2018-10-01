@@ -6,17 +6,23 @@ public class SyncEntry extends SyncMessage {
 
     public static Type action(String type) {
         Type mType;
-        if (type.equals("I"))
-            mType = Type.insert;
-        else if (type.equals("D"))
-            mType = Type.delete;
-        else if (type.equals("M"))
-            mType = Type.deleteMany;
-        else if (type.equals("A"))
-            mType = Type.insertArray;
-        else {
-            System.err.println("Unknown type of Sync action!: "+type);
-            mType = Type.unknown;
+        switch (type) {
+            case "I":
+                mType = Type.insert;
+                break;
+            case "D":
+                mType = Type.delete;
+                break;
+            case "M":
+                mType = Type.deleteMany;
+                break;
+            case "A":
+                mType = Type.insertArray;
+                break;
+            default:
+                System.err.println("Unknown type of Sync action!: " + type);
+                mType = Type.unknown;
+                break;
         }
         return mType;
     }
@@ -33,7 +39,7 @@ public class SyncEntry extends SyncMessage {
     private long timeStamp;
     private String target,author;
     private Map<String,String> keys, values;
-    private boolean invalid = false;
+
     SyncEntry() {}
 
     public SyncEntry(Type type,String changes,long timeStamp,String target,String author) {
@@ -49,13 +55,13 @@ public class SyncEntry extends SyncMessage {
         return mType;
     }
 
-    public Map getKeys() {
+    public Map<String, String> getKeys() {
         //if no keys, create.
         if (keys == null)
             generate();
         return keys;
     }
-    public Map getValues() {
+    public Map<String, String> getValues() {
         //if no values, create.
         if (values == null)
             generate();
@@ -80,10 +86,10 @@ public class SyncEntry extends SyncMessage {
             return;
         }
         String[] tmp = changes.split("_\\$_");
-        if (tmp==null||tmp.length!=2) {
+        if (tmp.length!=2) {
             System.err.println("something wrong with syncentry with changes: [" + changes + "]");
-            String a = null;
-            a.isEmpty();
+            String die = null;
+            die.isEmpty();
         }
         else {
             keys = collectPairs(tmp[0].split("\\|"));
@@ -94,8 +100,8 @@ public class SyncEntry extends SyncMessage {
 
 
 
-    private static Map collectPairs(String[] pairs) {
-        Map result = new HashMap<String,String>();
+    private static Map<String,String> collectPairs(String[] pairs) {
+        Map<String,String> result = new HashMap<>();
         for (String pair : pairs) {
             String tmp[] = pair.split("=");
             result.put(tmp[0],tmp.length>1?tmp[1]:"");

@@ -25,8 +25,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 	private final LoggerI o;
 	private final DbHelper myDb;
-	private ArrayList<ValuePair> vars;
-	private Map<String,String> meta,keyz;
+    private Map<String,String> keyz;
 	private final Table varTable;
 
 	public ImportDataConfiguration(PersistenceHelper globalPh,PersistenceHelper ph, String server, String bundle, LoggerI debugConsole,
@@ -62,7 +61,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 		try {
 			reader.beginObject();
-			meta = new HashMap<String,String>();
+            Map<String, String> meta = new HashMap<String, String>();
 			while (reader.hasNext()) {
 				String name = reader.nextName();
 				if (name.equals("date")) {
@@ -81,8 +80,8 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 				}
 			}
 			state = State.readingKeys;
-			Log.d("vortex","found date time version "+meta.get("date")+","+meta.get("time")+","+meta.get("version"));
-			o.addRow("Import file date time version: ["+meta.get("date")+"],["+meta.get("time")+"],["+meta.get("version")+"]");
+			Log.d("vortex","found date time version "+ meta.get("date")+","+ meta.get("time")+","+ meta.get("version"));
+			o.addRow("Import file date time version: ["+ meta.get("date")+"],["+ meta.get("time")+"],["+ meta.get("version")+"]");
 			//jArray = jObject.getJSONArray("source");
 			//Erase old history
 			o.addRow("");
@@ -145,7 +144,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 	private LoadResult readVariables(JsonReader reader) throws IOException {
 		String varName = null, value = null;
-		vars = new ArrayList<ValuePair>();
+        ArrayList<ValuePair> vars = new ArrayList<ValuePair>();
 		int c=0;
 		while (reader.hasNext()) {
 			reader.beginObject();
@@ -175,7 +174,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 			if (reader.peek() == JsonToken.END_OBJECT) {
 				//wow! found end of current content type!
 				reader.endObject();
-				Entry entry = new Entry(keyz,vars);
+				Entry entry = new Entry(keyz, vars);
 				entries.add(entry);
 				//double powwow! End of the whole import!!
 				if (reader.peek() == JsonToken.END_ARRAY) {
@@ -199,7 +198,6 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 	}
 
-	private String ar;
     String ruta;
     String provyta;
     String delyta;
@@ -217,7 +215,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 			String name = reader.nextName();
 			//			Log.d("vortex","Name: "+name);
 			if (name.equals("ar")) {
-				ar = getAttribute(reader);
+                String ar = getAttribute(reader);
 			} else if (name.equals("ruta")) {
 				keyz.put("ruta",getAttribute(reader));
 			} else if (name.equals("provyta")) {

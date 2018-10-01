@@ -40,7 +40,7 @@ import java.util.Set;
 public class WF_Context {
 
 	private final Context ctx;
-	private final List<WF_Static_List> lists=new ArrayList<WF_Static_List>();
+	private final List<WF_Static_List> lists= new ArrayList<>();
 	private final List<WF_Table> tables=new ArrayList<WF_Table>();
 	private final Map<String,Drawable> drawables;
 	private List<WF_Container> containers;
@@ -48,8 +48,7 @@ public class WF_Context {
 	private final EventBroker eventBroker;
 	private final Set<Rule> rules=new HashSet<Rule>();
 	private final Set<Integer> executedBlocks = new HashSet<Integer>();
-	private final int rootContainerId; 
-	private String statusVariable=null;
+    private String statusVariable=null;
 	private final List<Filterable> filterables;
 	private WF_Gis_Map currentGis;
 	private final List<WF_Gis_Map> gisses;
@@ -70,7 +69,7 @@ public class WF_Context {
 		this.ctx=ctx;
 		myTemplate = e;
 		eventBroker = new EventBroker(ctx);
-		this.rootContainerId=rootContainerId;
+        int rootContainerId1 = rootContainerId;
 		this.drawables=new HashMap<String,Drawable>();
 		this.filterables=new ArrayList<Filterable>();
 		this.gisses=new ArrayList<WF_Gis_Map>();

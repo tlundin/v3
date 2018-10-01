@@ -48,9 +48,7 @@ import java.util.List;
 
 public class FotoTemplate extends Executor {
 
-	private List<WF_Container> myLayouts;
-	
-	private GestureLibrary gestureLib;
+    private GestureLibrary gestureLib;
 	//private ToggleButton gpsB;
 	//private TextView gpsT,GPS_X,GPS_Y;
 	private boolean fixed = false;
@@ -59,17 +57,13 @@ public class FotoTemplate extends Executor {
 	private ImageButton ost;
 	private ImageButton vast;
 	private ImageButton sp;
-	private Button oldpicsButton;
-	private ImageHandler imgHandler;
+    private ImageHandler imgHandler;
 	private LocationManager lm;
 	private final HashMap<String, ImageButton> buttonM = new HashMap<String,ImageButton>();
 	private SweLocation cords;
-	private Switch avstandB;
-	private TextView sydT,vastT,ostT,spT,norrT;
-	
-	private Variable n,e;
+    private TextView sydT,vastT,ostT,spT,norrT;
 
-	private View v;
+    private View v;
 	
 	private String selectedPictureName="";
 	private ImageButton selectedPicture=null;
@@ -174,9 +168,9 @@ public class FotoTemplate extends Executor {
 		if (!gestureLib.load()) {      	
 			Log.i("nils", "Load gesture libraries failed.");  
 		}  
-*/		
-			
-		avstandB = v.findViewById(R.id.avstandB);
+*/
+
+        Switch avstandB = v.findViewById(R.id.avstandB);
 		//gpsB = (ToggleButton)v.findViewById(R.id.gpsBtn);
 		//if (gpsB == null)
 		//	Log.e("vortex","OUCCGHHH!!");
@@ -194,7 +188,7 @@ public class FotoTemplate extends Executor {
 		spT = v.findViewById(R.id.spT);
 		norrT = v.findViewById(R.id.norrT);
 		compass = v.findViewById(R.id.compass);
-		oldpicsButton = v.findViewById(R.id.oldpics_button);
+        Button oldpicsButton = v.findViewById(R.id.oldpics_button);
 		
 		buttonM.clear();
 		//gpsT.setText("");
@@ -261,8 +255,8 @@ public class FotoTemplate extends Executor {
 		
 	
 		VariableCache varCache = gs.getVariableCache();
-		n = varCache.getVariable(NamedVariables.CentrumGPSNS);
-		e = varCache.getVariable(NamedVariables.CentrumGPSEW);
+        Variable n = varCache.getVariable(NamedVariables.CentrumGPSNS);
+        Variable e = varCache.getVariable(NamedVariables.CentrumGPSEW);
 		/*
 		if (e.getValue()!=null &&n.getValue()!=null) {
 			GPS_X.setText(e.getValue()+"");
@@ -402,7 +396,7 @@ public class FotoTemplate extends Executor {
 
 	@Override
 	protected List<WF_Container> getContainers() {
-		myLayouts = new ArrayList<WF_Container>();
+        List<WF_Container> myLayouts = new ArrayList<WF_Container>();
 		myLayouts.add(new WF_Container("root", v.findViewById(R.id.root), null));
 		return myLayouts;
 	}

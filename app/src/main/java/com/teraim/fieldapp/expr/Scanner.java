@@ -10,10 +10,10 @@ class Scanner {
  private final String s;
  private final String operatorChars;
 
- final Vector tokens = new Vector();
+ final Vector<Token> tokens = new Vector<>();
  int index = -1;
 
- public Scanner(String string, String operatorChars) {
+ Scanner(String string, String operatorChars) {
      this.s = string;
 	this.operatorChars = operatorChars;
 
@@ -30,15 +30,15 @@ class Scanner {
  // The tokens may have been diddled, so this can be different from 
  // getInput().
  public String toString() {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	int whitespace = 0;
 	for (int i = 0; i < tokens.size(); ++i) {
-	    Token t = (Token) tokens.elementAt(i);
+	    Token t = tokens.elementAt(i);
 
 	    int spaces = (whitespace != 0 ? whitespace : t.leadingWhitespace);
 	    if (i == 0) 
 		spaces = 0;
-	    else if (spaces == 0 && !joinable((Token) tokens.elementAt(i-1), t))
+	    else if (spaces == 0 && !joinable(tokens.elementAt(i-1), t))
 		spaces = 1;
 	    for (int j = spaces; 0 < j; --j)
 		sb.append(" ");
@@ -61,23 +61,23 @@ class Scanner {
 	return tokens.size() == 0;
  }
 
- public boolean atStart() {
+ boolean atStart() {
 	return index <= 0;
  }
 
- public boolean atEnd() {
+ boolean atEnd() {
 	return tokens.size() <= index;
  }
 
- public Token nextToken() {
+ Token nextToken() {
 	++index;
 	return getCurrentToken();
  }
 
- public Token getCurrentToken() {
+ Token getCurrentToken() {
 	if (atEnd())
 	    return new Token(Token.TT_EOF, 0, s, s.length(), s.length());
-	return (Token) tokens.elementAt(index);
+	return tokens.elementAt(index);
  }
 
  private int scanToken(int i) {
@@ -90,19 +90,29 @@ class Scanner {
 	    if (i+1 < s.length()) {
 		String pair = s.substring(i, i+2);
 		int ttype = 0;
-		if (pair.equals("<=")||pair.equals("LE"))
-		    ttype = Token.TT_LE;
-		else if (pair.equals(">=")||pair.equals("GE")) 
-		    ttype = Token.TT_GE;		
-		else if (pair.equals("<>")||pair.equals("NE"))
-		    ttype = Token.TT_NE;
-		else if (pair.equals("GT"))
-		    ttype = Token.TT_GT;
-		else if (pair.equals("LT")) 
-		    ttype = Token.TT_LT;
-		
-		else if (pair.equals("EQ"))
-		    ttype = Token.TT_EQ;
+			switch (pair) {
+				case "<=":
+				case "LE":
+					ttype = Token.TT_LE;
+					break;
+				case ">=":
+				case "GE":
+					ttype = Token.TT_GE;
+					break;
+				case "<>":
+				case "NE":
+					ttype = Token.TT_NE;
+					break;
+				case "GT":
+					ttype = Token.TT_GT;
+					break;
+				case "LT":
+					ttype = Token.TT_LT;
+					break;
+				case "EQ":
+					ttype = Token.TT_EQ;
+					break;
+			}
 		if (0 != ttype) {
 		    tokens.addElement(new Token(ttype, 0, s, i, i+2));
 		    return i+2;
@@ -151,7 +161,7 @@ class Scanner {
      String text = s.substring(from, i);
 	double nval;
      try {
-         nval = Double.valueOf(text).doubleValue();
+         nval = Double.valueOf(text);
      } catch (NumberFormatException nfe) {
          tokens.addElement(makeErrorToken(from, i));
 	    return i;

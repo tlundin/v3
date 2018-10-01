@@ -44,14 +44,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class AddGisPointObjects extends Block implements FullGisObjectConfiguration {
 
 
 	private static final long serialVersionUID = 7979886099817953005L;
-	private final String objectContextS;
-	private final boolean useIconOnMap;
+    private final boolean useIconOnMap;
 	private final String nName;
 	private final String target;
 	private String coordType;
@@ -73,12 +73,11 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 	private DB_Context objectKeyHash;
 	private final boolean isUser;
 	private final boolean createAllowed;
-	private GisLayer myLayer;
-	private boolean dynamic;
+    private boolean dynamic;
 	private final List<EvalExpr>labelE;
 	private final List<Expressor.EvalExpr> objContextE;
 	private final String unevaluatedLabel;
-	private String thisCheck,lastCheckTimeStamp;
+    private String lastCheckTimeStamp;
 	private String palette;
 	private String creator;
 
@@ -144,7 +143,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		labelE = Expressor.preCompileExpression(label);
 		this.unevaluatedLabel=label;
 		objContextE = Expressor.preCompileExpression(objectContext);
-		this.objectContextS=objectContext;
+        String objectContextS = objectContext;
 		//Set default icons for different kind of objects.
 	}
 
@@ -264,7 +263,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		DBColumnPicker pickerLocation1,pickerLocation2=null,pickerStatusVars=null;
 
 		//save timestamp for refresh.
-		thisCheck = System.currentTimeMillis()+"";
+        String thisCheck = System.currentTimeMillis() + "";
 		if (lastCheckTimeStamp == null)
 			lastCheckTimeStamp = thisCheck;
 
@@ -423,7 +422,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							v1 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar1.name,value,true);
 						}
 						if (twoVars) {
-							storedVar2 = pickerLocation2.getVariable();
+							storedVar2 = Objects.requireNonNull(pickerLocation2).getVariable();
 							Log.d("vortex","Found "+storedVar2.value+" for "+storedVar2.name);
 							map2 = pickerLocation1.getKeyColumnValues();
 							Log.d("vortex","Found columns "+map2.toString()+" for "+storedVar2.name);
@@ -454,8 +453,10 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 									//Log.d("vortex","adding "+this.getName());
 									myGisObjects.add(new StaticGisPoint(this, map1, new SweLocation(storedVar1.value), statusVarP.first, statusVarP.second));
 								}
-								else
-									myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
+								else {
+									if (v1 != null)
+										myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
+								}
 							}
 							else if (myTypeS.equals(GisObjectType.Multipoint.toString())||myTypeS.equalsIgnoreCase(GisObjectType.Linestring.toString()))
 								myGisObjects.add(new GisMultiPointObject(this,map1,GisObject.createListOfLocations(storedVar1.value,coordType),statusVarP.first,statusVarP.second));
@@ -478,8 +479,8 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		//Add type to layer. Add even if empty.
 		if (target!=null) {//&&target.length()>0 && myGisObjects!=null && !myGisObjects.isEmpty()) {
 			//Add bag to layer.
-			myLayer=myContext.getCurrentGis().getLayerFromId(target);
-			if (myLayer!=null) {
+            GisLayer myLayer = myContext.getCurrentGis().getLayerFromId(target);
+			if (myLayer !=null) {
 
 				myLayer.addObjectBag(nName,myGisObjects,dynamic,myContext.getCurrentGis().getGis());
 

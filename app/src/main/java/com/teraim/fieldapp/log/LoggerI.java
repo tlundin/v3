@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.log;
 
-import android.text.SpannableString;
 import android.widget.TextView;
 
 public interface LoggerI {

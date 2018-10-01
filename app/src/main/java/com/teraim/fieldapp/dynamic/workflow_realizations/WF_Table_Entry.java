@@ -8,12 +8,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class WF_Table_Entry extends WF_ListEntry {
-	private final WF_Context myContext;
-	private Variable myVar;
+    private Variable myVar;
 
 	public WF_Table_Entry(String id, View v, WF_Context ctx, boolean isVisible) {
 		super(id, v, ctx, isVisible);
-		this.myContext = ctx;
+        WF_Context myContext = ctx;
 	}
 
 	@Override

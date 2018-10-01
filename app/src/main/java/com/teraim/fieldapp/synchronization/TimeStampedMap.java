@@ -13,7 +13,7 @@ import java.util.Set;
 public class TimeStampedMap {
 
     //uid, mapped to variable id, mapped to timestamp.
-    private final Map<Unikey,Map<String,ContentValues>> myMap = new HashMap();
+    private final Map<Unikey,Map<String,ContentValues>> myMap = new HashMap<>();
 
     private int size = 0;
 
@@ -25,7 +25,7 @@ public class TimeStampedMap {
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
 
         if (ves==null) {
-            ves = new HashMap<String, ContentValues>();
+            ves = new HashMap<>();
             myMap.put(uniqueKey,ves);
         }
 
@@ -54,7 +54,7 @@ public class TimeStampedMap {
                     //Log.d("zoobaz","SWAP!");
                 //}
 
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException ignored) {
 
             }
         }
@@ -74,10 +74,7 @@ public class TimeStampedMap {
     }
 
     public Map<String, ContentValues> get(Unikey uniqueKey) {
-        if (myMap!=null)
-            return myMap.get(uniqueKey);
-        else
-            return null;
+        return myMap.get(uniqueKey);
     }
 
     public int size() {
@@ -187,7 +184,7 @@ public class TimeStampedMap {
             Log.d("bascar","Deleting "+variableName+" from Timestamped map");
             ves.remove(variableName);
             if (ves.isEmpty())
-                myMap.remove(ves);
+                myMap.remove(uniqueKey);
             return true;
         }
         Log.d("bascar","no entry for "+variableName+" in sync cache");

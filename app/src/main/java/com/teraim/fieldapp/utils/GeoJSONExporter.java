@@ -21,8 +21,7 @@ import java.util.TreeMap;
 
 public class GeoJSONExporter extends Exporter {
 
-	private StringWriter sw;
-	private JsonWriter writer;
+    private JsonWriter writer;
 	private final List<String> coordLess = new ArrayList<>();
 	private final Map<String,String> rutMap = new HashMap<>();
 	private final Map<String,String> authorMap = new HashMap<>();
@@ -38,7 +37,7 @@ public class GeoJSONExporter extends Exporter {
 	public Report writeVariables(DBColumnPicker cp) {
 
 		LoggerI o = GlobalState.getInstance().getLogger();
-		sw = new StringWriter();
+        StringWriter sw = new StringWriter();
 		writer = new JsonWriter(sw);
 
 		try {

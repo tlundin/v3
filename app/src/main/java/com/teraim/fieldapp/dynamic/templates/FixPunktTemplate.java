@@ -26,13 +26,9 @@ import java.util.List;
 
 
 public class FixPunktTemplate extends Executor implements OnGesturePerformedListener {
-	private List<WF_Container> myLayouts;
 
 
-	
-	
-	
-	/* (non-Javadoc)
+    /* (non-Javadoc)
 	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	//ViewGroup myContainer = null;
@@ -107,7 +103,7 @@ public class FixPunktTemplate extends Executor implements OnGesturePerformedList
 
 	@Override
 	protected List<WF_Container> getContainers() {
-		myLayouts = new ArrayList<WF_Container>();
+        List<WF_Container> myLayouts = new ArrayList<WF_Container>();
 		Log.d("nils","in onCreateView of fixpunkt_template");
 		//myContainer = container;
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);

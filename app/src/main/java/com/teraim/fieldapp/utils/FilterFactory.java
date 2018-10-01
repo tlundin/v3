@@ -21,9 +21,7 @@ public class FilterFactory {
 	
 	private final Map<String, CombinedRangeAndListFilter> filterCache = new HashMap<String, CombinedRangeAndListFilter>();
 
-	private int currentMin;
-
-	private final Vibrator myVibrator;
+    private final Vibrator myVibrator;
 	
 	public static class Range {
 		final String minS;
@@ -91,18 +89,18 @@ public class FilterFactory {
 		if (allowedRanges.size()==0)
 			allowedRanges = null;
 		filterCache.put(limitDesc, cached);
-		currentMin = MAX_MIN;
+        int currentMin = MAX_MIN;
 		if (allowedRanges!=null) {
 			for (Range r:allowedRanges) {
-				if (r.min<currentMin)
+				if (r.min< currentMin)
 					currentMin = r.min;
 			}
 			//Log.d("nils","CurrentMin is set to "+currentMin);
 		} //else
 		//	Log.d("nils","allowedranges was null for "+limitDesc);
 		boolean hasDefaultFilter = false;
-		if (currentMin>0 && currentMin<MAX_MIN) {
-			allowedRanges.add(0,new Range(0,currentMin-1));
+		if (currentMin >0 && currentMin <MAX_MIN) {
+			allowedRanges.add(0,new Range(0, currentMin -1));
 			hasDefaultFilter = true;
 		}
 		cached = new CombinedRangeAndListFilter(myVibrator,myVar,allowedValues,allowedRanges,hasDefaultFilter);

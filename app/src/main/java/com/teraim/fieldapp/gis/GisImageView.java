@@ -75,15 +75,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	//Various paints.
 	private Paint txtPaint;
 	private Paint polyPaint;
-	private Paint rCursorPaint;
-	private Paint blCursorPaint;
-	private Paint btnTxt,vtnTxt;
-	private Paint grCursorPaint;
-	private Paint selectedPaint;
-	private Paint borderPaint;
-	private Paint fgPaintSel;
-	private Paint  wCursorPaint,bCursorPaint,markerPaint;
-	private Paint paintBlur;
+    private Paint vtnTxt;
+    private Paint fgPaintSel;
+    private Paint bCursorPaint;
+    private Paint paintBlur;
 	private Paint paintSimple;
 
 	private Handler handler;
@@ -112,11 +107,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private GisObject touchedGop = null;
 
 
-
-
-
-	private LocationManager locationManager;
-	private boolean candMenuVisible=false, initialized = false;
+    private boolean candMenuVisible=false, initialized = false;
 
 
 	public GisImageView(Context context) {
@@ -140,42 +131,42 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 		this.setClickable(true);
 
-		locationManager = (LocationManager) ctx
-				.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) ctx
+                .getSystemService(Context.LOCATION_SERVICE);
 		YearKeyHash.clear();
 		YearKeyHash.put("år", Constants.getYear());
 		this.ctx=ctx;
 		//used for cursor blink.
 		calendar.setTime(new Date());
-		grCursorPaint = new Paint();
+        Paint grCursorPaint = new Paint();
 		grCursorPaint.setColor(Color.GRAY);
 		grCursorPaint.setStyle(Paint.Style.FILL);
-		blCursorPaint = new Paint();
+        Paint blCursorPaint = new Paint();
 		blCursorPaint.setColor(Color.BLUE);
 		blCursorPaint.setStyle(Paint.Style.FILL);
-		rCursorPaint = new Paint();
+        Paint rCursorPaint = new Paint();
 		rCursorPaint.setColor(Color.RED);
 		rCursorPaint.setStyle(Paint.Style.FILL);
-		wCursorPaint = new Paint();
+        Paint wCursorPaint = new Paint();
 		wCursorPaint.setColor(Color.WHITE);
 		wCursorPaint.setStyle(Paint.Style.FILL);
 		bCursorPaint = new Paint();
 		bCursorPaint.setColor(Color.BLACK);
 		bCursorPaint.setStyle(Paint.Style.FILL);
-		markerPaint = new Paint();
-		markerPaint .setColor(Color.YELLOW);
-		markerPaint .setStyle(Paint.Style.FILL);
+        Paint markerPaint = new Paint();
+		markerPaint.setColor(Color.YELLOW);
+		markerPaint.setStyle(Paint.Style.FILL);
 		txtPaint = new Paint();
 		txtPaint.setTextSize(8);
 		txtPaint.setColor(Color.WHITE);
 		txtPaint.setStyle(Paint.Style.STROKE);
 		txtPaint.setTextAlign(Paint.Align.CENTER);
-		selectedPaint = new Paint();
+        Paint selectedPaint = new Paint();
 		selectedPaint.setTextSize(8);
 		selectedPaint.setColor(Color.BLACK);
 		selectedPaint.setStyle(Paint.Style.STROKE);
 		selectedPaint.setTextAlign(Paint.Align.CENTER);
-		btnTxt = new Paint();
+        Paint btnTxt = new Paint();
 		btnTxt.setTextSize(8);
 		btnTxt.setColor(Color.WHITE);
 		btnTxt.setStyle(Paint.Style.STROKE);
@@ -185,7 +176,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		vtnTxt.setColor(Color.WHITE);
 		vtnTxt.setStyle(Paint.Style.STROKE);
 		vtnTxt.setTextAlign(Paint.Align.CENTER);
-		borderPaint = new Paint();
+        Paint borderPaint = new Paint();
 		borderPaint.setColor(Color.WHITE);
 		borderPaint.setStyle(Paint.Style.STROKE);
 		borderPaint.setStrokeWidth(3);
@@ -1311,8 +1302,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	//save the position where the user pressed start.
 	private int[] riktLinjeStart,riktLinjeEnd;
 
-	private Integer currentDistance=null;
-	private final static int TimeOut = 3;
+    private final static int TimeOut = 3;
 
 	private void displayDistanceAndDirection() {
 		final int interval = TimeOut*1000;
@@ -1391,9 +1381,9 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			double mY = Double.parseDouble(mYs);
 			double gX = touchedGop.getLocation().getX();
 			double gY = touchedGop.getLocation().getY();
-			currentDistance = (int)Geomatte.sweDist(mY,mX,gY,gX);
+            Integer currentDistance = (int) Geomatte.sweDist(mY, mX, gY, gX);
 			int rikt = (int)(Geomatte.getRikt2(mY, mX, gY, gX)*57.2957795);
-			myMap.setAvstTxt(currentDistance>9999?(currentDistance/1000+"km"):(currentDistance+"m"));
+			myMap.setAvstTxt(currentDistance >9999?(currentDistance /1000+"km"):(currentDistance +"m"));
 			myMap.setRiktTxt(rikt+Deg);
 			//Log.d("wolf","update drawn");
 

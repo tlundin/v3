@@ -14,13 +14,9 @@ import java.util.Map;
 
 public class BlockCreateTableEntriesFromFieldList extends Block {
 
-	private String type=null;
     private String target=null;
     private String selectionField=null;
     private String selectionPattern=null;
-	private String labelField=null;
-    private String descriptionField=null;
-    private String uriField=null;
     private String variatorColumn=null;
 	String typeField=null,keyField = null;
 	private static final Map <String,List<List<String>>> cacheMap=new HashMap <String,List<List<String>>>();
@@ -32,13 +28,13 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 			String typeField,String variatorColumn,String uriField
 			) {
 		super();
-		this.type = type;
+        String type1 = type;
 		this.selectionField = selectionField;
 		this.selectionPattern = selectionPattern;
 		this.blockId = id;
-		this.labelField = labelField;
-		this.descriptionField = descriptionField;
-		this.uriField = uriField;
+        String labelField1 = labelField;
+        String descriptionField1 = descriptionField;
+        String uriField1 = uriField;
 		this.variatorColumn = variatorColumn;
 		this.target = target;
 	}
@@ -58,7 +54,7 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 			return;
 		}
 		VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
-			List<List<String>>rows = cacheMap==null?null:cacheMap.get(blockId);
+			List<List<String>>rows = cacheMap.get(blockId);
 			if (rows==null)
 				rows  = al.getTable().getRowsContaining(selectionField, selectionPattern);
 			if (rows==null||rows.size()==0) {

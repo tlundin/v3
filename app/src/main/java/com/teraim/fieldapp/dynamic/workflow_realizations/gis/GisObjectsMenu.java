@@ -44,19 +44,16 @@ public class GisObjectsMenu extends View {
 	private static int scale;
 	private  Map<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>> myPalettes;
 	private Paint headerTextP;
-	private Paint gopButtonBackgroundP,tabTextP;
-	private Paint gopButtonEdgeP;
-	private GisImageView myGis;
+    private Paint tabTextP;
+    private GisImageView myGis;
 	private Paint thinBlackEdgeP;
 	private Paint blackTextP;
 
 
 	private MenuButton oldB = null;
-	private int buttonWidth;
-	private int RowH,ColW;
+    private int ColW;
 	private int w=0;
-	private Paint gopButtonBackgroundSP;
-	private Paint thinWhiteEdgeP;
+    private Paint thinWhiteEdgeP;
 	private Paint whiteTextP;
 	private Paint tabEdgePaint,selectedTabPaint,notSelectedTabPaint,transparentPaint;
 	private WF_Gis_Map myMap;
@@ -145,15 +142,15 @@ public class GisObjectsMenu extends View {
 		whiteTextP.setStyle(Paint.Style.STROKE);
 		whiteTextP.setTextAlign(Paint.Align.CENTER);
 
-		gopButtonBackgroundP = new Paint();
+        Paint gopButtonBackgroundP = new Paint();
 		gopButtonBackgroundP.setColor(Color.WHITE);
 		gopButtonBackgroundP.setStyle(Paint.Style.FILL);
 
-		gopButtonBackgroundSP = new Paint();
+        Paint gopButtonBackgroundSP = new Paint();
 		gopButtonBackgroundSP.setColor(Color.BLACK);
 		gopButtonBackgroundSP.setStyle(Paint.Style.FILL);
 
-		gopButtonEdgeP = new Paint();
+        Paint gopButtonEdgeP = new Paint();
 		gopButtonEdgeP.setColor(Color.BLACK);
 		gopButtonEdgeP.setStyle(Paint.Style.STROKE);
 		gopButtonEdgeP.setStrokeWidth(2*scale);
@@ -315,20 +312,17 @@ public class GisObjectsMenu extends View {
 	private final int Max_Tabs = 15;
 	private List<TabButton> tabButtonArray;
 	private MenuButton[][] menuButtonArray;
-	private String[] menuHeaderArray;
-	private int tabRowHeight = 0;
 
 
-
-	private void generateMenu() {
+    private void generateMenu() {
 
 		int col = 0;
 		int row = 0;
 
 		Log.d("vortex","In generateMenu ");
-		buttonWidth = (w-PaddingX*2-(InnerPadding*(NoOfButtonsPerRow-1)))/NoOfButtonsPerRow;
-		RowH = InnerPadding+buttonWidth;
-		ColW = RowH;
+        int buttonWidth = (w - PaddingX * 2 - (InnerPadding * (NoOfButtonsPerRow - 1))) / NoOfButtonsPerRow;
+        int rowH = InnerPadding + buttonWidth;
+		ColW = rowH;
 
 		//Padding needs to be greater than height of main header.
 		int totalHeaderHeight = 0;
@@ -340,8 +334,8 @@ public class GisObjectsMenu extends View {
 		int marginal = 15*scale;
 
 
-
-		if (myPalettes.size()>0) {
+        int tabRowHeight = 0;
+        if (myPalettes.size()>0) {
 			tabRowHeight = scale*30;
 			int totalWidth=0,fulltextBoundsWidth=0;
 			boolean aggressive = false;
@@ -387,7 +381,7 @@ public class GisObjectsMenu extends View {
 
 		i=0;
 		menuButtonArray= new MenuButton[NoOfButtonsPerRow][MAX_ROWS];
-		menuHeaderArray = new String[MAX_ROWS];
+        String[] menuHeaderArray = new String[MAX_ROWS];
 		//for (String paletteName:myPalettes.keySet()) {
 		LinkedHashMap<GisObjectType, Set<FullGisObjectConfiguration>> menuGroupsM = myPalettes.get(currentPalette);
 		Log.d("vortex","palette is "+currentPalette);
@@ -401,7 +395,7 @@ public class GisObjectsMenu extends View {
 				//Left padding + numer of buttons + number of spaces in between.
 				FullGisObjectConfiguration fop = it.next();
 				int left = col * ColW + PaddingX;
-				int top = row * RowH + totalHeaderHeight+ tabRowHeight+PaddingY+PaddingX-(10*scale*row);
+				int top = row * rowH + totalHeaderHeight+ tabRowHeight +PaddingY+PaddingX-(10*scale*row);
 				RectF r = new RectF(left, top, left + buttonWidth, top + buttonWidth);
 				menuButtonArray[col][row] = new MenuButton(fop, r);
 				col++;

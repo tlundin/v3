@@ -399,8 +399,8 @@ public class VariableConfiguration implements Serializable {
 		return Tools.createKeyMap(KEY_YEAR,currentYear,"ruta",currentRuta,"provyta",currentProvyta,"smaprovyta",currentSmayta);
 	}
 
-	public Map<String,String> createYearKeyMap() {
-		Map ar = new HashMap<String,String>();
+	public Map createYearKeyMap() {
+		Map<String,String> ar = new HashMap<>();
 		ar.put(KEY_YEAR,Constants.getYear());
 		return ar;
 	}

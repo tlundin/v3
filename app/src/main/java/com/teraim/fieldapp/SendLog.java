@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -142,13 +143,18 @@ public class SendLog extends Activity {
         Log.d("vortex","full name is "+fullName);
         if (fullName == null)
             return;
+        File logFile = new File(fullName);
 
+        Uri logFileURI = FileProvider.getUriForFile(
+                this,
+                "com.teraim.fieldapp.fileprovider", logFile);
         Intent intent = new Intent (Intent.ACTION_SEND);
-        intent.setType ("plain/text");
+        intent.setType("plain/text");
         intent.putExtra (Intent.EXTRA_EMAIL, new String[] {"logs@teraim.com"});
+        intent.putExtra(Intent.EXTRA_STREAM, logFileURI);
         intent.putExtra (Intent.EXTRA_SUBJECT, "MyApp log file");
-        intent.putExtra (Intent.EXTRA_STREAM, Uri.parse ("file://" + fullName));
         intent.putExtra (Intent.EXTRA_TEXT, "Log file attached."); // do this so some email clients don't complain about empty body.
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivity (intent);
     }
 

@@ -97,11 +97,9 @@ public class CreateGisBlock extends Block {
 
 	//Callback after image has loaded.
     private AsyncResumeExecutorI cb;
-    private int imageWidth;
 
 
-
-	/**
+    /**
 	 *
 	 * @param myContext
 	 * @param cb
@@ -120,7 +118,7 @@ public class CreateGisBlock extends Block {
 		PersistenceHelper ph = gs.getPreferences();
 		PersistenceHelper globalPh = gs.getGlobalPreferences();
 
-		final String serverFileRootDir = server(globalPh.get(PersistenceHelper.SERVER_URL))+globalPh.get(PersistenceHelper.BUNDLE_NAME).toLowerCase()+"/extras/";
+		final String serverFileRootDir = globalPh.get(PersistenceHelper.SERVER_URL)+globalPh.get(PersistenceHelper.BUNDLE_NAME).toLowerCase()+"/extras/";
 		final String cacheFolder = Constants.VORTEX_ROOT_DIR+globalPh.get(PersistenceHelper.BUNDLE_NAME)+"/cache/";
 
 
@@ -209,6 +207,7 @@ public class CreateGisBlock extends Block {
 			final View avstRL = mapView.findViewById(R.id.avstRL);
 			boolean found = false;
 			GisLayer masterLayer = null;
+			Log.d("mask","cacepath "+cachedImgFilePath+" mapl: "+mapLayers);
 			for (MapGisLayer layer:mapLayers) {
 				if (layer.isVisible()) {
 					cachedImgFilePath = cacheFolder + layer.getImageName();
@@ -221,6 +220,7 @@ public class CreateGisBlock extends Block {
 					masterLayer = layer;
 				}
 			}
+			Log.d("mask","cachepath2 "+cachedImgFilePath);
 			if (!found) {
 				if (masterLayer!=null) {
 					masterLayer.setVisible(true);
@@ -235,11 +235,11 @@ public class CreateGisBlock extends Block {
 				options.inJustDecodeBounds = true;
 				BitmapFactory.decodeFile(cachedImgFilePath, options);
                 int imageHeight = options.outHeight;
-				imageWidth = options.outWidth;
-				Log.d("vortex","image rect h w is "+ imageHeight +","+imageWidth);
-				r = new Rect(0,0,imageWidth, imageHeight);
+                int imageWidth = options.outWidth;
+				Log.d("vortex","image rect h w is "+ imageHeight +","+ imageWidth);
+				r = new Rect(0,0, imageWidth, imageHeight);
 			} else {
-				Log.d("vortex","This is a cutout!");
+				Log.d("vortex","This is a cutout! "+cachedImgFilePath);
 				r = cutOut.r;
 				Location topC = cutOut.geoR.get(0);
 				Location botC = cutOut.geoR.get(1);
@@ -398,13 +398,6 @@ public class CreateGisBlock extends Block {
 		this.myLayers = myLayers;
 	}
 
-	private String server(String serverUrl) {
-		if (!serverUrl.endsWith("/"))
-			serverUrl+="/";
-		if (!serverUrl.startsWith("http://"))
-			serverUrl = "http://"+serverUrl;
-		return serverUrl;
-	}
 
 
 

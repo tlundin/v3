@@ -35,7 +35,12 @@ import java.util.UUID;
 
 public class Constants {
 
-    public final static float VORTEX_VERSION = 6.472f;
+    public final static float VORTEX_VERSION = 6.477f;
+
+    public static final String DEFAULT_SERVER_URI = "http://www.teraim.com";
+    public static final String TIMESTAMP_LABEL_FROM_TEAM_TO_ME = "timestamp_from_me_to_team";
+    public static final String TIMESTAMP_LABEL_FROM_ME_TO_TEAM = "timestamp_from_team_to_me";
+
     //String constants
     //The root folder for the SD  card is in the global Environment.
     private final static String path = Environment.getExternalStorageDirectory().getPath();

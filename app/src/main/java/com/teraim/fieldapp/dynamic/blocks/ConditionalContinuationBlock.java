@@ -11,12 +11,11 @@ public class ConditionalContinuationBlock extends Block {
 
 	private final String elseID;
     private final String expr;
-	private final List<String>variables;
-	private final List<EvalExpr>exprE;
+    private final List<EvalExpr>exprE;
 	public ConditionalContinuationBlock(String id, List<String> varL,
 			String expr, String elseBlockId) {
 		this.blockId=id;
-		this.variables=varL;
+        List<String> variables = varL;
 		this.expr=expr;
 		this.exprE = Expressor.preCompileExpression(expr);
 		this.elseID=elseBlockId;

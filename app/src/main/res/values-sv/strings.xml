@@ -45,8 +45,8 @@
 
 	<string name="sync_pop_header">Synkroniseringsstatus</string>
 	<string name="sync_pop_sync_on">Status</string>
-	<string name="sync_pop_time_since_last_sync">Senast synkad</string>
-	<string name="sync_pop_unsynced_user">Mina osynkade poster</string>
+	<string name="sync_pop_time_since_last_sync">Jag synkade sist</string>
+	<string name="sync_pop_unsynced_user">Osynkade inmatningar</string>
 	<string name="sync_pop_sync_button_txt">Synka nu</string>
 	<string name="sync_pop_sync_last_sync">Team data (osynkat)</string>
 	<string name="synk_off">Avstängd</string>
@@ -99,5 +99,10 @@
 	<string name="old_xml_message">"FieldPad versionen du har installerad är för gammal för att köra det här programmet. Du borde installera version "</string>
 	<string name="warning">Varning</string>
 	<string name="old_xml_message_cont">". Om du väljer att fortsätta laddas en äldre version, men det finns risk för fel."</string>
-	<string name="none">Ingen bakgrund</string>>
+	<string name="none">Ingen bakgrund</string>
+    <string name="filtering">Filter</string>
+	<string name="visible">Synlig</string>
+	<string name="show_labels">Namn</string>
+	<string name="progress">Status</string>
+	<string name="map_background">Kartbakgrund</string>
 </resources>

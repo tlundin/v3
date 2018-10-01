@@ -4,13 +4,11 @@ import android.content.Context;
 import android.widget.TextView;
 
 public class PlainLogger implements LoggerI {
-    private final Context myContext;
     private TextView txt;
-    private final String loggerId;
 
     public PlainLogger(Context c, String loggerId) {
-        myContext = c;
-        this.loggerId = loggerId;
+        Context myContext = c;
+        String loggerId1 = loggerId;
     }
     @Override
     public void setOutputView(TextView txt) {

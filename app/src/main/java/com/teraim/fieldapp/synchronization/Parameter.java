@@ -8,12 +8,10 @@ public class Parameter implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final String mkey;
-    private final String mvalue;
-	
-	Parameter(String key, String value) {
-		mkey  = key;
-		mvalue = value;
+
+    Parameter(String key, String value) {
+        String mkey = key;
+        String mvalue = value;
 	}
 }
 

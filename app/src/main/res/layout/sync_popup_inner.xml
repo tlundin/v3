@@ -89,7 +89,36 @@
             android:text="@string/sync_pop_time_since_last_sync" />
 
         <TextView
-            android:id="@+id/sync_time_since_last"
+            android:id="@+id/sync_time_since_last_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:paddingRight="3dp"
+            android:text="3 minutes" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll21"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/ll2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView633"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView4"
+            android:layout_alignStart="@+id/textView4"
+            android:layout_below="@+id/textView4"
+            android:padding="3dp"
+            android:text="@string/sync_pop_time_since_last_entry" />
+
+        <TextView
+            android:id="@+id/sync_time_since_last_entry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -103,7 +132,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="false"
-        android:layout_below="@+id/ll2"
+        android:layout_below="@+id/ll21"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
@@ -200,7 +229,6 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/ll1"
         android:layout_below="@+id/refresh_button"
-
         android:text=""
         android:textStyle="italic"
         android:layout_alignRight="@+id/ll1" />

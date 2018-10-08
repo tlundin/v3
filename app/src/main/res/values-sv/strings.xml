@@ -105,4 +105,5 @@
 	<string name="show_labels">Namn</string>
 	<string name="progress">Status</string>
 	<string name="map_background">Kartbakgrund</string>
+	<string name="sync_pop_time_since_last_entry">Senaste inmatning av mig</string>
 </resources>

@@ -59,7 +59,7 @@ public class SyncContentProvider extends ContentProvider {
                 } else {
 
                     //Timestamp key includes team name, since change of team name should lead to resync from zero.
-                    Long timestamp = gs.getDb().getTimeStamp(teamName);
+                    Long timestamp = gs.getDb().getTimeStampFromMeToTeam(teamName);
                     Log.d("burlesk", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
                     c = db.query(DbHelper.TABLE_AUDIT, null,
                             "timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);

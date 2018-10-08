@@ -159,7 +159,7 @@ public class VariableCache {
                     TmpVal variableValues = map.get(varName);
                     List<String> row = gs.getVariableConfiguration().getCompleteVariableDefinition(varName);
                     if (row == null) {
-                        Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
+                        //Log.e("vortex", "Variable " + varName + " does not exist in variables but exists in Database");
                         //Table table = gs.getVariableConfiguration().getTable();
                         //gs.getVariableConfiguration().getTable().printTable();
                         //Map<String, String> deleteHash = Tools.copyKeyHash(myKeyHash);

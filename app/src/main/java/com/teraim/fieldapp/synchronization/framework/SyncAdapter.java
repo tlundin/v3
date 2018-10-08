@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
@@ -32,8 +31,9 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Handle the transfer of data between a server and an
@@ -41,16 +41,13 @@ import java.util.List;
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-    private static final Long LONG_TIME_AGO = 0L;
 
     // Global variables
     // Define a variable to contain a content resolver instance
     private final ContentResolver mContentResolver;
-    private SharedPreferences gh;
     private Messenger mClient;
 
-    private final Uri CONTENT_URI = Uri.parse("content://"
-            + SyncContentProvider.AUTHORITY + "/synk");
+    private final Uri CONTENT_URI = Uri.parse("content://" + SyncContentProvider.AUTHORITY + "/synk");
 
     private boolean busy = true;
     private String mApp=null;
@@ -58,9 +55,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private String mTeam=null;
 
     //Error codes.
-    private boolean ERR_CONFIG,INIT_COMPLETE;
+    private boolean ERR_CONFIG,INIT_COMPLETE,ERR_TEMP_TIMESTAMP_MISSING;
 
     private long timestamp_from_team_to_me=-1;
+
     //temporary store timestamp in this
     private long potential_timestamp_from_team_to_me = -1;
 
@@ -72,8 +70,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
 
         mContentResolver = context.getContentResolver();
-
+        lock();
     }
+
+
 
     public void init(Messenger client, long timestamp_from_team_to_me, String team, String user, String app) {
         //get the team and user.
@@ -81,7 +81,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mTeam = team;
         mUser = user;
         mApp = app;
-        if (INIT_COMPLETE || client == null || user == null || user.length() == 0 || team == null || team.length() == 0 || app == null || app.length() == 0) {
+        Log.d("vortex","IN INIT SYNCADAPTER");
+
+        if (client == null || user == null || user.length() == 0 || team == null || team.length() == 0 || app == null || app.length() == 0) {
             Log.e("vortex", "Init error in Sync Adapter." + user + "," + team + "," + app + "," + INIT_COMPLETE);
 
         } else {
@@ -92,35 +94,46 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ERR_CONFIG = false;
             INIT_COMPLETE = true;
         }
+        releaseLock();
     }
 
     public void resetOnResume() {
+        Log.d("vortex","IN RESET_ON_RESUME");
         INIT_COMPLETE=false;
     }
 
     private List<ContentValues> dataToInsert=null;
 
 
-
+    /***
+     * System interface for synchronisation.
+     * @param accounts
+     * @param extras
+     * @param authority
+     * @param provider
+     * @param syncResult
+     */
     @Override
-    public void onPerformSync(Account accountz, Bundle extrasz, String authorityz,
-                              ContentProviderClient providerz, SyncResult syncResultz) {
+    public void onPerformSync(Account accounts, Bundle extras, String authority,
+                              ContentProviderClient provider, SyncResult syncResult) {
+        Log.d("vortex","system call on performsync");
+        if (!isLocked())
+            onPerformSync();
+        else
+            Log.e("vortex", "LOCKED - discarding call");
+    }
 
+
+    private void onPerformSync() {
         Message msg;
         int err = -1;
 
-        Log.d("vortex", "************onPerformSync [" + user + "]");
-
+        Log.d("vortex", "************onPerformSync [" + mUser + "]");
 
         if (mClient == null ) {
             Log.e("vortex", "Not ready so discarding call");
             return;
-        }
-        else if (busy) {
-            Log.e("vortex", "Busy so discarding call");
-            //err = SyncService.ERR_SYNC_BUSY;
-            return;
-        } else if (ERR_CONFIG) {
+        } else if (ERR_CONFIG || ERR_TEMP_TIMESTAMP_MISSING) {
             Log.e("vortex", "Error in config - discarding call");
             msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
             msg.arg1=SyncService.ERR_SETTINGS;
@@ -128,11 +141,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
 
-        assert(timestamp_from_team_to_me != -1);
 
-
-        //We are now running!!
-        busy = true;
+        lock();
         //Tell client that the sync is now busy.
         sendMessage(Message.obtain(null, SyncService.MSG_SYNC_STARTED));
 
@@ -150,7 +160,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         StringBuilder targets=new StringBuilder();
         long maxStamp = -1;
-        int maxToSync=0;
+        int maxToSync;
         Log.d("vortex","Found "+c.getCount()+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
         String action,changes,variable;
         long entryStamp;
@@ -191,15 +201,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             sendMessage(msg);
         }
 
-        Log.d("brakko","exiting onsyncupdate");
+        Log.d("vortex","exiting onsyncupdate");
+    }
+
+    public boolean isLocked() {
+        return busy;
     }
 
     private boolean syncDataAlreadyExists() {
         Cursor c = mContentResolver.query(CONTENT_URI, null, "syncquery", null, null);
+        assert (c!=null);
         if (c.moveToFirst()) {
-            int icount = c.getInt(0);
-            if (icount > 0) {
-                Log.d("vortex", "sync table has entries: " + icount);
+            int iCount = c.getInt(0);
+            if (iCount > 0) {
+                Log.d("vortex", "sync table has entries: " + iCount);
                 c.close();
                 return true;
             }
@@ -256,7 +271,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             ex.printStackTrace();
 
         }
-        busy = false;
+
     }
 
     private void sendMessage(Message msg) {
@@ -271,7 +286,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
         } else
-            Log.e("antrax","no client...NO MESSAGE SENT");
+            Log.e("vortex","SendMessage failed. No client");
 
     }
 
@@ -284,8 +299,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             int i=0;
 
-            Iterator<ContentValues>it = dataToInsert.iterator();
-            while (it.hasNext()) {
+            for (ContentValues aDataToInsert : dataToInsert) {
                 if (i % 10 == 0) {
                     Log.d("bascar", "inserting entry: " + i + "-" + (i + 10));
 
@@ -298,13 +312,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 }
                 i++;
-                mContentResolver.insert(CONTENT_URI, it.next());
+                mContentResolver.insert(CONTENT_URI, aDataToInsert);
             }
         } else
             Log.e("vortex","No rows to insert in insertintoDB SyncAdapter");
 
+        //send the from team timestamp to save in client if insert succeeds.
+        msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT);
+        msg.obj = bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,potential_timestamp_from_team_to_me);
+        sendMessage(msg);
 
-        sendMessage(Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT));
         long t = System.currentTimeMillis()-d;
         Log.d("vortex","time used was "+t);
     }
@@ -326,7 +343,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d("vortex","trying to force sync");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         ContentResolver.requestSync(null, SyncContentProvider.AUTHORITY, bundle);
     }
@@ -336,15 +352,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Message msg;
         URL url ;
         URLConnection conn;
-        int orderNr = 0;
         assert(dataToSend!=null);
+
 
         Log.d("bascar","In Send And Receive.");
 
-        //Send a Start Sync message to the other side.
+        ObjectOutputStream objOut=null;
+        ObjectInputStream objIn=null;
+        boolean sessionShouldEnd = true;
 
-        //Send the SynkEntry[] array to server.
-        try {
+        try
+        {
             url = new URL(Constants.SynkServerURI);
             conn = url.openConnection();
 
@@ -355,29 +373,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //			conn.addRequestProperty("type","TEAM_SYNK");
 
             // send object
-            Log.d("brakko","creating outstream...");
-            ObjectOutputStream objOut = new ObjectOutputStream(conn.getOutputStream());
+            Log.d("vortex","creating outstream...");
+            objOut = new ObjectOutputStream(conn.getOutputStream());
 
             //First syncgroup
-            Log.d("brakko","writing group..."+mTeam);
             objOut.writeObject(mTeam);
             //Then user
-            Log.d("brakko","writing user..."+mUser);
             objOut.writeObject(mUser);
             //Then app name
-            Log.d("brakko","writing app..."+mApp);
             objOut.writeObject(mApp);
             //The last known timestamp.
-            Log.d("brakko","LAST_SYNC_FROM_TEAM_TO_ME WAS "+timestamp_from_team_to_me);
-            objOut.writeObject(new Long(timestamp_from_team_to_me));
-            boolean IHadData=true;
-            if (dataToSend.length>0) {
-                Log.d("brakko","Writing SA[] Array.");
+            objOut.writeObject(timestamp_from_team_to_me);
+
+            //check if more data to fetch or to send.
+            boolean IHaveData=dataToSend.length>0;
+            boolean ServerHasData=true;
+
+            if (IHaveData) {
+                Log.d("vortex","Writing "+dataToSend.length+" entries");
                 objOut.writeObject(dataToSend);
-            }
-            else {
-                Log.d("brakko", "did not write any Sync Entries. SA[] Empty");
-                IHadData=false;
             }
 
             //Done sending.
@@ -386,49 +400,46 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
             //Receive.
-            Object reply=null;
-            ObjectInputStream objIn = new ObjectInputStream(conn.getInputStream());
+            Object reply;
+            objIn = new ObjectInputStream(conn.getInputStream());
 
             reply = objIn.readObject();
-            Log.d("brakko","After read object. reply is "+(reply!=null?"not":"")+" null");
+            Log.d("vortex","Server reply is "+(reply!=null?"not":"")+" null");
 
             if (reply instanceof String ) {
-                //server read my data succesfully. we can update the read pointer (timestamp) to avoid sending same data again.
-                if (potential_timestamp_from_me_to_team > -1) {
-                    Log.d("antrax","Sending timestamp of ME->TEAM: "+potential_timestamp_from_me_to_team);
-                    msg = Message.obtain(null, SyncService.MSG_SERVER_READ_MY_DATA);
-                    msg.obj = bundle(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,new Long(potential_timestamp_from_me_to_team));
-                    sendMessage(
-                            msg
-                    );
-
+                //server read my data successfully.
+                //Update read pointer (timestamp) to avoid sending same data again.
+                if (potential_timestamp_from_me_to_team!=-1) {
+                    Log.d("vortex","ME --> TEAM: "+potential_timestamp_from_me_to_team);
+                } else {
+                    if(IHaveData){
+                        Log.e("vortex","I have data but timestamp is -1!!!!");
+                    }
+                    Log.d("vortex", "No new data from me. Timestamp not changed.");
                 }
 
-                int numberOfRows = Integer.parseInt((String) reply);
-                Log.d("brakko","Number of Rows that will arrive: "+numberOfRows);
-                //We now know that the SyncEntries from this user are safely stored. So advance the pointer!
-                if (potential_timestamp_from_me_to_team!=-1) {
-                    Log.d("burlesk","ME --> TEAM: "+potential_timestamp_from_me_to_team);
-                    Log.d("brakko","Teamname: "+mTeam+" App: "+mApp);
-                    //Each team + project has an associated TIME OF LAST SYNC pointer.
+                msg = Message.obtain(null, SyncService.MSG_SERVER_ACKNOWLEDGED_READ);
+                Log.d("vortex","Sending MSG_SERVER_ACKNOWLEDGED_READ");
+                //We know that the SyncEntries from this user are safely stored.
+                msg.obj = bundle(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM, potential_timestamp_from_me_to_team);
+                sendMessage(msg);
 
-                } else
-                    Log.d("burlesk","Timestamp for Time Of Last Sync not changed for Internet sync.");
-
+                int numberOfEntriesFromServer = Integer.parseInt((String) reply);
+                Log.d("vortex","Server sends: "+numberOfEntriesFromServer+" entries");
                 int insertedRows=0;
-                objOut.close();
-                int i=0;
+
                 dataToInsert = new ArrayList<>();
 
                 while (true) {
+
                     reply = objIn.readObject();
 
+                    //Timestamp (Long) is the last message from the Server.
                     if (reply instanceof Long) {
 
                         objIn.close();
-                        objOut.close();
                         //Set a potential timestamp. Dont freeze until data read by client.
-                        Log.d("vortex","TIMESTAMP FROM TEAM-->ME: "+reply);
+                        Log.d("vortex","Got a timestamp from the server: "+reply);
                         potential_timestamp_from_team_to_me = (Long)reply;
 
                         Log.d("vortex","Inserted rows: "+insertedRows);
@@ -438,44 +449,45 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             //update timestamp - immediately.
                             timestamp_from_team_to_me = potential_timestamp_from_team_to_me;
                             //check if data to send from me to team.
-                            if (IHadData) {
-                                Log.d("vortex","I had data...");
+                            if (IHaveData) {
                                 msg = Message.obtain(null, SyncService.MSG_NO_NEW_DATA_FROM_TEAM_TO_ME);
-                                msg.obj=bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,reply);
-                                forceSyncToHappen();
+                                msg.obj=bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,timestamp_from_team_to_me);
+                                //Retrigger sync after a 250 ms.
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        this.cancel();
+                                        onPerformSync();
+                                    }
+                                }, 150);
                             } else {
                                 msg = Message.obtain(null, SyncService.MSG_ALL_SYNCED);
-                                msg.obj=bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,reply);
+                                msg.obj=bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,timestamp_from_team_to_me);
                                 Log.d("vortex","All is synced.");
+
                             }
                             return msg;
                         } else {
-                            Log.d("brakko","Insert into DB begins");
-                            //keep the timestamp
+                            Log.d("vortex","Insert into DB begins");
+                            //keep lock
+                            sessionShouldEnd = false;
                             return Message.obtain(null, SyncService.MSG_SYNC_REQUEST_DB_LOCK);
                         }
-                    }
-
-                    else if (reply instanceof SyncFailed) {
+                    } else if (reply instanceof SyncFailed) {
                         Log.e("vortex","SYNC FAILED. REASON: "+((SyncFailed)reply).getReason());
                         break;
 
+                    } else if (reply instanceof byte[]) {
 
-                    }
-                    else if (reply instanceof byte[]) {
                         ContentValues cv = new ContentValues();
                         cv.put("DATA", (byte[])reply);
-                        cv.put("count",orderNr++);
-                        Log.d("vortex","Count: "+cv.get("count"));
+                        cv.put("count",insertedRows++);
                         dataToInsert.add(cv);
-                        insertedRows++;
+
                         if (insertedRows%10==0) {
                             msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
-                            msg.obj=bundle(insertedRows,numberOfRows);
-
-                            sendMessage(
-                                    msg
-                            );
+                            msg.obj=bundle(insertedRows,numberOfEntriesFromServer);
+                            sendMessage(msg);
                         }
                     }
                     else {
@@ -486,15 +498,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             else {
-                Log.e("vortex","OK not returned. instead "+reply.getClass().getCanonicalName());
+                Log.e("vortex","OK not returned. instead "+reply!=null?reply.getClass().getCanonicalName():"NULL");
                 if (reply instanceof SyncFailed) {
                     Log.e("vortex",((SyncFailed)reply).getReason());
                 }
 
             }
-
-            objIn.close();
-            objOut.close();
 
         } catch (StreamCorruptedException e) {
             Log.e("vortex","Stream corrupted. Reason: "+e.getMessage()+" Timestamp: "+System.currentTimeMillis());
@@ -505,7 +514,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
             msg.arg1=SyncService.ERR_SERVER_CONN_TIMEOUT;
             Log.e("vortex","ERR_SERVER_CONN_TIMEOUT. Reason: "+e.getMessage()+" Timestamp: "+System.currentTimeMillis());
-            busy = false;
             return msg;
         }
 
@@ -513,16 +521,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             fe.printStackTrace();
             msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
             msg.arg1=SyncService.ERR_SERVER_NOT_REACHABLE;
-            busy = false;
             return msg;
         }
 
         catch (Exception ex) {
             ex.printStackTrace();
-
         }
-        releaseLock();
-        //Log.e("vortex","BUSY NOW FALSE E");
+        finally {
+            if (sessionShouldEnd)
+                releaseLock();
+            try {
+                if (objIn != null)
+                    objIn.close();
+                if (objOut != null)
+                    objOut.close();
+            } catch (IOException ignored) {
+
+            }
+        }
+
         msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
         msg.arg1=SyncService.ERR_UNKNOWN;
         return msg;
@@ -545,7 +562,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void releaseLock() {
         busy=false;
-        Log.e("vortex","BUSY NOW FALSE T");
+        Log.d("vortex","**SyncAdapter UN-Locked**");
+    }
+
+    public void lock() {
+        Log.d("vortex","**SyncAdapter Locked**");
+        busy=true;
     }
 
 
@@ -562,4 +584,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
 
+    public boolean isInitDone() {
+        return INIT_COMPLETE;
+    }
 }

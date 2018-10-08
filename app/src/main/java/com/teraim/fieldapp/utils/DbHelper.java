@@ -37,6 +37,7 @@ import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -207,6 +208,8 @@ public class DbHelper extends SQLiteOpenHelper {
         Log.d ("vortex","now after C with keyhash: "+myNewKeyHash);
         return myNewKeyHash;
     }
+
+
 
     public class LocationAndTimeStamp {
         public final boolean old;
@@ -2118,7 +2121,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             if (GlobalState.getInstance()!=null) {
-                Long timestamp = getTimeStamp(team);
+                Long timestamp = getTimeStampFromMeToTeam(team);
                 //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
                 timestamp = timestamp == -1 ? 0 : timestamp;
@@ -2867,6 +2870,14 @@ public class DbHelper extends SQLiteOpenHelper {
     public void saveTimeStampFromTeamToMe(String team,long ts) {
         saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team,ts);
     }
+    public void saveTimeStampOfLatestSuccesfulSync(String team) {
+        saveSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team,new Timestamp(System.currentTimeMillis()).getTime());
+    }
+
+    public Long getTimestampOfLatestSuccesfulSync(String team) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team);
+    }
+
     public Long getTimeStampFromMeToTeam(String team) {
         return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team);
     }
@@ -2885,7 +2896,7 @@ public class DbHelper extends SQLiteOpenHelper {
             c.moveToFirst();
             return c.getLong(0);
         }
-        Log.e("vortex","failed to find team timestamp...returning 0");
+        Log.e("vortex","failed to find timestamp for"+timeStampLabel+"...returning 0");
         return 0L;
     }
 

@@ -2,25 +2,15 @@ package com.teraim.fieldapp;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.JsonReader;
-import android.util.JsonToken;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
@@ -39,17 +29,12 @@ import com.teraim.fieldapp.non_generics.StatusHandler;
 import com.teraim.fieldapp.synchronization.ConnectionManager;
 import com.teraim.fieldapp.synchronization.SyncMessage;
 import com.teraim.fieldapp.ui.DrawerMenu;
-import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.BackupManager;
-import com.teraim.fieldapp.utils.Connectivity;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
 import com.teraim.fieldapp.utils.Tools;
 
 import java.io.File;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -157,9 +142,6 @@ public class GlobalState {
         Log.d("jgw", "my imgmeta is " + imgMetaFormat);
         if (imgMetaFormat != null)
             this.imgMetaFormat = imgMetaFormat;
-        //check current state of synk server.
-        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
-            getServerSyncStatus();
 
         Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +getMyTeam()));
         Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_BACKUP));
@@ -624,139 +606,7 @@ public class GlobalState {
     }
 
 
-    public String getServerSyncStatus() {
-        Context ctx = getContext();
-        if (ctx != null) {
-            Log.d("vortex", "update team sync state called");
 
-            String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
-            String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
-            String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
-
-            Long timestamp = ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +team);
-            Log.d("vortex","TIMESTAMP_LAST_SYNC_FROM_TEAN_TO_ME: "+timestamp);
-           timestamp=(timestamp==-1)?0:timestamp;
-            Log.d("mama","TS: "+timestamp);
-            if (Connectivity.isConnected(ctx)) {
-                //connected...lets call the sync server.
-                final String SyncServerStatusCall = Constants.SynkServerURI + "?action=get_team_status&team=" +
-                        team + "&project=" + project + "&timestamp=" + timestamp+"&user="+user;
-                //final TextView mTextView = (TextView) findViewById(R.id.text);
-                RequestQueue queue = Volley.newRequestQueue(ctx);
-
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, SyncServerStatusCall,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
-                                Log.d("mama", "Response is: " + response);
-                                syncGroup = new SyncGroup(response);
-                                //request a new sync if the team has data.
-                                if (syncGroup.getTeam()!=null && !syncGroup.getTeam().isEmpty()) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-                                    bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                                    ContentResolver.requestSync(mAccount, Start.AUTHORITY, bundle);
-
-                                }
-                                sendEvent(MenuActivity.REDRAW);
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("mama", "That didn't work! " + error.getMessage());
-                    }
-                });
-
-// Add the request to the RequestQueue.
-                queue.add(stringRequest);
-            } else
-                Log.d("mama", "no internet...");
-        }
-
-        Log.d("mama", "I return here");
-        return null;
-    }
-
-    private SyncGroup syncGroup = null;
-
-    public SyncGroup getSyncGroup() {
-        return syncGroup;
-    }
-
-    public class SyncGroup {
-
-        private List<TeamMember> team = null;
-        private Date lastUpdate;
-
-        SyncGroup(String json) {
-            //insert current data on the sync status for the team.
-            //{"USER0":["T1",2,"2018-05-14 23:06:32.737"],"USER1":["T2",1,"2018-05-14 23:02:54.213"
-            if (json != null) {
-                //clear current state.
-                team = new ArrayList<>();
-                try {
-                    JsonReader jr = new JsonReader(new StringReader(json));
-
-                    jr.beginObject();
-                    while (!jr.peek().equals(JsonToken.END_OBJECT)) {
-                        String name = jr.nextName();
-                        Log.d("vortex", name);
-                        jr.beginArray();
-                        String user = jr.nextString();
-                        int unsynced = jr.nextInt();
-                        Long date = jr.nextLong();
-                        Log.d("vortex", "user:" + user + " unsynced: " + unsynced + " time: " + date);
-                        jr.endArray();
-                        //name, number of unsynced entries, datetime last seen on sync server.
-                        addEntry(new TeamMember(user, unsynced, date));
-                    }
-                    lastUpdate=new Date(System.currentTimeMillis());
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }
-
-        private void addEntry(TeamMember t) {
-            if (team == null)
-                team = new ArrayList<>();
-            team.add(t);
-
-        }
-
-        public List<TeamMember> getTeam() {
-            return team;
-        }
-
-        public Date getLastUpdate() {
-            return lastUpdate;
-        }
-    }
-
-    public class TeamMember {
-        public final int unsynched;
-        public final String user;
-        private final Long date;
-
-        TeamMember(String user, int uns, Long date) {
-            unsynched = uns;
-            this.user = user;
-            this.date = date;
-
-        }
-
-        public Date getDate() {
-                return new java.util.Date(date);
-        }
-
-        public Long getRawDate() {
-            return date;
-        }
-    }
 
 
 }

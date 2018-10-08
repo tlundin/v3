@@ -38,8 +38,8 @@ public class SyncService extends Service {
 	public static final int MSG_NO_NEW_DATA_FROM_TEAM_TO_ME = 8;
 	public static final int MSG_USER_STOPPED_SYNC = 9;
 	public static final int MSG_SYNC_DATA_ARRIVING = 10;
-	public static final int MSG_START_SYNC = 11;
-	public static final int MSG_SERVER_READ_MY_DATA = 12;
+	//public static final int MSG_START_SYNC = 11;
+	public static final int MSG_SERVER_ACKNOWLEDGED_READ = 12;
 	public static final int MSG_ALL_SYNCED = 13;
 
 
@@ -48,7 +48,7 @@ public class SyncService extends Service {
 	public static final int ERR_SERVER_NOT_REACHABLE = 5;
 	public static final int ERR_SERVER_CONN_TIMEOUT = 6;
 
-	public static final int REFRESH = 9;
+	//public static final int REFRESH = 9;
 
 
     static class IncomingHandler extends Handler {
@@ -66,7 +66,8 @@ public class SyncService extends Service {
 					String app = 						appData.getString("app");
 					String team = 						appData.getString("team");
 					String user = 						appData.getString("user");
-                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,app,team,user);
+
+                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,team,user,app);
                     break;
                 case MSG_DATABASE_LOCK_GRANTED:
 					Log.d("vortex","Datalock granted. Inserting");
@@ -144,7 +145,13 @@ public class SyncService extends Service {
     		Log.d("vortex","In OnBindm returning syncAdapter_Binder");
     		if (mClient!=null) {
     			Log.e("vortex","myClient exists already.");
-                sSyncAdapter.resetOnResume();
+                if(sSyncAdapter.isInitDone()) {
+                    Log.d("maxx","init has already been done");
+
+                }
+                if(sSyncAdapter.isLocked()){
+                    Log.d("maxx","sync is locked.");
+                }
     		}
     		return sSyncAdapter.getSyncAdapterBinder();
     	}

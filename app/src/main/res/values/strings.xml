@@ -107,6 +107,7 @@
     <string name="show_labels">Labels</string>
     <string name="progress">Progress</string>
     <string name="map_background">Map background</string>
+    <string name="sync_pop_time_since_last_entry">Time of last input</string>
 
 
 </resources>

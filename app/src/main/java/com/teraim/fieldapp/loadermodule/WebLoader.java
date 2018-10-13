@@ -99,7 +99,7 @@ public class WebLoader extends Loader {
 			if (e instanceof UnknownHostException)
 				return new LoadResult(module,ErrorCode.HostNotFound,"Server not found: "+url.getHost());
 			else if (e instanceof MalformedJsonException)
-				return new LoadResult(module,ErrorCode.ParseError,"Malformed JSON: "+e.getMessage()+"\n Did you forget to add a version number of the first row?");
+				return new LoadResult(module,ErrorCode.ParseError,"Malformed JSON: "+e.getMessage()+"\nFirst row must contain the file version number.");
 			else if (e instanceof FileNotFoundException) {
 				return new LoadResult(module,ErrorCode.notFound);
 			} else if (e instanceof java.net.SocketTimeoutException) {

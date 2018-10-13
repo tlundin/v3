@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
+import com.teraim.fieldapp.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,9 +120,9 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		tv.setText(label);
 		((TableRow)this.getWidget()).addView(emptyCell);
 		if (backgroundColor!=null)
-			emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
+			emptyCell.setBackgroundColor(Tools.getColorResource(myContext.getContext(),backgroundColor));
 		if (textColor!=null)
-			tv.setTextColor(Color.parseColor(textColor));
+			tv.setTextColor(Tools.getColorResource(myContext.getContext(),textColor));
 		return emptyCell;
 	}
 
@@ -135,9 +135,9 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		headerT.setText(label);
 		((TableRow)this.getWidget()).addView(headerC);
 		if (backgroundColor!=null)
-			headerC.setBackgroundColor(Color.parseColor(backgroundColor));
+			headerC.setBackgroundColor(Tools.getColorResource(myContext.getContext(),backgroundColor));
 		if (textColor!=null)
-			headerT.setTextColor(Color.parseColor(textColor));
+			headerT.setTextColor(Tools.getColorResource(myContext.getContext(),textColor));
 		//If no column selected, selectedIndex is -1
 
 		headerC.setOnClickListener(new OnClickListener() {
@@ -196,8 +196,8 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		TextView tv= emptyCell.findViewById(R.id.contentT);
 
 		((TableRow)this.getWidget()).addView(emptyCell);
-		bg.setBackgroundColor(Color.parseColor(backgroundColor));
-		tv.setTextColor(Color.parseColor(textColor));
+		bg.setBackgroundColor(Tools.getColorResource(myContext.getContext(),backgroundColor));
+		tv.setTextColor(Tools.getColorResource(myContext.getContext(),textColor));
 //		Log.d("vortex","var for row "+this.getLabel());
 //		Log.d("vortex","v: "+al.getVarName(myRow)+" key: "+al.getKeyChain(myRow));
 		return tv;
@@ -210,12 +210,8 @@ public class WF_Table_Row extends WF_Widget implements Listable,Comparable<Lista
 		CheckBox cb= emptyCell.findViewById(R.id.contentT);
 
 		((TableRow)this.getWidget()).addView(emptyCell);
-		//((TableRow)this.getWidget()).setBackgroundColor(Color.parseColor(backgroundColor));
-		emptyCell.setBackgroundColor(Color.parseColor(backgroundColor));
-		cb.setTextColor(Color.parseColor(textColor));
-
-//		Log.d("vortex","var for row "+this.getLabel());
-//		Log.d("vortex","v: "+al.getVarName(myRow)+" key: "+al.getKeyChain(myRow));
+		emptyCell.setBackgroundColor(Tools.getColorResource(myContext.getContext(),backgroundColor));
+		cb.setTextColor(Tools.getColorResource(myContext.getContext(),textColor));
 		return cb;
 	}
 

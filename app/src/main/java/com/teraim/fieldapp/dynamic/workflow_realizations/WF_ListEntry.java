@@ -41,6 +41,7 @@ public abstract class WF_ListEntry extends WF_Widget implements Listable,Compara
 
 	@Override
 	public String getSortableField(String columnId) {
+		Log.d("filterz","In get sortable field. Keyrow:\n "+keyRow+" columnId: "+columnId+" res: "+al.getTable().getElement(columnId, keyRow));
 		if (keyRow!=null && columnId!=null)
 			return al.getTable().getElement(columnId, keyRow);
 		else 

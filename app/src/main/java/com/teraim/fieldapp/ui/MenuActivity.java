@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -217,12 +216,13 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                         }
                     } else
                         me.refreshStatusRow();
+
+                    lastRedraw = System.currentTimeMillis();
+                    if (!Connectivity.isConnected(MenuActivity.this))
+                        toggleSyncOnOff(false);
+                    Log.d("kakka", "connected: " + Connectivity.isConnected(MenuActivity.this));
+                    syncState = syncOn() ? R.drawable.syncon : R.drawable.syncoff;
                 }
-                lastRedraw = System.currentTimeMillis();
-                if (!Connectivity.isConnected(MenuActivity.this))
-                    toggleSyncOnOff(false);
-                Log.d("kakka", "connected: " + Connectivity.isConnected(MenuActivity.this));
-                syncState = syncOn() ? R.drawable.syncon : R.drawable.syncoff;
             }
 
 
@@ -254,9 +254,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 LayoutParams.WRAP_CONTENT
         );
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            mPopupWindow.setElevation(5.0f);
-        }
+        //mPopupWindow.setElevation(5.0f);
+
         Button closeButton = syncpop.findViewById(R.id.close_button);
 
         closeButton.setOnClickListener(view -> {
@@ -389,7 +388,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             switch (msg.what) {
 
                 case SyncService.MSG_SYNC_STARTED:
-                    menuActivity.syncState = R.drawable.syncon;
+                    if (menuActivity.syncState == R.drawable.syncoff ||
+                            menuActivity.syncState == R.drawable.syncerr)
+                        menuActivity.syncState = R.drawable.syncon;
                     Log.d("vortex", "MSG -->SYNC STARTED");
                     break;
 
@@ -594,6 +595,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -685,49 +687,25 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         }
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
     private void refreshSyncDisplay() {
 
-        String synkStatusTitle = "";
-        int numOfUnsynchedEntries = -1;
-        boolean internetSync = globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet");
-
-        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth")) {
+        String synkStatusTitle;
+        int numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
+        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth"))
             syncState = R.drawable.bt;
-            synkStatusTitle = gs.getDb().getNumberOfUnsyncedEntries() + "";
-        } else if (internetSync) {
-            numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
-
-            if (synkStatusTitle == null & numOfUnsynchedEntries > 0)
+        switch (syncState) {
+            case R.drawable.syncactive:
+            case R.drawable.dbase:
+                synkStatusTitle = z_totalSynced + "/" + z_totalToSync;
+                 break;
+            default:
                 synkStatusTitle = numOfUnsynchedEntries + "";
-            switch (syncState) {
-                case R.drawable.syncactive:
-                case R.drawable.dbase:
-                    synkStatusTitle = z_totalSynced + "/" + z_totalToSync;
-                    /*
-                    if (!animationRunning) {
-                        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-                        rotation.setRepeatCount(Animation.INFINITE);
-                        animView.startAnimation(rotation);
-                        mnu[MENU_ITEM_SYNC_TYPE].setActionView(animView);
-                        animView.setOnClickListener(v -> {
-                            animView.clearAnimation();
-                            mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
-                            mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
-                            animView.setOnClickListener(null);
-                            animationRunning = false;
-                        });
-                        animationRunning=true;
-                    }
-                    */
-                    break;
-
-
-            }
-
         }
-        //animationRunning = false;
-        //animView.clearAnimation();
-        //animView.setOnClickListener(null);
         mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
         mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
         mnu[MENU_ITEM_SYNC_TYPE].setIcon(syncState);
@@ -1316,7 +1294,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         }
 
         public void unlock() {
-            Log.d("vortex", "Lock called");
+            Log.d("vortex", "UnLock called");
             mHandler.obtainMessage(UNLOCK).sendToTarget();
 
         }

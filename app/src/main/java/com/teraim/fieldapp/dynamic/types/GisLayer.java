@@ -48,9 +48,10 @@ public class GisLayer {
 		this.label = label;
 		this.hasWidget = hasWidget;
 		this.showLabels=showLabels;
-		Log.d("zaza","Creating layer "+label+" with showlabels "+showLabels+" showgislayer "+isVisible+" layer name "+label);
+		Log.d("zaza","Creating layer "+label+" with showlabels "+showLabels+" showgislayer "+isVisible+" layer id "+name);
 
 		//check if there is a persisted value for the layer visibility
+		Log.d("banjo","Persist layer id "+PersistenceHelper.LAYER_VISIBILITY+name);
 		int persistedVisibility = (GlobalState.getInstance()!=null?GlobalState.getInstance().getPreferences().getI(PersistenceHelper.LAYER_VISIBILITY+getId()):-1);
 		if (persistedVisibility == -1)
 			myVisibility = isVisible;

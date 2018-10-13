@@ -64,20 +64,20 @@ public class GisObjectsMenu extends View {
 
 	public GisObjectsMenu(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init(context);
 	}
 
 	public GisObjectsMenu(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context);
 	}
 
 	public GisObjectsMenu(Context context) {
 		super(context);
-		init();
+		init(context);
 	}
 
-	private void init() {
+	private void init(Context context) {
 		//Mypalettes contains the palettes used to show gis objects.
 		myPalettes = new HashMap<String,LinkedHashMap<GisObjectType,Set<FullGisObjectConfiguration>>>();
 
@@ -106,13 +106,13 @@ public class GisObjectsMenu extends View {
 		tabTextP.setTextAlign(Paint.Align.CENTER);
 
 		tabEdgePaint = new Paint();
-		tabEdgePaint.setColor(Color.parseColor("#C0C0C0"));
+		tabEdgePaint.setColor(context.getColor(R.color.primary_light));
 		tabEdgePaint.setStyle(Paint.Style.STROKE);
 		tabEdgePaint.setStrokeWidth(0);
 		selectedTabPaint = new Paint();
-		selectedTabPaint.setColor(Color.parseColor("#003D14"));
+		selectedTabPaint.setColor(context.getColor(R.color.primary_dark));
 		notSelectedTabPaint = new Paint();
-		notSelectedTabPaint.setColor(Color.parseColor("#668a72"));
+		notSelectedTabPaint.setColor(context.getColor(R.color.primary_light));
 		//selectedTabPaint.setStrokeWidth(50);
 
 		transparentPaint=new Paint();

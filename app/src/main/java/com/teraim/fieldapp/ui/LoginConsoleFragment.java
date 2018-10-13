@@ -456,7 +456,6 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 					appTxt.setText(bundleName + " " + newV);
 			}
 			Start.singleton.changePage(wf, null);
-			Log.d("vortex", "executing workflow main!");
 			gs.setModules(myModules);
 
 			GlobalState.getInstance().onStart();

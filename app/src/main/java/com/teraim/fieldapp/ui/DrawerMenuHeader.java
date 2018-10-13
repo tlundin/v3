@@ -1,7 +1,6 @@
 package com.teraim.fieldapp.ui;
 
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -12,9 +11,10 @@ import com.teraim.fieldapp.ui.DrawerMenuAdapter.RowType;
 
 public class DrawerMenuHeader implements DrawerMenuItem {
 
-	private final String name,bgColor,textColor;
+	private final String name;
+	private int bgColor,textColor;
 
-	public DrawerMenuHeader(String label,String bgColor,String textColor) {
+	public DrawerMenuHeader(String label,int bgColor,int textColor) {
 		this.name = label;
 		this.bgColor=bgColor;
 		this.textColor=textColor;
@@ -33,10 +33,8 @@ public class DrawerMenuHeader implements DrawerMenuItem {
 			view = inflater.inflate(R.layout.drawer_menu_header, null);
 			tv = view.findViewById(R.id.separator);
 			//Log.d("vortex","Menuheader bg text colors: "+bgColor+" "+textColor);
-			if (bgColor!=null)
-				tv.setBackgroundColor(Color.parseColor(bgColor));
-			if (textColor!=null)
-				tv.setTextColor(Color.parseColor(textColor));
+			tv.setBackgroundColor(bgColor);
+			tv.setTextColor(textColor);
 			// Do some initialization
 		} else {
 			view = convertView;

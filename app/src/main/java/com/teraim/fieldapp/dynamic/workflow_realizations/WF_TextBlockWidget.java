@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import android.graphics.Color;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.teraim.fieldapp.R;
+import com.teraim.fieldapp.utils.Tools;
 
 public class WF_TextBlockWidget extends WF_Widget {
 
@@ -26,7 +26,7 @@ public class WF_TextBlockWidget extends WF_Widget {
 			lp.setMargins(horizontalMargin,verticalMargin,horizontalMargin,verticalMargin);
 		}
 		if (background!=null)
-			getWidget().setBackgroundColor(Color.parseColor(background));
+			getWidget().setBackgroundColor(Tools.getColorResource(ctx.getContext(),background));
 	}
 	
 	

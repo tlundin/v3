@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -121,9 +120,9 @@ public class WF_DisplayValueField extends WF_Widget implements EventListener {
 		Log.d("bolo","applying vertical marging of "+displayFieldFormat.getVerticalMargin()+" to "+this.getName());
 		Log.d("bolo","unit: "+unit);
 		if (displayFieldFormat.getBackgroundColor()!=null)
-			topElem.setBackgroundColor(Color.parseColor(displayFieldFormat.getBackgroundColor()));
+			topElem.setBackgroundColor(Tools.getColorResource(myContext.getContext(),displayFieldFormat.getBackgroundColor()));
 		if (displayFieldFormat.getTextColor()!=null)
-			header.setTextColor(Color.parseColor(displayFieldFormat.getTextColor()));
+			header.setTextColor(Tools.getColorResource(myContext.getContext(),displayFieldFormat.getTextColor()));
 	}
 
 

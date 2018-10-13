@@ -1478,7 +1478,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
         //If cache needs to be emptied.
-        //boolean resetCache = false;
+        boolean resetCache = false;
         final String uidCol = getDatabaseColumnName("uid");
         final String spyCol = getDatabaseColumnName("spy");
         //String arCol = getDatabaseColumnName("år");
@@ -1565,7 +1565,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     Log.d("brakko", "INSERT U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                     //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
-                    variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true);
+                    if (!variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true))
+                    resetCache = true;
                 } else {
                     Log.e("bascar", "Inserting RAW" + s.getChange());
                     db().insert(TABLE_VARIABLES, // table
@@ -1605,8 +1606,8 @@ public class DbHelper extends SQLiteOpenHelper {
                             changes.failedDeletes++;
                         } else {
                             changes.deletes++;
-                            boolean success = (variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false));
-                            Log.d("bascar","not found in tsmap: "+variableName+" removed by turbo: "+success);
+                            if (!variableCache.turboRemoveOrInvalidate(uid, spy, variableName, false))
+                                resetCache = true;
                         }
                     } catch (SQLException e) {
                         Log.e("vortex", "Delete failed due to exception in statement");
@@ -1659,7 +1660,8 @@ public class DbHelper extends SQLiteOpenHelper {
                         );
                         //refresh cache
                         uid = cv.getAsString(uidCol);  //unique key for object. uid.
-                        variableCache.turboRemoveOrInvalidate(uid,null,variable,true);
+                        if (!variableCache.turboRemoveOrInvalidate(uid,null,variable,true))
+                            resetCache = true;
                     }
                 }
 
@@ -1669,8 +1671,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
         endTransactionSuccess();
 
-        //if (resetCache)
-        // variableCache.reset();
+        if (resetCache)
+         variableCache.reset();
 
         return changes;
     }
@@ -1697,25 +1699,24 @@ public class DbHelper extends SQLiteOpenHelper {
     private final StringBuilder whereClause = new StringBuilder();
 
     private int delete(Map<String,String> keys, long timeStamp, String team) throws SQLException {
-
+        Log.d("plekk","Delete with "+keys.toString()+" ts "+timeStamp+" team "+team);
         //contains the delete key,value pairs found in the delete entry.
         if (keys ==null)
             return 0;
         int n=0;
         whereClause.setLength(0);
+        //Create arguments. Add space for team and timestamp.
         String [] whereArgs = new String[keys.keySet().size()+2];
-        whereArgs[whereArgs.length-1] = keys.get("var");
         for (String key : keys.keySet()) {
-            //Log.d("nils","Pair "+(c++)+": Key:"+pair[0]+" Value: "+pair[1]);
             //Put variable name last.
             whereClause.append(getDatabaseColumnName(key) + "= ? AND ");
             whereArgs[n++]=keys.get(key);
         }
         whereArgs[n++]= team;
         whereArgs[n] = timeStamp+"";
-        whereClause.append(LAG+" = ? AND "+TIMESTAMP+" <= ? AND "+VARID+" = ?");
+        whereClause.append(LAG+" = ? AND "+TIMESTAMP+" <= ?");
 
-        //Log.d("vortex","Calling delete with Selection: "+whereClause+" args: "+print(whereArgs));
+        Log.d("plekk","Calling delete with Selection: "+whereClause+" args: "+print(whereArgs));
         //Calling delete with Selection: L4= ? AND L2= ? AND L1= ? AND L3= ? AND timestamp <= ? AND var = ? args: [0]: 2B1AFEF6-6C71-45DC-BB26-AF0B362E9073 [1]: 999994 [2]: 2016 [3]: Angsobete [4]: 1474478318 [5]: null [6]: STATUS:status_angsochbete
 
         return

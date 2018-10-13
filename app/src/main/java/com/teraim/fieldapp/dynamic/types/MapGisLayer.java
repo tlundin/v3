@@ -1,5 +1,7 @@
 package com.teraim.fieldapp.dynamic.types;
 
+import android.util.Log;
+
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.WF_Gis_Map;
 
 /**
@@ -10,11 +12,9 @@ public class MapGisLayer extends GisLayer {
     public MapGisLayer(WF_Gis_Map myGis, String label, String myImgName) {
         super(myGis, label+myImgName, label, false, true, false);
         myImg = myImgName;
+        Log.d("banjo","Created map layer for id: "+getId());
     }
-@Override
-public String getId() {
-        return getLabel()+getImageName();
-    }
+
 public Object getImageName() {
         return myImg;
     }

@@ -15,6 +15,7 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.types.NudgeListener;
 
 /**
@@ -57,7 +58,7 @@ public class NudgeView extends View {
     private void init(Context context) {
         this.ctx = context;
         p1 = new Paint();
-        p1.setColor(Color.parseColor("#003D14"));
+        p1.setColor(context.getColor(R.color.primary_dark));
         p1.setStyle(Paint.Style.FILL);
         p1neg = new Paint();
         p1neg.setColor(Color.WHITE);

@@ -217,7 +217,6 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 
 	public void onAnimationStart(Animation animation) {
-		Log.d("vortex","gets here!");
 		if (animation.equals(popupShow)) {
 			Log.d("vortex","popshoe!");
 			filterPop.setVisibility(View.VISIBLE);

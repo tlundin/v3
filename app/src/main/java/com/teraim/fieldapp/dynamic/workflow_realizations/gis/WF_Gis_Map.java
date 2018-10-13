@@ -389,6 +389,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
             if (!animationRunning) {
                 if (!gisObjMenuOpen && mActionMode==null) {
+                    wasShowingPopup();
                     gisImageView.cancelGisObjectCreation();
                     gisObjectsPopUp.startAnimation(popupShow);
                     getGis().setClickable(false);
@@ -767,7 +768,6 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
     @Override
     public void onAnimationStart(Animation animation) {
         if (animation.equals(popupShow)) {
-            Log.d("vortex","gets here!");
             gisObjectsPopUp.setVisibility(View.VISIBLE);
             gisObjectMenu.setMenuItems(myGisObjectTypes,gisImageView,this);
         } else if (animation.equals(layersPopupShow))
@@ -997,8 +997,10 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
                             radioB = radioGroup.findViewById(previouslyChecked);
                             String p_text = radioB.getText().toString();
                             MapGisLayer prev_layer = (MapGisLayer) getLayerFromLabel(text);
+                            Log.d("banjo","persist forget "+PersistenceHelper.LAYER_VISIBILITY + prev_layer.getImageName());
                             localPh.put(PersistenceHelper.LAYER_VISIBILITY + prev_layer.getImageName(), -1);
                         }
+                        Log.d("banjo","persist remember "+PersistenceHelper.LAYER_VISIBILITY + layer.getImageName());
                         localPh.put(PersistenceHelper.LAYER_VISIBILITY+layer.getImageName(),1);
                     }
                     currentlyChecked = checkedId;

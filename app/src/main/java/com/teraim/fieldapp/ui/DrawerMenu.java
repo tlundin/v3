@@ -124,7 +124,7 @@ public class DrawerMenu {
 		};
 
 		// Set the drawer toggle as the DrawerListener
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		mDrawerLayout.addDrawerListener(mDrawerToggle);
 
 		mAdapter.notifyDataSetChanged();				
 
@@ -134,11 +134,11 @@ public class DrawerMenu {
 
 	}
 
-	public void addHeader(String label, String bgColor,String textColor) {
+	public void addHeader(String label, int bgColor,int textColor) {
 		items.add(new DrawerMenuHeader(label,bgColor,textColor));
 	}
 
-	public void addItem(String label, Workflow wf,String bgColor,String textColor) {
+	public void addItem(String label, Workflow wf,int bgColor,int textColor) {
 		//add the workflow reference to a list
 		workflowsL.add(wf);
 		//keep track of the location.

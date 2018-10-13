@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,6 +22,7 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Numerable.Type;
@@ -69,7 +70,7 @@ public class Tools {
 	public static void sendMail(Activity ctx,String filename,String email) {
 		String fullName = Constants.EXPORT_FILES_DIR+"/"+filename;
 
-		if (fullName == null || email==null)
+		if (email==null)
 			return;
 
 		Intent intent = new Intent (Intent.ACTION_SEND);
@@ -81,38 +82,16 @@ public class Tools {
 		ctx.startActivity (intent);
 	}
 
-	public static String getPath(Context context, Uri uri) {
-		if ("content".equalsIgnoreCase(uri.getScheme())) {
-			String[] projection = { "_data" };
-			Cursor cursor = null;
-
-			try {
-				cursor = context.getContentResolver().query(uri, projection, null, null, null);
-				int column_index = cursor.getColumnIndexOrThrow("_data");
-				if (cursor.moveToFirst()) {
-					return cursor.getString(column_index);
-				}
-			} catch (Exception e) {
-				// Eat it
-			}
-		}
-		else if ("file".equalsIgnoreCase(uri.getScheme())) {
-			return uri.getPath();
-		}
-
-		return null;
-	}
-
-	public static int eraseFolder(String s) {
+    public static int eraseFolder(String s) {
 		Log.d("franzon","Erasing cache folder");
 		File dir = new File(s);
 		if (dir.isDirectory())
 		{
 			String[] children = dir.list();
 			if (children!=null && children.length>0) {
-				for (int i = 0; i < children.length; i++) {
-					new File(dir, children[i]).delete();
-				}
+                for (String aChildren : children) {
+                    new File(dir, aChildren).delete();
+                }
 				Log.d("vortex", "erased " + children.length + " files from cache");
 				return children.length;
 			}
@@ -1239,6 +1218,36 @@ public class Tools {
 		if (!serverUrl.endsWith("/"))
 			serverUrl += "/";
 		return serverUrl;
+	}
+
+	public static int getColorResource(Context ctx, String colorName) {
+		return Tools.getColorResource(ctx,colorName,R.color.black);
+	}
+
+	public static int getColorResource(Context ctx, String colorName, int defaultColor) {
+
+		if(colorName !=null) {
+			if (colorName.startsWith("#"))
+				return Color.parseColor(colorName);
+			else if (colorName.equalsIgnoreCase("black"))
+			    return Color.BLACK;
+            else if (colorName.equalsIgnoreCase("white"))
+                return Color.WHITE;
+            else if (colorName.equalsIgnoreCase("green"))
+                return Color.GREEN;
+            else if (colorName.equalsIgnoreCase("red"))
+                return Color.RED;
+            else if (colorName.equalsIgnoreCase("blue"))
+                return Color.BLUE;
+			try {
+				int resourceId = ctx.getResources().getIdentifier(colorName.toLowerCase(), "color", ctx.getPackageName());
+				return ctx.getColor(resourceId);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		Log.e("plax","Color not know...returning default");
+		return ctx.getColor(defaultColor);
 	}
 
 }

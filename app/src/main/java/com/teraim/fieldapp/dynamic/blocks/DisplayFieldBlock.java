@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.dynamic.blocks;
 
-import android.util.Log;
 import android.widget.LinearLayout;
 
 /**
@@ -26,7 +25,7 @@ public class DisplayFieldBlock extends Block {
             if (verticalFormat.equals("two_line")) {
                 this.layoutDirection = LinearLayout.VERTICAL;
 
-                Log.d("franco","my layout is now vertical");
+
             }
         }
 

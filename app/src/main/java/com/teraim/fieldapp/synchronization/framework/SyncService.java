@@ -81,7 +81,7 @@ public class SyncService extends Service {
 					SyncAdapter.forceSyncToHappen();
                 	break;
 				case MSG_USER_STOPPED_SYNC:
-				    sSyncAdapter.lock();
+				    sSyncAdapter.userAbortedSync();
 					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");
 					break;
 

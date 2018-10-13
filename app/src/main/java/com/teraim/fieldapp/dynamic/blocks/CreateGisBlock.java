@@ -207,16 +207,17 @@ public class CreateGisBlock extends Block {
 			final View avstRL = mapView.findViewById(R.id.avstRL);
 			boolean found = false;
 			GisLayer masterLayer = null;
-			Log.d("mask","cacepath "+cachedImgFilePath+" mapl: "+mapLayers);
+			Log.d("banjo","cache path "+cachedImgFilePath+" mapl: "+mapLayers);
 			for (MapGisLayer layer:mapLayers) {
+				Log.d("banjo","Layer: "+layer.getImageName());
 				if (layer.isVisible()) {
 					cachedImgFilePath = cacheFolder + layer.getImageName();
 					found = true;
-					Log.d("gurk","layer with name "+layer.getLabel()+" now visible" );
+					Log.d("banjo","layer with name "+layer.getLabel()+" now visible" );
 					break;
 				}
 				if (layer.getLabel().equals(GisConstants.DefaultTag)) {
-					Log.d("gurk","masterlayer found.");
+					Log.d("banjo","masterlayer found.");
 					masterLayer = layer;
 				}
 			}

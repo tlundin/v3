@@ -55,7 +55,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private String mTeam=null;
 
     //Error codes.
-    private boolean ERR_CONFIG,INIT_COMPLETE,ERR_TEMP_TIMESTAMP_MISSING;
+    private boolean ERR_CONFIG,INIT_COMPLETE,ERR_TEMP_TIMESTAMP_MISSING,USER_STOPPED_SYNC;
 
     private long timestamp_from_team_to_me=-1;
 
@@ -82,6 +82,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mUser = user;
         mApp = app;
         Log.d("vortex","IN INIT SYNCADAPTER");
+        //User stopped_sync should be false now.
+        USER_STOPPED_SYNC = false;
+        Log.d("vortex","USER_STOPPED now false");
 
         if (client == null || user == null || user.length() == 0 || team == null || team.length() == 0 || app == null || app.length() == 0) {
             Log.e("vortex", "Init error in Sync Adapter." + user + "," + team + "," + app + "," + INIT_COMPLETE);
@@ -138,6 +141,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
             msg.arg1=SyncService.ERR_SETTINGS;
             sendMessage(msg);
+            return;
+        } else if (USER_STOPPED_SYNC) {
+            Log.e("vortex", "User stopped the sync");
             return;
         }
 
@@ -586,5 +592,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public boolean isInitDone() {
         return INIT_COMPLETE;
+    }
+
+    public void userAbortedSync() {
+        Log.d("vortex","USER_STOPPED now true");
+        USER_STOPPED_SYNC = true;
     }
 }

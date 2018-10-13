@@ -63,8 +63,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public abstract class WF_ClickableField extends WF_Not_ClickableField implements
-        EventGenerator {
+public abstract class WF_ClickableField extends WF_Not_ClickableField implements EventGenerator {
 
 
     private final LinearLayout inputContainer;
@@ -442,9 +441,6 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
             if (singleBoolean)
                 singleBoolean = false;
 
-
-
-        // Set an EditText view to get user input
         if (super.getKey() == null) {
             Log.d("zaxx", "Setting key variable to " + varId);
             super.setKey(var);

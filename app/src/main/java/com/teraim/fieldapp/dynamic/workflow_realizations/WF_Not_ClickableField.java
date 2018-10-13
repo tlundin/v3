@@ -12,6 +12,7 @@ import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.utils.CombinedRangeAndListFilter;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+import com.teraim.fieldapp.utils.Tools;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -86,7 +87,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		outputContainer = getWidget().findViewById(R.id.outputContainer);
 		//outputContainer.setLayoutParams(params);
 		//Log.d("taxx","variable label: "+label+" variable ID: "+id);
-		textColorC = Color.parseColor(format.getTextColor());
+		textColorC = Tools.getColorResource(myContext.getContext(),format.getTextColor());
 		//myheader can be null in case this is a Cell in a table.
 		if (myHeader !=null) {
 			myHeader.setTextColor(textColorC);
@@ -100,8 +101,8 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 		//Show owner.
 		showAuthor = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.SHOW_AUTHOR_KEY);
 		if (format.getBackgroundColor()!=null) {
-			this.backgroundColor = Color.parseColor(format.getBackgroundColor());
-			getWidget().setBackgroundColor(this.backgroundColor);
+			backgroundColor = Tools.getColorResource(myContext.getContext(),format.getBackgroundColor());
+			getWidget().setBackgroundColor(backgroundColor);
 		}
 
 		displayFieldFormat = format;

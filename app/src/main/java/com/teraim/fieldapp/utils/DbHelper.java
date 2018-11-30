@@ -51,7 +51,7 @@ import java.util.Set;
 @SuppressWarnings("SyntaxError")
 public class DbHelper extends SQLiteOpenHelper {
 
-    /* Database Version*/public static final int DATABASE_VERSION = 11;/* Books table name*/
+    /* Database Version*/ private static final int DATABASE_VERSION = 11;/* Books table name*/
     private static final String TABLE_VARIABLES = "variabler";
 
 

@@ -1,5 +1,6 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -180,7 +181,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			} else {
 				if (variable.isUsingDefault()) {
 					Log.d("nils","Variable "+variable.getId()+" is purple");
-					int purple = myContext.getContext().getResources().getColor(R.color.purple);
+					int purple = myContext.getContext().getResources().getColor(R.color.purple,myContext.getContext().getTheme());
 					o.setTextColor(purple);
 					u.setTextColor(purple);
 					//if (myHeader!=null)
@@ -276,8 +277,10 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 
 			}
 			//Log.e("vortex","Color of entryfield now "+role.name());
-			if (color!=0)
-				getWidget().setBackgroundColor(GlobalState.getInstance().getContext().getResources().getColor(color));
+			if (color!=0) {
+				Context ctx = GlobalState.getInstance().getContext();
+				getWidget().setBackgroundColor(ctx.getResources().getColor(color, ctx.getTheme()));
+			}
 		}
 
 	}

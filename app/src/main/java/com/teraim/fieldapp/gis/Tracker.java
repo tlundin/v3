@@ -73,8 +73,8 @@ public class Tracker extends Service implements LocationListener {
 		UNSTABLE,
 		GPS_NOT_ENABLED,
 		GPS_OK,
-		MISSING_PERMISSION;
-	}
+		MISSING_PERMISSION
+    }
 
 	public ErrorCode startScan(Context ctx) {
 		//do we have variables?

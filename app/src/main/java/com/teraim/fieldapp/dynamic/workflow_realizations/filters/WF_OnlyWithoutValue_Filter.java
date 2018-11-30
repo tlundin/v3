@@ -16,7 +16,7 @@ public class WF_OnlyWithoutValue_Filter extends WF_Filter {
 	}
 
 	@Override
-	public List<? extends Listable> filter(List<? extends Listable> list) {
+	public void filter(List<? extends Listable> list) {
 		Iterator<? extends Listable> it = list.iterator();
 		while(it.hasNext()) {
 			Listable l = it.next();
@@ -25,8 +25,7 @@ public class WF_OnlyWithoutValue_Filter extends WF_Filter {
 				//Log.d("nils","filter removes element "+l.getKey()+" because its value is null");
 			
 		}
-		return list;
-	}
+    }
 
 	@Override
 	public boolean isRemovedByFilter(Listable l) {

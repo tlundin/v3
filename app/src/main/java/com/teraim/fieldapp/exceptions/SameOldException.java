@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.exceptions;
 
-public class SameOldException extends Exception {
+class SameOldException extends Exception {
 
 	/**
 	 * 

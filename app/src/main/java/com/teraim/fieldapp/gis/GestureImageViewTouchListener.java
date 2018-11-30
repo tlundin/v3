@@ -542,12 +542,10 @@ class GestureImageViewTouchListener implements OnTouchListener {
 		this.onLongClickListener=l;
 	}
 	void setCanvasWidth(int canvasWidth) {
-        int canvasWidth1 = canvasWidth;
-	}
+    }
 
 	void setCanvasHeight(int canvasHeight) {
-        int canvasHeight1 = canvasHeight;
-	}
+    }
 
 	void setFitScaleHorizontal(float fitScale) {
 		this.fitScaleHorizontal = fitScale;

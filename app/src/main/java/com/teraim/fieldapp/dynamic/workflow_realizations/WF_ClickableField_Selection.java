@@ -16,8 +16,7 @@ public class WF_ClickableField_Selection extends WF_ClickableField {
 				LayoutInflater.from(context.getContext()).inflate(format.isHorisontal()?R.layout.selection_field_normal_horizontal:R.layout.selection_field_normal_vertical,null),
 				isVisible,format);
 
-        DisplayFieldBlock format1 = format;
-	}
+    }
 
 
 

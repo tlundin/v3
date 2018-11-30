@@ -59,8 +59,7 @@ import java.util.regex.Pattern;
 	public CreateImageBlock(String id, String nName, String container,
 			String source, String scale, boolean isVisible) {
 		this.blockId=id;
-        String name = nName;
-		this.container = container;
+        this.container = container;
 		this.sourceE=Expressor.preCompileExpression(source);
 		this.source=source;
 		this.scale = scale;

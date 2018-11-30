@@ -24,8 +24,7 @@ public class BlockDeleteMatchingVariables extends Block {
 	
 	public BlockDeleteMatchingVariables(String id, String label, String target, String pattern) {
 		this.blockId=id;
-        String label1 = label;
-		this.context=target;
+        this.context=target;
 		this.pattern=pattern;
 		if (pattern!=null && pattern.isEmpty())
 			this.pattern = null;

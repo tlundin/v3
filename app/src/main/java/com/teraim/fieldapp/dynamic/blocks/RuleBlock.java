@@ -33,9 +33,8 @@ public  class RuleBlock extends Block {
 		
 	}
 
-	public Rule getRule() {
-		return r;
-	}
+	public void getRule() {
+    }
 
 	public void create(WF_Context myContext, List<Block> blocks) {
 		Log.d("nils","Create called in addRuleBlock, id "+blockId+" Target name: "+r.getTargetString()+" my scope: "+myScope+" Target Block: "+r.getMyTargetBlockId());

@@ -12,8 +12,7 @@ public class WF_Table_Entry extends WF_ListEntry {
 
 	public WF_Table_Entry(String id, View v, WF_Context ctx, boolean isVisible) {
 		super(id, v, ctx, isVisible);
-        WF_Context myContext = ctx;
-	}
+    }
 
 	@Override
 	public Set<Variable> getAssociatedVariables() {

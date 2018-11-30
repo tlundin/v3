@@ -507,7 +507,6 @@ public class GlobalState {
 
 
     public void setModules(Configuration myModules) {
-        Configuration myModules1 = myModules;
     }
 
 

@@ -15,13 +15,14 @@ import java.util.Set;
 public class CombinedRangeAndListFilter implements TextFilter {
 
 	private final List<TextFilter> myFilters;
-	private String myPrint = "";
+	private final StringBuilder myPrint;
 	private boolean hasDefault = false;
 	private final Variable mVar;
 	private final Vibrator myVibrator;
 
 	public CombinedRangeAndListFilter(Vibrator vib, Variable myVar, Set<String> allowedValues, List<Range> allowedRanges, boolean hasDefault) {
 		this.hasDefault=hasDefault;
+		myPrint = new StringBuilder();
 		myVibrator = vib;
 		myFilters = new ArrayList<TextFilter>();
 		if (allowedRanges!=null) {
@@ -36,11 +37,11 @@ public class CombinedRangeAndListFilter implements TextFilter {
 			//Skip default filter.
 			if (hasDefault)
 				it.next();
-			while (it.hasNext())
-				myPrint +=it.next().prettyPrint()+",";
-
-			if (myPrint.endsWith(","))
-				myPrint = myPrint.substring(0, myPrint.length()-1);
+			while (it.hasNext()) {
+                myPrint.append(it.next().prettyPrint());
+                if (it.hasNext())
+                    myPrint.append(",");
+            }
 		}
 		mVar = myVar;
 	}
@@ -77,7 +78,7 @@ public class CombinedRangeAndListFilter implements TextFilter {
 	}
 
 	public String prettyPrint() {
-		return myPrint;	
+		return myPrint.toString();
 	}
 
 	public void testRun() {

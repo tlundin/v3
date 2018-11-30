@@ -9,7 +9,5 @@ class WF_Event extends Event {
 
     public WF_Event(EventType t, List<String> parameters,String sender) {
 		super(sender,t);
-        EventType t1 = t;
-        List<String> parameters1 = parameters;
-	}
+    }
 }

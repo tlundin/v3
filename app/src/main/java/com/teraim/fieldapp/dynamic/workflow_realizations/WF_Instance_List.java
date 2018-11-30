@@ -87,9 +87,8 @@ public class WF_Instance_List extends WF_Static_List implements EventListener,Ev
 
 	@Override
 	public boolean addVariableToEveryListEntry(String varSuffix,boolean displayOut,String format,boolean isVisible, boolean showHistorical,String initialValue) {
-        boolean showHistorical1 = showHistorical;
 
-		suffices.add(varSuffix);
+        suffices.add(varSuffix);
 		parameters.put(varSuffix,new VarPars(showHistorical,isVisible,displayOut,format,initialValue));
 		Log.d("vortex","In addvariabletoEverylist! Suffices now: "+suffices.toString());
 		return true;

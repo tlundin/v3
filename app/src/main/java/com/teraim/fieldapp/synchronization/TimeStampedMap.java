@@ -174,10 +174,10 @@ public class TimeStampedMap {
 
 
 
-    public boolean delete(Unikey uniqueKey, String variableName) {
+    public void delete(Unikey uniqueKey, String variableName) {
         //Log.d("bascar","In deleteTimeSTMap with: "+uniqueKey+","+variableName);
         if (uniqueKey==null || variableName==null) {
-            return false;
+            return;
         }
         Map<String, ContentValues> ves = myMap.get(uniqueKey);
         if (ves!=null && ves.get(variableName)!=null) {
@@ -185,10 +185,9 @@ public class TimeStampedMap {
             ves.remove(variableName);
             if (ves.isEmpty())
                 myMap.remove(uniqueKey);
-            return true;
+            return;
         }
         Log.d("bascar","no entry for "+variableName+" in sync cache");
-        return false;
 
     }
 

@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.synchronization;
 
-public class SyncSuccesful extends SyncMessage {
+class SyncSuccesful extends SyncMessage {
 
 	/**
 	 * 

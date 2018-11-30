@@ -50,13 +50,7 @@ public class WF_Simple_Cell_Widget extends WF_Widget implements WF_Cell, EventLi
 	@SuppressLint("NewApi")
 	private void revertBackgroundColor() {
 		if (originalBackground!=null) {
-			getWidget().setBackgroundColor(backgroundColor);
-			int sdk = android.os.Build.VERSION.SDK_INT;
-			if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-				getWidget().setBackgroundDrawable(originalBackground);
-			} else {
-				getWidget().setBackground(originalBackground);
-			}
+			getWidget().setBackground(originalBackground);
 			originalBackground=null;
 		} else
 			getWidget().setBackgroundColor(backgroundColor);

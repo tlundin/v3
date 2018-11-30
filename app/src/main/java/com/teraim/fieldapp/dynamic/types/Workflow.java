@@ -34,8 +34,7 @@ public class Workflow implements Serializable {
 	}
 
 	public Workflow(String bundleName) {
-        String applicationName = bundleName;
-	}
+    }
 
 
 	public List<Block> getBlocks() {
@@ -45,8 +44,7 @@ public class Workflow implements Serializable {
 	public List<Block> getCopyOfBlocks() {
 		if (blocks==null)
 			return null;
-		List<Block> ret = new ArrayList<Block>(blocks);
-		return ret;
+        return new ArrayList<Block>(blocks);
 	}
 
 	public void saveBlockPointer(int blockP) {

@@ -1,18 +1,18 @@
 package com.teraim.fieldapp.loadermodule.configurations;
 
-import java.io.IOException;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.types.PhotoMeta;
 import com.teraim.fieldapp.loadermodule.LoadResult;
+import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.loadermodule.PhotoMetaI;
 import com.teraim.fieldapp.loadermodule.XMLConfigurationModule;
-import com.teraim.fieldapp.loadermodule.LoadResult.ErrorCode;
 import com.teraim.fieldapp.utils.PersistenceHelper;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 public class AirPhotoMetaDataXML extends XMLConfigurationModule implements PhotoMetaI {
 
@@ -118,7 +118,7 @@ public class AirPhotoMetaDataXML extends XMLConfigurationModule implements Photo
 	@Override
 	public PhotoMeta getPhotoMeta() {
 		Object pm = getEssence();
-		if (pm==null || !(pm instanceof PhotoMeta))
+		if (!(pm instanceof PhotoMeta))
 			return null;
 		return (PhotoMeta)pm;
 	}

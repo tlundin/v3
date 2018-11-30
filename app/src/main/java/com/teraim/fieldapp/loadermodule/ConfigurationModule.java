@@ -174,18 +174,17 @@ public abstract class ConfigurationModule {
 	}
 
 	//Freeze this configuration. counter is used by some dependants.
-	public boolean freeze(int counter) {
+	public void freeze(int counter) {
 		this.setEssence();
 		if (essence!=null) {
-			final String fPath = frozenPath;
-			Runnable r = new Runnable()
+            Runnable r = new Runnable()
 			{
 				@Override
 				public void run()
 				{
 					
 					try {
-						Tools.witeObjectToFile(essence, fPath);
+						Tools.witeObjectToFile(essence, frozenPath);
 					} catch (IOException e) {
 
 						GlobalState gs = GlobalState.getInstance();
@@ -204,11 +203,7 @@ public abstract class ConfigurationModule {
 			Thread t = new Thread(r);
 			t.start();
 
-			return true;
 		}
-
-		else
-			return isDatabaseModule;
 	}
 
 	public LoadResult thawSynchronously() {
@@ -255,8 +250,8 @@ public abstract class ConfigurationModule {
     }
 
 
-	public boolean deleteFrozen() {
-		return new File(this.frozenPath).delete();
+	public void deleteFrozen() {
+		new File(this.frozenPath).delete();
 	}
 
 

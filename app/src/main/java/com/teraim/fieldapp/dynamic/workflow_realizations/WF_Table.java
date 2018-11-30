@@ -86,8 +86,7 @@ public class WF_Table extends WF_List  {
 	public void addRows(List<List<String>> rows,String variatorColumn, String selectionPattern) {
 
 		this.myVariator=variatorColumn;
-        String varNamePrefix = selectionPattern;
-		allInstances = gs.getDb().preFetchValues(myContext.getKeyHash(), varNamePrefix, myVariator);
+		allInstances = gs.getDb().preFetchValues(myContext.getKeyHash(), selectionPattern, myVariator);
 		Log.d("nils","in update entry fields. AllInstances contain "+allInstances.size()+ ": "+allInstances.toString());
 
 		//Rows are not containing unique entries. only need one of each.
@@ -319,7 +318,7 @@ public class WF_Table extends WF_List  {
 							}
 							else {
 								String result = Expressor.analyze(expressionE, vars);
-								if (result==null || !Tools.isNumeric(result)) {
+								if (!Tools.isNumeric(result)) {
 									//Log.e("vortex", "couldnt use " + result + " for " + aggF + ". Not numeric");
 									continue;
 								}

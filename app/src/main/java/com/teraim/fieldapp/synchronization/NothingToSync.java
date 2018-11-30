@@ -6,7 +6,7 @@ package com.teraim.fieldapp.synchronization;
  * @author Terje
  *
  */
-public class NothingToSync extends SyncMessage {
+class NothingToSync extends SyncMessage {
 
 	/**
 	 * 

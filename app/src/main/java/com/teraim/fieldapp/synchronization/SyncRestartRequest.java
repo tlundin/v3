@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.synchronization;
 
-public class SyncRestartRequest extends SyncMessage {
+class SyncRestartRequest extends SyncMessage {
 
 	/**
 	 * 

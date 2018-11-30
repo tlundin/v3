@@ -99,8 +99,7 @@ public class FixytaView extends View {
 //		canvas.drawCircle(cx, cy,(float)(200f*oScaleF), p20);
 		canvas.drawCircle(cx, cy,(float)(int)r, p20);
 		canvas.drawCircle(cx, cy,(float)(100f* oScaleF), p);
-        double rScaleF = oScaleF;
-		canvas.drawText("200",(int)(cx+r)-20f, cy, p);
+        canvas.drawText("200",(int)(cx+r)-20f, cy, p);
 //		canvas.drawText("200",(int)(cx+(200f*oScaleF))-20f, cy, p);
 		canvas.drawText("100",(int)(cx+(100f* oScaleF))-20f, cy, p);
 		canvas.drawText("N",cx,(float)(h*.1), pl);
@@ -129,11 +128,10 @@ public class FixytaView extends View {
 					float y =  t.y;
 					float zx = (float) (cx+x * oScaleF);
 					float zy = (float) (cy+y * oScaleF);
-					float ux = zx; //- Marker.Pic_H;
-					float uy = zy - Marker.Pic_H/2; 
+                    float uy = zy - Marker.Pic_H/2;
 					//canvas.save();
 					//canvas.rotate((float)(180+(180*t.rikt*0.0174532925/Math.PI)), x, y);
-					canvas.drawBitmap(focusMarker.bmp, ux, uy, null);
+					canvas.drawBitmap(focusMarker.bmp, zx, uy, null);
 					canvas.drawText("A: "+focusMarker.getDistance()+" R: "+focusMarker.riktning, zx, zy, p);
 					//canvas.restore();
 					//TODO:

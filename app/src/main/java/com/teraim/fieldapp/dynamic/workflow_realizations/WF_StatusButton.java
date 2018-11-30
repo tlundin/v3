@@ -2,6 +2,7 @@ package com.teraim.fieldapp.dynamic.workflow_realizations;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.Button;
@@ -133,7 +134,8 @@ public class WF_StatusButton extends WF_Button {
     }
 
     private void refreshButton(int id) {
-        Drawable image = ctx.getResources().getDrawable( id );
+
+        Drawable image = ContextCompat.getDrawable(ctx, id);
         int h = image.getIntrinsicHeight();
         int w = image.getIntrinsicWidth();
         image.setBounds( 0, 0, w, h );

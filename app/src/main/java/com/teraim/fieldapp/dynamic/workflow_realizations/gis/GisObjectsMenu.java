@@ -449,15 +449,14 @@ public class GisObjectsMenu extends View {
 			}
 			if (selectedTabButton != null) {
 				Path path = new Path();
-				TabButton tb = selectedTabButton;
-				path.moveTo(tb.fr.left - spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
-				path.lineTo(tb.fr.left - spacingAroundTabs*2, tb.fr.top + tb.r.height() + spacingAroundTabs);
-				path.lineTo(PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
+                path.moveTo(selectedTabButton.fr.left - spacingAroundTabs, selectedTabButton.fr.top - spacingAroundTabs*2);
+				path.lineTo(selectedTabButton.fr.left - spacingAroundTabs*2, selectedTabButton.fr.top + selectedTabButton.r.height() + spacingAroundTabs);
+				path.lineTo(PaddingX, selectedTabButton.fr.top + selectedTabButton.fr.height() + spacingAroundTabs);
 				path.lineTo(PaddingX, getHeight() - PaddingY);
 				path.lineTo(getWidth() - PaddingX, getHeight() - PaddingY);
-				path.lineTo(getWidth() - PaddingX, tb.fr.top + tb.fr.height() + spacingAroundTabs);
-				path.lineTo(tb.fr.right + spacingAroundTabs*2, tb.fr.top + tb.fr.height() + spacingAroundTabs);
-				path.lineTo(tb.fr.right + spacingAroundTabs, tb.fr.top - spacingAroundTabs*2);
+				path.lineTo(getWidth() - PaddingX, selectedTabButton.fr.top + selectedTabButton.fr.height() + spacingAroundTabs);
+				path.lineTo(selectedTabButton.fr.right + spacingAroundTabs*2, selectedTabButton.fr.top + selectedTabButton.fr.height() + spacingAroundTabs);
+				path.lineTo(selectedTabButton.fr.right + spacingAroundTabs, selectedTabButton.fr.top - spacingAroundTabs*2);
 				//path.lineTo(600, 300);
 				//path.lineTo(400, 400);
 				//path.lineTo(20, 400);
@@ -465,7 +464,7 @@ public class GisObjectsMenu extends View {
 				canvas.drawPath(path, selectedTabPaint);
 				canvas.drawPath(path, tabEdgePaint);
 
-				canvas.drawText(tb.fullText, tb.fr.exactCenterX(), tb.fr.exactCenterY() - tb.centY-spacingAroundTabs, tabTextP);
+				canvas.drawText(selectedTabButton.fullText, selectedTabButton.fr.exactCenterX(), selectedTabButton.fr.exactCenterY() - selectedTabButton.centY-spacingAroundTabs, tabTextP);
 			}
 		}
 		//Draw header and tabs

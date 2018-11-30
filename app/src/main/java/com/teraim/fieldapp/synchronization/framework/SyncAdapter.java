@@ -566,12 +566,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return b;
     }
 
-    public void releaseLock() {
+    private void releaseLock() {
         busy=false;
         Log.d("vortex","**SyncAdapter UN-Locked**");
     }
 
-    public void lock() {
+    private void lock() {
         Log.d("vortex","**SyncAdapter Locked**");
         busy=true;
     }

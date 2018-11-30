@@ -7,8 +7,6 @@ public class PlainLogger implements LoggerI {
     private TextView txt;
 
     public PlainLogger(Context c, String loggerId) {
-        Context myContext = c;
-        String loggerId1 = loggerId;
     }
     @Override
     public void setOutputView(TextView txt) {

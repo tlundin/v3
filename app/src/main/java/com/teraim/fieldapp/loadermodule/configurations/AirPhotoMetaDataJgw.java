@@ -34,7 +34,7 @@ public class AirPhotoMetaDataJgw extends CI_ConfigurationModule implements Photo
     @Override
     public PhotoMeta getPhotoMeta() {
         Object pm = getEssence();
-        if (pm==null || !(pm instanceof PhotoMeta))
+        if (!(pm instanceof PhotoMeta))
             return null;
         return (PhotoMeta)pm;
     }
@@ -79,7 +79,7 @@ public class AirPhotoMetaDataJgw extends CI_ConfigurationModule implements Photo
     }
 
     @Override
-    public LoadResult finalizeMe()  {
+    public void finalizeMe()  {
 
 
 
@@ -101,9 +101,8 @@ public class AirPhotoMetaDataJgw extends CI_ConfigurationModule implements Photo
         }
         catch(NumberFormatException ex) {
             Log.e("jgw","Photometa file is corrupt");
-            return new LoadResult(this, LoadResult.ErrorCode.ParseError,"Photometa file is corrupt");
+            new LoadResult(this, LoadResult.ErrorCode.ParseError, "Photometa file is corrupt");
         }
-        return null;
     }
 
     @Override

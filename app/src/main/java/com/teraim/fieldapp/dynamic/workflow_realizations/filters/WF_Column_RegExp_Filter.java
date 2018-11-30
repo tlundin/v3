@@ -26,7 +26,7 @@ public class WF_Column_RegExp_Filter extends WF_Filter {
 	}
 
 	@Override
-	public List<? extends Listable> filter(List<? extends Listable> list) {
+	public void filter(List<? extends Listable> list) {
 		String key;
 		Iterator<? extends Listable> it = list.iterator();	
 		boolean noMatchAtAll = true;
@@ -54,8 +54,7 @@ public class WF_Column_RegExp_Filter extends WF_Filter {
 			o.addYellowText("No matches found in Regexp filter. Column used: ["+columnToMatch+"]");
 		}
 
-		return list;
-	}
+    }
 
 	@Override
 	public boolean isRemovedByFilter(Listable l) {

@@ -12,7 +12,8 @@ import com.teraim.fieldapp.ui.DrawerMenuAdapter.RowType;
 public class DrawerMenuHeader implements DrawerMenuItem {
 
 	private final String name;
-	private int bgColor,textColor;
+	private final int bgColor;
+    private final int textColor;
 
 	public DrawerMenuHeader(String label,int bgColor,int textColor) {
 		this.name = label;

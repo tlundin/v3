@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -66,7 +67,9 @@ import java.util.Set;
 public abstract class WF_ClickableField extends WF_Not_ClickableField implements EventGenerator {
 
 
-    private final LinearLayout inputContainer;
+    private final LinearLayout innerInputContainer;
+    private final ScrollView scrollableInputContainer;
+    private final TextView headerInputCointainer;
 
     final Map<Variable, VariableView> myVars = new LinkedHashMap<>();
 
@@ -101,7 +104,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
         String listTag;
         SpinnerAdapter adapter;
     }
-    public abstract LinearLayout getFieldLayout();
+    protected abstract LinearLayout getFieldLayout();
 
     @Override
     public Set<Variable> getAssociatedVariables() {
@@ -178,7 +181,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     return true;
                 case R.id.menu_delete:
 
-                    if(inputContainer.getChildCount()==0) {
+                    if(innerInputContainer.getChildCount()==1) {
                         Log.d("boo","creating input fields!");
                         createInputFields();
 
@@ -273,8 +276,10 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
         // SpannableString content = new SpannableString(headerT);
         // content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-        inputContainer = (LinearLayout)LayoutInflater.from(myContext.getContext()).inflate(
+        scrollableInputContainer = (ScrollView)LayoutInflater.from(myContext.getContext()).inflate(
                 R.layout.input_container, null);
+        innerInputContainer = (LinearLayout)scrollableInputContainer.findViewById(R.id.inner);
+        headerInputCointainer = (TextView) innerInputContainer.findViewById(R.id.header);
        // inputContainer = new LinearLayout(context.getContext());
        // inputContainer.setOrientation(LinearLayout.VERTICAL);
        // inputContainer.setLayoutParams(new LinearLayout.LayoutParams(
@@ -306,7 +311,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                 return;
             }
 
-            if(inputContainer.getChildCount()==0) {
+            if(innerInputContainer.getChildCount()==1) {
                 Log.d("boo","creating input fields!");
                 createInputFields();
 
@@ -334,10 +339,11 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                 revertBackgroundColor();
             } else {
                 // On click, create dialog
-                AlertDialog.Builder alert = new AlertDialog.Builder(v
-                        .getContext());
+                AlertDialog.Builder alert =
+                        new AlertDialog.Builder(v.getContext());
                 alert.setTitle(label);
-                alert.setMessage(myDescription);
+                //alert.setMessage(myDescription);
+                headerInputCointainer.setText(myDescription);
                 refreshInputFields();
                 iAmOpen = true;
 
@@ -348,10 +354,10 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                                 iAmOpen = false;
                                 save();
                                 refresh();
-                                ViewGroup x = ((ViewGroup) inputContainer
+                                ViewGroup x = ((ViewGroup) scrollableInputContainer
                                         .getParent());
                                 if (x != null)
-                                    x.removeView(inputContainer);
+                                    x.removeView(scrollableInputContainer);
                                 revertBackgroundColor();
                                 //v.setBackgroundDrawable(originalBackground);
                             }
@@ -361,20 +367,20 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
                                 iAmOpen = false;
-                                ViewGroup x = ((ViewGroup) inputContainer
+                                ViewGroup x = ((ViewGroup) scrollableInputContainer
                                         .getParent());
                                 if (x != null)
-                                    x.removeView(inputContainer);
+                                    x.removeView(scrollableInputContainer);
                                 revertBackgroundColor();
 
                                 //v.setBackgroundDrawable(originalBackground);
                             }
                         });
-                if (inputContainer.getParent() != null)
-                    ((ViewGroup) inputContainer.getParent())
-                            .removeView(inputContainer);
-                Dialog d = alert.setView(inputContainer).create();
-                d.setCancelable(false);
+                if (scrollableInputContainer.getParent() != null)
+                    ((ViewGroup) scrollableInputContainer.getParent())
+                            .removeView(scrollableInputContainer);
+                Dialog d = alert.setView(scrollableInputContainer).create();
+                d.setCancelable(true);
                 // WindowManager.LayoutParams lp = new
                 // WindowManager.LayoutParams();
                 // lp.copyFrom(d.getWindow().getAttributes());
@@ -855,7 +861,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                             R.layout.ja_nej_radiogroup, null);
                     TextView header = view.findViewById(R.id.header);
 
-                    if (hist != null && Tools.isNumeric(hist)) {
+                    if (Tools.isNumeric(hist)) {
                         String histTxt = (hist.equals("true") ? gs.getContext().getString(
                                 R.string.yes) : gs.getContext().getString(R.string.no));
                         SpannableString s = new SpannableString(varLabel + " ("
@@ -866,7 +872,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                         header.setText(s);
                     } else
                         header.setText(varLabel);
-                    inputContainer.addView(view);
+                    innerInputContainer.addView(view);
                     varV.view=view;
                     break;
                 case list:
@@ -880,7 +886,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     final Spinner spinner = sl.findViewById(R.id.spinner);
 
                     spinner.setAdapter(varV.adapter);
-                    inputContainer.addView(sl);
+                    innerInputContainer.addView(sl);
                     Log.d("nils", "Adding spinner for label " + label);
 
                     if (firstSpinner == null && vc==0 && autoOpenSpinner)
@@ -997,7 +1003,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 
                     header.setText(varLabel + " " + unit
                             + (hist != null ? " (" + hist + ")" : ""));
-                    inputContainer.addView(l);
+                    innerInputContainer.addView(l);
                     varV.view=l;
                     break;
                 case numeric:
@@ -1063,7 +1069,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
 			 * etNum.setFilters(new InputFilter[] {filter}); }
 			 */
                     // ruleExecutor.parseFormulas(al.getDynamicLimitExpression(var.getBackingDataSet()),var.getId());
-                    inputContainer.addView(l);
+                    innerInputContainer.addView(l);
                     varV.view=l;
                     break;
                 case auto_increment:
@@ -1074,7 +1080,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                     header.setText(varLabel);
                     @SuppressLint("CutPasteId") EditText etNum = l.findViewById(R.id.edit);
                     etNum.setFocusable(false);
-                    inputContainer.addView(l);
+                    innerInputContainer.addView(l);
                     varV.view=l;
                     break;
             }
@@ -1121,7 +1127,7 @@ public abstract class WF_ClickableField extends WF_Not_ClickableField implements
                 et.setTextColor(Color.BLACK);
                 if (variable.isUsingDefault()) {
                     et.setTextColor(myContext.getContext().getResources()
-                            .getColor(R.color.purple));
+                            .getColor(R.color.purple,myContext.getContext().getTheme()));
                 } else
                     Log.d("nils", "Variable " + variable.getId()
                             + " is NOT YELLOW");

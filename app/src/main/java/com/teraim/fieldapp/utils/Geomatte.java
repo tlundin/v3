@@ -22,9 +22,8 @@ public class Geomatte {
 		double a = Math.pow(Math.sin(dlat/2.0), 2) + Math.cos(lat1*d2r) * 
 				Math.cos(lat2*d2r) * Math.pow(Math.sin(dlong/2.0), 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		double d = 6367 * c;
 
-		return d;
+        return 6367 * c;
 	}
 
 	private static double sqr(double x) { return x * x; }
@@ -50,9 +49,8 @@ public class Geomatte {
 	public static double sweDist(double myY,double myX,double destY, double destX) {	
 		//Log.d("NILS","diffX: diffY: "+(myX-destX)+" "+(myY-destY));
 		//Log.d("NILS","Values  x1 y1 x2 y2: "+myX+" "+myY+" "+destX+" "+destY);
-		double res = Math.sqrt(Math.pow((myX-destX),2)+Math.pow(myY-destY, 2));
-		//Log.d("NILS","res: "+res);
-		return res;
+        //Log.d("NILS","res: "+res);
+		return Math.sqrt(Math.pow((myX-destX),2)+Math.pow(myY-destY, 2));
 
 	}
 	
@@ -114,10 +112,9 @@ public class Geomatte {
 		//We still 
 		double b = destX-centerX;
 		//double a = Math.abs(destY-centerY); **not needed.
-		double c = dest;
 
-		double  beta = Math.acos(b/c);
-		Log.d("NILS","b,c,beta: "+b+" "+c+" "+beta);
+        double  beta = Math.acos(b/ dest);
+		Log.d("NILS","b,c,beta: "+b+" "+ dest +" "+beta);
 		//Gamma is the top angle in a 90 deg. triangle.
 		double gamma = Math.PI/2-beta; // 90 grader - beta i radianer = 90*pi/180 = 1*pi/2.
 		//alfa is PI+gamma if destx - x is negative.
@@ -224,11 +221,10 @@ public class Geomatte {
 		double lambda = lon*Math.PI/180.0;
 		double lambda0 = cent_m*Math.PI/180.0;
 		double deltalambda = lambda-lambda0;
-		double A = e2;
-		double B = (1.0/6.0)*(5.0*Math.pow(e2, 2)-Math.pow(e2, 3));	
+        double B = (1.0/6.0)*(5.0*Math.pow(e2, 2)-Math.pow(e2, 3));
 		double C = (1.0/120.0)*(104.0*Math.pow(e2, 3)-45.0*Math.pow(e2, 4));
 		double D = (1.0/1260.0)*(1237.0*Math.pow(e2, 4));
-		double latStar = latr-Math.sin(latr)*Math.cos(latr)*(A+B*Math.pow(Math.sin(latr),2)+
+		double latStar = latr-Math.sin(latr)*Math.cos(latr)*(e2 +B*Math.pow(Math.sin(latr),2)+
 				C*Math.pow(Math.sin(latr), 4)+D*Math.pow(Math.sin(latr),6));
 		double oui = Math.atan(Math.tan(latStar)/Math.cos(deltalambda));
 		double nui = math_atanh(Math.cos(latStar)*Math.sin(deltalambda));

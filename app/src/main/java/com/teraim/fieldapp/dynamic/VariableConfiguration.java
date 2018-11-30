@@ -3,7 +3,6 @@ package com.teraim.fieldapp.dynamic;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.GlobalState.ErrorCode;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.non_generics.Constants;
@@ -84,14 +83,14 @@ public class VariableConfiguration implements Serializable {
 		validateAndInit();
 	}
 
-	private ErrorCode validateAndInit() {
+	private void validateAndInit() {
 		fromNameToColumn = new HashMap<String,Integer>();
 		for (String c:requiredColumns) {
 			int tableIndex = myTable.getColumnIndex(c);
 			if (tableIndex==-1) {
 				Log.e("nils","Missing column: "+c);
 				Log.e("nils","Table has "+myTable.getColumnHeaders().toString());
-				return ErrorCode.missing_required_column;
+				return;
 			}
 			else
 				//Now we can map a call to a column to the actual implementation.
@@ -99,8 +98,7 @@ public class VariableConfiguration implements Serializable {
 				fromNameToColumn.put(c, tableIndex);
 		}
 
-		return ErrorCode.ok;
-	}
+    }
 
 	public Table getTable() {
 		return myTable;
@@ -399,7 +397,7 @@ public class VariableConfiguration implements Serializable {
 		return Tools.createKeyMap(KEY_YEAR,currentYear,"ruta",currentRuta,"provyta",currentProvyta,"smaprovyta",currentSmayta);
 	}
 
-	public Map createYearKeyMap() {
+	public Map<String,String> createYearKeyMap() {
 		Map<String,String> ar = new HashMap<>();
 		ar.put(KEY_YEAR,Constants.getYear());
 		return ar;

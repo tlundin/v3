@@ -51,7 +51,7 @@ public class Polygon
 		 *            The vertex point
 		 * @return The builder
 		 */
-		public Builder addVertex(Point point)
+		public void addVertex(Point point)
 		{
 			if (_isClosed)
 			{
@@ -70,8 +70,7 @@ public class Polygon
 				_sides.add(Line);
 			}
 
-			return this;
-		}
+        }
 
 		/**
 		 * Close the polygon shape. This will create a new side (edge) from the <b>last</b> vertex point to the <b>first</b> vertex point.
@@ -80,7 +79,7 @@ public class Polygon
 		 */
 		public Builder close()
 		{
-			if (!validate())
+			if (validate())
 				return null;
 
 			// add last Line
@@ -97,7 +96,7 @@ public class Polygon
 		 */
 		public Polygon build()
 		{
-			if (!validate())
+			if (validate())
 				return null;
 
 			// in case you forgot to close
@@ -107,8 +106,7 @@ public class Polygon
 				_sides.add(new Line(_vertexes.get(_vertexes.size() - 1), _vertexes.get(0)));
 			}
 
-			Polygon polygon = new Polygon(_sides, _boundingBox);
-			return polygon;
+            return new Polygon(_sides, _boundingBox);
 		}
 
 		/**
@@ -153,7 +151,7 @@ public class Polygon
 
 		private boolean validate()
 		{
-			return (_vertexes.size() >= 3);
+			return (_vertexes.size() < 3);
 			
 		}
 	}
@@ -257,8 +255,7 @@ public class Polygon
 		float epsilon = (_boundingBox.xMax - _boundingBox.xMin) / 100f;
 		Point outsidePoint = new Point(_boundingBox.xMin - epsilon, _boundingBox.yMin);
 
-		Line vector = new Line(outsidePoint, point);
-		return vector;
+        return new Line(outsidePoint, point);
 	}
 
 	/**

@@ -14,7 +14,7 @@ import java.util.List;
 */
 
 
-public class StatusGraph implements Serializable {
+class StatusGraph implements Serializable {
 
 
 	private static final long serialVersionUID = -7055792327173981534L;

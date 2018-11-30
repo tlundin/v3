@@ -680,7 +680,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 							GisObject go = iterator.next();
 							//Log.d("bortex","Checking "+go.getLabel()+" id: "+go.getId()+ "type: "+go.getClass().getCanonicalName());
 							//If not inside map, or if touched, skip.
-							if (!go.isUseful() || (touchedGop!=null&&go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus())) {
+							if (!go.isUseful() || (go.equals(touchedGop)) || isExcludedByStandardFilter(go.getStatus())) {
 								//Log.d("bortex",go.getLabel()+" is thown. useful?" + go.isUseful());
 								continue;
 							}
@@ -769,7 +769,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 							} else if (go instanceof GisPathObject) {
 								if (go instanceof GisMultiPointObject) {
-									if (!((GisMultiPointObject)go).isLineString()) {
+									if (((GisMultiPointObject) go).isLineString()) {
 										Log.d("vortex","This is a multipoint. Path is useless.");
 									}
 								}
@@ -952,8 +952,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
             }
 			final DbHelper.LocationAndTimeStamp l = myTeam.get(name);
 			//Log.d("bortex","Location "+l);
-            String finalName = name;
-            GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
+			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
 				@Override
 				public float getRadius() {
 					return 4;
@@ -1006,12 +1005,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public String getName() {
-					return finalName;
+					return name;
 				}
 
 				@Override
 				public String getRawLabel() {
-					return finalName;
+					return name;
 				}
 
 				@Override
@@ -1031,7 +1030,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public List<Expressor.EvalExpr> getLabelExpression() {
-					return Expressor.preCompileExpression(finalName);
+					return Expressor.preCompileExpression(name);
 				}
 			}, tmp, l.location, null, null);
 

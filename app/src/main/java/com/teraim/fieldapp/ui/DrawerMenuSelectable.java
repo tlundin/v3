@@ -11,7 +11,8 @@ import com.teraim.fieldapp.ui.DrawerMenuAdapter.RowType;
 public class DrawerMenuSelectable implements DrawerMenuItem {
 
 	    private final String  str1;
-	    int bgColor,textColor;
+	    private final int bgColor;
+    private int textColor;
 
 	    public DrawerMenuSelectable(String text1,int bgColor,int textColor) {
 	        this.str1 = text1;

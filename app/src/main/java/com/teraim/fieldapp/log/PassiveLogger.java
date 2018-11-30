@@ -17,7 +17,6 @@ public class PassiveLogger implements LoggerI {
 
     public PassiveLogger(Context c,String loggerId) {
         myContext = c;
-        String loggerId1 = loggerId;
     }
 
     public void setOutputView(TextView txt) {

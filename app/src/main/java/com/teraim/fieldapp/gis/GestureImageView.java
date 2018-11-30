@@ -291,17 +291,17 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 	}
 
 	private boolean isRecycled() {
-		if(drawable != null && drawable instanceof BitmapDrawable) {
+		if(drawable instanceof BitmapDrawable) {
 			Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
 			if(bitmap != null) {
-				return bitmap.isRecycled();
+				return !bitmap.isRecycled();
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private void recycle() {
-		if(recycle && drawable != null && drawable instanceof BitmapDrawable) {
+		if(recycle && drawable instanceof BitmapDrawable) {
 			Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
 			if(bitmap != null) {
 				Log.d("vortex","recycling!");
@@ -313,7 +313,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if(layout) {
-			if(drawable != null && !isRecycled()) {
+			if(drawable != null && isRecycled()) {
 				canvas.save();
 				
 				float adjustedScale = scale * scaleAdjust;
@@ -378,7 +378,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 		if(animator != null) {
 			animator.finish();
 		}
-		if(recycle && drawable != null && !isRecycled()) {
+		if(recycle && drawable != null && isRecycled()) {
 			recycle();
 			drawable = null;
 		}
@@ -431,7 +431,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 			this.recycle();
 		}
 		this.resId = id;
-		setImageDrawable(getContext().getResources().getDrawable(id));
+		setImageDrawable(getContext().getResources().getDrawable(id,getContext().getTheme()));
 
 	}
 
@@ -582,7 +582,7 @@ public class GestureImageView extends android.support.v7.widget.AppCompatImageVi
 	}
 
 	@Override
-	public void setAlpha(int alpha) {
+	public void setImageAlpha(int alpha) {
 		this.alpha = alpha;
 		if(drawable != null) {
 			drawable.setAlpha(alpha);

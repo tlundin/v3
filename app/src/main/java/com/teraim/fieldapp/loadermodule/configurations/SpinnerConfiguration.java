@@ -66,7 +66,7 @@ public class SpinnerConfiguration extends CSVConfigurationModule {
 			return new LoadResult(this,ErrorCode.ParseError,errMsg);
 			} else {
 				String id = r[0];
-				if (curId==null || !id.equals(curId)) {
+				if (!id.equals(curId)) {
 					if (c!=0) 
 						o.addRow("List had "+c+" members");
 					c=0;			

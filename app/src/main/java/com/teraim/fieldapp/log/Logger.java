@@ -26,8 +26,7 @@ public class Logger implements LoggerI {
 
 	public Logger(Context c,String loggerId) {
 		myContext = c;
-        String loggerId1 = loggerId;
-	}
+    }
 
 	public void setOutputView(TextView txt) {
 		log = txt;

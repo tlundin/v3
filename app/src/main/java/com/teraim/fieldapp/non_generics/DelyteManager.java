@@ -349,7 +349,7 @@ public class DelyteManager {
 				} else {
 					Segment potential = new Segment(x.end,s.start,true);
 					//check that this arc is not already covered.
-					if (!hasSegment(sortedArcs,potential)) {
+					if (!hasSegment(sortedArcs, potential)) {
 						freeArcs.add(new Segment(x.end,s.start,true));
 						Log.d("nils","Adding free arc piece. S:"+x.end.rikt+" E:"+s.start.rikt);
 					}
@@ -442,8 +442,7 @@ public class DelyteManager {
 				Log.d("vortex","YES!");
 				List<Segment> altPoly = new ArrayList<Segment>(bgPoly);
 				altPoly.add(currentP);
-				List<Segment>altFreeArcs = new ArrayList<Segment>();
-				altFreeArcs.addAll(freeArcs);
+				List<Segment> altFreeArcs = new ArrayList<Segment>(freeArcs);
 				altFreeArcs.remove(currentP);
 				//bgPoly.add(currentP);
 				//freeArcs.remove(currentP);
@@ -546,7 +545,7 @@ public class DelyteManager {
 				}
 				Segment potential = new Segment(x.end,s.start,true);
 				//check that this arc is not already covered.
-				if (!hasSegment(sortedArcs,potential)) {
+				if (!hasSegment(sortedArcs, potential)) {
 					freeArcs.add(new Segment(x.end,s.start,true));
 					Log.d("nils","Adding free arc piece. S:"+x.end.rikt+" E:"+s.start.rikt);
 				}
@@ -577,7 +576,7 @@ public class DelyteManager {
 			bgPoly.add(c);
 			//sort.
 			boolean found = true;
-			while (freeArcs.size()>0 && found == true) {
+			while (freeArcs.size() > 0 && found) {
 				found = false;
 				for (Segment n:freeArcs) {
 					Log.d("nils","Comparing segment (("+c.start.rikt+","+c.start.avst+"),("+c.end.rikt+","+c.end.avst+")) to (("+n.start.rikt+","+n.start.avst+"),("+n.end.rikt+","+n.end.avst+"))");	

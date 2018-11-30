@@ -65,7 +65,7 @@ public class Parser {
 
  /** Set of Variable's that are allowed to appear in input expressions. 
   * If null, any variable is allowed. */
- private Hashtable<Expr,Expr> allowedVariables = null;
+ private final Hashtable<Expr,Expr> allowedVariables = null;
 
  /** Adjust the set of allowed variables: create it (if not yet
   * existent) and add optVariable (if it's nonnull).  If the

@@ -230,8 +230,7 @@ public class VariablesConfiguration extends CSVConfigurationModule {
 	
 
 	private List<String> trimmed(String[] r) {
-        ArrayList<String> ret = new ArrayList<String>(Arrays.asList(r).subList(0, Constants.VAR_PATTERN_ROW_LENGTH));
-		return ret;
+        return new ArrayList<String>(Arrays.asList(r).subList(0, Constants.VAR_PATTERN_ROW_LENGTH));
 	}
 
 	@Override

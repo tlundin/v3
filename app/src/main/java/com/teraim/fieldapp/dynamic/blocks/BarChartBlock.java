@@ -41,16 +41,8 @@ public class BarChartBlock extends ChartBlock {
             Log.d("vortex","error in format...default to 10");
         }
         this.blockId = blockId;
-        String name1 = name;
-        String label1 = label;
-        String container1 = container;
         float textSize1 = textSizeF;
 
-        int lineWidth1 = lineWidth;
-        boolean displayValues1 = displayValues;
-        boolean isVisible1 = isVisible;
-        int height1 = height;
-        int width1 = width;
         Log.d("vortex","height"+height);
     }
 
@@ -160,7 +152,7 @@ public class BarChartBlock extends ChartBlock {
         //Setting background color of the graph to transparent
         multiRenderer.setBackgroundColor(Color.TRANSPARENT);
         //Setting margin color of the graph to transparent
-        multiRenderer.setMarginsColor(ctx.getResources().getColor(R.color.background_light));
+        multiRenderer.setMarginsColor(ctx.getResources().getColor(R.color.primary_light,ctx.getTheme()));
         multiRenderer.setApplyBackgroundColor(true);
 
         //setting the margin size for the graph in the order top, left, bottom, right

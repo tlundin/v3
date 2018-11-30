@@ -103,8 +103,7 @@ public class ProvytaView extends View {
     float rScaleF=0;
 
     public void setIndicatorLocation(int deg) {
-        int indicatorLocation = deg;
-		Log.d("nils","got "+deg);
+        Log.d("nils","got "+deg);
 	}
 
 
@@ -247,8 +246,7 @@ public class ProvytaView extends View {
 
 
 	public void setSpecial(List<Coord> cords) {
-        List<Coord> scords = cords;
-	}
+    }
 
 	public void showDistance(int dist) {
 		msg = "Avst: "+String.valueOf(dist)+"m";

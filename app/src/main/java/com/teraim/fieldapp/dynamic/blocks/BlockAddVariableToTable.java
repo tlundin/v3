@@ -3,11 +3,8 @@ package com.teraim.fieldapp.dynamic.blocks;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.dynamic.types.Variable;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Context;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Table;
-
-import java.util.Set;
 
 public class BlockAddVariableToTable extends Block {
 
@@ -39,7 +36,7 @@ public class BlockAddVariableToTable extends Block {
 	}
 	
 	
-	public Set<Variable> create(WF_Context myContext) {
+	public void create(WF_Context myContext) {
 
 		final WF_Table l = myContext.getTable(target);
 		o = GlobalState.getInstance().getLogger();
@@ -50,8 +47,7 @@ public class BlockAddVariableToTable extends Block {
 			Log.d("nils","Calling AddVariableToTable for "+variableSuffix);
 			l.addVariableToEveryCell(variableSuffix, displayOut,format,isVisible,showHistorical,initialValue);		
 		}
-		return null;
-	}
+    }
 
 
 }

@@ -143,7 +143,6 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		labelE = Expressor.preCompileExpression(label);
 		this.unevaluatedLabel=label;
 		objContextE = Expressor.preCompileExpression(objectContext);
-        String objectContextS = objectContext;
 		//Set default icons for different kind of objects.
 	}
 
@@ -426,7 +425,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							Log.d("vortex","Found "+storedVar2.value+" for "+storedVar2.name);
 							map2 = pickerLocation1.getKeyColumnValues();
 							Log.d("vortex","Found columns "+map2.toString()+" for "+storedVar2.name);
-							if (!Tools.sameKeys(map1, map2)) {
+							if (Tools.sameKeys(map1, map2)) {
 								Log.e("vortex","key mismatch in db fetch: X key:"+map1.toString()+"\nY key: "+map2.toString());
 							} else {
 								if (!dynamic) {

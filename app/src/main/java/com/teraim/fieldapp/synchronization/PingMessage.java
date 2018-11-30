@@ -1,7 +1,7 @@
 package com.teraim.fieldapp.synchronization;
 
 
-public class PingMessage extends SyncMessage {
+class PingMessage extends SyncMessage {
 
 	private static final long serialVersionUID = 1595706891719878227L;
 	/**

@@ -39,8 +39,7 @@ public class DataSyncSessionManager implements ConnectionListener,SyncStatusList
 	private State mState = State.initial;
 
 	private DataSyncSessionManager(Context ctx, UIProvider ui) {
-        Context ctx1 = ctx;
-		//setup connection if missing. Asynch callback.
+        //setup connection if missing. Asynch callback.
 		o = GlobalState.getInstance().getLogger();
 
 		this.ui = ui;

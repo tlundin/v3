@@ -19,7 +19,7 @@ public abstract class CI_ConfigurationModule extends ConfigurationModule {
 
     public abstract LoadResult prepare() throws IOException, Dependant_Configuration_Missing;
     public abstract LoadResult parse(String row, Integer currentRow) throws IOException;
-    public abstract LoadResult finalizeMe() throws IOException;
+    public abstract void finalizeMe() throws IOException;
 
 
 }

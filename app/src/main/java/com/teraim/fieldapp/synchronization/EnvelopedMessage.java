@@ -1,7 +1,7 @@
 package com.teraim.fieldapp.synchronization;
 
 
-public class EnvelopedMessage extends SyncMessage {
+class EnvelopedMessage extends SyncMessage {
 
 	/**
 	 * Generic Message that can be used by Customized templates to send messages to other units.

@@ -54,10 +54,9 @@ class VectorF {
 		return length;
 	}
 	
-	public float calculateAngle() {
+	public void calculateAngle() {
 		angle = MathUtils.angle(start, end);
-		return angle;
-	}
+    }
 	
 	
 }

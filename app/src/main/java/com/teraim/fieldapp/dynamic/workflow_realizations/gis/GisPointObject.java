@@ -80,9 +80,8 @@ public abstract class GisPointObject extends GisObject {
 		
 	}
 	public boolean getCachedFilterResult(GisFilter filter) {
-		Boolean b=filterCache.get(filter);
-		
-		return b;
+
+        return filterCache.get(filter);
 	}
 
 	public int[] getTranslatedLocation() {

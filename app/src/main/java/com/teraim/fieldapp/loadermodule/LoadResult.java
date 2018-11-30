@@ -23,7 +23,7 @@ public class LoadResult {
 	}
 	
 	
-	public ErrorCode errCode;
+	public final ErrorCode errCode;
 	public ConfigurationModule module;
 	public String errorMessage;
 

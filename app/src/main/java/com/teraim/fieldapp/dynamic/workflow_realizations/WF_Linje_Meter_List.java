@@ -82,16 +82,15 @@ public class WF_Linje_Meter_List extends WF_List implements EventListener {
 					Log.d("nils",sel[i]);
 				Log.d("nils","VALUE: "+v.getValue());
 				Log.d("nils","OLD VALUE:"+oldValue);
-				String meter = oldValue;
-				//empty?
-				if (meter !=null) {
-					if (!meter.equals(v.getValue())) {
+                //empty?
+				if (oldValue !=null) {
+					if (!oldValue.equals(v.getValue())) {
 						if (v.getValue()==null) {
 							Log.d("nils","This is a DELETE event");
 							insert = false;
 						} else
 							//if not delete, replace meter with old meter to remove existing values.
-							v.getKeyChain().put("meter", meter);
+							v.getKeyChain().put("meter", oldValue);
 
 
 						String name = v.getKeyChain().get("value");

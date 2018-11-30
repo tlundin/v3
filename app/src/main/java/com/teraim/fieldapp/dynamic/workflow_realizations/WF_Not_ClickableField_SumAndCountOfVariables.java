@@ -54,9 +54,8 @@ public class WF_Not_ClickableField_SumAndCountOfVariables extends WF_Not_Clickab
 			myContext.registerEventListener(this,EventType.onFlowExecuted);
 
 		}
-        DisplayFieldBlock format1 = format;
 
-	}
+    }
 
 	@Override
 	public LinearLayout getFieldLayout() {

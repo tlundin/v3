@@ -1,7 +1,7 @@
 package com.teraim.fieldapp.synchronization;
 
 
-public class MasterPing extends PingMessage  {
+class MasterPing extends PingMessage  {
 	
 	/**
 	 * 

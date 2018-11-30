@@ -89,7 +89,7 @@ public class Start extends MenuActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         // Setup handler for uncaught exceptions.
-
+/*
 		Thread.setDefaultUncaughtExceptionHandler (new Thread.UncaughtExceptionHandler()
 		{
 			@Override
@@ -100,7 +100,7 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-
+*/
 
         Log.d("nils","in START onCreate");
         singleton = this;
@@ -442,7 +442,7 @@ public class Start extends MenuActivity {
         Log.d("vortex","request code "+requestCode+" result code "+resultCode);
 
         Fragment f = getFragmentManager().findFragmentById(R.id.content_frame);
-        if (f != null && f instanceof Executor)
+        if (f instanceof Executor)
             ((Executor) f).getCurrentContext().registerEvent(new WF_Event_OnActivityResult("Start", EventType.onActivityResult));
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -491,7 +491,7 @@ public class Start extends MenuActivity {
                 }
             }
             Fragment currentContentFrameFragment = getFragmentManager().findFragmentById(R.id.content_frame);
-            if (currentContentFrameFragment!=null && currentContentFrameFragment instanceof Executor) {
+            if (currentContentFrameFragment instanceof Executor) {
 
                 final WF_Context wfCtx = ((Executor) currentContentFrameFragment).getCurrentContext();
                 Log.d("vortex", "current context: " + wfCtx.toString());

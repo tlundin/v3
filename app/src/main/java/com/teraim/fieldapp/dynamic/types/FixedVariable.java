@@ -1,15 +1,15 @@
 package com.teraim.fieldapp.dynamic.types;
 
+import android.util.Log;
+
+import com.teraim.fieldapp.GlobalState;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.util.Log;
-
-import com.teraim.fieldapp.GlobalState;
-
-public class FixedVariable extends Variable implements Serializable {
+class FixedVariable extends Variable implements Serializable {
 
 
 

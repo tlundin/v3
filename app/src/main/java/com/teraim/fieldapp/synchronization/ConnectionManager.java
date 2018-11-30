@@ -27,9 +27,8 @@ public class ConnectionManager {
 	
 	//This is a singleton owned by GlobalState.
 	public ConnectionManager(GlobalState gs) {
-        GlobalState gs1 = gs;
-		
-	}
+
+    }
 	
 	
 	/**

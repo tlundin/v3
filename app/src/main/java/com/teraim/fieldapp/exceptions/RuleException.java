@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.exceptions;
 
-public class RuleException extends Exception {
+class RuleException extends Exception {
 
 	/**
 	 * 

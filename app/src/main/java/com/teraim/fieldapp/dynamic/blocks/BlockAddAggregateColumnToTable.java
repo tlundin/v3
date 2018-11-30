@@ -32,8 +32,7 @@ public class BlockAddAggregateColumnToTable extends Block {
 		super();
 		this.blockId=id;
 		this.target=target;
-        String expression1 = expression;
-		this.aggregationFunction=aggregationFunction;
+        this.aggregationFunction=aggregationFunction;
 		this.format=format;
 		this.width=width;
 		this.isDisplayed=isDisplayed;

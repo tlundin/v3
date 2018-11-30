@@ -28,14 +28,10 @@ public class BlockCreateTableEntriesFromFieldList extends Block {
 			String typeField,String variatorColumn,String uriField
 			) {
 		super();
-        String type1 = type;
-		this.selectionField = selectionField;
+        this.selectionField = selectionField;
 		this.selectionPattern = selectionPattern;
 		this.blockId = id;
-        String labelField1 = labelField;
-        String descriptionField1 = descriptionField;
-        String uriField1 = uriField;
-		this.variatorColumn = variatorColumn;
+        this.variatorColumn = variatorColumn;
 		this.target = target;
 	}
 

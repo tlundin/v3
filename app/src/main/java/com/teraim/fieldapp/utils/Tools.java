@@ -399,12 +399,10 @@ public class Tools {
 		int realH = options.outHeight;
 		Log.d("vortex","Wp Wh: "+realW+","+realH);
 		DisplayMetrics metrics = ctx.getResources().getDisplayMetrics();
-		int sWidth = metrics.widthPixels;
-		double tWidth = sWidth;
 		//height is then the ratio times this..
-		int tHeight = (int) (tWidth*.66f);
+		int tHeight = (int) ((double) metrics.widthPixels *.66f);
 		//use target values to calculate the correct inSampleSize
-		options.inSampleSize = Tools.calculateInSampleSize(options, (int)tWidth, tHeight);
+		options.inSampleSize = Tools.calculateInSampleSize(options, (int) (double) metrics.widthPixels, tHeight);
 		Log.d("nils"," Calculated insamplesize "+options.inSampleSize);
 		//now create real bitmap using insampleSize
 		options.inJustDecodeBounds = false;
@@ -440,16 +438,14 @@ public class Tools {
 			//Find out screen size.
 
 			DisplayMetrics metrics = ctx.getResources().getDisplayMetrics();
-			int sWidth = metrics.widthPixels;
 
 			//Target width should be about half the screen width.
 
-			double tWidth = sWidth;
 			//height is then the ratio times this..
-			int tHeight = (int) (tWidth*ratio);
+			int tHeight = (int) ((double) metrics.widthPixels *ratio);
 
 			//use target values to calculate the correct inSampleSize
-			options.inSampleSize = Tools.calculateInSampleSize(options, (int)tWidth, tHeight);
+			options.inSampleSize = Tools.calculateInSampleSize(options, (int) (double) metrics.widthPixels, tHeight);
 
 			Log.d("nils"," Calculated insamplesize "+options.inSampleSize);
 			//now create real bitmap using insampleSize
@@ -775,16 +771,16 @@ public class Tools {
 	public static boolean sameKeys(Map<String, String> m1,
 								   Map<String, String> m2) {
 		if (m1.size() != m2.size())
-			return false;
+			return true;
 		for (String key: m1.keySet()) {
 			//Log.d("nils","Key:"+key+" m1: "+(m1==null?"null":m1.toString())+" m2: "+(m2==null?"null":m2.toString()));
 			if (m1.get(key)==null&&m2.get(key)==null)
 				continue;
 			if ((m1.get(key)==null || m2.get(key)==null)||!m1.get(key).equals(m2.get(key)))
-				return false;
+				return true;
 		}
 		//Log.d("nils","keys equal..no header");
-		return true;
+		return false;
 	}
 
 	public static String[] split(String input) {

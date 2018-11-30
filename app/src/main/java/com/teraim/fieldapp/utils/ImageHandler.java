@@ -29,8 +29,7 @@ public class ImageHandler {
 
 	public ImageHandler(GlobalState gs, Fragment _fragment) {
 		fragment = _fragment;
-        GlobalState gs1 = gs;
-		this.al = gs.getVariableConfiguration();
+        this.al = gs.getVariableConfiguration();
 	}
 
 

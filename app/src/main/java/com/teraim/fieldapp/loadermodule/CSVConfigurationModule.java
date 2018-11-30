@@ -10,8 +10,7 @@ public abstract class CSVConfigurationModule extends CI_ConfigurationModule {
 		super(gPh,ph, ConfigurationModule.Type.csv, source, urlOrPath, fileName, moduleName);
 	}
 	@Override
-	public LoadResult finalizeMe() {
-		return null;
-	}
+	public void finalizeMe() {
+    }
 
 }

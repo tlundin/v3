@@ -38,8 +38,7 @@ public  class AddSumOrCountBlock extends DisplayFieldBlock {
 		this.target=target;
 		type = sumOrCount;
 		this.result = result;
-        String postLabel1 = postLabel;
-		this.isVisible = isVisible;
+        this.isVisible = isVisible;
 		this.format = format;
 		this.blockId=id;
 

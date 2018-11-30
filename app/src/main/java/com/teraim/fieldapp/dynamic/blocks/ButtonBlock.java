@@ -212,7 +212,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 	}
 
 
-	public WF_Widget create(final WF_Context myContext) {
+	public void create(final WF_Context myContext) {
 		button = null;
 		this.myContext=myContext;
 		final Context ctx = myContext.getContext();
@@ -685,7 +685,7 @@ public  class ButtonBlock extends Block  implements EventListener {
 						}
 
 						clickOngoing = false;
-						view.setBackgroundDrawable(originalBackground);
+						view.setBackground(originalBackground);
 					}
 
 					//Check if a sync is required. Pop current fragment.
@@ -755,12 +755,10 @@ public  class ButtonBlock extends Block  implements EventListener {
 				button = new WF_ToggleButton(text,toggleB,isVisible,myContext);
 				myContainer.add(button);
 			}
-			return button;
-		} else {
+        } else {
 			o.addRow("");
 			o.addRedText("Failed to add text field block with id "+blockId+" - missing container "+myContainer);
-			return null;
-		}
+        }
 	}
 
 

@@ -7,8 +7,6 @@ public class ColumnDescriptor {
 
     public ColumnDescriptor(String name, boolean canEdit, boolean isHeader, boolean isOutput) {
 		this.colName=name;
-        boolean isEditable = canEdit;
-		this.isHeader=isHeader;
-        boolean isOutput1 = isOutput;
-	}
+        this.isHeader=isHeader;
+    }
 }

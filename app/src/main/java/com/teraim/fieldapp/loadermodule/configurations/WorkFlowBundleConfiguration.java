@@ -341,7 +341,7 @@ public class WorkFlowBundleConfiguration extends XMLConfigurationModule {
 			throw e;
 		}
 		//Check that no block has the same ID
-		Set tempSet = new HashSet<String>();
+		Set<String> tempSet = new HashSet<String>();
 		for (Block b:blocks)  {
 			if (!tempSet.add(b.getBlockId())) {
 				o.addRow("");

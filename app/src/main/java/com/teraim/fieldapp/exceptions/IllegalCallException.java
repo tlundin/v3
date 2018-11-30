@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.exceptions;
 
-public class IllegalCallException extends Exception {
+class IllegalCallException extends Exception {
 
 	/**
 	 * 

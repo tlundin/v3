@@ -1,12 +1,12 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.filters;
 
-import java.util.Iterator;
-import java.util.List;
-
 import android.util.Log;
 
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Filter;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class WF_OnlyWithValue_Filter extends WF_Filter implements Filter {
 
@@ -16,7 +16,7 @@ public class WF_OnlyWithValue_Filter extends WF_Filter implements Filter {
 	}
 
 	@Override
-	public List<? extends Listable> filter(List<? extends Listable> list) {
+	public void filter(List<? extends Listable> list) {
 		Log.d("vortex","In only_with_value filter with "+list.size()+" elements");
 		Iterator<? extends Listable> it = list.iterator();
 		while(it.hasNext()) {
@@ -28,8 +28,7 @@ public class WF_OnlyWithValue_Filter extends WF_Filter implements Filter {
 			//	Log.d("vortex", "Element " + l.getKey() + " has value ");
 		}
 		Log.d("nils","Exit only_with_value filter with "+list.size()+" elements");
-		return list;
-	}
+    }
 
 	@Override
 	public boolean isRemovedByFilter(Listable l) {

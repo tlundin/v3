@@ -25,8 +25,7 @@ public class BlockCreateTextField extends Block {
 	
 	public BlockCreateTextField(String id, String label, String background, String containerId, boolean isVisible,String textSize,String horiz,String vert) {
 		this.blockId=id;
-        String label1 = label;
-		this.labelE=Expressor.preCompileExpression(label);
+        this.labelE=Expressor.preCompileExpression(label);
 		this.containerId=containerId;
 		this.isVisible = isVisible;
 		this.background = background;

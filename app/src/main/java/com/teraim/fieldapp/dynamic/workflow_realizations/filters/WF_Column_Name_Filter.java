@@ -30,7 +30,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 	}
 	
 	@Override
-	public List<? extends Listable> filter(List<? extends Listable> list) {
+	public void filter(List<? extends Listable> list) {
 		String key;
 		Iterator<? extends Listable> it = list.iterator();
 		Log.d("filterz","filtering with type "+filterType.name());
@@ -41,7 +41,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 			key = l.getSortableField(columnToMatch);
 			if (key==null)
 				continue;
-			if (!match(key)) {
+			if (match(key)) {
 				it.remove();
 				if (!key.isEmpty())
 				  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
@@ -59,13 +59,12 @@ public class WF_Column_Name_Filter extends WF_Filter {
 			o.addRow("");
 			o.addYellowText("No matches found in Column filter. Column used: ["+columnToMatch+"]");
 		}
-			
-		return list;
-	}
+
+    }
 
 	@Override
 	public boolean isRemovedByFilter(Listable l) {
-		return !match(l.getSortableField(columnToMatch));
+		return match(l.getSortableField(columnToMatch));
 	}
 
 
@@ -130,7 +129,7 @@ public class WF_Column_Name_Filter extends WF_Filter {
 
 
 		}
-		return match;
+		return !match;
 	}
 
 }

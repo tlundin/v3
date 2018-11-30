@@ -23,8 +23,7 @@ public  class StartBlock extends Block {
 	public StartBlock(String id,String[] args,String wfn, String context) {
 		workflowName = wfn;
 		this.args = args;
-        String context1 = context;
-		this.blockId=id;
+        this.blockId=id;
 		if (context !=null)
 			contextE = preCompileExpression(context);
 		System.err.println("Bananas: "+((contextE == null)?"null":contextE.toString()));

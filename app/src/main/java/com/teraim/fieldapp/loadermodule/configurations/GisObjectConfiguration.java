@@ -442,8 +442,8 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     }
 
 
-    private List readAllLocations(JsonReader reader) {
-        List myLocation = new ArrayList<Location>();
+    private List<Location> readAllLocations(JsonReader reader) {
+        List<Location> myLocation = new ArrayList<>();
         try {
             while (!reader.peek().equals(JsonToken.END_ARRAY)) {
                 if (reader.peek().equals(JsonToken.BEGIN_ARRAY))
@@ -474,7 +474,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
 
 
     @Override
-    public void setEssence() {
+    protected void setEssence() {
         essence = null;
     }
 
@@ -485,12 +485,12 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
     private final Set<GisObject>dubletter = new HashSet<>();
     private final Set<String>seenAlready=new HashSet<>();
     @Override
-    public boolean freeze(int counter) {
+    public void freeze(int counter) {
 
         if (counter==-1 || myGisObjects==null || myGisObjects.isEmpty()) {
             Log.d("vortex","nothing to freeze!");
             newVersion=-1;
-            return false;
+            return;
         }
         if (firstCall) {
             missingVariables=new HashSet<String>();
@@ -567,8 +567,6 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                 Log.d("vortex",seenAlready.toString());
             }
         }
-
-        return true;
 
     }
 

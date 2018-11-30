@@ -620,7 +620,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 					((TextView)tagView.findViewById(R.id.tagBody)).setTextColor(Color.RED);
 					errorTxt = "["+errorArray[row-1]+"]";
 				}  else
-					((TextView)tagView.findViewById(R.id.tagBody)).setTextColor(gs.getContext().getResources().getColor(R.color.blue_background));
+					((TextView)tagView.findViewById(R.id.tagBody)).setTextColor(gs.getContext().getResources().getColor(R.color.blue_background,gs.getContext().getTheme()));
 				((TextView)tagView.findViewById(R.id.tagBody)).setText(tag+errorTxt);
 
 			}
@@ -719,7 +719,7 @@ public class TagTemplate extends Executor implements EventListener, OnGesturePer
 				tagTextView.setTextColor(Color.RED);
 				tagTextView.setText(tagT+errorArray[row]);
 			} else 
-				tagTextView.setTextColor(gs.getContext().getResources().getColor(R.color.blue_background));
+				tagTextView.setTextColor(gs.getContext().getResources().getColor(R.color.blue_background,gs.getContext().getTheme()));
 			tagCoordinateList.clear();
 		}
 		//Check if no delyta. In that case, add default.

@@ -298,16 +298,14 @@ public class BackupManager {
 		return false;
 	}
 
-	public boolean backUp() {
+	public void backUp() {
 			if (!this.backupDatabase()) {
 				gs.getLogger().addRow("");
 				gs.getLogger().addRedText("Backup of data failed! Please make sure you have configured the backup folder correctly under the config menu.");
-				return false;
-			} else {
+            } else {
 				gs.getLogger().addRow("");
 				gs.getLogger().addGreenText("Your database has been backed up");
-				return true;
-			}
+            }
 
 
 

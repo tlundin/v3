@@ -57,7 +57,7 @@ public class Aritmetic extends Expr implements Numerable {
  /** Get the value.
   * @return the current value */
  @Override
- public Double value() { 
+ protected Double value() {
 	return val; 
  }
  /** Set the value.

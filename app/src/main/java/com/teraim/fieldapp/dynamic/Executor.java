@@ -724,7 +724,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 						String val = v.getValue();
 						if ((val == null && eval == null) ||
-								(val != null && eval != null && val.equals(eval))) {
+								(val != null && val.equals(eval))) {
 							o.addRow("No change. Value: " + val + " Eval: " + eval);
 						} else {
 							v.setValue(eval);

@@ -15,7 +15,6 @@ public class ConditionalContinuationBlock extends Block {
 	public ConditionalContinuationBlock(String id, List<String> varL,
 			String expr, String elseBlockId) {
 		this.blockId=id;
-        List<String> variables = varL;
 		this.expr=expr;
 		this.exprE = Expressor.preCompileExpression(expr);
 		this.elseID=elseBlockId;
@@ -45,7 +44,7 @@ public class ConditionalContinuationBlock extends Block {
 		if (exprE != null && exprE.size() == 1) {
 			Boolean result = Expressor.analyzeBooleanExpression(exprE.get(0));
 			if (result != null) {
-				if (result == true) {
+				if (result) {
 					Log.d("nils", "Evaluates to true..continue to next block");
 					eval = NEXT;
 				} else {

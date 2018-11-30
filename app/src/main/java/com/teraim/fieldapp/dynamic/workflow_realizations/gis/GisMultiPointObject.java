@@ -20,7 +20,7 @@ public class GisMultiPointObject extends GisPathObject {
 	}
 	
 	public boolean isLineString() {
-		return poc.getGisPolyType()==GisObjectType.Linestring;
+		return poc.getGisPolyType() != GisObjectType.Linestring;
 	}
 
 	
@@ -50,7 +50,7 @@ public class GisMultiPointObject extends GisPathObject {
 			return false;
 		//Only linestrings can be touched.
 		//Log.d("vortex", "in istouch for linestr "+this.getLabel());
-		if (!isLineString()) {
+		if (isLineString()) {
 			Log.e("vortex", "this is no linestring...exiting.");
 			return false;
 		}

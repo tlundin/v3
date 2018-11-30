@@ -69,7 +69,6 @@ public class WF_Context {
 		this.ctx=ctx;
 		myTemplate = e;
 		eventBroker = new EventBroker(ctx);
-        int rootContainerId1 = rootContainerId;
 		this.drawables=new HashMap<String,Drawable>();
 		this.filterables=new ArrayList<Filterable>();
 		this.gisses=new ArrayList<WF_Gis_Map>();
@@ -431,9 +430,9 @@ public class WF_Context {
 	}
 
 	public void addSliderToGroup(String groupName, WF_ClickableField_Slider wf_clickableField_slider) {
-		List list = getSliderGroupMembers(groupName);
+		List<WF_ClickableField_Slider> list = getSliderGroupMembers(groupName);
 		if (list==null)
-			list = new ArrayList<WF_ClickableField_Slider>();
+			list = new ArrayList<>();
 		list.add(wf_clickableField_slider);
 		sliderGroupM.put(groupName,list);
 	}

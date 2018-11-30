@@ -53,7 +53,7 @@ public class JSONExporter extends Exporter {
 						if (!more)
 							break;
 						Map<String,String> newKeys = cp.getKeyColumnValues();
-						if (!Tools.sameKeys(currentKeys,newKeys)) {
+						if (Tools.sameKeys(currentKeys, newKeys)) {
 							currentKeys = newKeys;
 							break;
 

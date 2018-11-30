@@ -50,14 +50,12 @@ public class AddGisFilter extends Block implements GisFilter {
 			String radius, String color, String polyType, String fillType,
 			boolean hasWidget, LoggerI o) {
 		super();
-        String id1 = id;
-		this.nName = nName;
+        this.nName = nName;
 		this.label = label;
 		this.targetObjectType = targetObjectType;
 		this.targetLayer = targetLayer;
 		this.expressionE = Expressor.preCompileExpression(expression);
-        String imgSource1 = imgSource;
-		this.color = color;
+        this.color = color;
 		this.fillType=Paint.Style.FILL;
 		if  (fillType !=null) {
 			if (fillType.equalsIgnoreCase("STROKE"))

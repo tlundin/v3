@@ -20,7 +20,7 @@ public class AirPhotoMetaDataIni extends CI_ConfigurationModule implements Photo
     @Override
     public PhotoMeta getPhotoMeta() {
         Object pm = getEssence();
-        if (pm==null || !(pm instanceof PhotoMeta))
+        if (!(pm instanceof PhotoMeta))
             return null;
         return (PhotoMeta)pm;
     }
@@ -71,16 +71,15 @@ public class AirPhotoMetaDataIni extends CI_ConfigurationModule implements Photo
     }
 
     @Override
-    public LoadResult finalizeMe() {
+    public void finalizeMe() {
         if (w!=null&&e!=null&&s!=null&&n!=null) {
             Log.d("franzon","photometa is parsed");
             setEssence(new PhotoMeta(n ,e, s, w));
         }
         else {
             Log.e("vortex","Photometa file is corrupt");
-            return new LoadResult(this, LoadResult.ErrorCode.ParseError,"Photometa file is corrupt");
+            new LoadResult(this, LoadResult.ErrorCode.ParseError, "Photometa file is corrupt");
         }
-        return null;
     }
 
     @Override

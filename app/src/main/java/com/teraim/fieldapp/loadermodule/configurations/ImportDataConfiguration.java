@@ -248,7 +248,7 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 
 
 	@Override
-	public void setEssence() {
+    protected void setEssence() {
 		//No essence...all goes into db.
 		essence = null;
 		Log.e("vortex","SKIPPED KEYS:\n"+skipped.toString());
@@ -266,9 +266,9 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 	private boolean firstCall = true;
 
 	@Override
-	public boolean freeze(int counter) {
+	public void freeze(int counter) {
 		if (entries == null)
-			return false;
+			return;
 
 		if (firstCall) {
 			myDb.beginTransaction();
@@ -306,7 +306,6 @@ public class ImportDataConfiguration extends JSONConfigurationModule {
 			}
 		}
 
-		return true;
 	}
 
 

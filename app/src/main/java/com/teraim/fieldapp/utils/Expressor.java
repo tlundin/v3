@@ -410,7 +410,7 @@ public class Expressor {
      * Expressions are made up of Tokens. Tokens are for instance Numbers, Literals, Functions.
      *
      */
-    public static class Token implements Serializable {
+    static class Token implements Serializable {
 
         private static final long serialVersionUID = -1975204853256767316L;
         String str;
@@ -423,7 +423,7 @@ public class Expressor {
 
     //Exception for Evaluation failures.
 
-    public static class ExprEvaluationException extends Exception {
+    static class ExprEvaluationException extends Exception {
 
         private static final long serialVersionUID = 1107622084592264591L;
 
@@ -823,7 +823,7 @@ public class Expressor {
     }
 
     //marker class
-    public abstract static class Expr implements Serializable {
+    abstract static class Expr implements Serializable {
         private static final long serialVersionUID = -1968204853256767316L;
         private final TokenType type;
 

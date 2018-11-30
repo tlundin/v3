@@ -24,7 +24,6 @@ public class BlockCreateTable extends Block {
     public BlockCreateTable(String id, String type, String tableName, String containerId, String label) {
 
         this.blockId=id;
-        String type1 = type;
         this.name=tableName;
         this.container=containerId;
         this.label=label;

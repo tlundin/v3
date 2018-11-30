@@ -144,8 +144,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         green
     }
 
-    long lastRedraw = 0;
-    Handler handler = null;
+    private long lastRedraw = 0;
+    private Handler handler = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1377,7 +1377,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     private boolean callInProgress = false;
 
-    public void getTeamSyncStatusFromServer() {
+    private void getTeamSyncStatusFromServer() {
         Log.d("vortex", "update team sync state called");
         //block multiple calls.
         if (!callInProgress) {
@@ -1441,7 +1441,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     private SyncGroup syncGroup = null;
 
-    public SyncGroup getSyncGroup() {
+    private SyncGroup getSyncGroup() {
         return syncGroup;
     }
 
@@ -1489,18 +1489,18 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         }
 
-        public List<TeamMember> getTeam() {
+        List<TeamMember> getTeam() {
             return team;
         }
 
-        public Date getLastUpdate() {
+        Date getLastUpdate() {
             return lastUpdate;
         }
     }
 
-    public class TeamMember {
-        public final int unsynched;
-        public final String user;
+    class TeamMember {
+        final int unsynched;
+        final String user;
         private final Long date;
 
         TeamMember(String user, int uns, Long date) {
@@ -1510,7 +1510,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         }
 
-        public Date getDate() {
+        Date getDate() {
             return new java.util.Date(date);
         }
 

@@ -79,8 +79,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
         /* (non-Javadoc)
          * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
          */
-        ViewGroup myContainer = container;
-		View v = inflater.inflate(R.layout.template_ruta_wf, container, false);	
+        View v = inflater.inflate(R.layout.template_ruta_wf, container, false);
 		WF_Container root = new WF_Container("root", v.findViewById(R.id.root), null);
 		ListView fieldList = v.findViewById(R.id.fieldListL);
 		ListView selectedList = v.findViewById(R.id.SelectedL);

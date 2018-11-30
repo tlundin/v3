@@ -1,6 +1,6 @@
 package com.teraim.fieldapp.exceptions;
 
-public class BluetoothNotSupportedException extends Exception {
+class BluetoothNotSupportedException extends Exception {
 
 	/**
 	 * 

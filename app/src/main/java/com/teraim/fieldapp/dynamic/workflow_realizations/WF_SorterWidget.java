@@ -6,10 +6,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout.LayoutParams;
+import android.widget.ToggleButton;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.workflow_realizations.filters.WF_Column_Name_Filter;
@@ -146,6 +149,85 @@ public class WF_SorterWidget extends WF_Widget {
 							b.setText(txt);
 							b.setOnClickListener(dl);
 							buttonPanel.addView(b);				
+							Log.d("nils","Added button "+txt+" length "+txt.length());
+						}
+
+
+				} else{
+					o.addRow("");
+					o.addRedText("Could not find column <display_field>: "+displayField+" in WF_SorterWidget. Check your xml for block_create_sort_widget");
+
+				}
+			} else {
+				o.addRow("");
+				o.addRedText("Found no rows for selection: ["+selectionField+"] and pattern ["+selectionPattern+"] in WF_SorterWidget. Check your xml for block_create_sort_widget");
+			}
+		} else if (type.equals("column_toggle") ) {
+			final CompoundButton.OnCheckedChangeListener dl = new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+					String ch = button.getText().toString();
+					Log.d("Strand","User pressed "+ch);
+					//This shall apply a new Alpha filter on target.
+					//First, remove any existing alpha filter.
+					targetList.removeFilter(existing);
+
+					if (isChecked) {
+						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
+						//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
+						targetList.addFilter(existing);
+						//running the filters will trigger redraw.
+					}
+					targetList.draw();
+				}
+			};
+			//Generate buttons from artlista.
+			//Pick fields that are of type Familj
+			VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
+			Table t = al.getTable();
+			List<List<String>> rows = t.getRowsContaining(selectionField,selectionPattern);
+			if (rows!=null) {
+				Log.d("nils","SORTERWIDGET: GETROWS RETURNED "+rows.size()+" FOR SELFIELD "+selectionField+" AND SELP: "+selectionPattern);
+
+				int cIndex = t.getColumnIndex(displayField);
+				if (cIndex != -1) {
+					Set<String> txts = new TreeSet<String>();
+
+
+					for(List<String>row:rows) {
+						if (row.size()>cIndex) {
+							String sortFacets = row.get(cIndex);
+							if (sortFacets!=null) {
+								String facets[] = sortFacets.split("\\|");
+								if (facets.length>0) {
+									Collections.addAll(txts, facets);
+								}
+							}
+
+						}
+						else {
+							o.addRow("");
+							o.addRedText("SorterWidget: column to sort on ["+displayField+"] was found in column# "+(cIndex+1)+" but the current row only contains "+row.size()+" elements");
+							Log.e("vortex","SorterWidget: column to sort on ["+displayField+"] was found in column# "+(cIndex+1)+" but the row is shorter:"+row.size());
+							Log.e("vortex","Current row: "+row.toString() );
+							o.addRow("");
+							o.addRow("Current Columns:"+t.getColumnHeaders().toString());
+							o.addRow("Current row: "+row.toString() );
+						}
+					}
+					//Add a wildcard button.
+					ToggleButton toggleB;
+					//ToggleButton toggleB = new ToggleButton(ctx);
+
+
+					for (String txt:txts)
+						if (txt !=null && txt.trim().length()>0) {
+							toggleB = (ToggleButton)LayoutInflater.from(ctx.getContext()).inflate(R.layout.toggle_button,null);
+							toggleB.setTextOn(txt);
+							toggleB.setTextOff(txt);
+							toggleB.setChecked(false);
+							toggleB.setOnCheckedChangeListener(dl);
+							buttonPanel.addView(toggleB);
 							Log.d("nils","Added button "+txt+" length "+txt.length());
 						}
 

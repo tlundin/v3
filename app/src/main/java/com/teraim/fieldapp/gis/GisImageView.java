@@ -591,6 +591,17 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 				}
 
 				if (myDots==null ||myDots.isEmpty()) {
+
+					//If this object exists in the db, it should be deleted if last dot is removed.
+					String keyPairs = Tools.convertToKeyPairs(newGisObj.getKeyHash());
+					int rowsAffected = GlobalState.getInstance().getDb().erase(keyPairs,null);
+					if (rowsAffected>0) {
+						Log.d("claxon","aff: "+rowsAffected);
+						GlobalState.getInstance().getLogger().addRow(" erased " + rowsAffected + " entries for GIS object [" + newGisObj.getLabel() + "]");
+						//Create sync entry for all variables with matching keys (no pattern)
+						GlobalState.getInstance().getDb().insertEraseAuditEntry(keyPairs,null);
+					}
+					//cancel the creation
 					cancelGisObjectCreation();
 					Log.d("vortex","Go BACK: NewGisObj removed");
 				} else

@@ -884,8 +884,9 @@ public class Expressor {
                     //Log.d("vortex","Atom variable ["+v.getId()+"] Type "+v.getType()+" Value: "+value);
                     if (v.getType()!= DataType.text && Tools.isNumeric(value)) {
                         Log.d("vortex","numeric");
-                        if (v.getType()== Variable.DataType.decimal || value.contains("."))
-                            return Double.parseDouble(value);
+                        double d = Double.parseDouble(value);
+                        if (v.getType()== Variable.DataType.decimal || value.contains(".") || d>Integer.MAX_VALUE || d<Integer.MIN_VALUE)
+                            return d;
                         else
                             return Integer.parseInt(value);
                     }
@@ -1735,14 +1736,21 @@ public class Expressor {
                     if (!checkPreconditions(evalArgs,-1,Null_Numeric))
                         return 0;
                     else {
-                        Integer sum = 0;
+                        Object sum = 0;
+                        int intSum = 0; double doubleSum = 0;
                         for (Object arg : evalArgs) {
                             if (arg!=null) {
-                                //Log.d("blaffa"," SUM arg is "+arg+" CLASS: "+arg.getClass().getName());
-                                sum += (Integer) arg;
+                                if (arg instanceof Integer)
+                                    intSum += (Integer) arg;
+                                else if (arg instanceof Double)
+                                    doubleSum += (Double) arg;
                             }
+
                         }
-                        return sum;
+                        if (doubleSum > 0)
+                            return (double)intSum+doubleSum;
+                        else
+                            return intSum;
                     }
                 case concatenate:
                     if (!checkPreconditions(evalArgs,-1,Null_Literal)) {

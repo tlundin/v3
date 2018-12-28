@@ -34,7 +34,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 
 
 	View view;
-	private LinearLayout my_root,displayPanel,tablePanel,filterPanel,filterPop,filterC1,filterC2,filterC3,filterC4;
+	private LinearLayout my_root,displayPanel,tablePanel,filterPanel,filterPanel_2,filterPop,filterC1,filterC2,filterC3,filterC4;
 	private View filterC1o,filterC2o,filterC3o,filterC4o;
 	private FrameLayout frame;
 	private Map<String,Boolean> popupVisible=null;
@@ -74,6 +74,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		displayPanel = v.findViewById(R.id.displayPanel);
 		tablePanel = v.findViewById(R.id.myTable);
 		filterPanel = v.findViewById(R.id.filterPanel);
+		filterPanel_2 = v.findViewById(R.id.filterPanel_2);
 
 		filterC1o = inflater.inflate(R.layout.filter_pop_inner,null);
 		filterC2o = inflater.inflate(R.layout.filter_pop_inner,null);
@@ -119,6 +120,7 @@ public class TableDefaultTemplate extends Executor implements Animation.Animatio
 		ret.add(new WF_Container("display_panel",displayPanel,root));
 		ret.add(new WF_Container("table_panel",tablePanel,root));
 		ret.add(new WF_Container("filter_panel",filterPanel,root));
+		ret.add(new WF_Container("filter_panel_2",filterPanel_2,root));
 		ret.add(new WF_Container("filter_C1",filterC1,root));
 		ret.add(new WF_Container("filter_C2",filterC2,root));
 		ret.add(new WF_Container("filter_C3",filterC3,root));

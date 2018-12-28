@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class Variable implements Serializable {
 
 	private static final long serialVersionUID = 6239650487891494128L;
-
+	//private static final String DEFAULT_LIMIT_FOR_INTEGER = Integer.MIN_VALUE+"-"+Integer.MAX_VALUE;
 
 
 	private Map<String, String> keyChain = new HashMap <String,String>();
@@ -340,6 +340,9 @@ public class Variable implements Serializable {
 			String limitDesc = al.getLimitDescription(row);
 			if (limitDesc!=null&&limitDesc.length()>0)
 				myFilter = FilterFactory.getInstance(gs.getContext()).createLimitFilter(this,limitDesc);
+//			else
+//				if (myType == DataType.numeric)
+//					myFilter = FilterFactory.getInstance(gs.getContext()).createLimitFilter(this,DEFAULT_LIMIT_FOR_INTEGER);
 		} else
 			Log.d("nils","Parameter ROW was null!!");
 		this.name = name;

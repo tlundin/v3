@@ -38,12 +38,10 @@
         <item>Forced</item>
     </string-array>
     <string-array name="syncMethodArray">
-        <item>Synk med blåtand mellan två enheter (default)</item>
         <item>Synk över internet i en grupp</item>
         <item>Ingen synk</item>
     </string-array>
     <string-array name="syncMethodValues">
-        <item>Bluetooth</item>
         <item>Internet</item>
         <item>NONE</item>
     </string-array>

@@ -100,8 +100,8 @@ public class Start extends MenuActivity {
 				handleUncaughtException (thread, e);
 			}
 		});
-*/
 
+*/
         Log.d("nils","in START onCreate");
         singleton = this;
         //This is the frame for all pages, defining the Action bar and Navigation menu.
@@ -509,8 +509,8 @@ public class Start extends MenuActivity {
                     Log.d("vortex","gets here wf is "+wf);
                     if (wf!=null) {
                         if (!wf.isBackAllowed()) {
-                            new AlertDialog.Builder(this).setTitle("Warning!")
-                                    .setMessage("This will exit the page.")
+                            new AlertDialog.Builder(this).setTitle(R.string.warning)
+                                    .setMessage(R.string.warning_exit)
                                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
 

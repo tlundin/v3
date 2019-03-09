@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -18,7 +19,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.provider.MediaStore;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -165,7 +165,7 @@ public class ConfigMenu extends PreferenceActivity {
 					StringBuilder sb = new StringBuilder(end - start);
 					for (int i = start; i < end; i++) {
 						char c = source.charAt(i);
-						if (isCharAllowed(c)) // put your condition here
+						if (isCharAllowed(c))
 							sb.append(c);
 						else
 							keepOriginal = false;
@@ -230,7 +230,7 @@ public class ConfigMenu extends PreferenceActivity {
                         .setCancelable(false)
                         .setPositiveButton(R.string.ok, (dialog, which) -> {
                             String bundleName = getActivity().getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE).getString(PersistenceHelper.BUNDLE_NAME, "");
-                            if (bundleName != null && !bundleName.isEmpty()) {
+                            if (!bundleName.isEmpty()) {
                                 Log.d("vortex", "Erasing cache for " + bundleName);
                                 int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
                                 Toast.makeText(getActivity(), n + " " + getResources().getString(R.string.reset_cache_toast), Toast.LENGTH_LONG).show();
@@ -254,7 +254,8 @@ public class ConfigMenu extends PreferenceActivity {
                 File file = new File(Constants.PIC_ROOT_DIR,Constants.TEMP_BARCODE_IMG_NAME);
                 Uri outputFileUri = Uri.fromFile(file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 startActivityForResult(intent, Constants.QR_SCAN_REQUEST);
                 return true;
             });
@@ -357,26 +358,25 @@ public class ConfigMenu extends PreferenceActivity {
 		public void onSharedPreferenceChanged(
 				SharedPreferences sharedPreferences, String key) {
 			Preference pref = findPreference(key);
-
-
 			Account mAccount = GlobalState.getmAccount(getActivity());
+
 			if (pref instanceof EditTextPreference) {
 				EditTextPreference etp = (EditTextPreference) pref;
-
-				if (key.equals(PersistenceHelper.BUNDLE_NAME)) {
-					Log.d("vortex","changing bundle");
-					setFolderPref(findPreference(PersistenceHelper.FOLDER));
-					if (etp.getText().length()!=0) {
-						char[] strA = etp.getText().toCharArray();
+				if (etp.getText().length()!=0) {
+					char[] strA = etp.getText().toCharArray();
+					if (key.equals(PersistenceHelper.BUNDLE_NAME)) {
+						Log.d("vortex", "changing bundle");
+						setFolderPref(findPreference(PersistenceHelper.FOLDER));
 						strA[0] = Character.toUpperCase(strA[0]);
 						etp.setText(new String(strA));
-						askForRestart();
 
+					} else {
+					    Log.d("vortex","setting lower case");
+                        etp.setText(etp.getText().toLowerCase());
+                    }
 
-					}
 				}
 				pref.setSummary(etp.getText());
-
 			}
 			else if (pref instanceof ListPreference) {
 				ListPreference letp = (ListPreference) pref;
@@ -398,26 +398,13 @@ public class ConfigMenu extends PreferenceActivity {
                                 ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
                                 break;
                         }
-
-                        askForRestart();
                         break;
-                    case PersistenceHelper.SYNC_METHOD:
-                    case PersistenceHelper.LOG_LEVEL:
-                    case PersistenceHelper.VERSION_CONTROL:
-                    case PersistenceHelper.LAG_ID_KEY:
-                    case PersistenceHelper.USER_ID_KEY:
 
-                        askForRestart();
-
-                        break;
                 }
 
 			}
 
-			//force redraw of menuactivity.
-			Intent intent = new Intent();
-			intent.setAction(MenuActivity.REDRAW);
-			LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+			askForRestart();
 		}
 
 
@@ -436,8 +423,8 @@ public class ConfigMenu extends PreferenceActivity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 			SharedPreferences sharedPrefs = this.getApplicationContext().getSharedPreferences(Constants.GLOBAL_PREFS, Context.MODE_PRIVATE);
-			if (!sharedPrefs.getString(PersistenceHelper.SYNC_METHOD,"NONE").equals("NONE")&&sharedPrefs.getString(PersistenceHelper.LAG_ID_KEY,PersistenceHelper.UNDEFINED).equals(PersistenceHelper.UNDEFINED)) {
-				Log.d("berra","bopp");
+			String team = sharedPrefs.getString(PersistenceHelper.LAG_ID_KEY,PersistenceHelper.UNDEFINED);
+			if (!sharedPrefs.getString(PersistenceHelper.SYNC_METHOD,"NONE").equals("NONE")&&team.equals(PersistenceHelper.UNDEFINED)) {
 
 				new AlertDialog.Builder(this)
 						.setTitle(R.string.team_missing_error)

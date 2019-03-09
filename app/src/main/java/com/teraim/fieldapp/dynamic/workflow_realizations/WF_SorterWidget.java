@@ -2,10 +2,7 @@ package com.teraim.fieldapp.dynamic.workflow_realizations;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout.LayoutParams;
@@ -28,12 +25,14 @@ import java.util.TreeSet;
 public class WF_SorterWidget extends WF_Widget {
 
 
-    private WF_Filter existing;
+    private WF_Filter existing=null;
 	private final WF_List targetList;
+	private ToggleButton previousButton=null;
 
 	public WF_SorterWidget(String name,WF_Context ctx, final String type, final WF_List targetList,final ViewGroup container,final String selectionField, final String displayField,String selectionPattern,boolean isVisible) {
 		super(name,new LinearLayout(ctx.getContext()),isVisible,ctx);
 		LinearLayout buttonPanel;
+
 		o = GlobalState.getInstance().getLogger();
 		LayoutParams lp;
 		int orientation =  ((LinearLayout)container).getOrientation();
@@ -50,61 +49,103 @@ public class WF_SorterWidget extends WF_Widget {
 		buttonPanel.setLayoutParams(lp);
 
         LayoutInflater inflater = LayoutInflater.from(ctx.getContext());
+		//Button WildCardButton = new Button(ctx.getContext());
+		//WildCardButton.setText("*");
+		//WildCardButton.setOnClickListener(new OnClickListener() {
+		//	@Override
+		//	public void onClick(View view) {
+		//		if (existing !=null) {
+		//		    Log.d("vortex","onclick wildcard");
+		//			targetList.removeFilter(existing);
+		//			existing = null;
+        //            targetList.draw();
+		//		}
+		//	}
+		//});
 
 		this.targetList=targetList;
 
 		if (type.equals("alphanumeric")) {
-			final OnClickListener cl = new OnClickListener(){
+			final CompoundButton.OnCheckedChangeListener cl = new CompoundButton.OnCheckedChangeListener(){
 				@Override
-				public void onClick(View v) {
-					String ch = ((Button)v).getText().toString();
-					Log.d("Strand","User pressed "+ch);
+				public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+					String ch = compoundButton.getText().toString();
+					Log.d("Strand","User pressed "+ch+" ischecked is "+isChecked);
 					//This shall apply a new Alpha filter on target.
 					//First, remove any existing alpha filter.
 					targetList.removeFilter(existing);
-
-					//Wildcard? Do not add any filter.
-					if(!ch.equals("*")) {							
-						//Use ch string as unique id.
-						existing = new WF_Column_Name_Filter(ch,ch,displayField,FilterType.prefix);
+					//untoggle the previous button.
+					if (previousButton !=null) {
+						//if previous was this button and not clicked, skip
+						if (previousButton.equals(compoundButton) && isChecked) {
+							//skip
+						} else {
+							previousButton.setOnCheckedChangeListener(null);
+							previousButton.setChecked(false);
+							previousButton.setOnCheckedChangeListener(this);
+						}
+					}
+					if (isChecked) {
+						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.prefix);
 						targetList.addFilter(existing);
+						previousButton = (ToggleButton)compoundButton;
+					} else {
+						existing = null;
+						previousButton = null;
 					}
 					//running the filters will trigger redraw.
 					targetList.draw();
 				}
 			};
-			Button b;
-            String[] alfabet = {
-                    "*", "ABCD", "EFGH", "IJKL", "MNOP", "QRST", "UVXY", "ZÅÄÖ"};
+			ToggleButton b;
+
+            final String[] alfabet = {
+                    "ABCD", "EFGH", "IJKL", "MNOP", "QRST", "UVXY", "ZÅÄÖ"};
+			//Add wildcard button
+            //buttonPanel.addView(WildCardButton);
             for (String c: alfabet) {
-				b = new Button(ctx.getContext());
+				b = new ToggleButton(ctx.getContext());
+				b.setTextOn(c);
+				b.setTextOff(c);
 				b.setText(c);
-				b.setOnClickListener(cl);
+				b.setOnCheckedChangeListener(cl);
 				buttonPanel.addView(b);
 				Log.d("nils","Added button "+c);
 			}
-
 		} else if (type.equals("column") ) {
-				final OnClickListener dl = new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						String ch = ((Button)v).getText().toString();
-						Log.d("Strand","User pressed "+ch);
-						//This shall apply a new Alpha filter on target.
-						//First, remove any existing alpha filter.
-						targetList.removeFilter(existing);
+            final CompoundButton.OnCheckedChangeListener cl = new CompoundButton.OnCheckedChangeListener(){
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    String ch = compoundButton.getText().toString();
+                    Log.d("Strand","User pressed "+ch+" ischecked is "+isChecked);
+                    //This shall apply a new Alpha filter on target.
+                    //First, remove any existing alpha filter.
+                    targetList.removeFilter(existing);
+                    //untoggle the previous button.
+                    if (previousButton !=null) {
+                        //if previous was this button and not clicked, skip
+                        if (previousButton.equals(compoundButton) && isChecked) {
+                            //skip
+                        } else {
+                            previousButton.setOnCheckedChangeListener(null);
+                            previousButton.setChecked(false);
+                            previousButton.setOnCheckedChangeListener(this);
+                        }
+                    }
+                    if (isChecked) {
+                        existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
+                        targetList.addFilter(existing);
+                        previousButton = (ToggleButton)compoundButton;
+                    } else {
+                        existing = null;
+                        previousButton = null;
+                    }
+                    //running the filters will trigger redraw.
+                    targetList.draw();
+                }
+            };
 
-						//Wildcard? Do not add any filter.
-						if(!ch.equals("*")) {
-							existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
-							//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
-							targetList.addFilter(existing);
-						}
-						//running the filters will trigger redraw.
-						targetList.draw();
-					}
-				};
-			//Generate buttons from artlista. 
+			//Generate buttons from artlista.
 			//Pick fields that are of type Familj
 			VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();
 			Table t = al.getTable();
@@ -115,8 +156,7 @@ public class WF_SorterWidget extends WF_Widget {
 				int cIndex = t.getColumnIndex(displayField);
 				if (cIndex != -1) {
 					Set<String> txts = new TreeSet<String>();
-					Button b;
-					
+					ToggleButton b;
 					for(List<String>row:rows) {
 						if (row.size()>cIndex) {
 							String sortFacets = row.get(cIndex);
@@ -126,7 +166,6 @@ public class WF_SorterWidget extends WF_Widget {
                                     Collections.addAll(txts, facets);
 								}
 							}
-
 						}
 						else {
 							o.addRow("");
@@ -139,15 +178,14 @@ public class WF_SorterWidget extends WF_Widget {
 						}
 					}
 					//Add a wildcard button.
-					b = new Button(ctx.getContext());
-					b.setText("*");
-					b.setOnClickListener(dl);
-					buttonPanel.addView(b);
+					//buttonPanel.addView(WildCardButton);
 					for (String txt:txts)				
 						if (txt !=null && txt.trim().length()>0) {
-							b = new Button(ctx.getContext());
+							b = new ToggleButton(ctx.getContext());
 							b.setText(txt);
-							b.setOnClickListener(dl);
+							b.setTextOff(txt);
+							b.setTextOn(txt);
+							b.setOnCheckedChangeListener(cl);
 							buttonPanel.addView(b);				
 							Log.d("nils","Added button "+txt+" length "+txt.length());
 						}
@@ -163,24 +201,21 @@ public class WF_SorterWidget extends WF_Widget {
 				o.addRedText("Found no rows for selection: ["+selectionField+"] and pattern ["+selectionPattern+"] in WF_SorterWidget. Check your xml for block_create_sort_widget");
 			}
 		} else if (type.equals("column_toggle") ) {
-			final CompoundButton.OnCheckedChangeListener dl = new CompoundButton.OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-					String ch = button.getText().toString();
-					Log.d("Strand","User pressed "+ch);
-					//This shall apply a new Alpha filter on target.
-					//First, remove any existing alpha filter.
-					targetList.removeFilter(existing);
+			final CompoundButton.OnCheckedChangeListener dl = (button, isChecked) -> {
+                String ch = button.getText().toString();
+                Log.d("Strand","User pressed "+ch);
+                //This shall apply a new Alpha filter on target.
+                //First, remove any existing alpha filter.
+                targetList.removeFilter(existing);
 
-					if (isChecked) {
-						existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
-						//existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
-						targetList.addFilter(existing);
-						//running the filters will trigger redraw.
-					}
-					targetList.draw();
-				}
-			};
+                if (isChecked) {
+                    existing = new WF_Column_Name_Filter(ch, ch, displayField, FilterType.sets);
+                    //existing = new WF_Column_Name_Filter(ch,ch,Col_Art)
+                    targetList.addFilter(existing);
+                    //running the filters will trigger redraw.
+                }
+                targetList.draw();
+            };
 			//Generate buttons from artlista.
 			//Pick fields that are of type Familj
 			VariableConfiguration al = GlobalState.getInstance().getVariableConfiguration();

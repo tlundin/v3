@@ -1,7 +1,5 @@
 package com.teraim.fieldapp.dynamic.workflow_realizations.filters;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_abstracts.Listable;
 
@@ -33,22 +31,22 @@ public class WF_Column_Name_Filter extends WF_Filter {
 	public void filter(List<? extends Listable> list) {
 		String key;
 		Iterator<? extends Listable> it = list.iterator();
-		Log.d("filterz","filtering with type "+filterType.name());
+		//Log.d("filterz","filtering with type "+filterType.name());
 		while(it.hasNext()) {
 			Listable l = it.next();
 
-			Log.d("filterz","l "+l+" key "+l.getSortableField(columnToMatch)+" coltomatch "+columnToMatch);
+			//Log.d("filterz","l "+l+" key "+l.getSortableField(columnToMatch)+" coltomatch "+columnToMatch);
 			key = l.getSortableField(columnToMatch);
 			if (key==null)
 				continue;
 			if (match(key)) {
 				it.remove();
-				if (!key.isEmpty())
-				  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+				//if (!key.isEmpty())
+				//  Log.d("filterz", "filter REMOVES element " + l.getKey()+" Label: "+l.getLabel());// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 
 			}
 			else {
-				Log.d("filterz", "filter KEEPS element " + l.getKey()+" Label: "+l.getLabel()+" column: "+key);// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
+				//Log.d("filterz", "filter KEEPS element " + l.getKey()+" Label: "+l.getLabel()+" column: "+key);// + " because " + key.charAt(0) + " doesn't match " + myPrefix);
 				//Log.d("nils","filter match for element "+key+" because "+key.charAt(0)+" match "+myPrefix);
 				totMatch = true;
 			}

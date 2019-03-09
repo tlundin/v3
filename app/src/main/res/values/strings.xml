@@ -29,7 +29,7 @@
     <string name="UserName">Username</string>
     <string name="DevOp">Developer Options</string>
     <string name="log_levels_h">Log Levels</string>
-    <string name="UserName_dm">Write your name here!</string>
+    <string name="UserName_dm">User name</string>
     <string name="Team_s">Name of team and sync group</string>
 
     <string name="restart">Restart</string>
@@ -108,6 +108,12 @@
     <string name="progress">Progress</string>
     <string name="map_background">Map background</string>
     <string name="sync_pop_time_since_last_entry">Time of last input</string>
+    <string name="loading_please_wait">Loading. Please wait...</string>
+    <string name="warning_exit">This will exit the page</string>
+    <string name="image_failed_to_load">GisImageView failed to load. File not found: </string>
+    <string name="save_and_exit">Save and exit</string>
+    <string name="back_to_page">Back to page</string>
+    <string name="continue_edit">Edit</string>
 
 
 </resources>

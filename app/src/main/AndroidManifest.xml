@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.teraim.fieldapp"
     android:versionCode="34"
-    android:versionName="6.44">
+    android:versionName="6.492">
 
     <uses-feature
         android:glEsVersion="0x00020000"

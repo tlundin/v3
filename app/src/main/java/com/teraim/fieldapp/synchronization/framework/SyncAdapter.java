@@ -162,7 +162,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         //Ask client for data entries
         Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, null);
-        assert(c!=null);
+        if (c==null) {
+            Log.d("syncadapter","cursor null from contentresolver");
+            releaseLock();
+        }
 
         StringBuilder targets=new StringBuilder();
         long maxStamp = -1;
@@ -216,7 +219,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private boolean syncDataAlreadyExists() {
         Cursor c = mContentResolver.query(CONTENT_URI, null, "syncquery", null, null);
-        assert (c!=null);
+        if (c==null) {
+            Log.d("syncDataAlreadyExists","cursor null");
+            return false;
+        }
         if (c.moveToFirst()) {
             int iCount = c.getInt(0);
             if (iCount > 0) {

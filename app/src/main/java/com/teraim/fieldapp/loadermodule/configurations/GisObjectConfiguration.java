@@ -94,16 +94,23 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
         //first should be an array.
         if (!myDb.deleteHistoryEntries(GisConstants.TYPE_COLUMN,myType))
             return new LoadResult(this,ErrorCode.Aborted,"Database is missing column 'ÅR', cannot continue");
-        reader.beginObject();
-        while (reader.hasNext()) {
-            String name = reader.nextName();
+        try {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String name = reader.nextName();
 
-            if (name.equals("features")) {
-                reader.beginArray();
-                return null;
-            } else
-                reader.skipValue();
-        }
+                if (name.equals("features")) {
+                    reader.beginArray();
+                    return null;
+                } else
+                    reader.skipValue();
+            }
+        } catch (IOException e) {
+            o.addRow("");
+            o.addRedText("Error reading import file header. Check syntax of Version field on the first row");
+            return new LoadResult(this,ErrorCode.IOError);
+        };
+
         o.addRow("");
         o.addRedText("Could not find beginning of data (features) in input file");
         return new LoadResult(this,ErrorCode.IOError);

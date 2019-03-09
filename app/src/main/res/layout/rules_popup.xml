@@ -41,13 +41,13 @@
         android:id="@+id/avsluta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save and exit" />
+        android:text="@string/save_and_exit" />
 
     <Button
         android:id="@+id/korrigera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back to page" />
+        android:text="@string/back_to_page" />
     
 </LinearLayout>
 

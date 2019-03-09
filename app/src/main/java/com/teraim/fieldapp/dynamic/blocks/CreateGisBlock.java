@@ -170,13 +170,14 @@ public class CreateGisBlock extends Block {
 							mapLayers.add(mapLayer);
 						} else {
 							Log.e("vortex", "Picture not found. "+serverFileRootDir+picName);
+							String image_failed_to_load = ctx.getResources().getString(R.string.image_failed_to_load);
 							if (gs.getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH)) {
 								o.addRow("");
-								o.addRedText("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+								o.addRedText(image_failed_to_load + serverFileRootDir + picName);
 							}
 							if (picName.equals(masterPicName)) {
 								aborted = true;
-								cb.abortExecution("GisImageView failed to load. File not found: " + serverFileRootDir + picName);
+								cb.abortExecution(image_failed_to_load + serverFileRootDir + picName);
 							}
 
 						}

@@ -35,7 +35,7 @@ import java.util.UUID;
 
 public class Constants {
 
-    public final static float VORTEX_VERSION = 6.486f;
+    public final static float VORTEX_VERSION = 6.492f;
 
     public static final String DEFAULT_SERVER_URI = "http://www.teraim.com";
     public static final String TIMESTAMP_LABEL_FROM_TEAM_TO_ME = "timestamp_from_me_to_team";
@@ -227,9 +227,9 @@ public class Constants {
     public static final long BACKUP_FREQUENCY = 86_400_000;
 
     //AWS Cloud
-    public static final String SynkServerURI = "http://rlotest.eu-west-1.elasticbeanstalk.com:8080/SynkServ";
+    public static final String SynkServerURI = "http://slu-beanstalk.eu-west-1.elasticbeanstalk.com/SynkServ";
 
-    //public static final String SynkServerURI = "http://192.168.1.49:8080/com.teraim.synkserv/SynkServ";
+    //public static final String SynkServerURI = "http://192.168.1.60:8080/com.teraim.synkserv/SynkServ";
 
     //public static final String SynkServerURI = "https://rlo.slu.se:8443/com.teraim.synkserv_slu_prod/SynkServ";
 

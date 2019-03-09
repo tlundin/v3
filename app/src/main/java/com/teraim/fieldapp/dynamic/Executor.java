@@ -837,7 +837,7 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 				} else if (b instanceof CreateGisBlock) {
 					pDialog = ProgressDialog.show(myContext.getContext(), "",
-							"Loading. Please wait...", true);
+							getResources().getString(R.string.loading_please_wait), true);
 
 					//Will callback to this object after image is loaded.
 					CreateGisBlock bl = ((CreateGisBlock) b);

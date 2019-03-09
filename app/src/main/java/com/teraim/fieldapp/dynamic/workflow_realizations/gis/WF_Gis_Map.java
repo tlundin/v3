@@ -480,7 +480,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
                     case MotionEvent.ACTION_DOWN:
                         //startScrollIn();
                         gisImageView.handleScale(Initial);
-                        Start.singleton.getSupportActionBar().hide();
+                        //Start.singleton.getSupportActionBar().hide();
                         break;
                     case MotionEvent.ACTION_UP:
                         //stopScrollIn();
@@ -508,7 +508,7 @@ public class WF_Gis_Map extends WF_Widget implements Drawable, EventListener, An
 
                         }
                         //startScrollOut();
-                        Start.singleton.getSupportActionBar().show();
+                        //Start.singleton.getSupportActionBar().show();
                         break;
                     case MotionEvent.ACTION_UP:
                         //stopScrollOut();

@@ -6,17 +6,17 @@
     <item
         android:id="@+id/menu_info"
         android:icon="@android:drawable/ic_menu_info_details"
-        android:title="Description"
+        android:title="@string/description"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/menu_continue"
         android:icon="@android:drawable/ic_menu_edit"
-        android:title="Continue edit"
+        android:title="@string/continue_edit"
         app:showAsAction="always|withText" />
     <item
         android:id="@+id/menu_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
+        android:title="@string/delete"
         app:showAsAction="ifRoom|withText" />
 
 </menu>

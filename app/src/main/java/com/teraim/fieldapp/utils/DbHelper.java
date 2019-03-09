@@ -39,7 +39,6 @@ import com.teraim.fieldapp.utils.Exporter.Report;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -140,7 +139,7 @@ public class DbHelper extends SQLiteOpenHelper {
         //db.delete(TABLE_VARIABLES,"L4 = '?'",null);
         //return myKeyHash;}
 
-        Cursor c = db().rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        Cursor c = db().rawQuery(String.format("SELECT DISTINCT %s FROM %s WHERE %s", cols, TABLE_VARIABLES, query),null);
         if (c.moveToNext()) {
             for (int i = 0;i < c.getColumnCount();i++) {
                 Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
@@ -194,7 +193,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         Log.d("notnull","final query: "+query);
 
-        Cursor c = db().rawQuery("SELECT DISTINCT "+cols+" FROM " + TABLE_VARIABLES + " WHERE " + query,null);
+        Cursor c = db().rawQuery(String.format("SELECT DISTINCT %s FROM %s WHERE %s", cols, TABLE_VARIABLES, query),null);
         if (c.moveToNext()) {
             for (int i = 0;i < c.getColumnCount();i++) {
                 Log.d("vortex","COL: "+c.getColumnName(i)+":"+c.getString(i));
@@ -386,7 +385,7 @@ public class DbHelper extends SQLiteOpenHelper {
             Log.d("nils", "Key: " + e + "Value:" + realColumnNameToDB.get(e));
 
     }
-
+/*
     public void fixYearNull() {
         String colYear = getDatabaseColumnName(YEAR);
         //add year to rows missing year
@@ -394,9 +393,9 @@ public class DbHelper extends SQLiteOpenHelper {
             db().execSQL("update variabler set " + colYear + "= '" + Calendar.getInstance().get(Calendar.YEAR) + "' where " + colYear + " is null");
 
     }
+*/
 
-
-
+/*
     public boolean fixdoublets() {
             Log.d("markus", "repairing...");
             String colYear = getDatabaseColumnName(YEAR);
@@ -429,7 +428,7 @@ public class DbHelper extends SQLiteOpenHelper {
             }
         return false;
     }
-
+*/
 
     private boolean staticColumn(String col) {
         for (String staticCol : VAR_COLS) {
@@ -444,40 +443,15 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase _db) {
 
         // create variable table Lx columns are key parts.
-        String CREATE_VARIABLE_TABLE = "CREATE TABLE variabler ( " +
-                "id INTEGER PRIMARY KEY ," +
-                "L1 TEXT , " +
-                "L2 TEXT , " +
-                "L3 TEXT , " +
-                "L4 TEXT , " +
-                "L5 TEXT , " +
-                "L6 TEXT , " +
-                "L7 TEXT , " +
-                "L8 TEXT , " +
-                "L9 TEXT , " +
-                "L10 TEXT , " +
-                "var TEXT COLLATE NOCASE, " +
-                "value TEXT, " +
-                "lag TEXT, " +
-                "timestamp NUMBER, " +
-                "author TEXT ) ";
+        String CREATE_VARIABLE_TABLE = "CREATE TABLE variabler ( id INTEGER PRIMARY KEY ,L1 TEXT , L2 TEXT , L3 TEXT , L4 TEXT , L5 TEXT , L6 TEXT , L7 TEXT , L8 TEXT , L9 TEXT , L10 TEXT , var TEXT COLLATE NOCASE, value TEXT, lag TEXT, timestamp NUMBER, author TEXT ) ";
 
         //audit table to keep track of all insert,updates and deletes.
-        String CREATE_AUDIT_TABLE = "CREATE TABLE audit ( " +
-                "id INTEGER PRIMARY KEY ," +
-                LAG+" TEXT, " +
-                "timestamp NUMBER, " +
-                "action TEXT, " +
-                "target TEXT, " +
-                AUTHOR+" TEXT, " +
-                "changes TEXT ) ";
+        String CREATE_AUDIT_TABLE = String.format("CREATE TABLE audit ( id INTEGER PRIMARY KEY ,%s TEXT, timestamp NUMBER, action TEXT, target TEXT, %s TEXT, changes TEXT ) ", LAG, AUTHOR);
 
         //synck table to keep track of incoming rows of data (sync entries[])
-        String CREATE_SYNC_TABLE = "CREATE TABLE sync ( " +
-                "id INTEGER PRIMARY KEY ," +
-                "data BLOB ) ";
+        String CREATE_SYNC_TABLE = "CREATE TABLE sync ( id INTEGER PRIMARY KEY ,data BLOB )";
 
-        //
+
         _db.execSQL(CREATE_VARIABLE_TABLE);
         _db.execSQL(CREATE_AUDIT_TABLE);
         _db.execSQL(CREATE_SYNC_TABLE);

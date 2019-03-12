@@ -39,7 +39,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private final ContentResolver mContentResolver;
     private final int MaxSyncableRows = 1000;
     private final int MaxSyncableRowsServer = 10;
-    
+
     private Messenger mClient;
     public  static final Uri BASE_CONTENT_URI = Uri.parse("content://" + SyncContentProvider.AUTHORITY + "/synk");
     public  static final Uri SYNC_URI = BASE_CONTENT_URI.buildUpon()
@@ -175,6 +175,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             updateCounter(dataIn.timestamp,Constants.TIMESTAMP_RECEIVE_POSITION);
         }
 
+        if (dataIn.hasMore || dataOut.hasMore)
+            syncResult.fullSyncRequested = true;
+
         } catch (SyncFailedException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -182,6 +185,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
 
     }
 

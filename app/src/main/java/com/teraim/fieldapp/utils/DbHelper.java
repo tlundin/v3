@@ -2109,7 +2109,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
             if (GlobalState.getInstance()!=null) {
-                Long timestamp = getTimeStampFromMeToTeam(team);
+                Long timestamp = getSendTimestamp(team);
                 //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
                 timestamp = timestamp == -1 ? 0 : timestamp;
@@ -2866,7 +2866,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team).getTime();
     }
 
-    public long getTimeStampFromMeToTeam(String team) {
+    public long getSendTimestamp(String team) {
         return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team).getTime();
     }
     public void saveTimeStampFromMeToTeam(String team,long ts) {

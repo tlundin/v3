@@ -9,6 +9,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
@@ -72,7 +73,10 @@ public class SyncContentProvider extends ContentProvider {
         return true;
     }
 
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
 
+    }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
@@ -104,7 +108,7 @@ public class SyncContentProvider extends ContentProvider {
                 } else {
 
                     //Timestamp key includes team name, since change of team name should lead to resync from zero.
-                    Long timestamp = gs.getDb().getTimeStampFromMeToTeam(teamName);
+                    Long timestamp = gs.getDb().getSendTimestamp(teamName);
                     Log.d("burlesk", "SYNCPROVIDER - Timestamp for last sync in Query is " + timestamp);
                     c = db.query(DbHelper.TABLE_AUDIT, null,
                             "timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);

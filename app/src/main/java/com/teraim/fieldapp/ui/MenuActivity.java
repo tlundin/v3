@@ -731,7 +731,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         }
         //Last time i entered data
         time_last_succesful_sync.setText(time);
-        timestamp = GlobalState.getInstance().getDb().getTimeStampFromMeToTeam(team);
+        timestamp = GlobalState.getInstance().getDb().getSendTimestamp(team);
         time = "---";
         if (timestamp != 0) {
             Date date = new Date(timestamp);

@@ -38,7 +38,7 @@ public class Constants {
     public final static float VORTEX_VERSION = 6.496f;
 
     public static final String DEFAULT_SERVER_URI = "http://www.teraim.com";
-    public static final String TIMESTAMP_WRITE_POSITION = "timestamp_write";
+    public static final String TIMESTAMP_RECEIVE_POSITION = "timestamp_receive";
     public static final String TIMESTAMP_SEND_POSITION = "timestamp_send";
     public static final String TIMESTAMP_LATEST_SUCCESFUL_SYNC = "timestamp_latest_sync" ;
     public static final String TIMESTAMP_CURRENT_SEQUENCE_NUMBER = "timestamp_seq_no";

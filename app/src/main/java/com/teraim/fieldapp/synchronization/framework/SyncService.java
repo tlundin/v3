@@ -60,14 +60,16 @@ public class SyncService extends Service {
                 	Log.d("vortex","received MSG_REGISTER_CLIENT in SyncService");
                     mClient=msg.replyTo;
 					Bundle appData =((Bundle)msg.obj);
-					long timestamp_from_team_to_me = 	appData.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME);
+					long last_known_receiveTimestamp = 	appData.getLong(Constants.TIMESTAMP_RECEIVE_POSITION);
 					String app = 						appData.getString("app");
 					String team = 						appData.getString("team");
 					String user = 						appData.getString("user");
 					String userUUID = 					appData.getString("uuid");
 					int sequenceNumber =                appData.getInt("seq_no");
 
-                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,team,user,app,userUUID);
+                   	sSyncAdapter.init(mClient,
+                            team,user,app,userUUID,
+                            last_known_receiveTimestamp);
                     break;
                 case MSG_DATA_SAFELY_STORED:
                 	Log.d("vortex","received MSG_SAFELY_STORED in SyncService");

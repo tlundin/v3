@@ -17,14 +17,18 @@ import android.util.Log;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
+import com.teraim.fieldapp.synchronization.SyncFailed;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.Tools;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.SyncFailedException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handle the transfer of data between a server and an
@@ -42,6 +46,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public  static final Uri TIMESTAMPS_URI = BASE_CONTENT_URI.buildUpon()
             .appendPath(DbHelper.TABLE_TIMESTAMPS)
             .build();
+    public  static final Uri SYNC_DATA_URI = BASE_CONTENT_URI.buildUpon()
+            .appendPath(DbHelper.TABLE_SYNC)
+            .build();
 
 
 
@@ -49,6 +56,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private String mUser=null;
     private String mTeam=null;
     private String mUUID=null;
+    private long mTimestamp_receive;
 
 
     private boolean INITIALIZED = false;
@@ -83,7 +91,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                      String team,
                      String user,
                      String app,
-                     String uuid) {
+                     String uuid,
+                     long last_known_receiveTimestamp) {
 
         Log.d("vortex","IN INIT SYNCADAPTER");
         Log.d("vortex", "I was called at "+ Tools.getCurrentTime());
@@ -92,6 +101,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mApp = app;
         mUUID = uuid;
         mClient = client;
+        mTimestamp_receive = last_known_receiveTimestamp;
         INITIALIZED = true;
     }
 
@@ -140,24 +150,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         //Write any data to the Server.
         try {
-            StampedData data = getSyncData();
+            //get my Sync Entries
+            StampedData dataOut = getMyUnsynchedEntries();
             //long potential_timestamp_from_me_to_team = maxStamp;
-            if (data != null ) {
-                sendSyncData((SyncEntry[]) data.data);
-                updateSendCounter(data.timestamp);
+            if (dataOut != null ) {
+                sendSyncData((SyncEntry[]) dataOut.data);
+                updateSendCounter(dataOut.timestamp);
             }
-        } catch (SyncFailedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
         //Check if there are unprocessed rows in sync table.
         if (syncDataAlreadyExists()) {
             Log.d("vortex","sync data exists to insert");
             sendMessage(Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT));
             return;
+        }
+
+        StampedData dataIn= receiveSyncData(mTimestamp_receive);
+        insertIntoDatabase((List<ContentValues>)dataIn.data);
+        updateReceiveCounter(dataIn.timestamp);
+
+        } catch (SyncFailedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
     }
@@ -172,11 +188,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         mContentResolver.insert(TIMESTAMPS_URI,cv);
     }
-    private StampedData getSyncData() throws SyncFailedException {
+    private StampedData getMyUnsynchedEntries() throws SyncFailedException {
 
-        Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, null);
+        Cursor c = mContentResolver.query(BASE_CONTENT_URI, null, null, null, null);
         if (c==null)
-            throw new SyncFailedException("ContentResolver null in getSyncData");
+            throw new SyncFailedException("ContentResolver null in getMyUnsynchedEntries");
 
         //StringBuilder targets=new StringBuilder();
         long maxStamp = -1,entryStamp;
@@ -221,6 +237,50 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         out.close();
     }
 
+    //returns data and a new read position
+    private StampedData receiveSyncData(long readPosition) throws IOException, ClassNotFoundException {
+
+        URLConnection conn = getSyncConnection(Constants.ReadDataURI);
+        ObjectOutputStream out = new ObjectOutputStream(conn.getOutputStream());
+        sendHeader(out);
+        out.writeObject(readPosition);
+
+        //Receive.
+        Object reply;
+        ObjectInputStream in = new ObjectInputStream(conn.getInputStream());
+        int numberOfEntriesFromServer = Integer.parseInt((String) in.readObject());
+
+        int insertedRows=0;
+        List<ContentValues> dataToInsert = new ArrayList<>();
+        while (true) {
+            reply = in.readObject();
+            if (reply instanceof byte[]) {
+                ContentValues cv = new ContentValues();
+                cv.put("DATA", (byte[]) reply);
+                cv.put("count", insertedRows++);
+                dataToInsert.add(cv);
+
+                if (insertedRows%10==0) {
+                    Message msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
+                    msg.obj=bundle(insertedRows,numberOfEntriesFromServer);
+                    sendMessage(msg);
+                }
+            }
+
+            //Timestamp (Long) is the last message from the Server.
+            if (reply instanceof Long) {
+                in.close();
+                //Set a potential timestamp. Dont freeze until data read by client.
+                Log.d("vortex", "Timestamp from the server: " + reply);
+                return new StampedData(dataToInsert, (Long) reply);
+            } else if (reply instanceof SyncFailed) {
+                String reason = ((SyncFailed) reply).getReason();
+                Log.e("vortex", "SYNC FAILED. REASON: " + reason);
+                throw new SyncFailedException(reason);
+            }
+        }
+    }
+
 
     private URLConnection getSyncConnection(String uri) throws IOException {
         URL url ;
@@ -247,11 +307,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return busy;
     }
 
-    private boolean syncDataAlreadyExists() {
-        Cursor c = mContentResolver.query(CONTENT_URI, null, "syncquery", null, null);
+    private boolean syncDataAlreadyExists() throws SyncFailedException {
+        Cursor c = mContentResolver.query(BASE_CONTENT_URI, null, "syncquery", null, null);
         if (c==null) {
             Log.d("syncDataAlreadyExists","cursor null");
-            return false;
+            throw new SyncFailedException("Cursor null in syncDataAlreadyExists");
         }
         if (c.moveToFirst()) {
             int iCount = c.getInt(0);
@@ -332,50 +392,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    public void insertIntoDatabase() {
+    public void insertIntoDatabase(List<ContentValues> dataToInsert) {
         Message msg;
         long d = System.currentTimeMillis();
         Log.d("vortex", "inserting into db called");
-        if (dataToInsert !=null && dataToInsert.size()>0) {
-            //Insert into database
-
-            int i=0;
-
-            for (ContentValues aDataToInsert : dataToInsert) {
-                if (i % 10 == 0) {
-                    Log.d("bascar", "inserting entry: " + i + "-" + (i + 10));
-
-                    msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
-                    msg.obj = bundle(i, dataToInsert.size());
-
-                    sendMessage(
-                            msg
-                    );
-
-                }
-                i++;
-                mContentResolver.insert(CONTENT_URI, aDataToInsert);
-            }
-        } else
-            Log.e("vortex","No rows to insert in insertintoDB SyncAdapter");
-
-        //send the from team timestamp to save in client if insert succeeds.
-        msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT);
-        msg.obj = bundle(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,potential_timestamp_from_team_to_me,
-                Constants.TIMESTAMP_CURRENT_SEQUENCE_NUMBER,seq_no+1);
-        sendMessage(msg);
-    }
-
-
-    private void sendAwayBatch(ArrayList<ContentProviderOperation> list) {
-        try {
-            mContentResolver.applyBatch(SyncContentProvider.AUTHORITY, list);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
-        }
-
+        //Insert into database
+        ContentValues[] mDataA = new ContentValues[dataToInsert.size()];
+        mDataA = dataToInsert.toArray(mDataA);
+        mContentResolver.bulkInsert(SYNC_DATA_URI, mDataA);
     }
 
 
@@ -519,7 +543,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             Log.d("vortex","Insert into DB begins");
                             //keep lock
                             sessionShouldEnd = false;
-                            insertIntoDatabase();
+                            insertIntoDatabase((List<ContentValues>) dataIn.data);
                         }
                     } else if (reply instanceof SyncFailed) {
                         Log.e("vortex","SYNC FAILED. REASON: "+((SyncFailed)reply).getReason());

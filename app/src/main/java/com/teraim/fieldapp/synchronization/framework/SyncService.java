@@ -30,10 +30,8 @@ public class SyncService extends Service {
     
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_SYNC_ERROR_STATE = 2;
-	public static final int MSG_SYNC_REQUEST_DB_LOCK = 3;
 	public static final int MSG_SYNC_DATA_READY_FOR_INSERT = 4;
 	public static final int MSG_DATA_SAFELY_STORED = 5;
-	public static final int MSG_DATABASE_LOCK_GRANTED = 6;
 	public static final int MSG_SYNC_STARTED = 7;
 	public static final int MSG_NO_NEW_DATA_FROM_TEAM_TO_ME = 8;
 	public static final int MSG_USER_STOPPED_SYNC = 9;
@@ -66,14 +64,11 @@ public class SyncService extends Service {
 					String app = 						appData.getString("app");
 					String team = 						appData.getString("team");
 					String user = 						appData.getString("user");
+					String userUUID = 					appData.getString("uuid");
+					int sequenceNumber =                appData.getInt("seq_no");
 
-                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,team,user,app);
+                   	sSyncAdapter.init(mClient,timestamp_from_team_to_me,team,user,app,userUUID);
                     break;
-                case MSG_DATABASE_LOCK_GRANTED:
-					Log.d("vortex","Datalock granted. Inserting");
-                   	sSyncAdapter.insertIntoDatabase();
-                	break;
-                //When data is safely inserted in database, update current time for last update.
                 case MSG_DATA_SAFELY_STORED:
                 	Log.d("vortex","received MSG_SAFELY_STORED in SyncService");
                 	sSyncAdapter.safely_stored();
@@ -143,16 +138,8 @@ public class SyncService extends Service {
     		}
     	else {
     		Log.d("vortex","In OnBindm returning syncAdapter_Binder");
-    		if (mClient!=null) {
+    		if (mClient!=null)
     			Log.e("vortex","myClient exists already.");
-                if(sSyncAdapter.isInitDone()) {
-                    Log.d("maxx","init has already been done");
-
-                }
-                if(sSyncAdapter.isLocked()){
-                    Log.d("maxx","sync is locked.");
-                }
-    		}
     		return sSyncAdapter.getSyncAdapterBinder();
     	}
     }

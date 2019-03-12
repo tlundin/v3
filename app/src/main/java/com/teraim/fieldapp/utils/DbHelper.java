@@ -28,6 +28,7 @@ import com.teraim.fieldapp.synchronization.SyncEntryHeader;
 import com.teraim.fieldapp.synchronization.SyncReport;
 import com.teraim.fieldapp.synchronization.SyncStatus;
 import com.teraim.fieldapp.synchronization.SyncStatusListener;
+import com.teraim.fieldapp.synchronization.SyncTimestamp;
 import com.teraim.fieldapp.synchronization.TimeStampedMap;
 import com.teraim.fieldapp.synchronization.Unikey;
 import com.teraim.fieldapp.synchronization.VariableRowEntry;
@@ -50,10 +51,9 @@ import java.util.Set;
 @SuppressWarnings("SyntaxError")
 public class DbHelper extends SQLiteOpenHelper {
 
-    /* Database Version*/ private static final int DATABASE_VERSION = 11;/* Books table name*/
+    /* Database Version*/ private static final int DATABASE_VERSION = 18;/* Books table name*/
     private static final String TABLE_VARIABLES = "variabler";
-
-
+    public static final String TABLE_TIMESTAMPS = "timestamps";
 
 
     public static final String TABLE_AUDIT = "audit";
@@ -79,6 +79,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private final Context ctx;
 
+    public static enum Table_Timestamps {
+        LABEL,
+        VALUE,
+        SYNCGROUP
+    }
     public void eraseSyncObjects() {
         db().delete(TABLE_SYNC,null,null);
     }
@@ -304,14 +309,17 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase db() {
-        if (db == null || !db.isOpen())
-         db = this.getWritableDatabase();
+        if (db == null || !db.isOpen()) {
+            Log.d("DB","Called getwriteabledb");
+            db = this.getWritableDatabase();
+        }
         return db;
     }
 
     public DbHelper(Context context, Table t, PersistenceHelper globalPh, PersistenceHelper appPh, String bundleName) {
         super(context, bundleName, null, DATABASE_VERSION);
-        Log.d("vortex", "Bundle name: " + bundleName);
+        db = this.getWritableDatabase();
+        Log.d("DB", "Bundle name: " + bundleName +" DATABASE VERSION "+DATABASE_VERSION);
         ctx = context;
 
 
@@ -443,29 +451,34 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase _db) {
 
         // create variable table Lx columns are key parts.
-        String CREATE_VARIABLE_TABLE = "CREATE TABLE variabler ( id INTEGER PRIMARY KEY ,L1 TEXT , L2 TEXT , L3 TEXT , L4 TEXT , L5 TEXT , L6 TEXT , L7 TEXT , L8 TEXT , L9 TEXT , L10 TEXT , var TEXT COLLATE NOCASE, value TEXT, lag TEXT, timestamp NUMBER, author TEXT ) ";
+        String CREATE_VARIABLE_TABLE = "CREATE TABLE IF NOT EXISTS variabler ( id INTEGER PRIMARY KEY ,L1 TEXT , L2 TEXT , L3 TEXT , L4 TEXT , L5 TEXT , L6 TEXT , L7 TEXT , L8 TEXT , L9 TEXT , L10 TEXT , var TEXT COLLATE NOCASE, value TEXT, lag TEXT, timestamp NUMBER, author TEXT ) ";
 
         //audit table to keep track of all insert,updates and deletes.
-        String CREATE_AUDIT_TABLE = String.format("CREATE TABLE audit ( id INTEGER PRIMARY KEY ,%s TEXT, timestamp NUMBER, action TEXT, target TEXT, %s TEXT, changes TEXT ) ", LAG, AUTHOR);
+        String CREATE_AUDIT_TABLE = String.format("CREATE TABLE IF NOT EXISTS audit ( id INTEGER PRIMARY KEY ,%s TEXT, timestamp NUMBER, action TEXT, target TEXT, %s TEXT, changes TEXT ) ", LAG, AUTHOR);
 
         //synck table to keep track of incoming rows of data (sync entries[])
-        String CREATE_SYNC_TABLE = "CREATE TABLE sync ( id INTEGER PRIMARY KEY ,data BLOB )";
+        String CREATE_SYNC_TABLE = "CREATE TABLE IF NOT EXISTS "+TABLE_SYNC+" ( id INTEGER PRIMARY KEY ,data BLOB )";
+
+        //keeps track of sync timestamps. Changing team will reset the timestamp.
+        String CREATE_TIMESTAMP_TABLE = "CREATE TABLE IF NOT EXISTS "+TABLE_TIMESTAMPS+" ( id INTEGER PRIMARY KEY ,LABEL TEXT, VALUE NUMBER, SYNCGROUP TEXT, SEQNO INTEGER )" ;
 
 
         _db.execSQL(CREATE_VARIABLE_TABLE);
         _db.execSQL(CREATE_AUDIT_TABLE);
         _db.execSQL(CREATE_SYNC_TABLE);
+        _db.execSQL(CREATE_TIMESTAMP_TABLE);
 
         Log.d("NILS", "DB CREATED");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase _db, int oldVersion, int newVersion) {
+        Log.d("NILS", "UPDATE CALLED");
         // Drop older books table if existed
         _db.execSQL("DROP TABLE IF EXISTS variabler");
         _db.execSQL("DROP TABLE IF EXISTS audit");
         _db.execSQL("DROP TABLE IF EXISTS sync");
-
+        _db.execSQL("DROP TABLE IF EXISTS "+TABLE_TIMESTAMPS);
         // create fresh table
         this.onCreate(_db);
     }
@@ -809,7 +822,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private void insertAuditEntry(Variable v, Map<String, String> valueSet, String author, String action,long timestamp) {
         String changes = "";
         //First the keys.
-        //Log.d("vortex","Inserting Audit entry!");
+        Log.d("vortex","Inserting Audit entry for "+v.getId());
         Map<String, String> keyChain = v.getKeyChain();
         Iterator<Entry<String, String>> it;
         if (keyChain != null) {
@@ -2839,40 +2852,40 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-    public Long getTimeStampFromTeamToMe(String team) {
+    public SyncTimestamp getTimeStampFromTeamToMe(String team) {
         return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team);
     }
-    public void saveTimeStampFromTeamToMe(String team,long ts) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team,ts);
+    public void saveTimeStampFromTeamToMe(String team,long ts, int seq_no) {
+        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team,ts,seq_no);
     }
     public void saveTimeStampOfLatestSuccesfulSync(String team) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team,new Timestamp(System.currentTimeMillis()).getTime());
+        saveSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team,new Timestamp(System.currentTimeMillis()).getTime(),-1);
     }
 
-    public Long getTimestampOfLatestSuccesfulSync(String team) {
-        return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team);
+    public long getTimestampOfLatestSuccesfulSync(String team) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team).getTime();
     }
 
-    public Long getTimeStampFromMeToTeam(String team) {
-        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team);
+    public long getTimeStampFromMeToTeam(String team) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team).getTime();
     }
     public void saveTimeStampFromMeToTeam(String team,long ts) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team,ts);
+        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team,ts,-1);
     }
 
-    private void saveSyncTimestamp(String timeStampLabel, String team,long ts) {
-        Log.d("antrax","Saving timestamp "+ts+ "for team "+team);
-        db().execSQL("insert into variabler (lag,var,value) values (?,?,?)",new String[]{team,timeStampLabel,Long.toString(ts)});
+    private void saveSyncTimestamp(String timeStampLabel, String syncgroup,long ts,int seqno) {
+        Log.d("antrax","Saving timestamp "+ts+ "for team "+syncgroup);
+        db().execSQL("INSERT into "+TABLE_TIMESTAMPS+" (SYNCGROUP,LABEL,VALUE,SEQNO) values (?,?,?,?)",new String[]{syncgroup,timeStampLabel,Long.toString(ts),Integer.toString(seqno)});
     }
 
-    private Long getSyncTimestamp(String timeStampLabel,String team) {
-        Cursor c  = this.getReadableDatabase().rawQuery("select value from variabler where lag = ? AND var = ? ORDER BY id DESC LIMIT 1", new String[]{team,timeStampLabel});
+    private SyncTimestamp getSyncTimestamp(String timeStampLabel,String syncgroup) {
+        Cursor c  = this.getReadableDatabase().rawQuery("SELECT VALUE,SEQNO from "+TABLE_TIMESTAMPS+" where SYNCGROUP = ? AND LABEL = ? ORDER BY id DESC LIMIT 1", new String[]{syncgroup,timeStampLabel});
         if (c.getCount() != 0) {
             c.moveToFirst();
-            return c.getLong(0);
+            return new SyncTimestamp(c.getLong(0),c.getInt(1));
         }
-        Log.e("vortex","failed to find timestamp for"+timeStampLabel+"...returning 0");
-        return 0L;
+        Log.e("vortex","failed to find timestamp for "+timeStampLabel+"...returning 0");
+        return new SyncTimestamp(0,0);
     }
 
 

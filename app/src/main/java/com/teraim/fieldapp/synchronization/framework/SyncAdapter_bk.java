@@ -3,97 +3,116 @@ package com.teraim.fieldapp.synchronization.framework;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
-import com.teraim.fieldapp.utils.DbHelper;
-import com.teraim.fieldapp.utils.Tools;
+import com.teraim.fieldapp.synchronization.SyncFailed;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.SyncFailedException;
+import java.io.StreamCorruptedException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Handle the transfer of data between a server and an
  * app, using the Android sync adapter framework.
  */
-public class SyncAdapter extends AbstractThreadedSyncAdapter {
+public class SyncAdapter_bk extends AbstractThreadedSyncAdapter {
 
+
+    // Global variables
+    // Define a variable to contain a content resolver instance
     private final ContentResolver mContentResolver;
-    private final int MaxSyncableRows = 1000;
     private Messenger mClient;
-    public  static final Uri BASE_CONTENT_URI = Uri.parse("content://" + SyncContentProvider.AUTHORITY + "/synk");
-    public  static final Uri SYNC_URI = BASE_CONTENT_URI.buildUpon()
-            .appendPath(DbHelper.TABLE_SYNC)
-            .build();
-    public  static final Uri TIMESTAMPS_URI = BASE_CONTENT_URI.buildUpon()
-            .appendPath(DbHelper.TABLE_TIMESTAMPS)
-            .build();
 
+    private final Uri CONTENT_URI = Uri.parse("content://" + SyncContentProvider.AUTHORITY + "/synk");
 
-
+    private boolean busy = true;
     private String mApp=null;
     private String mUser=null;
     private String mTeam=null;
     private String mUUID=null;
 
+    //Error codes.
+    private boolean ERR_CONFIG,INIT_COMPLETE,ERR_TEMP_TIMESTAMP_MISSING,USER_STOPPED_SYNC;
 
-    private boolean INITIALIZED = false;
-    private boolean USER_STOPPED_SYNC = false;
-    private boolean LOCKED = true;
+    private long timestamp_from_team_to_me=-1;
 
-    private class StampedData {
-        Object data;
-        long timestamp;
+    //temporary store timestamp in this
+    private long potential_timestamp_from_team_to_me = -1;
 
-        public StampedData(Object data, long timestamp) {
-            this.data = data;
-            this.timestamp=timestamp;
-        }
-    }
-
+    //sequence counter for calls to server.
+    private int seq_no = -1;
 
     /**
      * Set up the sync adapter
      *
      */
-
-    public SyncAdapter(Context context, boolean autoInitialize) {
+    public SyncAdapter_bk(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+
         mContentResolver = context.getContentResolver();
-        Log.d("vortex", "I was called at "+ Tools.getCurrentTime());
+        lock();
     }
 
 
 
-    public void init(Messenger client,
-                     String team,
-                     String user,
-                     String app,
-                     String uuid) {
-
-        Log.d("vortex","IN INIT SYNCADAPTER");
-        Log.d("vortex", "I was called at "+ Tools.getCurrentTime());
+    public void init(Messenger client, long timestamp_from_team_to_me, String team, String user, String app, String uuid,int sequenceNumber) {
+        //get the team and user.
+        ERR_CONFIG = true;
         mTeam = team;
         mUser = user;
         mApp = app;
         mUUID = uuid;
-        mClient = client;
-        INITIALIZED = true;
+        Log.d("vortex","IN INIT SYNCADAPTER");
+        //User stopped_sync should be false now.
+        USER_STOPPED_SYNC = false;
+        Log.d("vortex","USER_STOPPED now false");
+
+        if (client == null || user == null || user.length() == 0 || team == null || team.length() == 0 || app == null || app.length() == 0) {
+            Log.e("vortex", "Init error in Sync Adapter." + user + "," + team + "," + app + "," + INIT_COMPLETE);
+
+        } else {
+
+            timestamp_from_team_to_me = timestamp_from_team_to_me;
+            potential_timestamp_from_team_to_me = timestamp_from_team_to_me;
+            seq_no = sequenceNumber;
+            mClient = client;
+            ERR_CONFIG = false;
+            INIT_COMPLETE = true;
+        }
+        releaseLock();
     }
+
+    public void resetOnResume() {
+        Log.d("vortex","IN RESET_ON_RESUME");
+        INIT_COMPLETE=false;
+    }
+
+    private List<ContentValues> dataToInsert=null;
+
 
     /***
      * System interface for synchronisation.
@@ -106,141 +125,99 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account accounts, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        Log.d("vortex","System call onPerformSync");
+        Log.d("vortex","system call on performsync");
         if (!isLocked())
-            onPerformSync(syncResult);
+            onPerformSync();
         else
             Log.e("vortex", "LOCKED - discarding call");
     }
 
 
-    private void onPerformSync(SyncResult syncResult) {
+    private void onPerformSync() {
         Message msg;
         int err = -1;
 
         Log.d("vortex", "************onPerformSync [" + mUser + "]");
 
-        if (LOCKED) {
-            Log.e("vortex", "Locked...exit");
-        }
-
-        else if (!INITIALIZED) {
-            Log.e("vortex", "Not initialized...exit");
-            syncResult.delayUntil = (System.currentTimeMillis() / 1000) + 5;
+        if (mClient == null ) {
+            Log.e("vortex", "Not ready so discarding call");
+            return;
+        } else if (ERR_CONFIG || ERR_TEMP_TIMESTAMP_MISSING) {
+            Log.e("vortex", "Error in config - discarding call");
+            msg = Message.obtain(null, SyncService.MSG_SYNC_ERROR_STATE);
+            msg.arg1=SyncService.ERR_SETTINGS;
+            sendMessage(msg);
+            return;
+        } else if (USER_STOPPED_SYNC) {
+            Log.e("vortex", "User stopped the sync");
             return;
         }
-        else if (USER_STOPPED_SYNC) {
-            Log.e("vortex", "User has stopped the sync");
-            return;
-        }
 
-        LOCKED = true;
+
+        lock();
         //Tell client that the sync is now busy.
         sendMessage(Message.obtain(null, SyncService.MSG_SYNC_STARTED));
 
-        //Write any data to the Server.
-        try {
-            StampedData data = getSyncData();
-            //long potential_timestamp_from_me_to_team = maxStamp;
-            if (data != null ) {
-                sendSyncData((SyncEntry[]) data.data);
-                updateSendCounter(data.timestamp);
-            }
-        } catch (SyncFailedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
         //Check if there are unprocessed rows in sync table.
         if (syncDataAlreadyExists()) {
-            Log.d("vortex","sync data exists to insert");
+            Log.d("vortex","sync data exists...");
             sendMessage(Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT));
             return;
         }
+        Log.e("vortex", "FETCHING DATA TO SYNC");
 
-    }
-
-    //Send counter - where next chunk of data to send should begin
-    private void updateSendCounter(long sendCounter) throws SyncFailedException {
-        ContentValues cv = new ContentValues();
-
-        cv.put(DbHelper.Table_Timestamps.LABEL.name(), Constants.TIMESTAMP_SEND_POSITION);
-        cv.put(DbHelper.Table_Timestamps.VALUE.name(), sendCounter);
-        cv.put(DbHelper.Table_Timestamps.SYNCGROUP.name(), mTeam);
-
-        mContentResolver.insert(TIMESTAMPS_URI,cv);
-    }
-    private StampedData getSyncData() throws SyncFailedException {
-
+        //Ask client for data entries
         Cursor c = mContentResolver.query(CONTENT_URI, null, null, null, null);
-        if (c==null)
-            throw new SyncFailedException("ContentResolver null in getSyncData");
+        if (c==null) {
+            Log.d("syncadapter","cursor null from contentresolver");
+            releaseLock();
+            return;
+        }
 
-        //StringBuilder targets=new StringBuilder();
-        long maxStamp = -1,entryStamp;
-        int rows,maxToSync,rowCount=0;
+        StringBuilder targets=new StringBuilder();
+        long maxStamp = -1;
+        int maxToSync;
+        Log.d("vortex","Found "+c.getCount()+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
         String action,changes,variable;
-        rows = c.getCount();
+        long entryStamp;
+        int rowCount=0;
+        //Either sync the number of lines returned, or MAX. Never more.
+        int maxSyncableRows = 500;
+        maxToSync = Math.min(c.getCount(), maxSyncableRows);
 
-        Log.d("vortex",rows+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
-        if (rows == 0)
-            return null;
-
-        maxToSync = Math.min(c.getCount(), MaxSyncableRows);
         SyncEntry[] syncEntries = new SyncEntry[maxToSync];
 
-        while (c.moveToNext() && rowCount < maxToSync) {
+        while (c.moveToNext()&& rowCount < maxToSync) {
             action 		=	c.getString(c.getColumnIndex("action"));
             changes 	=	c.getString(c.getColumnIndex("changes"));
             entryStamp	=	c.getLong(c.getColumnIndex("timestamp"));
-            variable    = 	c.getString(c.getColumnIndex("target"));
+            variable 		= 	c.getString(c.getColumnIndex("target"));
+            Log.d("kalsong",""+entryStamp);
             //Keep track of the highest timestamp in the set!
             if (entryStamp>maxStamp)
                 maxStamp=entryStamp;
 
             syncEntries[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable,mUser);
-            //targets.append(variable);
-            //targets.append(",");
+            targets.append(variable);
+            targets.append(",");
         }
         c.close();
+        Log.d("vortex","#ENTRIES ME->TEAM--> ["+maxToSync+"]");
+        Log.d("vortex","VARIABLES --> ["+targets+"]");
+        Log.d("vortex","TIMESTAMP ME-->TEAM--> ["+maxStamp+"]");
 
-        return new StampedData(syncEntries, maxStamp);
-    }
-    private void sendSyncData(SyncEntry[] dataToSend) throws IOException  {
+        long potential_timestamp_from_me_to_team = maxStamp;
 
-        URLConnection conn = getSyncConnection(Constants.SendDataURI);
-        ObjectOutputStream out = new ObjectOutputStream(conn.getOutputStream());
-        sendHeader(out);
+        //Send and Receive.
+        msg = sendAndReceive(
+                syncEntries,
+                potential_timestamp_from_me_to_team
+        );
+        if (msg!=null) {
+            sendMessage(msg);
+        }
 
-        Log.d("vortex","Writing "+dataToSend.length+" entries");
-        out.writeObject(dataToSend);
-        out.writeObject(new EndOfStream());
-        out.flush();
-        out.close();
-    }
-
-
-    private URLConnection getSyncConnection(String uri) throws IOException {
-        URL url ;
-        URLConnection conn=null;
-        url = new URL(uri);
-        conn = url.openConnection();
-        conn.setConnectTimeout(10*1000);
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setUseCaches(false);
-        return conn;
-    }
-
-    private void sendHeader(ObjectOutputStream out) throws IOException {
-        //syncgroup
-        out.writeObject(mTeam);
-        //user
-        out.writeObject(mUser);
-        //app name
-        out.writeObject(mApp);
+        Log.d("vortex","exiting onsyncupdate");
     }
 
     public boolean isLocked() {
@@ -640,6 +617,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         releaseLock();
+    }
+
+
+    public boolean isInitDone() {
+        return INIT_COMPLETE;
     }
 
     public void userAbortedSync() {

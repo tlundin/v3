@@ -48,7 +48,7 @@
     <string name="sync_pop_time_since_last_sync">Time elapsed since last sync</string>
     <string name="sync_pop_unsynced_user">My unsent entries </string>
     <string name="sync_pop_sync_button_txt">Sync now</string>
-    <string name="sync_pop_sync_last_sync">Team data available</string>
+    <string name="sync_pop_sync_last_sync">Team Data</string>
     <string name="synk_off">Turned off</string>
     <string name="synk_error">Not working</string>
     <string name="synk_idle">Idle, active</string>
@@ -114,6 +114,8 @@
     <string name="save_and_exit">Save and exit</string>
     <string name="back_to_page">Back to page</string>
     <string name="continue_edit">Edit</string>
+    <string name="refresh_team">Refresh</string>
+    <string name="my_data">My Data</string>
 
 
 </resources>

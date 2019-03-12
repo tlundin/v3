@@ -55,6 +55,7 @@ import com.teraim.fieldapp.gis.TrackerListener;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
+import com.teraim.fieldapp.synchronization.SyncTimestamp;
 import com.teraim.fieldapp.synchronization.framework.SyncAdapter;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.utils.BackupManager;
@@ -104,6 +105,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     //Tracker callback.
     private GPS_State latestSignal = null;
     private long potential_timestamp_from_team_to_me;
+    private int seq_no;
 
     static class MThread extends Thread {
         void stopMe() {
@@ -397,6 +399,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 case SyncService.MSG_SERVER_ACKNOWLEDGED_READ:
                     String team = GlobalState.getInstance().getMyTeam();
                     long timestampFromMe = ((Bundle) msg.obj).getLong(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM);
+
                     if (timestampFromMe == -1) {
                         Log.d("vortex", "TIMESTAMP UNCHANGED");
                     } else {
@@ -459,23 +462,13 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                     }
                     break;
 
-                case SyncService.MSG_SYNC_REQUEST_DB_LOCK:
-                    Log.d("vortex", "MSG -->SYNC REQUEST DB LOCK");
-                    menuActivity.reply = Message.obtain(null, SyncService.MSG_DATABASE_LOCK_GRANTED);
-                    try {
-                        menuActivity.mService.send(menuActivity.reply);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                        menuActivity.syncState = R.drawable.syncerr;
-                    }
-                    break;
-
                 case SyncService.MSG_NO_NEW_DATA_FROM_TEAM_TO_ME:
                 case SyncService.MSG_ALL_SYNCED:
                     Log.d("vortex", "***DEVICE IN SYNC WITH SERVER***");
                     Bundle envelope = ((Bundle) msg.obj);
-                    long timestamp_from_team_to_me = envelope.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME);
-                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), timestamp_from_team_to_me);
+                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(),
+                            envelope.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME),
+                            envelope.getInt(Constants.TIMESTAMP_CURRENT_SEQUENCE_NUMBER));
                     if (msg.what == SyncService.MSG_ALL_SYNCED) {
                         menuActivity.syncState = R.drawable.insync;
                     } else {
@@ -488,12 +481,14 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                         Log.d("vortex", "MSG -->SYNC_DATA_READY_FOR_INSERT");
                         envelope = ((Bundle) msg.obj);
                         menuActivity.potential_timestamp_from_team_to_me = -1;
+                        menuActivity.seq_no = -1;
                         if (envelope != null) {
                             menuActivity.potential_timestamp_from_team_to_me = envelope.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME);
+                            menuActivity.seq_no = envelope.getInt(Constants.TIMESTAMP_CURRENT_SEQUENCE_NUMBER);
                             Log.d("vortex", "updated team timestamp: " + menuActivity.potential_timestamp_from_team_to_me);
                             //Block
                         } else
-                            Log.d("vortex", "timestamp not updated");
+                            Log.d("vortex", "Unprocessed syncdata from previous run");
 
                         if (menuActivity.syncState != R.drawable.dbase) {
                             menuActivity.syncState = R.drawable.dbase;
@@ -503,9 +498,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                             final UIProvider ui = new UIProvider(menuActivity);
                             Log.d("vortex", "total rows to sync is: " + menuActivity.z_totalToSync);
                             if (menuActivity.z_totalToSync == 0) {
-                                Log.e("vortex", "sync table is empty! Aborting sync");
+                                Log.e("vortex", "sync table is empty");
                                 if (menuActivity.potential_timestamp_from_team_to_me != -1)
-                                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me);
+                                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me,menuActivity.seq_no);
                                 menuActivity.syncState = R.drawable.syncon;
                                 menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
                                 //Save the team to me timestamp
@@ -548,7 +543,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                                                     menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
                                                     //Save the team to me timestamp
                                                     if (menuActivity.potential_timestamp_from_team_to_me != -1)
-                                                        GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me);
+                                                        GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me,menuActivity.seq_no);
                                                     menuActivity.syncState = R.drawable.syncon;
                                                     try {
                                                         menuActivity.mService.send(menuActivity.reply);
@@ -1067,10 +1062,13 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                             msg.replyTo = mMessenger;
                             //inform the sync engine when I got data last time.
                             Bundle b = new Bundle();
-                            b.putLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME, gs.getDb().getTimeStampFromTeamToMe(team));
+                            SyncTimestamp tsSync = gs.getDb().getTimeStampFromTeamToMe(team);
+                            b.putLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME, tsSync.getTime());
                             b.putString("user", user);
                             b.putString("app", app);
                             b.putString("team", team);
+                            b.putString("uuid", gs.getUserUUID());
+                            b.putInt("seq_no", tsSync.getSequence());
 
                             msg.obj = b;
 
@@ -1386,10 +1384,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
             String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
 
-            long timestamp = gs.getDb().getTimeStampFromTeamToMe(team);
+            SyncTimestamp sTs = gs.getDb().getTimeStampFromTeamToMe(team);
+            long timestamp = sTs.getTime();
             Log.d("vortex", "TIMESTAMP_LAST_SYNC_FROM_TEAM_TO_ME: " + timestamp);
-
-            Log.d("mama", "TS: " + timestamp);
             if (Connectivity.isConnected(this)) {
                 //connected...lets call the sync server.
                 final String SyncServerStatusCall = Constants.SynkServerURI + "?action=get_team_status&team=" +

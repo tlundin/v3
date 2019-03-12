@@ -81,6 +81,7 @@ public class GlobalState {
     private static Account mAccount;
     private GisObject selectedGop;
     private final CharSequence logTxt;
+    private final String userUUID;
 
     public static GlobalState getInstance() {
 
@@ -142,14 +143,18 @@ public class GlobalState {
         if (imgMetaFormat != null)
             this.imgMetaFormat = imgMetaFormat;
 
-        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIMESTAMP_LAST_SYNC_FROM_ME +getMyTeam()));
-        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_BACKUP));
-        Log.d("antrax","GS VALUE AT START: "+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP));
-        Log.d("antrax","GS VALUE AT START: "+ph.getL(PersistenceHelper.TIME_OF_LAST_SYNC_FROM_TEAM +getMyTeam()));
-
+         String uid = globalPh.get(PersistenceHelper.USERUUID_KEY);
+        if(PersistenceHelper.UNDEFINED.equals(uid)) {
+            Log.d("uuid","GENERATING userUUID");
+            userUUID = Tools.generateUUID();
+            globalPh.put(PersistenceHelper.USERUUID_KEY,userUUID);
+        } else
+            userUUID = uid;
     }
 
-
+    public String getUserUUID() {
+        return userUUID;
+    }
     public static Account getmAccount(Context ctx) {
         if (mAccount == null)
             mAccount = CreateSyncAccount(ctx);

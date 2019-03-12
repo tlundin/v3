@@ -53,9 +53,11 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +65,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 public class Tools {
 
@@ -117,8 +120,13 @@ public class Tools {
 		return result.toString();
 	}
 
+    public static String getCurrentTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        return sdf.format(new Date());
+    }
 
-	public enum Unit {
+
+    public enum Unit {
 		percentage,
 		dm,
 		m,
@@ -648,10 +656,14 @@ public class Tools {
 		Canvas canvas = new Canvas(bitmap);
 		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 		drawable.draw(canvas);
-
 		return bitmap;
 	}
 
+	public static String generateUUID(){
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        System.out.println("uuid = " + uuid);
+        return uuid;
+    }
 	public static String[] generateList(Variable variable) {
 		String[] opt=null;
 		GlobalState gs = GlobalState.getInstance();

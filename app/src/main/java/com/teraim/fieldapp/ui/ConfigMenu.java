@@ -377,6 +377,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 				}
 				pref.setSummary(etp.getText());
+				askForRestart();
 			}
 			else if (pref instanceof ListPreference) {
 				ListPreference letp = (ListPreference) pref;
@@ -401,10 +402,10 @@ public class ConfigMenu extends PreferenceActivity {
                         break;
 
                 }
-
+				askForRestart();
 			}
 
-			askForRestart();
+
 		}
 
 

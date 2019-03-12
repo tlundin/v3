@@ -35,12 +35,13 @@ import java.util.UUID;
 
 public class Constants {
 
-    public final static float VORTEX_VERSION = 6.492f;
+    public final static float VORTEX_VERSION = 6.496f;
 
     public static final String DEFAULT_SERVER_URI = "http://www.teraim.com";
-    public static final String TIMESTAMP_LABEL_FROM_TEAM_TO_ME = "timestamp_from_me_to_team";
-    public static final String TIMESTAMP_LABEL_FROM_ME_TO_TEAM = "timestamp_from_team_to_me";
+    public static final String TIMESTAMP_WRITE_POSITION = "timestamp_write";
+    public static final String TIMESTAMP_SEND_POSITION = "timestamp_send";
     public static final String TIMESTAMP_LATEST_SUCCESFUL_SYNC = "timestamp_latest_sync" ;
+    public static final String TIMESTAMP_CURRENT_SEQUENCE_NUMBER = "timestamp_seq_no";
 
     //String constants
     //The root folder for the SD  card is in the global Environment.
@@ -227,7 +228,8 @@ public class Constants {
     public static final long BACKUP_FREQUENCY = 86_400_000;
 
     //AWS Cloud
-    public static final String SynkServerURI = "http://slu-beanstalk.eu-west-1.elasticbeanstalk.com/SynkServ";
+    public static final String SendDataURI = "http://slu-beanstalk.eu-west-1.elasticbeanstalk.com/SynkServ?action=send";
+    public static final String ReadDataURI = "http://slu-beanstalk.eu-west-1.elasticbeanstalk.com/SynkServ?action=read";
 
     //public static final String SynkServerURI = "http://192.168.1.60:8080/com.teraim.synkserv/SynkServ";
 

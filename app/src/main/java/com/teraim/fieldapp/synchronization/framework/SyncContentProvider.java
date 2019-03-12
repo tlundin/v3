@@ -1,10 +1,7 @@
 package com.teraim.fieldapp.synchronization.framework;
 
 import android.content.ContentProvider;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,8 +12,6 @@ import android.util.Log;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.PersistenceHelper;
-
-import java.util.ArrayList;
 
 public class SyncContentProvider extends ContentProvider {
 
@@ -38,8 +33,8 @@ public class SyncContentProvider extends ContentProvider {
          */
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(AUTHORITY, DbHelper.TABLE_SYNC,C_TIMESTAMPS);
-        matcher.addURI(AUTHORITY, DbHelper.TABLE_TIMESTAMPS,C_SYNC_DATA);
+        matcher.addURI(AUTHORITY, DbHelper.TABLE_TIMESTAMPS,C_TIMESTAMPS);
+        matcher.addURI(AUTHORITY, DbHelper.TABLE_SYNC,C_SYNC_DATA);
 
         return matcher;
 
@@ -75,9 +70,36 @@ public class SyncContentProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        GlobalState gs = GlobalState.getInstance();
+        if (gs == null) {
+            Log.e("vortex", "Gs null...exit");
+            return 0;
+        }
+        switch (sUriMatcher.match(uri)) {
+            case C_SYNC_DATA:
+                db = gs.getDb().db();
+                int rowsInserted = 0;
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(DbHelper.TABLE_SYNC, null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                return rowsInserted;
+            default:
+                return super.bulkInsert(uri, values);
 
+        }
     }
-
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
@@ -127,46 +149,9 @@ public class SyncContentProvider extends ContentProvider {
     }
 
 
-    @Override
-    public ContentProviderResult[] applyBatch(
-            ArrayList<ContentProviderOperation> operations)
-            throws OperationApplicationException {
-        GlobalState gs = GlobalState.getInstance();
-        if (gs!=null) {
-            db = gs.getDb().db();
-            if (db!=null && db.isOpen()) {
-                db.beginTransaction();
-                ContentProviderResult[] result;
-                try {
-                    result = super.applyBatch(operations);
-                } catch (OperationApplicationException e) {
-                    System.out.println("aborting transaction");
-                    db.endTransaction();
-                    throw e;
-                }
-                db.setTransactionSuccessful();
-                db.endTransaction();
-                //System.out.println("ending transaction");
-                return result;
-            } else {
-                Log.e("vortex","Db null or closed in syncccontentprovider");
-            }
-        } else {
-            Log.e("vortex","globalstate was null in synccontentprovider");
-        }
-        return null;
-    }
 
     private SQLiteDatabase db;
     private int currentCount=0;
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -174,11 +159,6 @@ public class SyncContentProvider extends ContentProvider {
         // TODO Auto-generated method stub
         return 0;
     }
-
-
-
-
-
 
 
     @Override

@@ -38,6 +38,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private final ContentResolver mContentResolver;
     private final int MaxSyncableRows = 1000;
+    private final int MaxSyncableRowsServer = 10;
+    
     private Messenger mClient;
     public  static final Uri BASE_CONTENT_URI = Uri.parse("content://" + SyncContentProvider.AUTHORITY + "/synk");
     public  static final Uri SYNC_URI = BASE_CONTENT_URI.buildUpon()
@@ -66,10 +68,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private class StampedData {
         Object data;
         long timestamp;
+        boolean hasMore = false;
 
-        public StampedData(Object data, long timestamp) {
+        public StampedData(Object data, long timestamp,boolean hasMore) {
             this.data = data;
             this.timestamp=timestamp;
+            this.hasMore=hasMore;
         }
     }
 
@@ -155,7 +159,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             //long potential_timestamp_from_me_to_team = maxStamp;
             if (dataOut != null ) {
                 sendSyncData((SyncEntry[]) dataOut.data);
-                updateSendCounter(dataOut.timestamp);
+                updateCounter(dataOut.timestamp,Constants.TIMESTAMP_SEND_POSITION);
             }
         //Check if there are unprocessed rows in sync table.
         if (syncDataAlreadyExists()) {
@@ -164,9 +168,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
 
-        StampedData dataIn= receiveSyncData(mTimestamp_receive);
-        insertIntoDatabase((List<ContentValues>)dataIn.data);
-        updateReceiveCounter(dataIn.timestamp);
+        StampedData dataIn = receiveSyncData(mTimestamp_receive);
+
+        if (dataIn != null) {
+            int rowsInserted = mContentResolver.bulkInsert(SYNC_DATA_URI,(ContentValues[])dataIn.data);
+            updateCounter(dataIn.timestamp,Constants.TIMESTAMP_RECEIVE_POSITION);
+        }
 
         } catch (SyncFailedException e) {
             e.printStackTrace();
@@ -179,13 +186,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     //Send counter - where next chunk of data to send should begin
-    private void updateSendCounter(long sendCounter) throws SyncFailedException {
+    private void updateCounter(long timestamp, String label) throws SyncFailedException {
         ContentValues cv = new ContentValues();
-
-        cv.put(DbHelper.Table_Timestamps.LABEL.name(), Constants.TIMESTAMP_SEND_POSITION);
-        cv.put(DbHelper.Table_Timestamps.VALUE.name(), sendCounter);
+        cv.put(DbHelper.Table_Timestamps.LABEL.name(), label);
+        cv.put(DbHelper.Table_Timestamps.VALUE.name(), timestamp);
         cv.put(DbHelper.Table_Timestamps.SYNCGROUP.name(), mTeam);
-
         mContentResolver.insert(TIMESTAMPS_URI,cv);
     }
     private StampedData getMyUnsynchedEntries() throws SyncFailedException {
@@ -198,6 +203,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         long maxStamp = -1,entryStamp;
         int rows,maxToSync,rowCount=0;
         String action,changes,variable;
+
+
         rows = c.getCount();
 
         Log.d("vortex",rows+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
@@ -205,6 +212,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return null;
 
         maxToSync = Math.min(c.getCount(), MaxSyncableRows);
+        boolean hasMore = maxToSync==MaxSyncableRows;
+
         SyncEntry[] syncEntries = new SyncEntry[maxToSync];
 
         while (c.moveToNext() && rowCount < maxToSync) {
@@ -222,7 +231,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         c.close();
 
-        return new StampedData(syncEntries, maxStamp);
+        return new StampedData(syncEntries, maxStamp,hasMore);
     }
     private void sendSyncData(SyncEntry[] dataToSend) throws IOException  {
 
@@ -249,20 +258,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Object reply;
         ObjectInputStream in = new ObjectInputStream(conn.getInputStream());
         int numberOfEntriesFromServer = Integer.parseInt((String) in.readObject());
-
-        int insertedRows=0;
-        List<ContentValues> dataToInsert = new ArrayList<>();
+        boolean hasMore = numberOfEntriesFromServer == MaxSyncableRowsServer;
+        int rowC=0;
+        ContentValues[] dataToInsert = new ContentValues[numberOfEntriesFromServer];
         while (true) {
             reply = in.readObject();
             if (reply instanceof byte[]) {
                 ContentValues cv = new ContentValues();
-                cv.put("DATA", (byte[]) reply);
-                cv.put("count", insertedRows++);
-                dataToInsert.add(cv);
+                cv.put("data", (byte[]) reply);
+                dataToInsert[rowC++]=cv;
 
-                if (insertedRows%10==0) {
+                if (rowC%10==0) {
                     Message msg = Message.obtain(null, SyncService.MSG_SYNC_DATA_ARRIVING);
-                    msg.obj=bundle(insertedRows,numberOfEntriesFromServer);
+                    msg.obj=bundle(rowC,numberOfEntriesFromServer);
                     sendMessage(msg);
                 }
             }
@@ -270,12 +278,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             //Timestamp (Long) is the last message from the Server.
             if (reply instanceof Long) {
                 in.close();
-                //Set a potential timestamp. Dont freeze until data read by client.
                 Log.d("vortex", "Timestamp from the server: " + reply);
-                return new StampedData(dataToInsert, (Long) reply);
+                if (rowC==0)
+                    //no change
+                    return null;
+                else {
+                    return new StampedData(dataToInsert, (Long) reply,hasMore);
+                }
             } else if (reply instanceof SyncFailed) {
                 String reason = ((SyncFailed) reply).getReason();
                 Log.e("vortex", "SYNC FAILED. REASON: " + reason);
+                in.close();
                 throw new SyncFailedException(reason);
             }
         }
@@ -392,15 +405,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    public void insertIntoDatabase(List<ContentValues> dataToInsert) {
-        Message msg;
-        long d = System.currentTimeMillis();
-        Log.d("vortex", "inserting into db called");
-        //Insert into database
-        ContentValues[] mDataA = new ContentValues[dataToInsert.size()];
-        mDataA = dataToInsert.toArray(mDataA);
-        mContentResolver.bulkInsert(SYNC_DATA_URI, mDataA);
-    }
+
 
 
     public static void forceSyncToHappen() {

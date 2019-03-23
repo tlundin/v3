@@ -3,6 +3,7 @@ package com.teraim.fieldapp.dynamic.blocks;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ import com.teraim.fieldapp.dynamic.workflow_realizations.WF_StatusButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_ToggleButton;
 import com.teraim.fieldapp.dynamic.workflow_realizations.WF_Widget;
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.Exporter;
@@ -485,11 +487,12 @@ public  class ButtonBlock extends Block  implements EventListener {
 										if (!done) {
 											exportFileName = getTarget();
 
-											final Exporter exporter = Exporter.getInstance(ctx, exportFormat.toLowerCase());
+											final Exporter exporter = Exporter.getInstance(ctx, exportFormat.toLowerCase(),new ExportDialog());
+
 
 											//Run export in new thread. Create UI to update user on progress.
                                             if (exporter!=null) {
-                                                exporter.getDialog().show(((Activity) ctx).getFragmentManager(), "exportdialog");
+												((DialogFragment)exporter.getDialog()).show(((Activity) ctx).getFragmentManager(), "exportdialog");
 
 
                                                 Thread t = new Thread() {

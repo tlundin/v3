@@ -947,7 +947,8 @@ public abstract class Executor extends Fragment implements AsyncResumeExecutorI 
 
 		} catch (Exception e) {
 			removeLoadDialog();
-			Tools.printErrorToLog(o,e);
+
+			Tools.printErrorToLog(o,e,blockP);
 		}
 	}
 

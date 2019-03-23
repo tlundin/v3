@@ -424,8 +424,6 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                             //Log.d("morphy","PEEK: "+reader.peek());
                             //Log.d("morphy",reader.toString());
                             reader.endObject();
-
-
                             break;
                     }
                 }
@@ -442,7 +440,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                 return new LoadResult(this,ErrorCode.ParseError,"Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString()+" peek: "+reader.peek());
             }
         } catch (MalformedJsonException je) {
-            Tools.printErrorToLog(o, je);
+            Tools.printErrorToLog(o, je,-1);
             throw(je);
         }
         return null;

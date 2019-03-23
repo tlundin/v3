@@ -1,10 +1,12 @@
 package com.teraim.fieldapp.utils;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.SpinnerDefinition;
 import com.teraim.fieldapp.dynamic.types.Table;
 import com.teraim.fieldapp.dynamic.types.Variable;
@@ -16,6 +18,7 @@ import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.DelyteManager;
 import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.ui.ExportDialogInterface;
 
 import java.io.File;
 import java.io.Serializable;
@@ -91,6 +94,7 @@ public class Expressor {
         getUserRole(valueFunction,0),
         getTeamName(valueFunction,0),
         getUserName(valueFunction,0),
+        export(valueFunction,4),
         sum(valueFunction,-1),
         concatenate(valueFunction,-1),
         getDelytaArea(valueFunction,1),
@@ -499,7 +503,7 @@ public class Expressor {
 
 
     private static List<Token> tokenize(String formula) {
-        //System.out.println("Tokenize this: "+formula);
+        System.out.println("Tokenize this: "+formula);
         List<Token> result= new ArrayList<>();
         char c;
         StringBuilder currToken=new StringBuilder();
@@ -607,7 +611,6 @@ public class Expressor {
                     add(currToken,t,result);
                     t=TokenType.none;
                 } else {
-
                     currToken.append(c);
                     t=TokenType.operand;
                 }
@@ -635,7 +638,7 @@ public class Expressor {
             System.err.println("Missing end bracket");
             return null;
         }
-        //system.out.println("Reached end of tokenizer. CurrentToken is "+currToken+" and t is "+t.name());
+        System.out.println("Reached end of tokenizer. CurrentToken is "+currToken+" and t is "+t.name());
 
         if (t != TokenType.none)
             add(currToken,t,result);
@@ -876,7 +879,7 @@ public class Expressor {
                     Variable v=Expressor.getVariable(myToken.str);
 
                     if (v==null || v.getValue() == null ) {
-                        //System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
+                        System.out.println("Variable '"+this.toString()+"' does not have a value or Variable is missing.");
                         return null;
                     }
 
@@ -891,13 +894,13 @@ public class Expressor {
                             return Integer.parseInt(value);
                     }
                     if (v.getType()==Variable.DataType.bool) {
-                        //	Log.d("vortex","bool");
+                        	Log.d("vortex","bool");
                         if (value.equalsIgnoreCase("false")) {
-                            //Log.d("vortex","Returning false");
+                            Log.d("vortex","Returning false");
                             return false;
                         }
                         else if (value.equalsIgnoreCase("true")) {
-                            //Log.d("vortex","Returning true");
+                            Log.d("vortex","Returning true");
                             return true;
                         }
                         else {
@@ -1459,9 +1462,9 @@ public class Expressor {
                     }
                     break;
                 case not:
-                    //Log.d("vortex","in function not");
+ //                   Log.d("vortex","in function not with evalArgs: "+evalArgs);
                     if (checkPreconditions(evalArgs,1,Null_Boolean)) {
-                        //					Log.d("vortex","evalArgs.get0 is "+evalArgs.get(0)+" type "+evalArgs.get(0).getClass().getSimpleName());
+//                        Log.d("vortex","evalArgs.get0 is "+evalArgs.get(0)+" type "+evalArgs.get(0).getClass().getSimpleName());
                         return evalArgs.get(0)==null?null:!((Boolean)evalArgs.get(0));
 
                     }
@@ -1719,6 +1722,56 @@ public class Expressor {
 
                 case getTeamName:
                     return GlobalState.getInstance().getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
+                case export:
+                    if (checkPreconditions(evalArgs,4,No_Null_Literal)) {
+                        final String exportFileName = evalArgs.get(0).toString();
+                        final String rawExportContext = evalArgs.get(1).toString();
+                        final String exportFormat = evalArgs.get(2).toString();
+                        final String exportMethod = evalArgs.get(3).toString();
+                        Context ctx = GlobalState.getInstance().getContext();
+                        List<EvalExpr> pre_eval_context = Expressor.preCompileExpression(rawExportContext);
+                        DB_Context exportContext = DB_Context.evaluate(pre_eval_context);
+                        if (ctx != null) {
+                            final Exporter exporter = Exporter.getInstance(ctx,exportFormat.toLowerCase(),new ExportDialogDummy());
+                            Thread t = new Thread() {
+                                String msg = null;
+                                @Override
+                                public void run() {
+                                    Exporter.Report jRep = GlobalState.getInstance().getDb().export(exportContext.getContext(), exporter, exportFileName);
+                                    Exporter.ExportReport exportResult = jRep.getReport();
+                                    if (exportResult == Exporter.ExportReport.OK) {
+                                        msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
+                                        msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
+
+
+                                        if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
+                                            //nothing more to do...file is already on disk.
+                                        } else if (exportMethod.startsWith("mail")) {
+                                            //not supported
+                                        }
+
+                                    } else {
+                                        if (exportResult == Exporter.ExportReport.NO_DATA)
+                                            msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
+                                        else
+                                            msg = "Export failed. Reason: " + exportResult;
+
+
+                                    }
+                                    boolean isDeveloper = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
+                                    if (isDeveloper) {
+                                        o.addRow("Export done");
+                                        o.addText(msg);
+                                    }
+
+                                }
+                            };
+                            t.start();
+                            return true;
+                        }
+                    }
+                    return false;
+
                 case photoExists:
                     if (checkPreconditions(evalArgs,1,No_Null_Literal)) {
                         //System.out.println("Arg 0: "+evalArgs.get(0).toString());
@@ -2171,6 +2224,30 @@ public class Expressor {
         @Override
         public String toString() {
             return getType().name()+"("+args.toString()+")";
+        }
+
+        private class ExportDialogDummy implements ExportDialogInterface {
+            @Override
+            public void setGenerateStatus(String msg) {
+            }
+            @Override
+            public void setSendStatus(String msg) {
+            }
+            @Override
+            public void setBackupStatus(String msg) {
+            }
+            @Override
+            public void setCheckGenerate(boolean success) {
+            }
+            @Override
+            public void setCheckBackup(boolean success) {
+            }
+            @Override
+            public void setCheckSend(boolean success) {
+            }
+            @Override
+            public void setOutCome(String msg) {
+            }
         }
     }
 

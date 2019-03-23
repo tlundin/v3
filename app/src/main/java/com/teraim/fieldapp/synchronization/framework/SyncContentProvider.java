@@ -42,8 +42,9 @@ public class SyncContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-
         GlobalState gs = GlobalState.getInstance();
+        Log.d("sync","In insert. Globalstate is null? "+(gs==null)+" uri: "+uri);
+        Log.d("sync","Match URI returns: "+sUriMatcher.match(uri));
         long _id=-1;
         if (gs!=null) {
             final SQLiteDatabase db = gs.getDb().db();

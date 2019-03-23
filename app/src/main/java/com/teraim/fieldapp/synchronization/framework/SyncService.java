@@ -19,7 +19,9 @@ import com.teraim.fieldapp.non_generics.Constants;
  */
 public class SyncService extends Service {
 
-	// Storage for an instance of the sync adapter
+
+
+    // Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock
     private static final Object sSyncAdapterLock = new Object();
@@ -27,31 +29,23 @@ public class SyncService extends Service {
     
     
     private static Messenger mClient;
-    
-	public static final int MSG_REGISTER_CLIENT = 1;
-	public static final int MSG_SYNC_ERROR_STATE = 2;
-	public static final int MSG_SYNC_DATA_READY_FOR_INSERT = 4;
-	public static final int MSG_DATA_SAFELY_STORED = 5;
-	public static final int MSG_SYNC_STARTED = 7;
-	public static final int MSG_NO_NEW_DATA_FROM_TEAM_TO_ME = 8;
-	public static final int MSG_USER_STOPPED_SYNC = 9;
-	public static final int MSG_SYNC_DATA_ARRIVING = 10;
-	//public static final int MSG_START_SYNC = 11;
-	public static final int MSG_SERVER_ACKNOWLEDGED_READ = 12;
-	public static final int MSG_ALL_SYNCED = 13;
 
+	public static final int MSG_REGISTER_CLIENT  = 1;
+	public static final int MSG_SYNC_RUN_STARTED = 2;
+	public static final int MSG_SYNC_DATA_CONSUMED = 3;
+	public static final int MSG_USER_STOPPED_SYNC = 4;
+	public static final int MSG_SYNC_DATA_READY_FOR_INSERT = 5;
+	public static final int MSG_SYNC_ERROR_STATE = 6;
+    public static final int MSG_SYNC_RUN_ENDED = 7;
 
-	public static final int ERR_UNKNOWN = 0;
-	public static final int ERR_SETTINGS = 4;
-	public static final int ERR_SERVER_NOT_REACHABLE = 5;
-	public static final int ERR_SERVER_CONN_TIMEOUT = 6;
-
-	//public static final int REFRESH = 9;
+	public static final int NO_ERROR = 0;
+	public static final int ERR_SYNC_ERROR = 1;
+	public static final int ERR_SEND_FAILED = 2;
+	public static final int ERR_RECEIVE_FAILED = 3;
+	public static final int ERR_TRANSMISSION_FAILURE = 4;
 
 
     static class IncomingHandler extends Handler {
-
-
 		@Override
         public void handleMessage(Message msg) {
 
@@ -60,23 +54,17 @@ public class SyncService extends Service {
                 	Log.d("vortex","received MSG_REGISTER_CLIENT in SyncService");
                     mClient=msg.replyTo;
 					Bundle appData =((Bundle)msg.obj);
-					long last_known_receiveTimestamp = 	appData.getLong(Constants.TIMESTAMP_RECEIVE_POSITION);
+					long last_known_receiveTimestamp = 	appData.getLong(Constants.TIMESTAMP_SYNC_RECEIVE);
 					String app = 						appData.getString("app");
 					String team = 						appData.getString("team");
 					String user = 						appData.getString("user");
 					String userUUID = 					appData.getString("uuid");
-					int sequenceNumber =                appData.getInt("seq_no");
 
-                   	sSyncAdapter.init(mClient,
+                   	sSyncAdapter.init_session(mClient,
                             team,user,app,userUUID,
-                            last_known_receiveTimestamp);
+							last_known_receiveTimestamp);
                     break;
-                case MSG_DATA_SAFELY_STORED:
-                	Log.d("vortex","received MSG_SAFELY_STORED in SyncService");
-                	sSyncAdapter.safely_stored();
-                	//force a new sync event to check for more data.
-					SyncAdapter.forceSyncToHappen();
-                	break;
+
 				case MSG_USER_STOPPED_SYNC:
 				    sSyncAdapter.userAbortedSync();
 					Log.d("vortex","received MSG_USER_STOPPED_SYNC in SyncService");

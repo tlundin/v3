@@ -54,8 +54,8 @@
 	<string name="synk_idle">Aktiv</string>
 	<string name="synk_inserting">För in data</string>
 	<string name="synk_send_receive">Överför data</string>
-	<string name="in_sync">Inget data att hämta</string>
-	<string name="imin_sync">Ditt data är synkat</string>
+	<string name="in_sync">I synk</string>
+	<string name="imin_sync">Ditt data är överfört</string>
 	<string name="sync_time_months">månad(er)</string>
 	<string name="sync_time_days">dag(ar)</string>
 	<string name="sync_time_hours">timme(ar)</string>

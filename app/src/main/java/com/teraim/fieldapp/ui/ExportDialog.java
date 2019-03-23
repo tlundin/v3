@@ -15,7 +15,7 @@ import com.teraim.fieldapp.R;
  * Created by Terje on 2016-10-07.
  */
 
-public class ExportDialog extends DialogFragment {
+public class ExportDialog extends DialogFragment implements ExportDialogInterface {
 
     AlertDialog.Builder builder;
     private TextView progressTextView;

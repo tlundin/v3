@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.teraim.fieldapp.ui.ExportDialogInterface;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
 
@@ -16,8 +17,8 @@ public class CSVExporter extends Exporter {
     private int varC=0;
 
 
-	public CSVExporter(Context ctx) {
-		super(ctx);
+	public CSVExporter(Context ctx, ExportDialogInterface eDialog) {
+		super(ctx,eDialog);
 	}
 
 

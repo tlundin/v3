@@ -5,7 +5,7 @@ import android.content.Context;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
 import com.teraim.fieldapp.non_generics.Constants;
-import com.teraim.fieldapp.ui.ExportDialog;
+import com.teraim.fieldapp.ui.ExportDialogInterface;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 
 
@@ -43,10 +43,10 @@ public abstract class Exporter {
 	final PersistenceHelper ph;
 	final PersistenceHelper globalPh;
 	protected static Exporter instance;
-	final ExportDialog eDialog;
+	final ExportDialogInterface eDialog;
 	final Context ctx;
 
-	public static Exporter getInstance(Context ctx, String type) {
+	public static Exporter getInstance(Context ctx, String type, ExportDialogInterface eDialog) {
 
 		//Check clock
 		if (Constants.FreeVersion) {
@@ -59,28 +59,28 @@ public abstract class Exporter {
 		//return new CSVExporter(ctx);
 
 		if (type==null||type.equalsIgnoreCase("csv"))
-			return new CSVExporter(ctx);
+			return new CSVExporter(ctx,eDialog);
 		else
 			if (type.equalsIgnoreCase("json"))
-				return new JSONExporter(ctx);
+				return new JSONExporter(ctx,eDialog);
 			else
 				if (type.equalsIgnoreCase("geojson"))
-					return new GeoJSONExporter(ctx);
+					return new GeoJSONExporter(ctx,eDialog);
 		return null;
 
 	}
-	Exporter(Context ctx) {
+	Exporter(Context ctx, ExportDialogInterface eDialog) {
 		this.gs=GlobalState.getInstance();
 		al = gs.getVariableConfiguration();
 		ph = gs.getPreferences();
 		globalPh = gs.getGlobalPreferences();
-		eDialog = new ExportDialog();
+		this.eDialog = eDialog;
 		this.ctx = ctx;
 		
 	}
 
 	public abstract Report writeVariables(DBColumnPicker cp);
 	public abstract String getType();
-	public ExportDialog getDialog() { return eDialog;}
+	public ExportDialogInterface getDialog() { return eDialog;}
 	public Context getContext() {return ctx;}
 }

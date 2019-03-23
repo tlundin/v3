@@ -9,6 +9,7 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.workflow_realizations.gis.GisConstants;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.NamedVariables;
+import com.teraim.fieldapp.ui.ExportDialogInterface;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 
 import java.io.IOException;
@@ -28,8 +29,8 @@ public class GeoJSONExporter extends Exporter {
 	private int varC=0,exx=0;
 
 
-	GeoJSONExporter(Context ctx) {
-		super(ctx);
+	GeoJSONExporter(Context ctx, ExportDialogInterface eDialog) {
+		super(ctx,eDialog);
 
 	}
 
@@ -383,7 +384,7 @@ public class GeoJSONExporter extends Exporter {
 				Log.e("vortex","EMPTY!!!");
 		} catch (Exception e) {
 
-			Tools.printErrorToLog(GlobalState.getInstance().getLogger(), e);
+			Tools.printErrorToLog(GlobalState.getInstance().getLogger(), e, -1);
 
 			cp.close();
 		} finally {

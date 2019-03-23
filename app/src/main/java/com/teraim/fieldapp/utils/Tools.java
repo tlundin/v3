@@ -1133,16 +1133,14 @@ public class Tools {
 			return null;
 	}
 
-	public static void printErrorToLog(LoggerI o, String e) {
-		o.addRow("");
-		o.addRedText(e);
-		Log.e("vortex",e);
-
-	}
-	public static void printErrorToLog(LoggerI o, Exception e) {
+	public static void printErrorToLog(LoggerI o, Exception e, int blockP) {
 		o.addRow("");
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
+		if (blockP != -1) {
+			o.addRedText("Error executing BLOCK "+blockP);
+			o.addRow("");
+		}
 		if (e!=null) {
 			e.printStackTrace(pw);
 			e.printStackTrace();

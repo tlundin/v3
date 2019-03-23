@@ -33,6 +33,7 @@ import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.non_generics.NamedVariables;
 import com.teraim.fieldapp.non_generics.StatusHandler;
 import com.teraim.fieldapp.non_generics.StatusHandler.Kvot;
+import com.teraim.fieldapp.ui.ExportDialog;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.DbHelper.Selection;
 import com.teraim.fieldapp.utils.Exporter;
@@ -345,7 +346,7 @@ public class SimpleRutaTemplate extends Executor implements OnGesturePerformedLi
 		String lagID = gs.getGlobalPreferences().get(PersistenceHelper.LAG_ID_KEY);
 
 		String exportFileName = typPrefix+lagID+"_ruta_"+currentRuta+"_"+dS+(isKlar?"_KLAR":"");
-		Report jRep = gs.getDb().export(al.createRutaKeyMap(),Exporter.getInstance(this.getActivity(),"JSON"),exportFileName);
+		Report jRep = gs.getDb().export(al.createRutaKeyMap(),Exporter.getInstance(this.getActivity(),"JSON", new ExportDialog()),exportFileName);
 		String msg, btnText;
 		if (jRep.getReport() == ExportReport.OK) {
 			msg = "Export OK.\nFilnamn: "+exportFileName+"\n"+jRep.noOfVars+" variabler exporterade";

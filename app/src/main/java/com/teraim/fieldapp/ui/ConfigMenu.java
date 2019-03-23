@@ -357,6 +357,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 		public void onSharedPreferenceChanged(
 				SharedPreferences sharedPreferences, String key) {
+			askForRestart();
 			Preference pref = findPreference(key);
 			Account mAccount = GlobalState.getmAccount(getActivity());
 
@@ -377,7 +378,6 @@ public class ConfigMenu extends PreferenceActivity {
 
 				}
 				pref.setSummary(etp.getText());
-				askForRestart();
 			}
 			else if (pref instanceof ListPreference) {
 				ListPreference letp = (ListPreference) pref;
@@ -402,8 +402,8 @@ public class ConfigMenu extends PreferenceActivity {
                         break;
 
                 }
-				askForRestart();
 			}
+
 
 
 		}

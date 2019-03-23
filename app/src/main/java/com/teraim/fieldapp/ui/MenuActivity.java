@@ -55,8 +55,8 @@ import com.teraim.fieldapp.gis.TrackerListener;
 import com.teraim.fieldapp.log.LoggerI;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.synchronization.DataSyncSessionManager;
-import com.teraim.fieldapp.synchronization.SyncTimestamp;
 import com.teraim.fieldapp.synchronization.framework.SyncAdapter;
+import com.teraim.fieldapp.synchronization.framework.SyncConsumerThread;
 import com.teraim.fieldapp.synchronization.framework.SyncService;
 import com.teraim.fieldapp.utils.BackupManager;
 import com.teraim.fieldapp.utils.Connectivity;
@@ -74,7 +74,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.teraim.fieldapp.dynamic.Executor.REDRAW_PAGE;
+import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_DATA_CONSUMED;
+import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_DATA_READY_FOR_INSERT;
+import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_ERROR_STATE;
+import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_RUN_ENDED;
+import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_RUN_STARTED;
+
 /**
  * Parent class for Activities having a menu row.
  * @author Terje
@@ -107,12 +112,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private long potential_timestamp_from_team_to_me;
     private int seq_no;
 
-    static class MThread extends Thread {
-        void stopMe() {
-        }
-    }
 
-    private MThread t;
 
     /**
      * Flag indicating whether we have called bind on the sync service.
@@ -124,8 +124,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private final Messenger mMessenger = new Messenger(new IncomingHandler(this));
     private AlertDialog uiLock = null;
     private Message reply = null;
-    private volatile int z_totalSynced = 0;
-    private volatile int z_totalToSync = 0;
 
     private final static int NO_OF_MENU_ITEMS = 6;
     private final MenuItem[] mnu = new MenuItem[NO_OF_MENU_ITEMS];
@@ -296,7 +294,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         Log.d("NILS", "In the onDestroy() event");
         latestSignal = null;
 
-        //Stop listening for bluetooth events.
         LocalBroadcastManager.getInstance(this).unregisterReceiver(brr);
 
         // Unbind from the service
@@ -304,9 +301,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             unbindService(mConnection);
             mBound = false;
         }
-
-        if (t != null)
-            t.stopMe();
 
         syncState = R.drawable.syncoff;
 
@@ -372,215 +366,65 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     public static class IncomingHandler extends Handler {
 
         final MenuActivity menuActivity;
-
-        public class Control {
-            public volatile boolean flag = false;
-            public boolean error = false;
-        }
-
-        final Control control = new Control();
-
+        private SyncConsumerThread syncConsumerThread;
 
         IncomingHandler(MenuActivity menuActivity) {
+
             this.menuActivity = menuActivity;
+            syncConsumerThread = null;
         }
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
 
-                case SyncService.MSG_SYNC_STARTED:
-                    if (menuActivity.syncState == R.drawable.syncoff ||
-                            menuActivity.syncState == R.drawable.syncerr)
-                        menuActivity.syncState = R.drawable.syncon;
+                case MSG_SYNC_RUN_STARTED:
                     Log.d("vortex", "MSG -->SYNC STARTED");
-                    break;
-
-                case SyncService.MSG_SERVER_ACKNOWLEDGED_READ:
-                    String team = GlobalState.getInstance().getMyTeam();
-                    long timestampFromMe = ((Bundle) msg.obj).getLong(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM);
-
-                    if (timestampFromMe == -1) {
-                        Log.d("vortex", "TIMESTAMP UNCHANGED");
-                    } else {
-                        GlobalState.getInstance().getDb().saveTimeStampFromMeToTeam(team, timestampFromMe);
-                        Log.d("vortex", "ME-->TEAM UPDATED TO " + timestampFromMe);
-                    }
-                    //Make a note that a sync has happened.
-                    GlobalState.getInstance().getDb().saveTimeStampOfLatestSuccesfulSync(team);
-
-                    break;
-
-                case SyncService.MSG_SYNC_DATA_ARRIVING:
                     menuActivity.syncState = R.drawable.syncactive;
-                    Bundle b = (Bundle) msg.obj;
-                    menuActivity.z_totalSynced = b.getInt("number_of_rows_so_far");
-                    menuActivity.z_totalToSync = b.getInt("number_of_rows_total");
-                    Log.d("vortex", "MSG_SYNC_DATA_ARRIVING...total rows to sync is " + menuActivity.z_totalToSync);
                     break;
-
-                case SyncService.MSG_SYNC_ERROR_STATE:
-
+                case MSG_SYNC_RUN_ENDED:
+                    Log.d("vortex", "MSG -->SYNC ENDED");
+                    GlobalState gs = GlobalState.getInstance();
+                    if (gs!=null)
+                        gs.getDb().saveTimeStampOfLatestSuccesfulSync(gs.getMyTeam());
+                    menuActivity.syncState = R.drawable.syncon;
+                    break;
+                case MSG_SYNC_ERROR_STATE:
                     menuActivity.syncState = R.drawable.syncerr;
                     String toastMsg = "";
-                    Log.d("vortex", "MSG -->SYNC ERROR STATE");
+                    Log.d("sync", "MSG -->SYNC ERROR STATE");
                     switch (msg.arg1) {
-                        case SyncService.ERR_SETTINGS:
-                            Log.d("vortex", "ERR WRONG SETTINGS...");
-                            if (menuActivity.uiLock == null) {
-                                menuActivity.uiLock = new AlertDialog.Builder(menuActivity)
-                                        .setTitle("Synchronize")
-                                        .setMessage("Sync cannot start. Please check that you have entered team and username under settings.")
-                                        .setIcon(android.R.drawable.ic_dialog_alert)
-                                        .setCancelable(false)
-                                        .setNegativeButton(R.string.close, (dialog, which) -> {
-                                            if (menuActivity.syncOn()) {
-                                                menuActivity.stopSync();
-                                            }
-                                            menuActivity.uiLock = null;
-                                        })
-                                        .show();
-                            }
-
+                        case SyncService.ERR_RECEIVE_FAILED:
+                            toastMsg = "Sync Server --> Me. No route";
                             break;
-
-                        case SyncService.ERR_SERVER_NOT_REACHABLE:
-                            Log.d("vortex", "Synkserver is currently not reachable.");
+                        case SyncService.ERR_SEND_FAILED:
                             toastMsg = "Me --> Sync Server. No route";
                             break;
-                        case SyncService.ERR_SERVER_CONN_TIMEOUT:
-                            toastMsg = "Me-->Sync Server. Connection timeout";
-                            Log.d("vortex", "Synkserver Timeout.");
-                            break;
+                        case SyncService.ERR_TRANSMISSION_FAILURE:
+                            toastMsg = "Transmission failure";
                         default:
-                            Log.d("vortex", "Any other error!");
-                            toastMsg = "Me-->Sync Server. Connection failure.";
+                            toastMsg = "Sync Error";
                             break;
                     }
-                    if (toastMsg.length() > 0) {
+                    if (toastMsg.length() > 0 && menuActivity != null)
                         Toast.makeText(menuActivity, toastMsg, Toast.LENGTH_SHORT).show();
-                    }
+
                     break;
 
-                case SyncService.MSG_NO_NEW_DATA_FROM_TEAM_TO_ME:
-                case SyncService.MSG_ALL_SYNCED:
-                    Log.d("vortex", "***DEVICE IN SYNC WITH SERVER***");
-                    Bundle envelope = ((Bundle) msg.obj);
-                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(),
-                            envelope.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME),
-                            envelope.getInt(Constants.TIMESTAMP_CURRENT_SEQUENCE_NUMBER));
-                    if (msg.what == SyncService.MSG_ALL_SYNCED) {
-                        menuActivity.syncState = R.drawable.insync;
+                case MSG_SYNC_DATA_READY_FOR_INSERT:
+                    Log.d("sync", "MSG -->SYNC_DATA_READY_FOR_INSERT");
+                    if (syncConsumerThread == null) {
+                        syncConsumerThread = new SyncConsumerThread();
+                        syncConsumerThread.setPriority(Thread.MIN_PRIORITY);
+                        syncConsumerThread.start();
                     } else {
-                        menuActivity.syncState = R.drawable.iminsync;
+                        Log.d("sync","Busy inserting...delaying");
+
                     }
                     break;
-
-                case SyncService.MSG_SYNC_DATA_READY_FOR_INSERT:
-                    if (GlobalState.getInstance() != null) {
-                        Log.d("vortex", "MSG -->SYNC_DATA_READY_FOR_INSERT");
-                        envelope = ((Bundle) msg.obj);
-                        menuActivity.potential_timestamp_from_team_to_me = -1;
-                        menuActivity.seq_no = -1;
-                        if (envelope != null) {
-                            menuActivity.potential_timestamp_from_team_to_me = envelope.getLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME);
-                            menuActivity.seq_no = envelope.getInt(Constants.TIMESTAMP_CURRENT_SEQUENCE_NUMBER);
-                            Log.d("vortex", "updated team timestamp: " + menuActivity.potential_timestamp_from_team_to_me);
-                            //Block
-                        } else
-                            Log.d("vortex", "Unprocessed syncdata from previous run");
-
-                        if (menuActivity.syncState != R.drawable.dbase) {
-                            menuActivity.syncState = R.drawable.dbase;
-                            control.flag = false;
-                            menuActivity.z_totalToSync = GlobalState.getInstance().getDb().getSyncRowsLeft();
-                            menuActivity.z_totalSynced = 0;
-                            final UIProvider ui = new UIProvider(menuActivity);
-                            Log.d("vortex", "total rows to sync is: " + menuActivity.z_totalToSync);
-                            if (menuActivity.z_totalToSync == 0) {
-                                Log.e("vortex", "sync table is empty");
-                                if (menuActivity.potential_timestamp_from_team_to_me != -1)
-                                    GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me,menuActivity.seq_no);
-                                menuActivity.syncState = R.drawable.syncon;
-                                menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-                                //Save the team to me timestamp
-                                try {
-                                    menuActivity.mService.send(menuActivity.reply);
-                                } catch (RemoteException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                if (menuActivity.t == null) {
-                                    menuActivity.t = new MThread() {
-                                        final int increment = menuActivity.z_totalToSync;
-
-                                        @Override
-                                        public void stopMe() {
-                                            control.flag = true;
-                                            this.interrupt();
-                                        }
-
-                                        @Override
-                                        public void run() {
-                                            boolean threadDone;
-                                            while (!control.flag) {
-                                                threadDone = GlobalState.getInstance().getDb().scanSyncEntries(control, increment, ui);
-                                                Log.d("vortex", "done scanning syncs...threaddone is " + threadDone + " this is thread " + this.getId());
-                                                if (control.error) {
-                                                    Log.d("vortex", "Uppsan...exiting");
-                                                    menuActivity.syncState = R.drawable.syncerr;
-                                                    break;
-                                                }
-                                                if (!control.flag && !threadDone) {
-                                                    menuActivity.z_totalSynced += increment;
-                                                } else {
-                                                    control.flag = threadDone;
-                                                    Log.d("vortex", "End reached for sync. Sending msg safely_stored");
-                                                    if (menuActivity.uiLock != null)
-                                                        menuActivity.uiLock.cancel();
-                                                    control.flag = true;
-                                                    menuActivity.uiLock = null;
-                                                    menuActivity.reply = Message.obtain(null, SyncService.MSG_DATA_SAFELY_STORED);
-                                                    //Save the team to me timestamp
-                                                    if (menuActivity.potential_timestamp_from_team_to_me != -1)
-                                                        GlobalState.getInstance().getDb().saveTimeStampFromTeamToMe(GlobalState.getInstance().getMyTeam(), menuActivity.potential_timestamp_from_team_to_me,menuActivity.seq_no);
-                                                    menuActivity.syncState = R.drawable.syncon;
-                                                    try {
-                                                        menuActivity.mService.send(menuActivity.reply);
-                                                        //Trigger a redraw to update UI with new data
-                                                        GlobalState.getInstance().sendEvent(REDRAW_PAGE);
-                                                    } catch (RemoteException e) {
-                                                        e.printStackTrace();
-                                                        menuActivity.syncState = R.drawable.syncerr;
-                                                    }
-
-                                                }
-                                                if (!control.error) {
-                                                    menuActivity.runOnUiThread(menuActivity::refreshSyncDisplay);
-                                                }
-                                            }
-                                            Log.d("vortex", "I escaped the infinite");
-                                            menuActivity.t = null;
-                                            menuActivity.syncState = R.drawable.syncon;
-                                            ui.closeProgress();
-
-                                        }
-                                    };
-
-                                    menuActivity.t.setPriority(Thread.MIN_PRIORITY);
-                                    menuActivity.t.start();
-
-                                } else
-                                    Log.e("vortex", "EXTRA CALL ON THREADSTART");
-                            }
-
-                        } else {
-                            Log.e("vortex", "Extra call made to SYNC RELEASE DB LOCK");
-                        }
-
-                    } else {
-                        menuActivity.syncState = R.drawable.syncerr;
-                    }
+                case MSG_SYNC_DATA_CONSUMED:
+                    Log.d("sync", "MSG -->SYNC_DATA_CONSUMED");
+                    syncConsumerThread = null;
                     break;
             }
             menuActivity.refreshSyncDisplay();
@@ -689,18 +533,24 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     private void refreshSyncDisplay() {
 
-        String synkStatusTitle;
+
         int numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
-        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth"))
-            syncState = R.drawable.bt;
-        switch (syncState) {
-            case R.drawable.syncactive:
-            case R.drawable.dbase:
-                synkStatusTitle = z_totalSynced + "/" + z_totalToSync;
-                 break;
-            default:
-                synkStatusTitle = numOfUnsynchedEntries + "";
-        }
+        long numOfInsertSyncEntries = gs.getDb().getSyncRowsLeft();
+        //List of people in team with data on server
+        SyncGroup syncGroup = getSyncGroup();
+
+        boolean fullySyncedWithTeam = (syncGroup != null && syncGroup.getTeam() != null && syncGroup.getTeam().isEmpty());
+
+        boolean fullySynced = (numOfUnsynchedEntries ==0)&&(numOfInsertSyncEntries == 0) && fullySyncedWithTeam;
+
+        String synkStatusTitle;
+
+        if (fullySynced) {
+            syncState = R.drawable.insync;
+            synkStatusTitle="";
+        } else
+            synkStatusTitle = numOfUnsynchedEntries+((numOfInsertSyncEntries>0)?"/"+numOfInsertSyncEntries:"");
+
         mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
         mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
         mnu[MENU_ITEM_SYNC_TYPE].setIcon(syncState);
@@ -720,7 +570,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         //Last time I succesfully synced.
         final String team = GlobalState.getInstance().getMyTeam();
-        Long timestamp = GlobalState.getInstance().getDb().getTimestampOfLatestSuccesfulSync(team);
+        long timestamp = GlobalState.getInstance().getDb().getTimestampOfLatestSuccesfulSync(team);
         TextView time_last_succesful_sync = customView.findViewById(R.id.sync_time_since_last_sync);
         TextView time_last_entry = customView.findViewById(R.id.sync_time_since_last_entry);
 
@@ -742,9 +592,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         //Remaining objects to sync
         TextView unsync = customView.findViewById(R.id.sync_objects_remaining);
         unsync.setText(Integer.toString(numOfUnsynchedEntries));
-
-        //List of people
-        SyncGroup syncGroup = getSyncGroup();
 
         LinearLayout ll = customView.findViewById(R.id.list_container);
         TextView sync_refresh_date = customView.findViewById(R.id.sync_refresh_date);
@@ -773,7 +620,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 synkStatusText = getString(R.string.synk_idle);
                 break;
             case R.drawable.syncactive:
-                synkStatusText = getString(R.string.synk_send_receive) + " " + z_totalSynced + "/" + z_totalToSync;
+                synkStatusText = getString(R.string.synk_send_receive);
                 break;
             case R.drawable.syncerr:
                 synkStatusText = getString(R.string.synk_error);
@@ -784,13 +631,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             case R.drawable.insync:
                 //Refresh
                 synkStatusText = getString(R.string.in_sync);
-                break;
-            case R.drawable.iminsync:
-                //Refresh
-                synkStatusText = getString(R.string.imin_sync);
-                break;
-            case R.drawable.dbase:
-                synkStatusText = getString(R.string.synk_inserting) + " " + z_totalSynced + "/" + z_totalToSync;
                 break;
         }
         TextView synk_status_display = customView.findViewById(R.id.synk_status_display);
@@ -1062,13 +902,12 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                             msg.replyTo = mMessenger;
                             //inform the sync engine when I got data last time.
                             Bundle b = new Bundle();
-                            SyncTimestamp tsSync = gs.getDb().getTimeStampFromTeamToMe(team);
-                            b.putLong(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME, tsSync.getTime());
+                            long tsSync = gs.getDb().getReceiveTimestamp(team);
+                            b.putLong(Constants.TIMESTAMP_SYNC_RECEIVE, tsSync);
                             b.putString("user", user);
                             b.putString("app", app);
                             b.putString("team", team);
                             b.putString("uuid", gs.getUserUUID());
-                            b.putInt("seq_no", tsSync.getSequence());
 
                             msg.obj = b;
 
@@ -1101,11 +940,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private void stopSync() {
         ContentResolver.cancelSync(mAccount, Start.AUTHORITY);
         ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
-
-
-        if (syncState == R.drawable.dbase) {
-            t.stopMe();
-        }
 
         syncState = R.drawable.syncoff;
         reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
@@ -1383,13 +1217,12 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             String team = gs.getMyTeam();
             String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
             String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
+            long timestamp = gs.getDb().getReceiveTimestamp(team);
 
-            SyncTimestamp sTs = gs.getDb().getTimeStampFromTeamToMe(team);
-            long timestamp = sTs.getTime();
             Log.d("vortex", "TIMESTAMP_LAST_SYNC_FROM_TEAM_TO_ME: " + timestamp);
             if (Connectivity.isConnected(this)) {
                 //connected...lets call the sync server.
-                final String SyncServerStatusCall = Constants.SynkServerURI + "?action=get_team_status&team=" +
+                final String SyncServerStatusCall = Constants.SynkStatusURI +
                         team + "&project=" + project + "&timestamp=" + timestamp + "&user=" + user;
                 //final TextView mTextView = (TextView) findViewById(R.id.text);
                 RequestQueue queue = Volley.newRequestQueue(this);

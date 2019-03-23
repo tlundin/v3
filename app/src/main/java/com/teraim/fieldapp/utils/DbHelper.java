@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -28,11 +29,9 @@ import com.teraim.fieldapp.synchronization.SyncEntryHeader;
 import com.teraim.fieldapp.synchronization.SyncReport;
 import com.teraim.fieldapp.synchronization.SyncStatus;
 import com.teraim.fieldapp.synchronization.SyncStatusListener;
-import com.teraim.fieldapp.synchronization.SyncTimestamp;
 import com.teraim.fieldapp.synchronization.TimeStampedMap;
 import com.teraim.fieldapp.synchronization.Unikey;
 import com.teraim.fieldapp.synchronization.VariableRowEntry;
-import com.teraim.fieldapp.ui.MenuActivity;
 import com.teraim.fieldapp.ui.MenuActivity.UIProvider;
 import com.teraim.fieldapp.utils.Exporter.ExportReport;
 import com.teraim.fieldapp.utils.Exporter.Report;
@@ -1457,7 +1456,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-    private SyncReport synchronise2(MenuActivity.IncomingHandler.Control control, SyncReport changes, SyncEntry[] ses, UIProvider ui, LoggerI o, SyncStatusListener syncListener) {
+    public SyncReport insertSyncEntries(SyncReport changes, SyncEntry[] ses, LoggerI o) {
 
         if (ses == null || ses.length==0) {
             Log.d("sync", "SE[] empty in sync");
@@ -1488,25 +1487,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
         for (SyncEntry s : ses) {
 
-            //**********************
-            //Date dat = new Date(s.getTimeStamp());
-            //DateFormat formatter = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
-            //String dateFormatted = formatter.format(date);
-
-            //Log.d("zapp",""s.getTimeStamp());
-            //long timeStart = System.currentTimeMillis();
-            //keySet.clear();
-            //keyHash.clear();
-
             uid=null;
             spy=null;
-
-            if (control.flag) {
-                Log.d("maggan","Aborting sync");
-                control.error=true;
-                return changes;
-            }
-
             synC++;
             //Only insert location updates that are newest.
             if (s.isInsertArray()) {
@@ -2090,41 +2072,18 @@ public class DbHelper extends SQLiteOpenHelper {
     public int getNumberOfUnsyncedEntries() {
         int ret = 0;
         final String team = globalPh.get(PersistenceHelper.LAG_ID_KEY);
+        if (GlobalState.getInstance()!=null) {
+            Long timestamp = getSendTimestamp(team);
+            //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
-        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Bluetooth")) {
-
-            String timestamp = GlobalState.getInstance().getPreferences().get(PersistenceHelper.TIME_OF_LAST_SYNC);
-            if (timestamp == null || timestamp.equals(PersistenceHelper.UNDEFINED))
-                timestamp = "0";
-            //Log.d("nils","Time of last sync is "+timestamp+" in getNumberOfUnsyncedEntries (dbHelper)");
             Cursor c = db().query(TABLE_AUDIT, null,
-                    "timestamp > ? AND "+DbHelper.LAG+" = ?", new String[]{timestamp,team}, null, null, "timestamp asc", null);
-            if (c != null && c.getCount() > 0)
-                ret = c.getCount();
-            if (c != null)
-                c.close();
-            Log.d("vortex", "Get SyncEtries BT: " + ret);
+                    "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
+
+            ret = c.getCount();
+            c.close();
             return ret;
         }
-
-        else if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet")) {
-            if (GlobalState.getInstance()!=null) {
-                Long timestamp = getSendTimestamp(team);
-                //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
-
-                timestamp = timestamp == -1 ? 0 : timestamp;
-
-                Cursor c = db().query(TABLE_AUDIT, null,
-                        "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
-                if (c != null && c.getCount() > 0)
-                    ret = c.getCount();
-                if (c != null)
-                    c.close();
-                //Log.d("vortex", "My unsynced items: " + ret);
-                return ret;
-            }
-        }
-        return -1;
+        return 0;
     }
 
 
@@ -2679,101 +2638,27 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-    public int getSyncRowsLeft() {
-        Cursor c = db().rawQuery("SELECT Count(*) FROM " + TABLE_SYNC , null);
-        if (c.moveToFirst())
-            return c.getInt(0);
-        Log.e("vortex","fiasko");
-        return 0;
+    public long getSyncRowsLeft() {
+        return DatabaseUtils.queryNumEntries(db(),TABLE_SYNC);
+        //Cursor c = db().rawQuery("SELECT Count(*) FROM " +  , null);
+        //if (c.moveToFirst())
+        //    return c.getInt(0);
+        //Log.e("vortex","fiasko");
+        //return 0;
     }
 
-    public boolean scanSyncEntries(MenuActivity.IncomingHandler.Control control, int maxR, UIProvider ui) {
-
-
-        Cursor c = db().rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc",null); // limit "+maxR, null);
-        byte[] row;
-        int sesTot = 0; int count = 0;
-        int id=-1;
-        try {
-
-
-            SyncReport syncReport = new SyncReport();
-            syncReport.totalRows=c.getCount();
-            ui.startProgress(syncReport.totalRows);
-            while (!control.flag && c.moveToNext()) {
-                ui.setProgress(count);
-                row = c.getBlob(1);
-                id = c.getInt(0);
-                if (row != null) {
-                    Object o = Tools.bytesToObject(row);
-                    if (o != null) {
-                        SyncEntry[] ses = (SyncEntry[]) o;
-                        if (ses != null) {
-                            sesTot += ses.length;
-
-                            //Log.d("plaz", "calling SYNCHRONISE WITH " + ses.length + " entries!");
-
-
-                            //final AlertDialog uiBlockerWindow;
-
-                            //SyncEntry[] ses2;
-
-
-                            //Log.d("vortex","ses l"+ses.length+" st "+st);
-                            //ses2 = Arrays.copyOfRange(ses, st, Math.min(st + 10, ses.length));
-                            //st += 10;
-
-                            if (GlobalState.getInstance()==null) {
-                                control.error=true;
-                                break;
-                            }
-
-                            syncReport = synchronise2(control,syncReport, ses, ui, GlobalState.getInstance().getLogger(), null);
-                            if (syncReport!=null) {
-                                syncReport.currentRow++;
-                                Log.d("vortex","timestampedmap now has "+syncReport.getTimeStampedMap().size() +" entries");
-                            }
-
-                            Log.d("vortex","isdone is "+control.flag);
-                        }
-                    } else {
-                        Log.e("vortex", "Object was null!!!");
-
-                    }
-                }
-
-                count++;
-
-            }
-
-            c.close();
-
-            //Intsert entries if timestamp < max.
-            if (id!=-1 && syncReport!=null)
-                insertIfMax(syncReport);
-            else
-                Log.e("vortex","No changes in syncreport, not calling insertifmax");
-
-            if (id != -1 && !control.error) {
-                Log.d("plaz", "Deleting entries in table_sync with id less than or equal to " + id);
-                if (db().delete(TABLE_SYNC, "id <=" + id, null) == 0)
-                    Log.e("vortex", "failed to delete curent row in sync table!!");
-            }
-        }catch (IllegalStateException e) {
-            e.printStackTrace();
-            Log.d("vortex","Database closed?");
-            Log.d("vortex","Control flag is : "+control.flag);
-            control.error=true;
-            throw e;
-        }
-        return (id == -1) || (count == maxR);
+    public Cursor getSyncDataCursor() {
+        return db().rawQuery("SELECT id,data FROM "+TABLE_SYNC+" order by id asc",null);
     }
 
-    private void insertIfMax(SyncReport sr) {
+    public int deleteConsumedSyncEntries(int id) {
+        return db().delete(TABLE_SYNC, "id <=" + id, null);
+    }
+
+
+    public void insertIfMax(SyncReport sr) {
         //if spy exist?
         boolean hasSpy = hasDatabaseColumnName("spy");
-
-
         TimeStampedMap tsMap = sr.getTimeStampedMap();
         VariableCache varCache = GlobalState.getInstance().getVariableCache();
         long t = System.currentTimeMillis();
@@ -2790,11 +2675,11 @@ public class DbHelper extends SQLiteOpenHelper {
             String spy = (hasSpy?c.getString(5):null);
             Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
             if (ukey!=null) {
-                Log.d("vortex", "Found ukey " + uid + ": " + vid);
+                Log.d("sync", "Found ukey " + uid + ": " + vid);
 
                 ContentValues cv = tsMap.get(ukey, vid);
                 if (cv != null) {
-                    Log.d("vortex", "MATCH FOR " + uid + ": " + vid);
+                    Log.d("sync", "MATCH FOR " + uid + ": " + vid);
                     long existingts = c.getLong(1);
                     long timestamp = cv.getAsLong("timestamp");
                     if (timestamp > existingts) {
@@ -2813,12 +2698,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
         db().beginTransaction();
         if (idsToDelete.size()>0) {
-            Log.d("rosto","Deleteing "+idsToDelete.size()+" rows");
+            Log.d("sync","Deleteing "+idsToDelete.size()+" rows");
             sr.deletes+=idsToDelete.size();
 
             String delStr = String.format("DELETE FROM "+TABLE_VARIABLES+" WHERE id IN (%s)", TextUtils.join(", ", idsToDelete));
             db().execSQL(delStr);
-            Log.d("vortex","delStr: "+delStr);
+            Log.d("sync","delStr: "+delStr);
         }
 
         ContentValues cv;
@@ -2831,7 +2716,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 for (String vid:m.keySet()) {
                     cv=m.get(vid);
                     db().insert(TABLE_VARIABLES, null, cv);
-                    Log.d("bascar","inserted "+cv);
+                    Log.d("sync","inserted "+cv);
                     varCache.turboRemoveOrInvalidate(uid.getUid(),uid.getSpy(),vid,true);
                     sr.inserts++;
                 }
@@ -2852,40 +2737,42 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
 
-    public SyncTimestamp getTimeStampFromTeamToMe(String team) {
-        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team);
-    }
-    public void saveTimeStampFromTeamToMe(String team,long ts, int seq_no) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_TEAM_TO_ME,team,ts,seq_no);
-    }
-    public void saveTimeStampOfLatestSuccesfulSync(String team) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team,new Timestamp(System.currentTimeMillis()).getTime(),-1);
+
+    public void saveTimeStampOfLatestSuccesfulSync(String syncgroup) {
+        saveSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,syncgroup,new Timestamp(System.currentTimeMillis()).getTime());
     }
 
-    public long getTimestampOfLatestSuccesfulSync(String team) {
-        return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,team).getTime();
+    public long getTimestampOfLatestSuccesfulSync(String syncgroup) {
+        return getSyncTimestamp(Constants.TIMESTAMP_LATEST_SUCCESFUL_SYNC,syncgroup);
     }
 
-    public long getSendTimestamp(String team) {
-        return getSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team).getTime();
+    public long getSendTimestamp(String syncgroup) {
+        return getSyncTimestamp(Constants.TIMESTAMP_SYNC_SEND,syncgroup);
     }
-    public void saveTimeStampFromMeToTeam(String team,long ts) {
-        saveSyncTimestamp(Constants.TIMESTAMP_LABEL_FROM_ME_TO_TEAM,team,ts,-1);
+    public long getReceiveTimestamp(String syncgroup) {
+        return getSyncTimestamp(Constants.TIMESTAMP_SYNC_RECEIVE,syncgroup);
     }
-
-    private void saveSyncTimestamp(String timeStampLabel, String syncgroup,long ts,int seqno) {
-        Log.d("antrax","Saving timestamp "+ts+ "for team "+syncgroup);
-        db().execSQL("INSERT into "+TABLE_TIMESTAMPS+" (SYNCGROUP,LABEL,VALUE,SEQNO) values (?,?,?,?)",new String[]{syncgroup,timeStampLabel,Long.toString(ts),Integer.toString(seqno)});
+    public void saveReceiveTimestamp(String syncgroup, long ts) {
+        saveSyncTimestamp(Constants.TIMESTAMP_SYNC_RECEIVE,syncgroup,ts);
     }
 
-    private SyncTimestamp getSyncTimestamp(String timeStampLabel,String syncgroup) {
-        Cursor c  = this.getReadableDatabase().rawQuery("SELECT VALUE,SEQNO from "+TABLE_TIMESTAMPS+" where SYNCGROUP = ? AND LABEL = ? ORDER BY id DESC LIMIT 1", new String[]{syncgroup,timeStampLabel});
+    private void saveSyncTimestamp(String timeStampLabel, String syncgroup,long ts) {
+        Log.d("antrax","Saving timestamp "+ts+ "for syncgroup "+syncgroup);
+        db().execSQL("INSERT into "+TABLE_TIMESTAMPS+" (SYNCGROUP,LABEL,VALUE) values (?,?,?)",new String[]{syncgroup,timeStampLabel,Long.toString(ts)});
+    }
+
+    private long getSyncTimestamp(String timeStampLabel,String syncgroup) {
+        long lastEntry;
+        Cursor c  = this.getReadableDatabase().rawQuery("SELECT VALUE from "+TABLE_TIMESTAMPS+" where SYNCGROUP = ? AND LABEL = ? ORDER BY id DESC LIMIT 1", new String[]{syncgroup,timeStampLabel});
         if (c.getCount() != 0) {
             c.moveToFirst();
-            return new SyncTimestamp(c.getLong(0),c.getInt(1));
+            lastEntry = c.getLong(0);
+        } else {
+            Log.e("vortex", "failed to find timestamp for " + timeStampLabel + "...returning 0");
+            lastEntry = 0;
         }
-        Log.e("vortex","failed to find timestamp for "+timeStampLabel+"...returning 0");
-        return new SyncTimestamp(0,0);
+        c.close();
+        return lastEntry;
     }
 
 

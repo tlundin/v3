@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.JsonWriter;
 import android.util.Log;
 
+import com.teraim.fieldapp.ui.ExportDialogInterface;
 import com.teraim.fieldapp.utils.DbHelper.DBColumnPicker;
 import com.teraim.fieldapp.utils.DbHelper.StoredVariableData;
 
@@ -21,8 +22,8 @@ public class JSONExporter extends Exporter {
 	private JsonWriter writer;
     private int varC=0;
 
-	public JSONExporter(Context ctx) {
-		super(ctx);		
+	public JSONExporter(Context ctx, ExportDialogInterface eDialog) {
+		super(ctx,eDialog);
 	}
 
 	public Report writeVariables(DBColumnPicker cp) {

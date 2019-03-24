@@ -64,13 +64,13 @@ public class JSONExporter extends Exporter {
 					writer.endArray();
 					//close NewKey.
 					writer.endObject();
-
-					((Activity)ctx).runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							eDialog.setGenerateStatus(varC+"");
-						}
-					});
+					if (ctx != null)
+						((Activity)ctx).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								eDialog.setGenerateStatus(varC+"");
+							}
+						});
 				} while (more);				
 				//Close Elements
 				writer.endArray();

@@ -141,12 +141,13 @@ public class GeoJSONExporter extends Exporter {
 							o.addRedText("Variable was null!");
 						}
 					}
-					((Activity)ctx).runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							eDialog.setGenerateStatus("Objects: #"+varC);
-						}
-					});
+					if (ctx != null)
+						((Activity)ctx).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								eDialog.setGenerateStatus("Objects: #"+varC);
+							}
+						});
 
 				} while (cp.next());
 				Log.d("vortex","now inserting into json.");
@@ -157,12 +158,13 @@ public class GeoJSONExporter extends Exporter {
 					for (final String keyUID:gisObjects.keySet()) {
 						//Log.d("vortex", "Spy sets under " + keyUID);
 						final int cf = curr++;
-						((Activity)ctx).runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								eDialog.setGenerateStatus("Writing: ("+(cf)+"/"+sz+")");
-							}
-						});
+						if (ctx != null)
+							((Activity)ctx).runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									eDialog.setGenerateStatus("Writing: ("+(cf)+"/"+sz+")");
+								}
+							});
 						Map<String, Map<String, String>> gisObjH = gisObjects.get(keyUID);
 
 						//First do the default.

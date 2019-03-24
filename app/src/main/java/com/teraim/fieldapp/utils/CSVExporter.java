@@ -70,12 +70,13 @@ public class CSVExporter extends Exporter {
 						sw.append(System.getProperty("line.separator"));
 						varC++;
 					}
-					((Activity)ctx).runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							eDialog.setGenerateStatus(varC+"");
-						}
-					});
+					if (ctx != null)
+						((Activity)ctx).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								eDialog.setGenerateStatus(varC+"");
+							}
+						});
 				} while (cp.next());
 			}
 		} catch (Exception e) {

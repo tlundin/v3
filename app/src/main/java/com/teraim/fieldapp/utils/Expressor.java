@@ -1,6 +1,5 @@
 package com.teraim.fieldapp.utils;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
@@ -1728,48 +1727,48 @@ public class Expressor {
                         final String rawExportContext = evalArgs.get(1).toString();
                         final String exportFormat = evalArgs.get(2).toString();
                         final String exportMethod = evalArgs.get(3).toString();
-                        Context ctx = GlobalState.getInstance().getContext();
                         List<EvalExpr> pre_eval_context = Expressor.preCompileExpression(rawExportContext);
                         DB_Context exportContext = DB_Context.evaluate(pre_eval_context);
-                        if (ctx != null) {
-                            final Exporter exporter = Exporter.getInstance(ctx,exportFormat.toLowerCase(),new ExportDialogDummy());
-                            Thread t = new Thread() {
-                                String msg = null;
-                                @Override
-                                public void run() {
-                                    Exporter.Report jRep = GlobalState.getInstance().getDb().export(exportContext.getContext(), exporter, exportFileName);
-                                    Exporter.ExportReport exportResult = jRep.getReport();
-                                    if (exportResult == Exporter.ExportReport.OK) {
-                                        msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
-                                        msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
+                        final Exporter exporter = Exporter.getInstance(null,exportFormat.toLowerCase(),new ExportDialogDummy());
+                        Thread t = new Thread() {
+                            String msg = null;
+                            @Override
+                            public void run() {
+                                Exporter.Report jRep = GlobalState.getInstance().getDb().export(exportContext.getContext(), exporter, exportFileName);
+                                Exporter.ExportReport exportResult = jRep.getReport();
+                                if (exportResult == Exporter.ExportReport.OK) {
+                                    msg = jRep.noOfVars + " variables exported to file: " + exportFileName + "." + exporter.getType() + "\n";
+                                    msg += "In folder:\n " + Constants.EXPORT_FILES_DIR + " \non this device";
 
 
-                                        if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
-                                            //nothing more to do...file is already on disk.
-                                        } else if (exportMethod.startsWith("mail")) {
-                                            //not supported
-                                        }
-
-                                    } else {
-                                        if (exportResult == Exporter.ExportReport.NO_DATA)
-                                            msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
-                                        else
-                                            msg = "Export failed. Reason: " + exportResult;
-
-
+                                    if (exportMethod == null || exportMethod.equalsIgnoreCase("file")) {
+                                        //nothing more to do...file is already on disk.
+                                    } else if (exportMethod.startsWith("mail")) {
+                                        //not supported
                                     }
-                                    boolean isDeveloper = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
-                                    if (isDeveloper) {
-                                        o.addRow("Export done");
-                                        o.addText(msg);
-                                    }
+
+                                } else {
+                                    if (exportResult == Exporter.ExportReport.NO_DATA)
+                                        msg = "Nothing to export! Have you entered any values? Have you marked your export variables as 'global'? (Local variables are not exported)";
+                                    else
+                                        msg = "Export failed. Reason: " + exportResult;
+
 
                                 }
-                            };
-                            t.start();
-                            return true;
-                        }
+                                boolean isDeveloper = GlobalState.getInstance().getGlobalPreferences().getB(PersistenceHelper.DEVELOPER_SWITCH);
+                                if (isDeveloper) {
+                                    o.addRow("Export done");
+                                    o.addRow("");
+                                    o.addText(msg);
+                                }
+
+                            }
+                        };
+                        t.start();
+                        return true;
+
                     }
+                    Log.d("vortex","precondition failed for function export. returning false");
                     return false;
 
                 case photoExists:

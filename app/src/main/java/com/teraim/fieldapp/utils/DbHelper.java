@@ -568,7 +568,7 @@ public class DbHelper extends SQLiteOpenHelper {
             c = db().query(TABLE_VARIABLES, null, selection,
                     selArgsA, null, null, null, null);
         } catch (SQLiteException e) {
-
+            Log.d("dbhelper","sqlexception on query with "+selection+" args: "+print(selArgsA));
         }
 
         if (c != null) {
@@ -588,44 +588,45 @@ public class DbHelper extends SQLiteOpenHelper {
                     res = new Report(ExportReport.FILE_WRITE_ERROR);
                 }
                 final Activity act = (Activity) exporter.getContext();
-                act.runOnUiThread(new Runnable() {
+                if (act!=null)
+                    act.runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        if (res.getReport() == ExportReport.OK) {
-                            exporter.getDialog().setCheckGenerate(true);
-                        } else {
-                            exporter.getDialog().setCheckGenerate(false);
-                            exporter.getDialog().setGenerateStatus(res.getReport().name());
+                        @Override
+                        public void run() {
+                            if (res.getReport() == ExportReport.OK) {
+                                exporter.getDialog().setCheckGenerate(true);
+                            } else {
+                                exporter.getDialog().setCheckGenerate(false);
+                                exporter.getDialog().setGenerateStatus(res.getReport().name());
+                            }
                         }
-                    }
-                });
+                    });
 
                 //final String ret = GlobalState.getInstance().getBackupManager().backupExportDataWithProgress(exportFileName + "." + exporter.getType(), r.result,exporter.getDialog(),act);
                 final String ret = GlobalState.getInstance().getBackupManager().backupExportData(exportFileName + "." + exporter.getType(), r.result);
-                act.runOnUiThread(new Runnable() {
+                if (act!=null)
+                    act.runOnUiThread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        exporter.getDialog().setCheckBackup(ret.equals("OK"));
-                        exporter.getDialog().setBackupStatus(ret);
-                    }
-                });
+                        @Override
+                        public void run() {
+                            exporter.getDialog().setCheckBackup(ret.equals("OK"));
+                            exporter.getDialog().setBackupStatus(ret);
+                        }
+                    });
 
                 return res;
             }
-        } else
-            c.close();
+        }
 
+        if (exporter.getContext() != null)
+            ((Activity) exporter.getContext()).runOnUiThread(new Runnable() {
 
-        ((Activity) exporter.getContext()).runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                exporter.getDialog().setCheckGenerate(false);
-                exporter.getDialog().setGenerateStatus("Failed export. No data?");
-            }
-        });
+                @Override
+                public void run() {
+                    exporter.getDialog().setCheckGenerate(false);
+                    exporter.getDialog().setGenerateStatus("Failed export. No data?");
+                }
+            });
 
         return new Report(ExportReport.NO_DATA);
     }

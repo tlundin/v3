@@ -56,7 +56,6 @@ public abstract class Exporter {
 		if (diff > Constants.MS_MONTH)
 			return null;
 		}
-		//return new CSVExporter(ctx);
 
 		if (type==null||type.equalsIgnoreCase("csv"))
 			return new CSVExporter(ctx,eDialog);

@@ -37,7 +37,7 @@ INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.
 		INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:6:5-32
+		ADDED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml:6:5-30
 		INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\terje\StudioProjects\vortex\app\src\main\AndroidManifest.xml
 	xmlns:tools

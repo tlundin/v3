@@ -7,10 +7,13 @@ import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.blocks.DisplayFieldBlock;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.Event;
+import com.teraim.fieldapp.dynamic.workflow_abstracts.EventListener;
+import com.teraim.fieldapp.non_generics.Constants;
 
 import java.util.Map;
 
-public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
+public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell, EventListener {
 
 
 	private final Map<String, String> myHash;
@@ -22,6 +25,7 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 				isVisible,new DisplayFieldBlock("black",null,null,null));
 
 		myHash = columnKeyHash;
+		context.registerEventListener(this, Event.EventType.onSave);
 	}
 
 
@@ -54,4 +58,16 @@ public class WF_Cell_Widget extends WF_ClickableField implements WF_Cell {
 	}
 
 
+	@Override
+	public void onEvent(Event e) {
+		if (e.getProvider().equals(Constants.SYNC_ID)) {
+			super.refreshInputFields();
+		}
+	}
+
+
+	@Override
+	public String getName() {
+		return null;
+	}
 }

@@ -16,6 +16,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.teraim.fieldapp.non_generics.Constants;
+import com.teraim.fieldapp.synchronization.EndOfStream;
 import com.teraim.fieldapp.synchronization.SyncEntry;
 import com.teraim.fieldapp.utils.DbHelper;
 import com.teraim.fieldapp.utils.Tools;
@@ -102,6 +103,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mApp = app;
         mUUID = uuid;
         mClient = client;
+        Log.d("sync","mTeam now: "+mTeam);
         mTimestamp_receive=timestamp_receive;
         USER_STOPPED_SYNC = false;
         LOCKED = false;
@@ -155,7 +157,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 out = new ObjectOutputStream(conn.getOutputStream());
                 //header (username, uuid, team)
                 sendHeader(out);
-                //send data ([] of sync entries)
+                //send data ([] of sync entries or EndofStream if empty)
                 out.writeObject(dataOut.data);
                 //timestamp -1 means that no data was sent
                 if (dataOut.timestamp != -1) {
@@ -304,8 +306,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             //targets.append(",");
         }
         c.close();
-        Log.d("sync","returning stamped entries: "+syncEntries.length);
-        return new StampedData(syncEntries, maxStamp, hasMore);
+
+        if (syncEntries.length == 0) {
+            Log.d("sync","no data , returning endofstream");
+            return new StampedData(new EndOfStream(), maxStamp, false);
+        } else {
+            Log.d("sync","returning stamped entries: "+syncEntries.length);
+            return new StampedData(syncEntries,maxStamp,hasMore);
+        }
+
+
     }
 
     private URLConnection getSyncConnection() throws IOException {

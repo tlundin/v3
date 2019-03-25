@@ -74,7 +74,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_DATA_CONSUMED;
 import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_DATA_READY_FOR_INSERT;
 import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_ERROR_STATE;
 import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_RUN_ENDED;
@@ -385,8 +384,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 case MSG_SYNC_RUN_ENDED:
                     Log.d("vortex", "MSG -->SYNC ENDED");
                     GlobalState gs = GlobalState.getInstance();
-                    if (gs!=null)
+                    if (gs!=null) {
                         gs.getDb().saveTimeStampOfLatestSuccesfulSync(gs.getMyTeam());
+                    }
                     menuActivity.syncState = R.drawable.syncon;
                     break;
                 case MSG_SYNC_ERROR_STATE:
@@ -413,19 +413,20 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
                 case MSG_SYNC_DATA_READY_FOR_INSERT:
                     Log.d("sync", "MSG -->SYNC_DATA_READY_FOR_INSERT");
-                    if (syncConsumerThread == null) {
-                        syncConsumerThread = new SyncConsumerThread();
+                    if (syncConsumerThread == null || !syncConsumerThread.isAlive()) {
+                        syncConsumerThread = new SyncConsumerThread(this);
                         syncConsumerThread.setPriority(Thread.MIN_PRIORITY);
                         syncConsumerThread.start();
                     } else {
+
                         Log.d("sync","Busy inserting...delaying");
 
                     }
                     break;
-                case MSG_SYNC_DATA_CONSUMED:
-                    Log.d("sync", "MSG -->SYNC_DATA_CONSUMED");
-                    syncConsumerThread = null;
-                    break;
+                //case MSG_SYNC_DATA_CONSUMED:
+                 //   Log.d("sync", "MSG -->SYNC_DATA_CONSUMED");
+                 //   syncConsumerThread = null;
+                 //   break;
             }
             menuActivity.refreshSyncDisplay();
 

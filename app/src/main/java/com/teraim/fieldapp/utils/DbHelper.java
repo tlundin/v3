@@ -1460,7 +1460,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public SyncReport insertSyncEntries(SyncReport changes, SyncEntry[] ses, LoggerI o) {
 
         if (ses == null || ses.length==0) {
-            Log.d("sync", "SE[] empty in sync");
+            Log.d("sync", "syncentry contained no data");
             return null;
         }
         final VariableCache variableCache = GlobalState.getInstance().getVariableCache();
@@ -2077,8 +2077,10 @@ public class DbHelper extends SQLiteOpenHelper {
             Long timestamp = getSendTimestamp(team);
             //Log.d("biff","Time difference from now to my last sync is "+(System.currentTimeMillis()-timestamp)+". Timestamp: "+timestamp+" team: "+team+" tsglobal: "+timestamp2+" app: "+globalPh.get(PersistenceHelper.BUNDLE_NAME));
 
+ //           Cursor c = db().query(TABLE_AUDIT, null,
+ //                   "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
             Cursor c = db().query(TABLE_AUDIT, null,
-                    "timestamp > ? AND " + DbHelper.LAG + " = ?", new String[]{timestamp.toString(), team}, null, null, "timestamp asc", null);
+                    "timestamp > ?", new String[]{timestamp.toString()}, null, null, "timestamp asc", null);
 
             ret = c.getCount();
             c.close();

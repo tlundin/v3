@@ -104,7 +104,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private Integer syncState = R.drawable.syncoff;
     protected PopupWindow mPopupWindow;
     private Switch sync_switch;
-    private Button sync_button;
+
 
     //Tracker callback.
     private GPS_State latestSignal = null;
@@ -136,6 +136,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private ImageView animView = null;
 
     private boolean animationRunning = false;
+    private Button refresh_button;
+    private CompoundButton.OnCheckedChangeListener mSyncSwitchListener;
 
     private enum GPSQuality {
         red,
@@ -262,28 +264,22 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             mPopupWindow.dismiss();
         });
 
-        sync_button = syncpop.findViewById(R.id.sync_button);
 
-        sync_button.setOnClickListener(view -> {
-            //Try to force immediate.
-            SyncAdapter.forceSyncToHappen();
-        });
-
-        Button refresh_button = syncpop.findViewById(R.id.refresh_button);
+        refresh_button = syncpop.findViewById(R.id.refresh_button);
 
         refresh_button.setOnClickListener(view -> {
             rowBuffer.clear();
-            getTeamSyncStatusFromServer();
+            SyncAdapter.forceSyncToHappen();
         });
 
         sync_switch = syncpop.findViewById(R.id.sync_switch);
 
-        sync_switch.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener() {
+        mSyncSwitchListener = new Switch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 toggleSyncOnOff(b);
             }
-        });
+        };
 
 
     }
@@ -386,8 +382,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                     GlobalState gs = GlobalState.getInstance();
                     if (gs!=null) {
                         gs.getDb().saveTimeStampOfLatestSuccesfulSync(gs.getMyTeam());
+                        menuActivity.syncState = R.drawable.syncon;
+                        menuActivity.getTeamSyncStatusFromServer();
                     }
-                    menuActivity.syncState = R.drawable.syncon;
                     break;
                 case MSG_SYNC_ERROR_STATE:
                     menuActivity.syncState = R.drawable.syncerr;
@@ -534,7 +531,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     private void refreshSyncDisplay() {
 
-
         int numOfUnsynchedEntries = gs.getDb().getNumberOfUnsyncedEntries();
         long numOfInsertSyncEntries = gs.getDb().getSyncRowsLeft();
         //List of people in team with data on server
@@ -544,6 +540,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         boolean fullySynced = (numOfUnsynchedEntries ==0)&&(numOfInsertSyncEntries == 0) && fullySyncedWithTeam;
 
+        boolean sync_on = syncOn();
+
         String synkStatusTitle;
 
         if (fullySynced) {
@@ -551,6 +549,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             synkStatusTitle="";
         } else
             synkStatusTitle = numOfUnsynchedEntries+((numOfInsertSyncEntries>0)?"/"+numOfInsertSyncEntries:"");
+        if (!sync_on)
+            syncState = R.drawable.syncoff;
 
         mnu[MENU_ITEM_SYNC_TYPE].setActionView(null);
         mnu[MENU_ITEM_SYNC_TYPE].setOnMenuItemClickListener(null);
@@ -562,12 +562,15 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         if (!mPopupWindow.isShowing())
             return;
 
-        boolean sync_on = syncOn();
-        sync_switch.setChecked(sync_on);
-        sync_button.setEnabled(sync_on);
+
+        //only show the current state, don't trigger event.
+        sync_switch.setOnCheckedChangeListener (null);
+        sync_switch.setChecked (sync_on);
+        sync_switch.jumpDrawablesToCurrentState();
+        sync_switch.setOnCheckedChangeListener (mSyncSwitchListener);
+        refresh_button.setVisibility(sync_on?View.VISIBLE:View.INVISIBLE);
 
         View customView = mPopupWindow.getContentView();
-
 
         //Last time I succesfully synced.
         final String team = GlobalState.getInstance().getMyTeam();
@@ -604,7 +607,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
             List<TeamMember> teamMemberList = syncGroup.getTeam();
 
-            if (teamMemberList.isEmpty()) {
+            if (fullySynced) {
                 ll.addView(rowBuffer.defaultRow(getString(R.string.in_sync)));
 
 
@@ -668,6 +671,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 displaySyncDialog();
                 //REFRESH
                 getTeamSyncStatusFromServer();
+
                 break;
             case MENU_ITEM_CONTEXT:
                 Log.d("vortex", "gs is " + GlobalState.getInstance() + " gs " + gs);
@@ -779,14 +783,11 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     }
 
     private void displaySyncDialog() {
-
         if (mPopupWindow.isShowing()) {
             Log.d("pop", "already showing...return");
             return;
         }
-
         mPopupWindow.showAtLocation(findViewById(R.id.content_frame), Gravity.CENTER, 0, 0);
-        refreshSyncDisplay();
     }
 
 
@@ -1181,7 +1182,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
 
     private boolean syncOn() {
-        return ContentResolver.getSyncAutomatically(mAccount, Start.AUTHORITY);
+        boolean syncOn = ContentResolver.getSyncAutomatically(mAccount, Start.AUTHORITY);
+        Log.d("sync","in syncOn. Syncon is "+syncOn);
+        return syncOn;
     }
 
     @Override
@@ -1244,15 +1247,13 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
                                 }
                                 callInProgress = false;
-                                gs.sendEvent(MenuActivity.REDRAW);
+                                refreshSyncDisplay();
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("vortex", "Got an error when attempting to contact the sync server: " + error.getMessage());
-                        syncState=R.drawable.syncerr;
                         callInProgress = false;
-                        gs.sendEvent(MenuActivity.REDRAW);
                     }
                 });
 

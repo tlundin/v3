@@ -165,23 +165,11 @@
             android:text="3 minutes" />
     </LinearLayout>
 
-
-
-    <Button
-        android:id="@+id/sync_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/ll1"
-        android:layout_alignRight="@+id/ll1"
-        android:layout_below="@+id/ll3"
-        android:layout_marginTop="15dp"
-        android:text="@string/sync_pop_sync_button_txt" />
-
     <View
         android:id="@+id/line1"
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_below="@+id/sync_button"
+        android:layout_below="@+id/ll3"
         android:layout_marginTop="20dp"
         android:background="@color/primary_light" />
 
@@ -224,7 +212,7 @@
     <Button
         android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
-        android:text="@string/refresh_team"
+        android:text="@string/sync_pop_sync_button_txt"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/ll1"
         android:layout_alignRight="@+id/ll1"

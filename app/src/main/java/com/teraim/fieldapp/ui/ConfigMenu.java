@@ -371,10 +371,7 @@ public class ConfigMenu extends PreferenceActivity {
 						strA[0] = Character.toUpperCase(strA[0]);
 						etp.setText(new String(strA));
 
-					} else {
-					    Log.d("vortex","setting lower case");
-                        etp.setText(etp.getText().toLowerCase());
-                    }
+					}
 
 				}
 				pref.setSummary(etp.getText());

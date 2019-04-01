@@ -27,49 +27,65 @@
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/RelativeLayout01"
+    <LinearLayout style="?android:attr/buttonBarStyle"
+        android:id="@+id/Barparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/stroke_bg"
-        >
-        <Button
-            android:id="@+id/log_clear"
-            android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/stroke_bg">
+        <LinearLayout style="?android:attr/buttonBarStyle"
+            android:id="@+id/Barchild1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Clear"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:textColor="@color/white" />
- 
-       <Button
-            android:id="@+id/scrollDown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scroll down"
-           android:textSize="@dimen/text_size_small"
+            android:orientation="horizontal"
             android:layout_weight="1"
-            android:singleLine="true"
-            android:textColor="@color/white" />
-       <Button
-            android:id="@+id/printdb"
-            android:layout_width="wrap_content"
+            android:background="@drawable/stroke_bg">
+                <Button style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/log_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+               <Button style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/scrollDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scroll down"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+        </LinearLayout>
+        <LinearLayout style="?android:attr/buttonBarStyle"
+            android:id="@+id/Barchild2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Print db"
-           android:textSize="@dimen/text_size_small"
+            android:orientation="horizontal"
             android:layout_weight="1"
-            android:singleLine="true"
-            android:textColor="@color/white" />
-        <Button
-            android:id="@+id/printlog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="log2file"
-            android:textSize="@dimen/text_size_small"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textColor="@color/white" />
+            android:background="@drawable/stroke_bg">
+
+               <Button style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/printdb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DB2file"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+                <Button style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/printlog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="log2file"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+                <Button style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/crashlog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Force crash"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+        </LinearLayout>
 
 
     </LinearLayout>

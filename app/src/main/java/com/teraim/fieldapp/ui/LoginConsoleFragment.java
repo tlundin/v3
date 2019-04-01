@@ -118,7 +118,7 @@ public class LoginConsoleFragment extends Fragment implements ModuleLoaderListen
 		if (bundleName == null || bundleName.length()==0)
 			bundleName = InitialBundleName;
 
-		ph	 = new PersistenceHelper(getActivity().getApplicationContext().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_PRIVATE));
+		ph = new PersistenceHelper(getActivity().getApplicationContext().getSharedPreferences(globalPh.get(PersistenceHelper.BUNDLE_NAME), Context.MODE_PRIVATE));
 		oldV= ph.getF(PersistenceHelper.CURRENT_VERSION_OF_APP);
 
 		appTxt.setText(bundleName+" "+(oldV==-1?"":oldV));

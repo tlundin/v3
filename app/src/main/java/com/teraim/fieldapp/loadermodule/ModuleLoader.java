@@ -248,7 +248,7 @@ public class ModuleLoader implements FileLoadedCb{
 
                     } else {
                         Log.d("vortex", "Thaw failed..Retrying...reload from network");
-                        debug.addRedText("thaw failed...trying to reload from network");
+                        debug.addYellowText("thaw failed...trying to reload from network");
                         module.tryingWebAfterFail=true;
                         module.deleteFrozen();
                         module.setFrozenVersion(-1);
@@ -326,7 +326,7 @@ public class ModuleLoader implements FileLoadedCb{
                         //continue immediately on true = already thawed.
                         Log.d("vortex","frozen exists. ");
                         debug.addRow("");
-                        debug.addRedText("Using current: " );
+                        debug.addCriticalText("Using current: " );
                         if (module.thaw(this)) {
                             thawed(module,new LoadResult(module, thawed));
                         }

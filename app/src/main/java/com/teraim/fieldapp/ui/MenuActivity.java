@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
@@ -73,6 +72,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_DATA_READY_FOR_INSERT;
 import static com.teraim.fieldapp.synchronization.framework.SyncService.MSG_SYNC_ERROR_STATE;
@@ -108,22 +108,12 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     //Tracker callback.
     private GPS_State latestSignal = null;
-    private long potential_timestamp_from_team_to_me;
-    private int seq_no;
-
-
-
     /**
      * Flag indicating whether we have called bind on the sync service.
      */
     private boolean mBound;
-
     private Messenger mService = null;
-
     private final Messenger mMessenger = new Messenger(new IncomingHandler(this));
-    private AlertDialog uiLock = null;
-    private Message reply = null;
-
     private final static int NO_OF_MENU_ITEMS = 6;
     private final MenuItem[] mnu = new MenuItem[NO_OF_MENU_ITEMS];
     private final static int MENU_ITEM_GPS_QUALITY = 0;
@@ -132,10 +122,6 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     private final static int MENU_ITEM_LOG_WARNING = 3;
     private final static int MENU_ITEM_SETTINGS = 4;
     private final static int MENU_ITEM_ABOUT = 5;
-
-    private ImageView animView = null;
-
-    private boolean animationRunning = false;
     private Button refresh_button;
     private CompoundButton.OnCheckedChangeListener mSyncSwitchListener;
 
@@ -163,66 +149,73 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             public void onReceive(Context ctx, Intent intent) {
                 Log.d("nils", "Broadcast: " + intent.getAction());
 
-                if (intent.getAction().equals(INITDONE)) {
-                    initDone = true;
+                switch (intent.getAction()) {
+                    case INITDONE:
+                        initDone = true;
 
-                    //listen to Tracker
-                    if (GlobalState.getInstance() != null) {
+                        //listen to Tracker
+                        if (GlobalState.getInstance() != null) {
 
-                        GlobalState.getInstance().getTracker().registerListener(MenuActivity.this);
-                        gs = GlobalState.getInstance();
-                        //check current state of synk server.
-                        //This determines the sync status.
-                        toggleSyncOnOff(syncOn());
+                            GlobalState.getInstance().getTracker().registerListener(MenuActivity.this);
+                            gs = GlobalState.getInstance();
+                            //check current state of synk server.
+                            //This determines the sync status.
+                            toggleSyncOnOff(syncOn());
 
-                        if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
-                            getTeamSyncStatusFromServer();
+                            if (globalPh.get(PersistenceHelper.SYNC_METHOD).equals("Internet"))
+                                getTeamSyncStatusFromServer();
 
 
-                    }
-
-                } else if (intent.getAction().equals(INITSTARTS)) {
-                    initDone = false;
-                    initFailed = false;
-                    me.refreshStatusRow();
-                } else if (intent.getAction().equals(INITFAILED)) {
-                    Log.d("initf", "got initFailed");
-                    initFailed = true;
-                    me.refreshStatusRow();
-                } else if (intent.getAction().equals(SYNC_REQUIRED)) {
-                    new AlertDialog.Builder(MenuActivity.this)
-                            .setTitle("Synchronize")
-                            .setMessage("The action you just performed mandates a synchronisation. Please synchronise with your partner before continuing.")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.ok, (dialog, which) -> uiLock = null)
-                            .show();
-                } else if (intent.getAction().equals(REDRAW)) {
-                    //check that there is some time between calls. 5s?
-                    long currentTime = System.currentTimeMillis();
-                    long diff = currentTime - lastRedraw;
-                    if (diff < MIN_REDRAW_DELAY) {
-                        //delay or discard call.
-                        Log.d("vortex", "Calling redraw");
-                        if (handler == null) {
-                            handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("vortex", "Calling redraw..delayed diff: " + diff);
-                                    handler = null;
-                                    me.refreshStatusRow();
-                                }
-                            }, MIN_REDRAW_DELAY - diff);
                         }
-                    } else
-                        me.refreshStatusRow();
 
-                    lastRedraw = System.currentTimeMillis();
-                    if (!Connectivity.isConnected(MenuActivity.this))
-                        toggleSyncOnOff(false);
-                    Log.d("kakka", "connected: " + Connectivity.isConnected(MenuActivity.this));
-                    syncState = syncOn() ? R.drawable.syncon : R.drawable.syncoff;
+                        break;
+                    case INITSTARTS:
+                        initDone = false;
+                        initFailed = false;
+                        me.refreshStatusRow();
+                        break;
+                    case INITFAILED:
+                        Log.d("initf", "got initFailed");
+                        initFailed = true;
+                        me.refreshStatusRow();
+                        break;
+                    case SYNC_REQUIRED:
+                        new AlertDialog.Builder(MenuActivity.this)
+                                .setTitle("Synchronize")
+                                .setMessage("The action you just performed mandates a synchronisation. Please synchronise with your partner before continuing.")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.ok, (dialog, which) -> {
+                                })
+                                .show();
+                        break;
+                    case REDRAW:
+                        //check that there is some time between calls. 5s?
+                        long currentTime = System.currentTimeMillis();
+                        long diff = currentTime - lastRedraw;
+                        if (diff < MIN_REDRAW_DELAY) {
+                            //delay or discard call.
+                            Log.d("vortex", "Calling redraw");
+                            if (handler == null) {
+                                handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("vortex", "Calling redraw..delayed diff: " + diff);
+                                        handler = null;
+                                        me.refreshStatusRow();
+                                    }
+                                }, MIN_REDRAW_DELAY - diff);
+                            }
+                        } else
+                            me.refreshStatusRow();
+
+                        lastRedraw = System.currentTimeMillis();
+                        if (!Connectivity.isConnected(MenuActivity.this))
+                            toggleSyncOnOff(false);
+                        Log.d("kakka", "connected: " + Connectivity.isConnected(MenuActivity.this));
+                        syncState = syncOn() ? R.drawable.syncon : R.drawable.syncoff;
+                        break;
                 }
             }
 
@@ -246,7 +239,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         // Inflate the sync popup
-        View syncpop = inflater.inflate(R.layout.sync_popup_inner, null);
+        View syncpop = Objects.requireNonNull(inflater).inflate(R.layout.sync_popup_inner, null);
 
         // Initialize a new instance of popup window
         mPopupWindow = new PopupWindow(
@@ -274,12 +267,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
         sync_switch = syncpop.findViewById(R.id.sync_switch);
 
-        mSyncSwitchListener = new Switch.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                toggleSyncOnOff(b);
-            }
-        };
+        mSyncSwitchListener = (compoundButton, b) -> toggleSyncOnOff(b);
 
 
     }
@@ -388,7 +376,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                     break;
                 case MSG_SYNC_ERROR_STATE:
                     menuActivity.syncState = R.drawable.syncerr;
-                    String toastMsg = "";
+                    String toastMsg;
                     Log.d("sync", "MSG -->SYNC ERROR STATE");
                     switch (msg.arg1) {
                         case SyncService.ERR_RECEIVE_FAILED:
@@ -403,8 +391,8 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                             toastMsg = "Sync Error";
                             break;
                     }
-                    if (toastMsg.length() > 0 && menuActivity != null)
-                        Toast.makeText(menuActivity, toastMsg, Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(menuActivity, toastMsg, Toast.LENGTH_SHORT).show();
 
                     break;
 
@@ -421,9 +409,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                     }
                     break;
                 //case MSG_SYNC_DATA_CONSUMED:
-                 //   Log.d("sync", "MSG -->SYNC_DATA_CONSUMED");
-                 //   syncConsumerThread = null;
-                 //   break;
+                //   Log.d("sync", "MSG -->SYNC_DATA_CONSUMED");
+                //   syncConsumerThread = null;
+                //   break;
             }
             menuActivity.refreshSyncDisplay();
 
@@ -456,7 +444,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
     private void createMenu(Menu menu) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        animView = (ImageView) inflater.inflate(R.layout.refresh_load_icon, null);
+        //animView = (ImageView) inflater.inflate(R.layout.refresh_load_icon, null);
 
         for (int c = 0; c < mnu.length; c++)
             mnu[c] = menu.add(0, c, c, "");
@@ -729,21 +717,28 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 scrollD.setOnClickListener(v -> sv.post(() -> sv.fullScroll(ScrollView.FOCUS_DOWN)));
                 Button print = dialog.findViewById(R.id.printdb);
                 Button printLog = dialog.findViewById(R.id.printlog);
+                Button crashLog = dialog.findViewById(R.id.crashlog);
 
                 print.setOnClickListener(v -> {
                     if (gs != null)
                         BackupManager.getInstance(gs).backupDatabase("dump");
                 });
 
-                printLog.setOnClickListener(new OnClickListener() {
+                crashLog.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        printLog(log.getLogText());
-                    }
-
-                    private void printLog(CharSequence logText) {
                         String crashme = null;
                         crashme.charAt(0);
+                    }
+                });
+
+
+                printLog.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick (View v){
+                        printLog(log.getLogText());
+                    }
+                    private void printLog(CharSequence logText) {
                         if (logText == null || logText.length() == 0)
                             return;
                         try {
@@ -761,6 +756,9 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
                     }
                 });
+
+
+
                 break;
 
             case MENU_ITEM_SETTINGS:
@@ -944,7 +942,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
         ContentResolver.setSyncAutomatically(mAccount, Start.AUTHORITY, false);
 
         syncState = R.drawable.syncoff;
-        reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
+        Message reply = Message.obtain(null, SyncService.MSG_USER_STOPPED_SYNC);
         try {
             mService.send(reply);
         } catch (RemoteException e) {
@@ -1220,14 +1218,14 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
             callInProgress = true;
             String team = gs.getMyTeam();
             String project = globalPh.get(PersistenceHelper.BUNDLE_NAME);
-            String user = globalPh.get(PersistenceHelper.USER_ID_KEY);
+            String useruuid = globalPh.get(PersistenceHelper.USERUUID_KEY);
             long timestamp = gs.getDb().getReceiveTimestamp(team);
 
             Log.d("vortex", "TIMESTAMP_LAST_SYNC_FROM_TEAM_TO_ME: " + timestamp);
             if (Connectivity.isConnected(this)) {
                 //connected...lets call the sync server.
                 final String SyncServerStatusCall = Constants.SynkStatusURI +
-                        team + "&project=" + project + "&timestamp=" + timestamp + "&user=" + user;
+                        team + "&project=" + project + "&timestamp=" + timestamp + "&useruuid=" + useruuid;
                 //final TextView mTextView = (TextView) findViewById(R.id.text);
                 RequestQueue queue = Volley.newRequestQueue(this);
 

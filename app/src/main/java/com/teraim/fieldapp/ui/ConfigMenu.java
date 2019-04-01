@@ -233,6 +233,9 @@ public class ConfigMenu extends PreferenceActivity {
                             if (!bundleName.isEmpty()) {
                                 Log.d("vortex", "Erasing cache for " + bundleName);
                                 int n = Tools.eraseFolder(Constants.VORTEX_ROOT_DIR + bundleName + "/cache/");
+                                //erase allfrozen flag
+								PersistenceHelper ph = new PersistenceHelper(getActivity().getApplicationContext().getSharedPreferences(bundleName, Context.MODE_PRIVATE));
+								ph.put(PersistenceHelper.ALL_MODULES_FROZEN + "moduleLoader",false);
                                 Toast.makeText(getActivity(), n + " " + getResources().getString(R.string.reset_cache_toast), Toast.LENGTH_LONG).show();
                                 askForRestart();
                             }

@@ -5,7 +5,7 @@
 	<string name="about">Om appen</string>
     <string name="drawer_open">Öppna</string>
 	<string name="drawer_close">Stäng</string>
-    <string name="debug_summary">Extra debug information i logg</string>
+    <string name="debug_summary">Avancerad validering vid test (appen går långsammare)</string>
 
 	<string name="u1">u1</string>
 	<string name="u2">u2</string>	
@@ -27,7 +27,7 @@
 	<string name="DeviceType">Dosans typ</string>
 	<string name="Team">Lag</string>
 	<string name="UserName">Användare</string>
-	<string name="DevOp">Utvecklarfunktioner</string>
+	<string name="DevOp">Avancerat</string>
 	<string name="log_levels_h">Logg-nivåer</string>
 	<string name="UserName_dm">Användarens namn</string>
 	<string name="Team_s">Namn på ditt lag och synkgrupp</string>
@@ -62,11 +62,12 @@
 	<string name="sync_time_minutes">minut(er)</string>
 	<string name="sync_time_just_now">alldeles nyss</string>
 
-	<string name="appDialMsg">Appens namn utan \'.xml\'\n (ändring kräver omstart)</string>
+	<string name="General">Allmänt</string>
+	<string name="appDialMsg">Appens namn</string>
 	<string name="Backup_folder_s">Om inget värde anges så används foldern \'backup\' under Appens hem</string>
-	<string name="Backup_dm">Export och säkerhetskopior hamnar här. Om du inte anger något värde så hamnar dessa filer under folder \'backup\' i Appens hemfolder</string>
+	<string name="Backup_dm"> Default: folder \'backup\' i Appens hemfolder</string>
 	<string name="Automatic_backup_s">Slå på eller av säkerhetskopiering</string>
-	<string name="show_author_s">Visa vem som gjort en inmatning</string>
+	<string name="show_author_s">Visa vem som gjort en inmatning (programmet går långsammare)</string>
 	<string name="show_author_t">Visa inmatare</string>
 	<string name="reset_sync_d">Raderar allt synkdata </string>
 

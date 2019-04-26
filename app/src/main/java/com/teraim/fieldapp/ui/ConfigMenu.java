@@ -3,7 +3,6 @@ package com.teraim.fieldapp.ui;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
-import com.teraim.fieldapp.Start;
 import com.teraim.fieldapp.non_generics.Constants;
 import com.teraim.fieldapp.utils.BarcodeReader;
 import com.teraim.fieldapp.utils.PersistenceHelper;
@@ -129,7 +127,7 @@ public class ConfigMenu extends PreferenceActivity {
 						askForRestart();
 
 					} else {
-						new AlertDialog.Builder(this.getActivity()).setTitle("Bummer")
+						new AlertDialog.Builder(this.getActivity()).setTitle("Error")
 								.setMessage("NO QR code found in image.")
 								.setPositiveButton(R.string.ok, (dialog, which) -> {
 
@@ -184,7 +182,7 @@ public class ConfigMenu extends PreferenceActivity {
 				}
 
 				private boolean isCharAllowed(char c) {
-					return Character.isLetterOrDigit(c) || c=='.' || c=='_'||c=='/'|| c=='-';
+					return Character.isLetterOrDigit(c);
 				}
 			};
 
@@ -192,8 +190,8 @@ public class ConfigMenu extends PreferenceActivity {
 			teamPref = (EditTextPreference) findPreference(PersistenceHelper.LAG_ID_KEY);
 			teamPref.setSummary(teamPref.getText());
 
-			ListPreference color = (ListPreference)findPreference(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
-			color.setSummary(color.getValue());
+//			ListPreference color = (ListPreference)findPreference(PersistenceHelper.DEVICE_COLOR_KEY_NEW);
+//			color.setSummary(color.getValue());
 
 			versionControlPref = (ListPreference)findPreference(PersistenceHelper.VERSION_CONTROL);
 			versionControlPref.setSummary(versionControlPref.getValue());
@@ -203,7 +201,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 			userPref = (EditTextPreference) findPreference(PersistenceHelper.USER_ID_KEY);
 			userPref.setSummary(userPref.getText());
-
+			userPref.getEditText().setFilters(new InputFilter[] {filter});
 
 			serverPref = (EditTextPreference) findPreference(PersistenceHelper.SERVER_URL);
 			serverPref.setText(Tools.server(serverPref.getText()));
@@ -217,7 +215,7 @@ public class ConfigMenu extends PreferenceActivity {
 			if (backupPref.getText()==null) {
 				backupPref.setText(Constants.DEFAULT_EXT_BACKUP_DIR);
 			}
-			backupPref.setSummary(backupPref.getText());
+			backupPref.setSummary(backupPref.getSummary());
 
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
@@ -308,7 +306,7 @@ public class ConfigMenu extends PreferenceActivity {
 				String path = Constants.VORTEX_ROOT_DIR + bundleName + "/config";
 				File folder = new File(path);
 				StringBuilder textToDisplay = new StringBuilder("Location: " + path);
-				StringBuilder filesList = new StringBuilder("<FOLDER IS EMPTY. PLEASE ADD CONFIGURATION FILES!>");
+				StringBuilder filesList = new StringBuilder("No configuration files in folder. Please add");
 				boolean folderExists= true;
 				if (!folder.exists())
                     folderExists=folder.mkdir();
@@ -380,8 +378,10 @@ public class ConfigMenu extends PreferenceActivity {
 				pref.setSummary(etp.getText());
 			}
 			else if (pref instanceof ListPreference) {
-				ListPreference letp = (ListPreference) pref;
-				pref.setSummary(letp.getEntry());
+                ListPreference letp = (ListPreference) pref;
+                pref.setSummary(letp.getEntry());
+            }
+			/*
                 switch (letp.getKey()) {
                     case PersistenceHelper.DEVICE_COLOR_KEY_NEW:
                         switch (letp.getValue()) {
@@ -402,7 +402,8 @@ public class ConfigMenu extends PreferenceActivity {
                         break;
 
                 }
-			}
+             */
+
 
 
 

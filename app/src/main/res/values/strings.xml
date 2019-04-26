@@ -5,8 +5,7 @@
     <string name="about">About</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-    <string name="debug_summary">Debug Log Information</string>
-
+    <string name="debug_summary">Enhanced validation when testing (App runs slower)</string>
     <string name="u1">u1</string>
     <string name="u2">u2</string>
     <string name="yes">Yes</string>
@@ -27,7 +26,7 @@
     <string name="DeviceType">Device Type</string>
     <string name="Team">Team</string>
     <string name="UserName">Username</string>
-    <string name="DevOp">Developer Options</string>
+    <string name="DevOp">Advanced</string>
     <string name="log_levels_h">Log Levels</string>
     <string name="UserName_dm">User name</string>
     <string name="Team_s">Name of team and sync group</string>
@@ -62,11 +61,12 @@
     <string name="sync_time_minutes">minute(s)</string>
     <string name="sync_time_just_now">moments ago</string>
 
-    <string name="appDialMsg">Enter the application name. No \'.xml\', only the name!\n (Change requires restart)</string>
+    <string name="General">General</string>
+    <string name="appDialMsg">Enter the application name</string>
     <string name="Backup_folder_s">Leave empty to use folder named \'backup\' under project folder</string>
-    <string name="Backup_dm">Export and backup files are saved to this folder. If you leave the field empty, the files will be stored under \'backup\' in your project folder.</string>
+    <string name="Backup_dm">Default: files will be stored under \'backup\' in your project folder.</string>
     <string name="Automatic_backup_s">Automatically backup database at regular intervals</string>
-    <string name="show_author_s">Show in entryfields who made last update</string>
+    <string name="show_author_s">Show author of data (App runs slower)</string>
     <string name="show_author_t">Show Author</string>
     <string name="reset_sync_d">Erases all sync data</string>
 

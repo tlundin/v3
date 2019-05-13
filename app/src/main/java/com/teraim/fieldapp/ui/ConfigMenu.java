@@ -148,7 +148,7 @@ public class ConfigMenu extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			this.getPreferenceManager().setSharedPreferencesName(Constants.GLOBAL_PREFS);
 			// Load the preferences from an XML resource
-			addPreferencesFromResource(R.xml.myprefs);
+			addPreferencesFromResource(R.xml.configmenu);
 			//Set default values for the prefs.
 			//			getPreferenceScreen().getSharedPreferences()
 			//			.registerOnSharedPreferenceChangeListener(this);
@@ -212,10 +212,8 @@ public class ConfigMenu extends PreferenceActivity {
 			appPref.getEditText().setFilters(new InputFilter[] {filter});
 
 			EditTextPreference backupPref = (EditTextPreference) findPreference(PersistenceHelper.BACKUP_LOCATION);
-			if (backupPref.getText()==null) {
-				backupPref.setText(Constants.DEFAULT_EXT_BACKUP_DIR);
-			}
-			backupPref.setSummary(backupPref.getSummary());
+			backupPref.setSummary(backupPref.getText());
+			//backupPref.setSummary(backupPref.getSummary());
 
 			ListPreference logLevels = (ListPreference)findPreference(PersistenceHelper.LOG_LEVEL);
 			logLevels.setSummary(logLevels.getEntry());
@@ -247,6 +245,7 @@ public class ConfigMenu extends PreferenceActivity {
 
 			final CheckBoxPreference pref = (CheckBoxPreference)findPreference("local_config");
 			final PreferenceGroup devOpt = (PreferenceGroup)findPreference("developer_options");
+			final PreferenceGroup genOpt = (PreferenceGroup)findPreference("general_options");
 			final Preference folderPref = findPreference(PersistenceHelper.FOLDER);
 			final Preference QRPref = findPreference("scan_qr_code");
 
@@ -265,10 +264,10 @@ public class ConfigMenu extends PreferenceActivity {
 
                 if (pref.isChecked()) {
                     devOpt.removePreference(folderPref);
-                    devOpt.addPreference(serverPref);
+                    genOpt.addPreference(serverPref);
                 } else {
 
-                    devOpt.removePreference(serverPref);
+                    genOpt.removePreference(serverPref);
                     setFolderPref(folderPref);
                     devOpt.addPreference(folderPref);
 
@@ -278,9 +277,9 @@ public class ConfigMenu extends PreferenceActivity {
 
 			if (!pref.isChecked()) {
 				devOpt.removePreference(folderPref);
-				devOpt.addPreference(serverPref);
+				genOpt.addPreference(serverPref);
 			} else {
-				devOpt.removePreference(serverPref);
+				genOpt.removePreference(serverPref);
 				setFolderPref(folderPref);
 				devOpt.addPreference(folderPref);
 			}

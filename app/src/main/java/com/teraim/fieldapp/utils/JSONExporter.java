@@ -160,7 +160,8 @@ public class JSONExporter extends Exporter {
 		write("workflow bundle version",""+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_WF_BUNDLE));
 		write("Artlista version",""+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_GROUP_CONFIG_FILE));
 		write("Variable Definition version",""+ph.getF(PersistenceHelper.CURRENT_VERSION_OF_VARPATTERN_FILE));
-
+		write("Author",""+globalPh.get(PersistenceHelper.USER_ID_KEY));
+		write("Team",""+globalPh.get(PersistenceHelper.LAG_ID_KEY));
 		Log.d("nils",writer.toString());
 		
 	}

@@ -534,7 +534,7 @@ public class Tools {
 	public static Map<String,String> cutKeyMap(String columns, Map<String,String> fullHash) {
 		if (columns.isEmpty())
 			return null;
-		Log.d("cutkey","cols: "+columns+"fhash: "+fullHash.toString());
+		Log.d("cutkey","cols: "+columns+"fhash: "+((fullHash==null)?"null":fullHash.toString()));
 		Map<String,String> ret = new HashMap<String,String>();
 		if (fullHash == null) {
 			Log.e("vortex","Hash null - so returning empty in cutkeymap. Columns: "+columns);
@@ -1133,12 +1133,12 @@ public class Tools {
 			return null;
 	}
 
-	public static void printErrorToLog(LoggerI o, Exception e, int blockP) {
+	public static void printErrorToLog(LoggerI o, Exception e, String blockP) {
 		o.addRow("");
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
-		if (blockP != -1) {
-			o.addRedText("Error executing BLOCK "+blockP);
+		if (blockP != null) {
+			o.addRedText("Error executing BLOCK with "+blockP);
 			o.addRow("");
 		}
 		if (e!=null) {

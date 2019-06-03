@@ -233,7 +233,7 @@ public class FotoTemplate extends Executor {
 					.setMessage("Du ska ta antingen en avståndsbild eller fyra vanliga bilder. Inte både och") 
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setCancelable(false)
-					.setNeutralButton("Jag fattar",new Dialog.OnClickListener() {				
+					.setNeutralButton("Ok",new Dialog.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							gs.getPreferences().put(PersistenceHelper.AVSTAND_WARNING_SHOWN,true);

@@ -440,7 +440,7 @@ public class GisObjectConfiguration extends JSONConfigurationModule {
                 return new LoadResult(this,ErrorCode.ParseError,"Parse error when parsing file "+fileName+". Expected Object type at "+reader.toString()+" peek: "+reader.peek());
             }
         } catch (MalformedJsonException je) {
-            Tools.printErrorToLog(o, je,-1);
+            Tools.printErrorToLog(o, je,null);
             throw(je);
         }
         return null;

@@ -11,6 +11,7 @@ import android.util.Pair;
 import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.R;
 import com.teraim.fieldapp.dynamic.VariableConfiguration;
+import com.teraim.fieldapp.dynamic.types.ArrayVariable;
 import com.teraim.fieldapp.dynamic.types.DB_Context;
 import com.teraim.fieldapp.dynamic.types.GisLayer;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
@@ -293,33 +294,34 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		*/
 		Log.d("vortex","selection: "+coordVar1S.selection);
 		Log.d("vortex","sel args: "+print(coordVar1S.selectionArgs));
-		List<String> row = al.getCompleteVariableDefinition(locationVar1);
-		if (row==null) {
+		List<String> completeVariableDefinitionForL1 = al.getCompleteVariableDefinition(locationVar1);
+        List<String> completeVariableDefinitionForL2 = null;
+
+		if (completeVariableDefinitionForL1==null) {
 			Log.e("vortex","Variable not found!");
 			o.addRow("");
 			o.addRedText("Variable "+locationVar1+" was not found. Check Variables.CSV and Groups.CSV!");
 			return;
 		}
-		DataType t1 = al.getnumType(row);
+		DataType t1 = al.getnumType(completeVariableDefinitionForL1);
 		if (t1==DataType.array) {
-			pickerLocation1 = //GlobalState.getInstance().getDb().getAllVariableInstances(coordVar1S);
-					GlobalState.getInstance().getDb().getLastVariableInstance(coordVar1S);
+			pickerLocation1 = GlobalState.getInstance().getDb().getLastVariableInstance(coordVar1S);
 			Log.e("vortex","called getLast.");
 		}
 		else
 			pickerLocation1 = GlobalState.getInstance().getDb().getAllVariableInstances(coordVar1S);
 
 		if (twoVars) {
-
-			DataType t2 = al.getnumType(al.getCompleteVariableDefinition(locationVar2));
+            completeVariableDefinitionForL2 = al.getCompleteVariableDefinition(locationVar2);
+            if (completeVariableDefinitionForL2==null) {
+                Log.e("vortex","Variable L2 not found!");
+                o.addRow("");
+                o.addRedText("Variable "+locationVar2+" was not found. Check Variables.CSV and Groups.CSV!");
+                return;
+            }
+			DataType t2 = al.getnumType(completeVariableDefinitionForL2);
 			coordVar2S = GlobalState.getInstance().getDb().createSelection(objectKeyHash.getContext(), locationVar2);
-			/*if (refresh) {
-				coordVar2S.selection+=" and timestamp > ?";
-				String[] s =Arrays.copyOf(coordVar2S.selectionArgs, coordVar2S.selectionArgs.length+1);
-				s[coordVar2S.selectionArgs.length] = lastCheckTimeStamp;
-				coordVar2S.selectionArgs = s;
-			}
-			*/
+
 			Log.d("vortex","selection: "+coordVar2S.selection);
 			Log.d("vortex","sel args: "+print(coordVar2S.selectionArgs));
 			if (t2==DataType.array)
@@ -341,41 +343,16 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 		final Pair<String, String> nullPair = new Pair<String, String>(null,null);
 
 		if (pickerLocation1 !=null ) {
-
 			myGisObjects = new HashSet<GisObject> ();
-			boolean hasValues = pickerLocation1.moveToFirst();
+			boolean hasV1Value = pickerLocation1.moveToFirst();
+			boolean hasV2Value = twoVars?pickerLocation2.moveToFirst():false;
+			String v1Val = hasV1Value?pickerLocation1.getVariable().value:null;
+            String v2Val = hasV2Value?pickerLocation2.getVariable().value:null;
 			//No values! A dynamic variable can create new ones, so create object anyway.
-			if ((!hasValues&&dynamic) || (hasValues&&dynamic&&twoVars&&!pickerLocation2.moveToFirst())) {
-				Log.e("vortex","no X,Y instances found for keychain..creating empty");
-				Variable v1 = GlobalState.getInstance().getVariableCache().getVariable(objectKeyHash.getContext(), locationVar1);
-				if (v1==null){
-					Log.e("vortex", locationVar1+" does not exist. Check your configuration!");
-					o.addRow("");
-					o.addRedText("Cannot find variable "+locationVar1);
-					return;
-				}
-				if (twoVars) {
-					Variable v2 = GlobalState.getInstance().getVariableCache().getVariable(objectKeyHash.getContext(), locationVar2);
-					if (v2==null){
-						Log.e("vortex", locationVar2+" does not exist. Check your configuration!");
-						o.addRow("");
-						o.addRedText("Cannot find variable "+locationVar2);
-						return;
-					}
-					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,v2,null,null));
-				} else
-					myGisObjects.add(new DynamicGisPoint(this,objectKeyHash.getContext(), v1,null,null));
+			if (dynamic &&(!hasV1Value ||(twoVars&&!hasV2Value))) {
+                Log.e("vortex", "no values found for gps variables.");
 			} else {
-
-
-				if (hasValues&&twoVars&&pickerLocation2!=null&&!pickerLocation2.moveToFirst()) {
-					Log.e("vortex","Missing values!!!");
-					o.addRow("");
-					o.addRedText("Cannot find any instances of secondary loc variable "+locationVar2);
-					return;
-				}
-
-				if (!hasValues && !dynamic) {
+				if (!hasV1Value && !dynamic) {
 					Log.d("vortex","No values in database for static GisPObject with name "+nName);
 					o.addRow("No values in database for static GisPObject with name "+nName);
 				} else {
@@ -393,12 +370,11 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							statusVarM.put(pickerStatusVars.getKeyColumnValues().get("uid"), new Pair<>(name, value));
 						}
 
-					} else
-						Log.d("gaya","PICKERSTATUSVARS NULL FOR "+statusVariable);
+					} //else
+					//	Log.d("gaya","PICKERSTATUSVARS NULL FOR "+statusVariable);
 
 					Pair<String,String> statusVarP=null;
 					do {
-
 						storedVar1 = pickerLocation1.getVariable();
 						//Log.d("vortex","Found "+storedVar1.value+" for "+storedVar1.name);
 						map1 = pickerLocation1.getKeyColumnValues();
@@ -417,8 +393,8 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 							statusVarP = nullPair;
 						}
 						if (dynamic) {
-							String value = pickerLocation1.getVariable().value;
-							v1 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar1.name,value,true);
+                            v1 =  new ArrayVariable(locationVar1, "myLocationX", completeVariableDefinitionForL1, objectKeyHash.getContext(), gs, "value", v1Val, true, null);
+							//v1 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar1.name,value,true);
 						}
 						if (twoVars) {
 							storedVar2 = Objects.requireNonNull(pickerLocation2).getVariable();
@@ -432,8 +408,8 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 									myGisObjects.add(new StaticGisPoint(this,map1, new SweLocation(storedVar1.value,storedVar2.value),statusVarP.first,statusVarP.second));
 								}
 								else {
-									String value = pickerLocation2.getVariable().value;
-									v2 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar2.name,value,true);
+									v2 = new ArrayVariable(locationVar1, "myLocationY", completeVariableDefinitionForL2, objectKeyHash.getContext(), gs, "value", v2Val, true, null);
+									//v2 = GlobalState.getInstance().getVariableCache().getCheckedVariable(pickerLocation1.getKeyColumnValues(),storedVar2.name,value,true);
 									if (v1!=null && v2!=null)
 										myGisObjects.add(new DynamicGisPoint(this,map1, v1,v2,statusVarP.first,statusVarP.second));
 									else {
@@ -453,8 +429,7 @@ public class AddGisPointObjects extends Block implements FullGisObjectConfigurat
 									myGisObjects.add(new StaticGisPoint(this, map1, new SweLocation(storedVar1.value), statusVarP.first, statusVarP.second));
 								}
 								else {
-									if (v1 != null)
-										myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
+								    myGisObjects.add(new DynamicGisPoint(this,map1,v1,statusVarP.first,statusVarP.second));
 								}
 							}
 							else if (myTypeS.equals(GisObjectType.Multipoint.toString())||myTypeS.equalsIgnoreCase(GisObjectType.Linestring.toString()))

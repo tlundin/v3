@@ -5,6 +5,7 @@ import android.util.Log;
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.utils.Tools;
 
 import java.util.Map;
 
@@ -17,7 +18,8 @@ public class DynamicGisPoint extends GisPointObject {
 	
 	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Variable x, Variable y, String statusVar,String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);
-		Log.d("vortex","Creating dyna gis with variable x y "+x.getId()+","+y.getId());
+		Log.d("froop","Creating dyna gis with variable x y "+x.getId()+","+y.getId());
+		Log.d("froop","Selection: "+x.getSelection().selection+", args: "+ Tools.printSelectionArgs(x.getSelection().selectionArgs));
 		multivar=true;
 		myXVar=x;
 		myYVar=y;

@@ -1510,8 +1510,8 @@ public class DbHelper extends SQLiteOpenHelper {
                         variables.put(variable, s);
                         //Log.d("babbs"," Replacing variable "+variable);
                     }
-                    else
-                        Log.d("babbs"," Discarding variable "+variable);
+                    //else
+                    //    Log.d("babbs"," Discarding variable "+variable);
                 } else
                     Log.e("babbs","author null in insertarray");
             }
@@ -1532,13 +1532,13 @@ public class DbHelper extends SQLiteOpenHelper {
                 variableName = cv.getAsString(VARID);
 
                 if (uid != null ) {
-                    Log.d("brakko", "INSERT U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
+                    //Log.d("brakko", "INSERT U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                     //Log.d("vortex","added to tsmap: "+uid);
                     tsMap.add(tsMap.getKey(uid,spy),variableName, cv);
                     if (!variableCache.turboRemoveOrInvalidate(uid, spy, variableName, true))
                     resetCache = true;
                 } else {
-                    Log.e("bascar", "Inserting RAW" + s.getChange());
+                    //Log.e("bascar", "Inserting RAW" + s.getChange());
                     db().insert(TABLE_VARIABLES, // table
                             null, //nullColumnHack
                             cv
@@ -1553,7 +1553,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
             else if (s.isDelete()) {
 
-                Log.d("brakko", "DELETE U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
+                //Log.d("brakko", "DELETE U: " + uid+ "Target: "+ s.getTarget() + " CH: " + s.getChange()+" TS:"+s.getTimeStamp()+" A:"+s.getAuthor());
                 Map<String,String> sKeys = s.getKeys();
 
                 if (sKeys == null) {
@@ -1629,9 +1629,9 @@ public class DbHelper extends SQLiteOpenHelper {
                                 cv
                         );
                         //refresh cache
-                        uid = cv.getAsString(uidCol);  //unique key for object. uid.
-                        if (!variableCache.turboRemoveOrInvalidate(uid,null,variable,true))
-                            resetCache = true;
+                        //uid = cv.getAsString(uidCol);  //unique key for object. uid.
+                        //if (!variableCache.turboRemoveOrInvalidate(uid,null,variable,true))
+                        //    resetCache = true;
                     }
                 }
 

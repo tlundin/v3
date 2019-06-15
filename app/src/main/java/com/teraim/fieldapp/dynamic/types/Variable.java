@@ -38,13 +38,13 @@ public class Variable implements Serializable {
 	private Map<String, String> keyChain = new HashMap <String,String>();
 	private Map<String,String> histKeyChain=null;
 	//String value=null;
-    private String name=null;
+	protected String name=null;
 	private DataType myType=null;
 	private String myValue=null;
 
 	private Map<String, Boolean> currentRuleState;
-	private final String[] myValueColumn = new String[1];
-	private Selection mySelection=null;
+	protected final String[] myValueColumn = new String[1];
+	protected Selection mySelection=null;
 
 	private String myLabel = null;
 

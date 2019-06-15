@@ -215,15 +215,26 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public class LocationAndTimeStamp {
-        public final boolean old;
+        private final long timeSinceRegistered;
         public final Location location;
-        LocationAndTimeStamp(boolean isOld, Location loc) {
+
+        LocationAndTimeStamp(long timeSinceRegistered, Location loc) {
             location=loc;
-            old = isOld;
+            this.timeSinceRegistered = timeSinceRegistered;
+        }
+
+        public boolean isOverAnHourOld() {
+            return timeSinceRegistered > 3600 * 1000;
+        }
+        public boolean isOverHalfAnHourOld() {
+            return timeSinceRegistered > 1800 * 1000;
+        }
+        public boolean isOverAQuarterOld() {
+            return timeSinceRegistered > 900 * 1000;
         }
     }
 
-    private final static long TenDays = 3600*24*7*2*1000;
+    private final static long TenDays = 3600*24*5*2*1000;
 
     public Map<String,LocationAndTimeStamp> getTeamMembers(String team, String user) {
         HashMap<String, LocationAndTimeStamp> ret = null;
@@ -232,25 +243,18 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor qy = db().rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
-            boolean isOld=false;
-            String teamMemberName = qx.getString(0);
-            long diff = (System.currentTimeMillis() - timeStamp);
-            if (diff > TenDays) {
-                Log.d("bortex","timestamp for "+teamMemberName+" is older than 10 days.");
-                continue;
-            }
-            if (diff > 3600*1000) {
 
-                Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis() - timeStamp)/1000);
-                Log.d("bortex","timestamp for "+teamMemberName+" is old: "+(System.currentTimeMillis() - timeStamp)/1000);
-                isOld = true;
+            String teamMemberName = qx.getString(0);
+            long timeSinceRegistered = (System.currentTimeMillis() - timeStamp);
+            if (timeSinceRegistered > TenDays) {
+                Log.d("bortex","timestamp for "+teamMemberName+" is older than 10 days.");
+            } else {
+                if (ret == null)
+                    ret = new HashMap<String, LocationAndTimeStamp>();
+                Log.d("bortex", "Adding one for " + teamMemberName);
+                ret.put(teamMemberName, new LocationAndTimeStamp(timeSinceRegistered, new SweLocation(qx.getString(1), qy.getString(1))));
             }
-            if (ret==null)
-                ret = new HashMap<String, LocationAndTimeStamp>();
-            Log.d("bortex","Adding one for "+teamMemberName);
-            ret.put(teamMemberName,new LocationAndTimeStamp(isOld,new SweLocation(qx.getString(1),qy.getString(1))));
         }
-        Log.d("mamba"," after qx is "+qx);
         qx.close();
         qy.close();
 
@@ -988,18 +992,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public String getValue(String name, Selection s, String[] valueCol) {
-        //Get cached selectionArgs if exist.
         //this.printAllVariables();
         //Log.d("nils","In getvalue with name "+name+" and selection "+s.selection+" and selectionargs "+print(s.selectionArgs));
         Cursor c = null;
-
         if (checkForNulls(s.selectionArgs)) {
             c = db().query(TABLE_VARIABLES, valueCol,
                     s.selection, s.selectionArgs, null, null, "timestamp DESC", "1");
             if (c != null && c.moveToFirst()) {
                 //Log.d("nils","Cursor count "+c.getCount()+" columns "+c.getColumnCount());
                 String value = c.getString(0);
-                Log.d("vortex", "GETVALUE [" + name + " :" + value + "] Value = null? " + (value == null));
+                //Log.d("vortex", "GETVALUE [" + name + " :" + value + "] Value = null? " + (value == null));
                 c.close();
 
                 return value;

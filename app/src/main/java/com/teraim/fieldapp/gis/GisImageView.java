@@ -931,8 +931,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		pathBuffer.reset();
 	}
 
-	private final static String isFresh = "#7CFC00";
-	private final static String isOld = "#D3D3D3";
+	private final static String isFreshColor = "#7CFC00";
+	private final static String isOverAnHourColor = "#D3D3D3";
+	private final static String isOverHalfAnHourColor = "#050FF5";
+	private final static String isOverAQuarterColor = "#FFFA0A";
+
 
 
 	public Set<GisObject> findMyTeam() {
@@ -971,7 +974,10 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public String getColor() {
-					return l.old?isOld:isFresh;
+					return l.isOverAnHourOld()? isOverAnHourColor :
+							l.isOverHalfAnHourOld()? isOverHalfAnHourColor :
+									l.isOverAQuarterOld()? isOverAQuarterColor :
+											isFreshColor;
 				}
 
 				@Override

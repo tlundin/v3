@@ -28,7 +28,7 @@ public class GisPolygonObject extends GisPathObject {
 		this.polygons=null;
 		polyString = polygons;
 		this.conf=conf;
-		Log.d("fisk","Added "+keyChain.toString()+" name:"+conf.getName()+" db "+conf.getObjectKeyHash());
+		//Log.d("fisk","Added "+keyChain.toString()+" name:"+conf.getName()+" db "+conf.getObjectKeyHash());
 	}
 
 	//Called when the object is imported using only a partial configuration. 

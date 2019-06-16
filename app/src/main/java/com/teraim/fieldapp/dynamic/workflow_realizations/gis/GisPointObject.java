@@ -97,7 +97,12 @@ public abstract class GisPointObject extends GisObject {
 	@Override
 	public void clearCache() {
 		//Log.d("vortex","cleared gop object xy");
-		xy=new int[2];}
+		xy=new int[2];
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 }
 

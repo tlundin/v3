@@ -63,7 +63,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String VALUE = "value";
     private static final String TIMESTAMP = "timestamp";
     public static final String LAG = "lag";
-    private static final String AUTHOR = "author";
+    public static final String AUTHOR = "author";
     public static final String YEAR="år";
     private static final String[] VAR_COLS = new String[]{TIMESTAMP, AUTHOR, LAG, VALUE};
     //	private static final Set<String> MY_VALUES_SET = new HashSet<String>(Arrays.asList(VAR_COLS));
@@ -215,6 +215,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public class LocationAndTimeStamp {
+        private final long AnHour = 3600 * 1000;
+        private final long HalfAnHour = AnHour/2;
+        private final long QuarterOfAnHour = AnHour/4;
         private final long timeSinceRegistered;
         public final Location location;
 
@@ -222,15 +225,16 @@ public class DbHelper extends SQLiteOpenHelper {
             location=loc;
             this.timeSinceRegistered = timeSinceRegistered;
         }
-
-        public boolean isOverAnHourOld() {
-            return timeSinceRegistered > 3600 * 1000;
-        }
+        public boolean isOverAnHourOld() { return timeSinceRegistered > AnHour; }
         public boolean isOverHalfAnHourOld() {
-            return timeSinceRegistered > 1800 * 1000;
+            return timeSinceRegistered > HalfAnHour;
         }
         public boolean isOverAQuarterOld() {
-            return timeSinceRegistered > 900 * 1000;
+            return timeSinceRegistered > QuarterOfAnHour;
+        }
+
+        public long getMostRecentTimeStamp() {
+            return timeSinceRegistered;
         }
     }
 
@@ -243,7 +247,6 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor qy = db().rawQuery("select author, value, max(timestamp) as t from variabler where var = 'GPS_Y' and "+LAG+" like '"+team+"' and "+AUTHOR+" <> '"+user+"' group by "+AUTHOR, null);
         while (qx!=null && qx.moveToNext() && qy.moveToNext()) {
             long timeStamp = qx.getLong(2);
-
             String teamMemberName = qx.getString(0);
             long timeSinceRegistered = (System.currentTimeMillis() - timeStamp);
             if (timeSinceRegistered > TenDays) {
@@ -251,7 +254,7 @@ public class DbHelper extends SQLiteOpenHelper {
             } else {
                 if (ret == null)
                     ret = new HashMap<String, LocationAndTimeStamp>();
-                Log.d("bortex", "Adding one for " + teamMemberName);
+                Log.d("bortex", "Adding " + teamMemberName);
                 ret.put(teamMemberName, new LocationAndTimeStamp(timeSinceRegistered, new SweLocation(qx.getString(1), qy.getString(1))));
             }
         }

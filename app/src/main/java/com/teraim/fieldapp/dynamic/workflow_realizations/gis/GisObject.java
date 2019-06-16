@@ -19,7 +19,7 @@ public class GisObject {
 	
 	static final double ClickThresholdInMeters = 30;
 	double distanceToClick=-1;
-	private String label=null;
+	protected String label=null;
 	private String statusVariableId=null,statusVariableValue=null;
 	private Variable statusVariable = null;
 	public void setStatusVariable(Variable statusVariable) {

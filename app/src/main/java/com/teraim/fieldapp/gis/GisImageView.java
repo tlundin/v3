@@ -939,7 +939,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 	public Set<GisObject> findMyTeam() {
-		Log.d("bortex","In findmyteam");
+		//Log.d("bortex","In findmyteam");
 
 		Set<GisObject> ret = null;
 
@@ -949,9 +949,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			Log.d("vortex","no team but team is set to show. alarm!");
 			return null;
 		}
-		final Map<String,String> tmp = new HashMap<>();
-		tmp.put(DbHelper.YEAR,Constants.getYear());
-		tmp.put(DbHelper.LAG,team);
+
+
 		int cc=0;
 		Map<String,DbHelper.LocationAndTimeStamp> myTeam = GlobalState.getInstance().getDb().getTeamMembers(team,user);
 		if (myTeam==null)
@@ -960,12 +959,23 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		for (String name:myTeam.keySet()) {
 
 			Log.d("bortex","Adding Team member "+name);
-            if (name==null || name.isEmpty()) {
-                Log.e("vortex","skipping nameless team member");
-                continue;
-            }
+			if (name==null || name.isEmpty()) {
+				Log.e("vortex","skipping nameless team member");
+				continue;
+			}
 			final DbHelper.LocationAndTimeStamp l = myTeam.get(name);
+
+			//create a key for the workflow.
+			final Map<String,String> tmp = new HashMap<>();
+			tmp.put(DbHelper.YEAR,Constants.getYear());
+			tmp.put(DbHelper.LAG,team);
+			tmp.put("name",name);
+			tmp.put("timestamp",Tools.getTimeStampDetails(l.getMostRecentTimeStamp(),false)+"");
+			tmp.put("location",l.location+"");
+
+
 			//Log.d("bortex","Location "+l);
+
 			GisPointObject member = new StaticGisPoint(new FullGisObjectConfiguration() {
 				@Override
 				public float getRadius() {
@@ -1002,12 +1012,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 				@Override
 				public String getClickFlow() {
-					return null;
+					return "wf_teammember";
 				}
 
 				@Override
 				public DB_Context getObjectKeyHash() {
-					return new DB_Context("år=[getCurrentYear()], lag = [getTeamName()]",tmp );
+					return new DB_Context("år=[getCurrentYear()], lag = [getTeamName()], author ",tmp );
 				}
 
 				@Override
@@ -1050,7 +1060,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 					return Expressor.preCompileExpression(name);
 				}
 			}, tmp, l.location, null, null);
-
+			member.setLabel(name+"["+Tools.getTimeStampDetails(l.getMostRecentTimeStamp(),true)+"]");
 			GisLayer.markIfUseful(member,this);
 
 			if (ret ==null)

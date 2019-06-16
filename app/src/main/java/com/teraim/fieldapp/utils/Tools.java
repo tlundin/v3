@@ -125,6 +125,28 @@ public class Tools {
         return sdf.format(new Date());
     }
 
+    public static String getTimeStampDetails(long timestamp, boolean minimal) {
+		//Divide by 1000
+		long inSecs = timestamp/1000;
+		long inHours = Math.round(inSecs/3600);
+		long days = inHours / 24;
+		long hours = inHours % 24;
+		long remain = inSecs - inHours*3600;
+		long mins = Math.round(remain/60);
+		long secs = remain - mins*60;
+		if (minimal) {
+			if (days > 0)
+				return days + "d";
+			if (hours > 0)
+				return hours + "h";
+			if (mins > 0)
+				return mins + "m";
+			return secs + "s";
+		} else
+			return days+"d "+hours+"h "+mins+"m "+secs+"s";
+
+	}
+
 
     public enum Unit {
 		percentage,

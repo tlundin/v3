@@ -213,18 +213,22 @@ public class Tracker extends Service implements LocationListener {
 					double disty = Math.abs(oldYd - myL.getY());
 
 					//Log.d("vortex", "Distance between mesaurements in Tracker: (x,y) " + distx + "," + disty);
+					String accuracy = Float.toString(location.getAccuracy());
+					String x = Double.toString(myL.getX());
+					String y = Double.toString(myL.getY());
 					if (oldT==null || distx > 15 || disty > 15 || timeDiff > 60) {
 					//	Log.d("vortex","setting synced location");
-						myX.setValue(myL.getX() + "");
-						myY.setValue(myL.getY() + "");
+						myX.setValue(x);
+						myY.setValue(y);
 						if (myAcc!=null)
-							myAcc.setValue(location.getAccuracy() + "");
+							myAcc.setValue(accuracy);
 						oldT = myX.getTimeOfInsert();
 					} else {
-						myX.setValueNoSync(myL.getX() + "");
-						myY.setValueNoSync(myL.getY() + "");
+						myX.setValueNoSync(x);
+						myY.setValueNoSync(y);
 						if (myAcc!=null)
-							myAcc.setValueNoSync(location.getAccuracy() + "");
+							myAcc.setValueNoSync(accuracy);
+						GlobalState.setMyGPS(x,y,accuracy);
 					}
 				} else {
 					myX.setValue(myL.getX() + "");

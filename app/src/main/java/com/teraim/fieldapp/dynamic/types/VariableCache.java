@@ -328,7 +328,7 @@ public class VariableCache {
                 if (type == DataType.array)
                     variable = new ArrayVariable(varId, header, row, hash, gs, vCol, defaultValue, hasValueInDB, "*NULL*");
                 else {
-                    Log.d("vortex","varche defval: "+defaultValue+" for "+varId);
+                    //Log.d("vortex","varche defval: "+defaultValue+" for "+varId);
                     variable = new Variable(varId, header, row, hash, gs, vCol, defaultValue, hasValueInDB, "*NULL*");
                 }
                 cache.put(varId.toLowerCase(), variable);

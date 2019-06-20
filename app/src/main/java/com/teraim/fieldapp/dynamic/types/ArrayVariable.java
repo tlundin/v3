@@ -3,10 +3,10 @@ package com.teraim.fieldapp.dynamic.types;
 import android.util.Log;
 
 import com.teraim.fieldapp.GlobalState;
+import com.teraim.fieldapp.non_generics.NamedVariables;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class ArrayVariable extends Variable {
 
@@ -24,15 +24,25 @@ public class ArrayVariable extends Variable {
 	protected void insert(String value, boolean isSynchronized) {
 		this.isSynchronizedNext= isSynchronized;
 		myDb.insertVariableSnap(this,value, isSynchronized);
-		timeStamp = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
 	}
 
 	@Override
 	public String getValue() {
-		Log.d("baba","I get called");
 		//long now = System.currentTimeMillis();
-		String r = myDb.getValue(name,mySelection,myValueColumn);
+		GlobalState.MyGps gps = GlobalState.getMyGps();
+		if (gps != null) {
+			if (NamedVariables.MY_GPS_LAT.equals(this.name)) {
+				Log.d("baba","X");
+				return gps.x;
+			} else if (NamedVariables.MY_GPS_LONG.equals(this.name)) {
+				Log.d("baba","Y");
+				return gps.y;
+			} else if (NamedVariables.MY_GPS_ACCURACY.equals(this.name)) {
+				Log.d("baba","A");
+				return gps.a;
+			}
+		}
+		return myDb.getValue(name, mySelection, myValueColumn);
 		//Log.d("baba","T: "+Long.toString((System.currentTimeMillis()-now)));
-		return r;
 	}
 }

@@ -556,7 +556,7 @@ public class Tools {
 	public static Map<String,String> cutKeyMap(String columns, Map<String,String> fullHash) {
 		if (columns.isEmpty())
 			return null;
-		Log.d("cutkey","cols: "+columns+"fhash: "+((fullHash==null)?"null":fullHash.toString()));
+		//Log.d("cutkey","cols: "+columns+"fhash: "+((fullHash==null)?"null":fullHash.toString()));
 		Map<String,String> ret = new HashMap<String,String>();
 		if (fullHash == null) {
 			Log.e("vortex","Hash null - so returning empty in cutkeymap. Columns: "+columns);

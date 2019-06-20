@@ -179,24 +179,30 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/line1"
         android:layout_alignStart="@+id/textView4"
-        android:layout_alignLeft="@+id/textView4"
         android:layout_marginTop="5dp"
         android:paddingTop="3dp"
         android:text="@string/sync_pop_sync_last_sync"
         android:textStyle="bold" />
-
+    <TextView
+        android:id="@+id/sync_refresh_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_below="@+id/textView8"
+        android:text=""
+        android:textStyle="italic" />
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="133dp"
-        android:layout_below="@+id/textView8"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/sync_refresh_date"
+        android:layout_above="@+id/close_button"
         android:layout_marginTop="15dp">
 
         <LinearLayout
             android:id="@+id/list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="30dp" />
+            android:orientation="vertical" />
     </ScrollView>
 
     <Button
@@ -207,26 +213,18 @@
         android:layout_alignParentBottom="true"
         android:layout_alignRight="@+id/ll1"
         android:layout_marginBottom="5dp"
-        android:text="@string/ok" />
-
+        android:text="@string/close" />
     <Button
         android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
-        android:text="@string/sync_pop_sync_button_txt"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/ll1"
-        android:layout_alignRight="@+id/ll1"
-        android:layout_alignTop="@+id/textView8"
-         />
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/close_button"
+        android:layout_toLeftOf="@+id/close_button"
+        android:layout_marginBottom="5dp"
+        android:text="@string/sync_pop_sync_button_txt" />
 
-    <TextView
-        android:id="@+id/sync_refresh_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/ll1"
-        android:layout_below="@+id/refresh_button"
-        android:text=""
-        android:textStyle="italic"
-        android:layout_alignRight="@+id/ll1" />
+
+
 
 </RelativeLayout>

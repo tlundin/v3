@@ -113,7 +113,7 @@ public class Variable implements Serializable {
 				//use default value.
 				myValue = myDefaultValue;
 				usingDefault = true;
-				Log.d("brox","GetValue: Default now true for "+this.getId()+" Value: "+myDefaultValue);
+				//Log.d("brox","GetValue: Default now true for "+this.getId()+" Value: "+myDefaultValue);
 
 			}
 			unknown = false;
@@ -199,10 +199,10 @@ public class Variable implements Serializable {
 			return false;
 		}
 
-		Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext()+"using default: "+usingDefault);
+		//Log.e("nils","Var: "+this.getId()+" old Val: "+myValue+" new Val: "+value+" this var hash#"+this.hashCode()+" this hash:"+this.getKeyChain()+" current hash: "+gs.getVariableCache().getContext()+"using default: "+usingDefault);
 		value = Tools.removeStartingZeroes(value);
 		myValue = value;
-		Log.d("zzzz","myValue in setValue "+myValue);
+		//Log.d("zzzz","myValue in setValue "+myValue);
 		//Remove any .xx if numeric or list
 		if ((this.getType()==DataType.numeric || this.getType()==DataType.list) && value.endsWith(".0")) {
 			value = (int)(Float.parseFloat(value))+"";
@@ -380,7 +380,7 @@ public class Variable implements Serializable {
 			if (!valueIsPersisted) {
 				setValue(myDefaultValue);
 				//Log.d("nils","Creating variable "+this.getId()+". Variable is not persisted: "+myValue);
-				Log.d("brox","Variable: Default now true for "+this.getId()+" Value: "+this.getValue());
+				//Log.d("brox","Variable: Default now true for "+this.getId()+" Value: "+this.getValue());
 				usingDefault = true;
 			}
 		}
@@ -586,9 +586,9 @@ public class Variable implements Serializable {
 	public void setDefaultValue(String defaultValue) {
 
 		this.setDefault(defaultValue);
-		Log.d("brox","setDefValue inParam: "+defaultValue+" Defaultvalue for "+this.getId()+" set to "+myDefaultValue);
+		//Log.d("brox","setDefValue inParam: "+defaultValue+" Defaultvalue for "+this.getId()+" set to "+myDefaultValue);
 		setValue(myDefaultValue);
-		Log.d("brox","Default now true for "+this.getId()+" Value: "+this.getValue());
+		//Log.d("brox","Default now true for "+this.getId()+" Value: "+this.getValue());
 		usingDefault=true;
 	}
 

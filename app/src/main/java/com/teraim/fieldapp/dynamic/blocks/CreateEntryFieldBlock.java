@@ -87,8 +87,8 @@ public class CreateEntryFieldBlock extends DisplayFieldBlock {
 			} else	{	
 				myField = new WF_ClickableField_Selection_OnSave(label==null||label.equals("")?v.getLabel():label,
 						al.getDescription(v.getBackingDataSet()),myContext,name,isVisible,autoOpenSpinner,this);
-				Log.d("nils", "In CreateEntryField. Description: "+al.getDescription(v.getBackingDataSet()));
-				Log.d("nils","Backing data: "+v.getBackingDataSet().toString());
+				//Log.d("nils", "In CreateEntryField. Description: "+al.getDescription(v.getBackingDataSet()));
+				//Log.d("nils","Backing data: "+v.getBackingDataSet().toString());
 				myField.addVariable(v, true,format,true,showHistorical);
 				myContext.addDrawable(v.getId(), myField);
 

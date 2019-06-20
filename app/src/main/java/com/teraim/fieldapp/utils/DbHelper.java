@@ -1627,7 +1627,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 if (map!=null) {
                     for (String variable:map.keySet()) {
                         SyncEntry se = map.get(variable);
-                        Log.d("babbs","inserting "+variable+" for "+name);
+                        //Log.d("babbs","inserting "+variable+" for "+name);
                         cv = createContentValues(se.getKeys(), se.getValues(), team);
                         db().insert(TABLE_VARIABLES, // table
                                 null, //nullColumnHack
@@ -2683,11 +2683,11 @@ public class DbHelper extends SQLiteOpenHelper {
             String spy = (hasSpy?c.getString(5):null);
             Unikey ukey = Unikey.FindKeyFromParts(uid,spy,tsMap.getKeySet());
             if (ukey!=null) {
-                Log.d("sync", "Found ukey " + uid + ": " + vid);
+                //Log.d("sync", "Found ukey " + uid + ": " + vid);
 
                 ContentValues cv = tsMap.get(ukey, vid);
                 if (cv != null) {
-                    Log.d("sync", "MATCH FOR " + uid + ": " + vid);
+                    //Log.d("sync", "MATCH FOR " + uid + ": " + vid);
                     long existingts = c.getLong(1);
                     long timestamp = cv.getAsLong("timestamp");
                     if (timestamp > existingts) {
@@ -2724,7 +2724,7 @@ public class DbHelper extends SQLiteOpenHelper {
                 for (String vid:m.keySet()) {
                     cv=m.get(vid);
                     db().insert(TABLE_VARIABLES, null, cv);
-                    Log.d("sync","inserted "+cv);
+                    //Log.d("sync","inserted "+cv);
                     varCache.turboRemoveOrInvalidate(uid.getUid(),uid.getSpy(),vid,true);
                     sr.inserts++;
                 }

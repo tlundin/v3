@@ -39,7 +39,7 @@ public class SyncConsumerThread extends Thread {
                         nSyncEntriesTotal += ses.length;
                         dbHelper.insertSyncEntries(syncReport, ses, gs.getLogger());
                         syncReport.currentRow++;
-                        Log.d("sync","map now has "+syncReport.getTimeStampedMap().size() +" entries");
+                        //Log.d("sync","map now has "+syncReport.getTimeStampedMap().size() +" entries");
                     } else {
                         Log.e("sync", "Corrupted row in sync data");
                     }

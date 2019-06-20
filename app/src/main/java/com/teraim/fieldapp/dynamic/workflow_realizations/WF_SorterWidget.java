@@ -110,7 +110,7 @@ public class WF_SorterWidget extends WF_Widget {
 				b.setText(c);
 				b.setOnCheckedChangeListener(cl);
 				buttonPanel.addView(b);
-				Log.d("nils","Added button "+c);
+				//Log.d("nils","Added button "+c);
 			}
 		} else if (type.equals("column") ) {
             final CompoundButton.OnCheckedChangeListener cl = new CompoundButton.OnCheckedChangeListener(){
@@ -187,7 +187,7 @@ public class WF_SorterWidget extends WF_Widget {
 							b.setTextOn(txt);
 							b.setOnCheckedChangeListener(cl);
 							buttonPanel.addView(b);				
-							Log.d("nils","Added button "+txt+" length "+txt.length());
+							//Log.d("nils","Added button "+txt+" length "+txt.length());
 						}
 
 
@@ -263,7 +263,7 @@ public class WF_SorterWidget extends WF_Widget {
 							toggleB.setChecked(false);
 							toggleB.setOnCheckedChangeListener(dl);
 							buttonPanel.addView(toggleB);
-							Log.d("nils","Added button "+txt+" length "+txt.length());
+							//Log.d("nils","Added button "+txt+" length "+txt.length());
 						}
 
 

@@ -349,7 +349,7 @@ public class Expressor {
 
         }
 
-        Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
+        //Log.d("franco",expressions.toString()+" -->  "+endResult.toString());
         if (endResult.toString().isEmpty())
             return null;
         else
@@ -637,7 +637,7 @@ public class Expressor {
             System.err.println("Missing end bracket");
             return null;
         }
-        System.out.println("Reached end of tokenizer. CurrentToken is "+currToken+" and t is "+t.name());
+        //System.out.println("Reached end of tokenizer. CurrentToken is "+currToken+" and t is "+t.name());
 
         if (t != TokenType.none)
             add(currToken,t,result);

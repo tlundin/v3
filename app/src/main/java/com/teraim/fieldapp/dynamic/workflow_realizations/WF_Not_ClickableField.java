@@ -151,7 +151,7 @@ public abstract class WF_Not_ClickableField extends WF_ListEntry {
 			myOutputFields.put(var,new OutC(ll,format));
 			outputContainer.addView(ll);
 
-			Log.d("franco","Added view "+var.getLabel()+" with width: "+ll.getWidth());
+			//Log.d("franco","Added view "+var.getLabel()+" with width: "+ll.getWidth());
 			myVar = var;
 		}
 

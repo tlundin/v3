@@ -968,8 +968,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 			//create a key for the workflow.
 			final Map<String,String> tmp = new HashMap<>();
 			tmp.put(DbHelper.YEAR,Constants.getYear());
-			tmp.put(DbHelper.LAG,team);
-			tmp.put("name",name);
+			tmp.put("team",team);
+			tmp.put("inventerare",name);
 			tmp.put("timestamp",Tools.getTimeStampDetails(l.getMostRecentTimeStamp(),false)+"");
 			tmp.put("location",l.location+"");
 

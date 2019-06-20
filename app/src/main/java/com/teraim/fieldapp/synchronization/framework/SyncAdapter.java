@@ -103,7 +103,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mApp = app;
         mUUID = uuid;
         mClient = client;
-        Log.d("sync","mTeam now: "+mTeam);
+        //Log.d("sync","mTeam now: "+mTeam);
         mTimestamp_receive=timestamp_receive;
         USER_STOPPED_SYNC = false;
         LOCKED = false;
@@ -113,7 +113,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account accounts, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
 
-        Log.d("sync", "************onPerformSync [" + mUser + "]");
+        //Log.d("sync", "************onPerformSync [" + mUser + "]");
 
         if (LOCKED) {
             Log.e("sync", "Locked...exit");
@@ -202,13 +202,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                         //insert to temporary table
                         int rowsInserted = mContentResolver.bulkInsert(SYNC_DATA_URI,dataToInsert);
-                        Log.d("sync","Rows inserted: "+rowsInserted+" rows received: "+numberOfEntriesFromServer);
+                        //Log.d("sync","Rows inserted: "+rowsInserted+" rows received: "+numberOfEntriesFromServer);
                         hasDataToInsert = rowsInserted>0;
 
                     }
                     //new timestamp = timestamp to read from next time.
                     Long newTimestamp = (Long) in.readObject();
-                    Log.d("sync", "Timestamp server --> me: " + newTimestamp);
+                    //Log.d("sync", "Timestamp server --> me: " + newTimestamp);
 
                     updateCounter(newTimestamp,Constants.TIMESTAMP_SYNC_RECEIVE);
                     mTimestamp_receive=newTimestamp;
@@ -236,7 +236,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         if (hasMoreToDo) {
-            Log.d("sync","has more to send or read. Request new sync.");
+            //Log.d("sync","has more to send or read. Request new sync.");
             syncResult.fullSyncRequested = true;
         }
 
@@ -252,7 +252,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } else
             //Check if there are unprocessed rows in sync table.
             if (hasDataToInsert) {
-                Log.d("sync", "sync data exists to insert");
+                //Log.d("sync", "sync data exists to insert");
                 try {
                     mClient.send(Message.obtain(null, SyncService.MSG_SYNC_DATA_READY_FOR_INSERT));
                 } catch (RemoteException e) {
@@ -287,7 +287,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         int rows,maxToSync,rowCount=0;
         String action,changes,variable;
         rows = c.getCount();
-        Log.d("sync",rows+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
+        //Log.d("sync",rows+" rows to sync from ["+mUser+"] to ["+mTeam+"]");
 
         maxToSync = Math.min(c.getCount(), MaxSyncableEntriesClient);
         boolean hasMore = maxToSync== MaxSyncableEntriesClient;
@@ -298,7 +298,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             entryStamp	=	c.getLong(c.getColumnIndex("timestamp"));
             variable    = 	c.getString(c.getColumnIndex("target"));
             //Keep track of the highest timestamp in the set!
-            Log.d("sync","variable: "+variable);
+            //Log.d("sync","variable: "+variable);
             if (entryStamp>maxStamp)
                 maxStamp=entryStamp;
             syncEntries[rowCount++] = new SyncEntry(SyncEntry.action(action),changes,entryStamp,variable,mUser);
@@ -341,7 +341,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         //app name
         out.writeObject(mApp);
 
-        Log.d("sync","sent header ");
+        //Log.d("sync","sent header ");
     }
 
     void userAbortedSync() {

@@ -626,7 +626,10 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                 break;
         }
         TextView synk_status_display = customView.findViewById(R.id.synk_status_display);
-        synk_status_display.setText(synkStatusText);
+        if (syncState == R.drawable.syncactive)
+            synk_status_display.setText(synkStatusTitle);
+        else
+            synk_status_display.setText(synkStatusText);
 
 
     }
@@ -662,7 +665,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
 
                 break;
             case MENU_ITEM_CONTEXT:
-                Log.d("vortex", "gs is " + GlobalState.getInstance() + " gs " + gs);
+                //Log.d("vortex", "gs is " + GlobalState.getInstance() + " gs " + gs);
                 //Log.d("vortex","in click for context: gs "+(gs==null)+" varc "+(gs.getVariableCache()==null));
                 if (gs != null && gs.getVariableCache() != null) {
                     //Object moo=null;

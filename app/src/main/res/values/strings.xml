@@ -52,7 +52,7 @@
     <string name="synk_error">Not working</string>
     <string name="synk_idle">Idle, active</string>
     <string name="synk_inserting">Inserting data</string>
-    <string name="synk_send_receive">Sending/receiving</string>
+    <string name="synk_send_receive">Working </string>
     <string name="in_sync">Fully syncronised</string>
     <string name="imin_sync">Your data has been uploaded</string>
     <string name="sync_time_months">month(s)</string>

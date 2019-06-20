@@ -129,7 +129,7 @@ public class Workflow implements Serializable {
 				} //else Log.d("vortex","not pagedefine: "+b.getClass().getName());
 			}
 
-		Log.d("brexit","getMyPageDefine returns null? "+(myPDefBl==null));
+		//Log.d("brexit","getMyPageDefine returns null? "+(myPDefBl==null));
 		called = true;
 		return myPDefBl;
 	}

@@ -37,17 +37,17 @@ public class MenuEntryBlock extends Block {
 		this.textColor=textColor;
 	}
 	public void create(WF_Context wf_context) {
-		Log.d("vortex","In create menuentry");
+		//Log.d("vortex","In create menuentry");
 		
 		GlobalState gs = GlobalState.getInstance();
 		Workflow wf = gs.getWorkflow(target);
 
 		Context ctx = wf_context.getContext();
 		try {
-		    Log.d("vortex","Package name: "+ctx.getPackageName());
+		    //Log.d("vortex","Package name: "+ctx.getPackageName());
 			int _bgColor = Tools.getColorResource(ctx, bgColor,bg_default_color);
 			int _textColor = Tools.getColorResource(ctx,textColor,text_default_color);
-            Log.d("flax","entrycolors: "+_bgColor+" and "+_textColor+ " for "+bgColor+" and "+textColor);
+            //Log.d("flax","entrycolors: "+_bgColor+" and "+_textColor+ " for "+bgColor+" and "+textColor);
 
 			if (wf == null)
 				gs.getLogger().addRedText("Workflow "+target+" not found!!");

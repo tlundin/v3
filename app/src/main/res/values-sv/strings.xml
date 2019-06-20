@@ -51,9 +51,9 @@
 	<string name="sync_pop_sync_last_sync">Team Data</string>
 	<string name="synk_off">Avstängd</string>
 	<string name="synk_error">Fungerar inte</string>
-	<string name="synk_idle">Aktiv</string>
+	<string name="synk_idle">Aktiv </string>
 	<string name="synk_inserting">För in data</string>
-	<string name="synk_send_receive">Överför data</string>
+	<string name="synk_send_receive">Arbetar</string>
 	<string name="in_sync">I synk</string>
 	<string name="imin_sync">Ditt data är överfört</string>
 	<string name="sync_time_months">månad(er)</string>

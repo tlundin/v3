@@ -350,6 +350,21 @@ public class GlobalState {
         selectedGop = go;
     }
 
+    public static class MyGps {
+        public String x=null,y=null,a=null;
+    }
+    private static MyGps myGps;
+    public static void setMyGPS(String x, String y, String accuracy) {
+        if (myGps==null)
+            myGps = new MyGps();
+        myGps.x = x;
+        myGps.y = y;
+        myGps.a = accuracy;
+    }
+
+    public static MyGps getMyGps() {
+        return myGps;
+    }
 
     //Map<String,WF_Static_List> listCache = new HashMap<>();
 

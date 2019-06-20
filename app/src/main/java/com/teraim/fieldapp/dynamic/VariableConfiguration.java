@@ -259,9 +259,9 @@ public class VariableConfiguration implements Serializable {
 		String  res= myTable.getElement(Col_Group_Label, row);
 		//If this is a non-art variable, use varlabel instead.
 		if (res==null) {
-			Log.d("vortex","failed to find value for column "+Col_Group_Label+ ". Will use varlabel "+this.getVarLabel(row)+" instead.");
-			gs.getLogger().addRow("");
-			gs.getLogger().addYellowText("failed to find value for column "+Col_Group_Label+ ". Will use variable label "+this.getVarLabel(row)+" instead.");
+			//Log.d("vortex","failed to find value for column "+Col_Group_Label+ ". Will use varlabel "+this.getVarLabel(row)+" instead.");
+			//gs.getLogger().addRow("");
+			//gs.getLogger().addYellowText("failed to find value for column "+Col_Group_Label+ ". Will use variable label "+this.getVarLabel(row)+" instead.");
 			res =this.getVarLabel(row);
 		}
 		if (res == null)

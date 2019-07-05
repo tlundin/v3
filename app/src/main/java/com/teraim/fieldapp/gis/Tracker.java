@@ -26,9 +26,8 @@ import com.teraim.fieldapp.utils.Geomatte;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
@@ -36,7 +35,7 @@ import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
 
 public class Tracker extends Service implements LocationListener {
 
-	private Set<TrackerListener> mListeners = null;
+	private Stack<TrackerListener> mListeners = null;
 	//Keep track of time between synchronised saves
 	private Long oldT = null;
 	// flag for GPS status
@@ -193,7 +192,7 @@ public class Tracker extends Service implements LocationListener {
 				this.stopSelf();
 				return;
 			}
-			//Log.d("vortex","got new coords: "+location.getLatitude()+","+location.getLongitude());
+			Log.d("jgw","got new coords: "+location.getLatitude()+","+location.getLongitude());
 			if (location!=null && myX!=null) {
 
 				//Log.d("vortex","setting sweref location");
@@ -216,6 +215,8 @@ public class Tracker extends Service implements LocationListener {
 					String accuracy = Float.toString(location.getAccuracy());
 					String x = Double.toString(myL.getX());
 					String y = Double.toString(myL.getY());
+
+
 					if (oldT==null || distx > 15 || disty > 15 || timeDiff > 60) {
 					//	Log.d("vortex","setting synced location");
 						myX.setValue(x);
@@ -228,7 +229,8 @@ public class Tracker extends Service implements LocationListener {
 						myY.setValueNoSync(y);
 						if (myAcc!=null)
 							myAcc.setValueNoSync(accuracy);
-						GlobalState.setMyGPS(x,y,accuracy);
+
+
 					}
 				} else {
 					myX.setValue(myL.getX() + "");
@@ -340,8 +342,13 @@ public class Tracker extends Service implements LocationListener {
 
 	public void registerListener(TrackerListener tl) {
 		if (mListeners==null)
-			mListeners = new HashSet<>();
-		mListeners.add(tl);
+			mListeners = new Stack<>();
+		mListeners.push(tl);
+	}
+
+	public void removeListenet(TrackerListener tl) {
+    	if (mListeners!=null)
+    		mListeners.remove(tl);
 	}
 
 }

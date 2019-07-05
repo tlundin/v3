@@ -224,10 +224,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         } finally {
             try {
                 if (out != null) {
-
                     out.close();
                 }
-
                 if (in != null)
                     in.close();
             } catch (IOException io) {

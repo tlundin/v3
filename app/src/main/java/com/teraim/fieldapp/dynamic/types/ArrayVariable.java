@@ -1,9 +1,6 @@
 package com.teraim.fieldapp.dynamic.types;
 
-import android.util.Log;
-
 import com.teraim.fieldapp.GlobalState;
-import com.teraim.fieldapp.non_generics.NamedVariables;
 
 import java.util.List;
 import java.util.Map;
@@ -26,23 +23,4 @@ public class ArrayVariable extends Variable {
 		myDb.insertVariableSnap(this,value, isSynchronized);
 	}
 
-	@Override
-	public String getValue() {
-		//long now = System.currentTimeMillis();
-		GlobalState.MyGps gps = GlobalState.getMyGps();
-		if (gps != null) {
-			if (NamedVariables.MY_GPS_LAT.equals(this.name)) {
-				Log.d("baba","X");
-				return gps.x;
-			} else if (NamedVariables.MY_GPS_LONG.equals(this.name)) {
-				Log.d("baba","Y");
-				return gps.y;
-			} else if (NamedVariables.MY_GPS_ACCURACY.equals(this.name)) {
-				Log.d("baba","A");
-				return gps.a;
-			}
-		}
-		return myDb.getValue(name, mySelection, myValueColumn);
-		//Log.d("baba","T: "+Long.toString((System.currentTimeMillis()-now)));
-	}
 }

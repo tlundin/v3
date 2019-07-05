@@ -480,17 +480,17 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		double mapDistX = l.getX()-photoMetaData.W;
 		double mapDistY = l.getY()-photoMetaData.S;
 		if ((mapDistX <=imgWReal && mapDistX>=0) && (mapDistY <=imgHReal && mapDistY>=0)) {
-            //Log.d("inside", " distX: " + mapDistX + " distY: "+mapDistY+" [imgW: "+imgWReal+" imgH: "+imgHReal+"]");
+            Log.d("jgw", " distX: " + mapDistX + " distY: "+mapDistY+" [imgW: "+imgWReal+" imgH: "+imgHReal+"]");
 		}
 		else {
-			//if(mapDistX>imgWReal||mapDistX<0)
-				//Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
-			//if(mapDistY>imgHReal||mapDistY<0)
-				//Log.e("jgw","Distance Y in meter: "+mapDistY+" [outside!]");
-			//Log.d("jgw","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
-			//Log.d("jgw","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
-			//Log.d("jgw","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
-			//Log.d("jgw","object X,Y: "+l.getX()+","+l.getY());
+			if(mapDistX>imgWReal||mapDistX<0)
+				Log.e("jgw","Distance X in meter: "+mapDistX+" [outside!]");
+			if(mapDistY>imgHReal||mapDistY<0)
+				Log.e("jgw","Distance Y in meter: "+mapDistY+" [outside!]");
+			Log.d("jgw","w h of gis image. w h of image ("+photoMetaData.getWidth()+","+photoMetaData.getHeight()+") ("+this.getScaledWidth()+","+this.getScaledHeight()+")");
+			Log.d("jgw","photo (X) "+photoMetaData.W+"-"+photoMetaData.E);
+			Log.d("jgw","photo (Y) "+photoMetaData.S+"-"+photoMetaData.N);
+			Log.d("jgw","object X,Y: "+l.getX()+","+l.getY());
 			//No, it is outside.
 			isInside = false;
 		}
@@ -714,7 +714,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 										//Log.d("inside","inside. Label :"+gop.getLabel());
 										if (gop.isUser()) {
-											//Log.d("bortex","user!");
+											Log.d("Glapp","drawing user!"+System.currentTimeMillis());
 											userGop = gop;
 											myMap.showCenterButton(true);
 										}
@@ -1659,7 +1659,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		}
 		this.postInvalidate();
 
-
 	}
 
 
@@ -1707,6 +1706,12 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		return r;
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if (GlobalState.getInstance()!=null && GlobalState.getInstance().getTracker()!=null)
+			GlobalState.getInstance().getTracker().removeListener(this);
+	}
 
 
 

@@ -2,20 +2,23 @@ package com.teraim.fieldapp.dynamic.workflow_realizations.gis;
 
 import android.util.Log;
 
+import com.teraim.fieldapp.GlobalState;
 import com.teraim.fieldapp.dynamic.types.Location;
 import com.teraim.fieldapp.dynamic.types.SweLocation;
 import com.teraim.fieldapp.dynamic.types.Variable;
+import com.teraim.fieldapp.gis.TrackerListener;
 import com.teraim.fieldapp.utils.Tools;
 
 import java.util.Map;
 
-public class DynamicGisPoint extends GisPointObject {
+public class DynamicGisPoint extends GisPointObject implements TrackerListener {
 	
 	private boolean multivar = false;
 	private Variable myXVar;
     private Variable myYVar;
     private Variable myXYVar;
-	
+	private SweLocation myLocation;
+
 	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Variable x, Variable y, String statusVar,String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);
 		Log.d("froop","Creating dyna gis with variable x y "+x.getId()+","+y.getId());
@@ -23,8 +26,17 @@ public class DynamicGisPoint extends GisPointObject {
 		multivar=true;
 		myXVar=x;
 		myYVar=y;
+		GlobalState.getInstance().getTracker().registerListener(this);
 	}
-	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Variable v1,String statusVar,String statusVal) {
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if (GlobalState.getInstance()!=null && GlobalState.getInstance().getTracker()!=null)
+			GlobalState.getInstance().getTracker().removeListener(this);
+	}
+
+	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain, Variable v1, String statusVar, String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);
 		Log.d("vortex","Creating dyna gis with variable "+v1.getLabel());
 		multivar=false;
@@ -32,6 +44,7 @@ public class DynamicGisPoint extends GisPointObject {
 	}
 	@Override
 	public Location getLocation() {
+		/*
 		if (multivar) {
 			if (myXVar==null || myYVar == null) {
 				Log.e("vortex","(At least) one variable missing in GisPObject: "+myXVar+" "+myYVar);
@@ -63,6 +76,8 @@ public class DynamicGisPoint extends GisPointObject {
 				return new SweLocation(xys[0],xys[1]);
 			}
 		}
+		*/
+		return myLocation;
 	}
 	
 	@Override
@@ -94,7 +109,16 @@ public class DynamicGisPoint extends GisPointObject {
 	public boolean isUser() {
 		return poc.isUser();
 	}
-	
+
+	@Override
+	public void gpsStateChanged(GPS_State signal) {
+		if (signal.state == GPS_State.State.newValueReceived) {
+			myLocation = new SweLocation(signal.x,signal.y);
+            Log.d("Glapp","updated user position!"+System.currentTimeMillis());
+
+		}
+	}
+
 	//Dynamic points are always recalculated from geo location. So always return null for translated location!
 	//@Override
 	//public int[] getTranslatedLocation() {

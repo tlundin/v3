@@ -156,7 +156,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
                         //listen to Tracker
                         if (GlobalState.getInstance() != null) {
 
-                            GlobalState.getInstance().getTracker().registerListener(MenuActivity.this);
+                            GlobalState.getInstance().getTracker().registerListener(MenuActivity.this, Type.MENU);
                             gs = GlobalState.getInstance();
                             //check current state of synk server.
                             //This determines the sync status.
@@ -1191,7 +1191,7 @@ public class MenuActivity extends AppCompatActivity implements TrackerListener {
     @Override
     public void gpsStateChanged(GPS_State signal) {
         if (signal.state == GPS_State.State.newValueReceived) {
-            Log.d("glapp", "Got gps signal!");
+            //Log.d("glapp", "Got gps signal!");
             latestSignal = signal;
         }
         refreshStatusRow();

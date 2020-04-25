@@ -19,6 +19,8 @@ public interface TrackerListener {
 			ping
 		}
 
+
+
 		public float accuracy;
 		public double x;
 		public double y;
@@ -26,7 +28,11 @@ public interface TrackerListener {
 		public long time;
 	}
 
-
+	public enum Type {
+		MENU,
+		MAP,
+		USER
+	}
 
 	void gpsStateChanged(GPS_State newState);
 }

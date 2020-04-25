@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
@@ -35,7 +34,6 @@ import static com.teraim.fieldapp.gis.TrackerListener.GPS_State.GPS_State_C;
 
 public class Tracker extends Service implements LocationListener {
 
-	private Stack<TrackerListener> mListeners = null;
 	//Keep track of time between synchronised saves
 	private Long oldT = null;
 	// flag for GPS status
@@ -266,10 +264,12 @@ public class Tracker extends Service implements LocationListener {
 
 
 	private void sendMessage(GPS_State newState) {
-		if (mListeners!=null) {
-			for (TrackerListener gl:mListeners)
-				gl.gpsStateChanged(newState);
-		}
+		if (menu!=null)
+    		menu.gpsStateChanged(newState);
+		if (user!=null)
+			user.gpsStateChanged(newState);
+		if (map!=null)
+			map.gpsStateChanged(newState);
 	}
 
 	@Override
@@ -340,15 +340,21 @@ public class Tracker extends Service implements LocationListener {
 		}
 	}
 
-	public void registerListener(TrackerListener tl) {
-		if (mListeners==null)
-			mListeners = new Stack<>();
-		mListeners.push(tl);
+	private TrackerListener map,menu,user;
+
+	public void registerListener(TrackerListener tl, TrackerListener.Type type) {
+		switch (type) {
+			case MAP:
+				map = tl;
+				break;
+			case MENU:
+				menu = tl;
+				break;
+			case USER:
+				user = tl;
+				break;
+		}
 	}
 
-	public void removeListenet(TrackerListener tl) {
-    	if (mListeners!=null)
-    		mListeners.remove(tl);
-	}
 
 }

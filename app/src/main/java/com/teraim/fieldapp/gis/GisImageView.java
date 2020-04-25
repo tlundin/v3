@@ -14,7 +14,6 @@ import android.graphics.Path;
 import android.graphics.Path.FillType;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.location.LocationManager;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -130,9 +129,6 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 	private void init(Context ctx) {
 
 		this.setClickable(true);
-
-        LocationManager locationManager = (LocationManager) ctx
-                .getSystemService(Context.LOCATION_SERVICE);
 		YearKeyHash.clear();
 		YearKeyHash.put("år", Constants.getYear());
 		this.ctx=ctx;
@@ -207,7 +203,7 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 
 
 		if (GlobalState.getInstance()!=null)
-			GlobalState.getInstance().getTracker().registerListener(this);
+			GlobalState.getInstance().getTracker().registerListener(this,Type.MAP);
 
 
 	}
@@ -699,11 +695,11 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 								GisPointObject gop = (GisPointObject)go;
 								//Log.d("baha",gop.getId());
 								if (gop.isDynamic()) {
-									//Log.d("bortex","found dynamic object");
+									Log.d("Glapp","found dynamic object");
 									int[] xy = intBuffer.getIntBuf();
                                     boolean inside = translateMapToRealCoordinates(gop.getLocation(),xy);
 									if (!inside) {
-										//Log.d("vortex","outside "+gop.getLocation().getX()+" "+gop.getLocation().getY());
+										//Log.d("Glapp","outside "+gop.getLocation().getX()+" "+gop.getLocation().getY());
 										if (gop.equals(userGop)) {
 											myMap.showCenterButton(false);
 											userGop=null;
@@ -712,9 +708,8 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 										continue;
 									} else {
 
-										//Log.d("inside","inside. Label :"+gop.getLabel());
+										Log.d("inside","inside. Label :"+gop.getLabel());
 										if (gop.isUser()) {
-											Log.d("Glapp","drawing user!"+System.currentTimeMillis());
 											userGop = gop;
 											myMap.showCenterButton(true);
 										}
@@ -1705,17 +1700,5 @@ public class GisImageView extends GestureImageView implements TrackerListener {
 		Log.d("vortex","top bottom left right "+top+","+bottom+","+left+","+right);
 		return r;
 	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		if (GlobalState.getInstance()!=null && GlobalState.getInstance().getTracker()!=null)
-			GlobalState.getInstance().getTracker().removeListener(this);
-	}
-
-
-
-
-
 
 }

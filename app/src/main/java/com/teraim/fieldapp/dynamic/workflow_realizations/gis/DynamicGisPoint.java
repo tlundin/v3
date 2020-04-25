@@ -21,24 +21,17 @@ public class DynamicGisPoint extends GisPointObject implements TrackerListener {
 
 	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain,Variable x, Variable y, String statusVar,String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);
-		Log.d("froop","Creating dyna gis with variable x y "+x.getId()+","+y.getId());
-		Log.d("froop","Selection: "+x.getSelection().selection+", args: "+ Tools.printSelectionArgs(x.getSelection().selectionArgs));
+		Log.d("Glapp","1. Creating user gis with variable x y "+x.getId()+","+y.getId());
+		Log.d("Glapp","Selection: "+x.getSelection().selection+", args: "+ Tools.printSelectionArgs(x.getSelection().selectionArgs));
 		multivar=true;
 		myXVar=x;
 		myYVar=y;
-		GlobalState.getInstance().getTracker().registerListener(this);
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-		if (GlobalState.getInstance()!=null && GlobalState.getInstance().getTracker()!=null)
-			GlobalState.getInstance().getTracker().removeListener(this);
+		GlobalState.getInstance().getTracker().registerListener(this,Type.USER);
 	}
 
 	public DynamicGisPoint(FullGisObjectConfiguration conf, Map<String, String> keyChain, Variable v1, String statusVar, String statusVal) {
 		super(conf,keyChain,null,statusVar,statusVal);
-		Log.d("vortex","Creating dyna gis with variable "+v1.getLabel());
+		Log.d("Glapp","Creating dyna gis with variable "+v1.getLabel());
 		multivar=false;
 		myXYVar=v1;
 	}
@@ -114,10 +107,11 @@ public class DynamicGisPoint extends GisPointObject implements TrackerListener {
 	public void gpsStateChanged(GPS_State signal) {
 		if (signal.state == GPS_State.State.newValueReceived) {
 			myLocation = new SweLocation(signal.x,signal.y);
-            Log.d("Glapp","updated user position!"+System.currentTimeMillis());
+            Log.d("Glapp","updated user position"+System.currentTimeMillis());
 
 		}
 	}
+
 
 	//Dynamic points are always recalculated from geo location. So always return null for translated location!
 	//@Override

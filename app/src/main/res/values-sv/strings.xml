@@ -71,10 +71,9 @@
 	<string name="show_author_t">Visa inmatare</string>
 	<string name="reset_sync_d">Raderar allt synkdata </string>
 
-	<string name="layers">Skikt</string>
+	<string name="layers">Lager</string>
 	<string name="filters">Filter</string>
 	<string name="backgrounds">Kartor</string>
-	<string name="candidates">Objekt</string>
 
 	<string name="config_from_server">Lokal konfiguration</string>
 	<string name="s_summary">Enheten laddar sin konfiguration härifrån</string>

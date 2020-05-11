@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
     <resources>
 
+    <!--
+    <color name="primary">#795548</color>
+    <color name="primary_dark">#5D4037</color>
+    <color name="primary_light">#d7ccc8</color>
+    <color name="accent">#FF5722</color>
+    -->
     <color name="primary">#795548</color>
     <color name="primary_dark">#5D4037</color>
     <color name="primary_light">#d7ccc8</color>
@@ -10,7 +16,7 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="pressed_color">#4d90fe</color>
-    <color name="default_color">#ffffff</color>
+    <color name="default_color">#FFFFFF</color>
     <color name="background_light">#f3f3f3</color>
     <color name="moss_green">#8A9A5B</color>
     <color name="read_only">#006400</color>

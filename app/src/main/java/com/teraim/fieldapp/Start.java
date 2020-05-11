@@ -339,7 +339,10 @@ public class Start extends MenuActivity {
     @Override
     public void setTitle(CharSequence title) {
 
-        getSupportActionBar().setTitle(title);
+        //getSupportActionBar().setTitle(title);
+        // PeterP: change to explicitly set page title font color to white
+        // given that the app has a dark actionBar color.
+        getSupportActionBar().setTitle( android.text.Html.fromHtml("<font color='#ffffff'>" + title + "</font>") );
     }
 
 
